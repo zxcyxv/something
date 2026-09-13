@@ -1,0 +1,81 @@
+{
+  "train_steps": 6,
+  "packed_carry_shape": [
+    2,
+    2,
+    45
+  ],
+  "no_decay_policy_checked": true,
+  "checkpoint_raw_weights_exact": true,
+  "checkpoint_logits_exact": true,
+  "architecture": "even_phase_plasticity",
+  "metrics": [
+    {
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.304717540740967,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 0.0001,
+      "_count_raw": 0.0
+    },
+    {
+      "accuracy": 0.1111111119389534,
+      "count": 1.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.303842544555664,
+      "q_halt_accuracy": 1.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 2.0,
+      "lr": 0.0001,
+      "_count_raw": 2.0
+    },
+    {
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.2943789958953857,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 0.0001,
+      "_count_raw": 0.0
+    },
+    {
+      "accuracy": 0.1666666716337204,
+      "count": 1.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.292581558227539,
+      "q_halt_accuracy": 1.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 2.0,
+      "lr": 0.0001,
+      "_count_raw": 2.0
+    },
+    {
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.2843258380889893,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 0.0001,
+      "_count_raw": 0.0
+    },
+    {
+      "accuracy": 0.1666666716337204,
+      "count": 1.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.2812185287475586,
+      "q_halt_accuracy": 1.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 2.0,
+      "lr": 0.0001,
+      "_count_raw": 2.0
+    }
+  ],
+  "cuda_initialized": false
+}

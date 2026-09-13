@@ -1,0 +1,72 @@
+{
+  "ever_correct_puzzles": 101,
+  "first_correct_then_departed": [
+    {
+      "puzzle": 1,
+      "first_correct": 156,
+      "last_wrong": 159
+    },
+    {
+      "puzzle": 18,
+      "first_correct": 87,
+      "last_wrong": 89
+    },
+    {
+      "puzzle": 28,
+      "first_correct": 343,
+      "last_wrong": 346
+    },
+    {
+      "puzzle": 36,
+      "first_correct": 804,
+      "last_wrong": 807
+    },
+    {
+      "puzzle": 48,
+      "first_correct": 54,
+      "last_wrong": 73
+    },
+    {
+      "puzzle": 49,
+      "first_correct": 212,
+      "last_wrong": 216
+    },
+    {
+      "puzzle": 88,
+      "first_correct": 44,
+      "last_wrong": 50
+    },
+    {
+      "puzzle": 91,
+      "first_correct": 44,
+      "last_wrong": 391
+    },
+    {
+      "puzzle": 109,
+      "first_correct": 859,
+      "last_wrong": 861
+    },
+    {
+      "puzzle": 113,
+      "first_correct": 490,
+      "last_wrong": 492
+    },
+    {
+      "puzzle": 116,
+      "first_correct": 87,
+      "last_wrong": 88
+    }
+  ],
+  "last_128_blocks": {
+    "final_correct": {
+      "puzzles": 101,
+      "unchanged_output_puzzles": 99,
+      "median_cell_changes": 0.0
+    },
+    "final_wrong": {
+      "puzzles": 27,
+      "unchanged_output_puzzles": 0,
+      "median_cell_changes": 910.0
+    }
+  }
+}

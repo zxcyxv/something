@@ -1,0 +1,289 @@
+{
+  "checkpoint_step": 160000,
+  "puzzle_indices": [
+    128,
+    129,
+    130,
+    131,
+    132,
+    133,
+    134,
+    135,
+    136,
+    137,
+    138,
+    139,
+    140,
+    141,
+    142,
+    143
+  ],
+  "precision": "FP32 CPU, two threads",
+  "retrained": false,
+  "planned_blocks": 1024,
+  "max_seconds": 900,
+  "original_config": "v1.1 unmodified",
+  "candidate": "even signed spectrum; bootstrap first write; packed state",
+  "records": [
+    {
+      "block": 64,
+      "seconds": 21.563222888857126,
+      "original": {
+        "solved": 5,
+        "cell_accuracy": 0.7322530746459961
+      },
+      "even": {
+        "solved": 5,
+        "cell_accuracy": 0.7322530746459961
+      }
+    },
+    {
+      "block": 128,
+      "seconds": 42.67883874196559,
+      "original": {
+        "solved": 5,
+        "cell_accuracy": 0.7060185074806213
+      },
+      "even": {
+        "solved": 5,
+        "cell_accuracy": 0.7067901492118835
+      }
+    },
+    {
+      "block": 192,
+      "seconds": 63.84173179510981,
+      "original": {
+        "solved": 5,
+        "cell_accuracy": 0.7492284178733826
+      },
+      "even": {
+        "solved": 5,
+        "cell_accuracy": 0.7415123581886292
+      }
+    },
+    {
+      "block": 256,
+      "seconds": 84.98796225804836,
+      "original": {
+        "solved": 5,
+        "cell_accuracy": 0.707561731338501
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7577160596847534
+      }
+    },
+    {
+      "block": 320,
+      "seconds": 106.0261510880664,
+      "original": {
+        "solved": 5,
+        "cell_accuracy": 0.7191358208656311
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7438271641731262
+      }
+    },
+    {
+      "block": 384,
+      "seconds": 127.31475177034736,
+      "original": {
+        "solved": 5,
+        "cell_accuracy": 0.720678985118866
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7638888955116272
+      }
+    },
+    {
+      "block": 448,
+      "seconds": 148.52774163894355,
+      "original": {
+        "solved": 5,
+        "cell_accuracy": 0.7106481194496155
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7538580298423767
+      }
+    },
+    {
+      "block": 512,
+      "seconds": 169.92333142552525,
+      "original": {
+        "solved": 5,
+        "cell_accuracy": 0.7137345671653748
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7461419701576233
+      }
+    },
+    {
+      "block": 576,
+      "seconds": 191.05880428757519,
+      "original": {
+        "solved": 6,
+        "cell_accuracy": 0.7654321193695068
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7461419701576233
+      }
+    },
+    {
+      "block": 640,
+      "seconds": 212.2070846958086,
+      "original": {
+        "solved": 6,
+        "cell_accuracy": 0.7615740895271301
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7554012537002563
+      }
+    },
+    {
+      "block": 704,
+      "seconds": 233.26018416229635,
+      "original": {
+        "solved": 6,
+        "cell_accuracy": 0.7438271641731262
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7561728358268738
+      }
+    },
+    {
+      "block": 768,
+      "seconds": 254.31701540853828,
+      "original": {
+        "solved": 6,
+        "cell_accuracy": 0.7546296119689941
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7615740895271301
+      }
+    },
+    {
+      "block": 832,
+      "seconds": 275.56969959195703,
+      "original": {
+        "solved": 6,
+        "cell_accuracy": 0.7430555820465088
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7692901492118835
+      }
+    },
+    {
+      "block": 896,
+      "seconds": 296.7401438103989,
+      "original": {
+        "solved": 6,
+        "cell_accuracy": 0.7453703880310059
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7438271641731262
+      }
+    },
+    {
+      "block": 960,
+      "seconds": 317.9772875206545,
+      "original": {
+        "solved": 6,
+        "cell_accuracy": 0.7584876418113708
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7615740895271301
+      }
+    },
+    {
+      "block": 1024,
+      "seconds": 339.2129239551723,
+      "original": {
+        "solved": 6,
+        "cell_accuracy": 0.7538580298423767
+      },
+      "even": {
+        "solved": 6,
+        "cell_accuracy": 0.7530864477157593
+      }
+    }
+  ],
+  "status": "completed",
+  "completed_blocks": 1024,
+  "elapsed_seconds": 339.2135619185865,
+  "first_solved_at_segment_boundaries": {
+    "original": [
+      -1,
+      24,
+      -1,
+      -1,
+      48,
+      -1,
+      -1,
+      -1,
+      32,
+      40,
+      576,
+      64,
+      -1,
+      -1,
+      -1,
+      -1
+    ],
+    "even": [
+      -1,
+      24,
+      -1,
+      -1,
+      48,
+      -1,
+      -1,
+      -1,
+      32,
+      40,
+      216,
+      64,
+      -1,
+      -1,
+      -1,
+      -1
+    ]
+  },
+  "cuda_initialized": false,
+  "final": {
+    "original": {
+      "solved": 6,
+      "cell_accuracy": 0.7538580298423767,
+      "solved_indices": [
+        1,
+        4,
+        8,
+        9,
+        10,
+        11
+      ]
+    },
+    "even": {
+      "solved": 6,
+      "cell_accuracy": 0.7530864477157593,
+      "solved_indices": [
+        1,
+        4,
+        8,
+        9,
+        10,
+        11
+      ]
+    }
+  }
+}

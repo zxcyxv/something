@@ -1,0 +1,567 @@
+{
+  "selection": "previously wrong target; relative transport >1e-5; |loss change| >1e-6",
+  "positive_effect": "removing the history correction raises next-token Stablemax loss",
+  "features": {
+    "phase_coherence_unweighted": {
+      "exploratory": {
+        "pooled_auc": 0.6111111111111112,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          1.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.5
+        ],
+        "helpful_median": 0.8301196098327637,
+        "harmful_median": 0.7699368000030518
+      },
+      "comparison": {
+        "pooled_auc": 0.42894736842105263,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.6666666666666666,
+          0.5555555555555556,
+          0.4,
+          0.0,
+          0.4,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.9184699058532715,
+        "harmful_median": 0.936266303062439
+      }
+    },
+    "phase_coherence_amplitude_weighted": {
+      "exploratory": {
+        "pooled_auc": 0.6111111111111112,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          1.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.5
+        ],
+        "helpful_median": 0.9709162712097168,
+        "harmful_median": 0.95733642578125
+      },
+      "comparison": {
+        "pooled_auc": 0.45526315789473687,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.3333333333333333,
+          0.6666666666666666,
+          0.2,
+          0.0,
+          0.3333333333333333,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.9850414991378784,
+        "harmful_median": 0.988053023815155
+      }
+    },
+    "phase_agree_coherence": {
+      "exploratory": {
+        "pooled_auc": 0.3888888888888889,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          1.0
+        ],
+        "helpful_median": 0.9169881939888,
+        "harmful_median": 0.935131311416626
+      },
+      "comparison": {
+        "pooled_auc": 0.48157894736842105,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.8333333333333334,
+          0.7777777777777778,
+          0.5,
+          0.0,
+          0.26666666666666666,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.9777854681015015,
+        "harmful_median": 0.974133312702179
+      }
+    },
+    "symmetric_component_sign_coherence": {
+      "exploratory": {
+        "pooled_auc": 0.3333333333333333,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          1.0
+        ],
+        "helpful_median": 0.9017698764801025,
+        "harmful_median": 0.9471368789672852
+      },
+      "comparison": {
+        "pooled_auc": 0.5105263157894737,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.8333333333333334,
+          0.6666666666666666,
+          0.6,
+          0.5,
+          0.6,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.981137216091156,
+        "harmful_median": 0.9688428640365601
+      }
+    },
+    "symmetric_edge_sign_coherence": {
+      "exploratory": {
+        "pooled_auc": 0.6666666666666666,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          1.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          1.0
+        ],
+        "helpful_median": 0.9668681621551514,
+        "harmful_median": 0.8895214796066284
+      },
+      "comparison": {
+        "pooled_auc": 0.4105263157894737,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.6666666666666666,
+          0.6666666666666666,
+          0.5,
+          1.0,
+          0.23333333333333334,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.9902722835540771,
+        "harmful_median": 0.9978237748146057
+      }
+    },
+    "agree_sign_coherence": {
+      "exploratory": {
+        "pooled_auc": 0.3333333333333333,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          1.0
+        ],
+        "helpful_median": 0.9401124715805054,
+        "harmful_median": 1.0
+      },
+      "comparison": {
+        "pooled_auc": 0.4486842105263158,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.3333333333333333,
+          0.6111111111111112,
+          0.5,
+          0.75,
+          0.5,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.9995249509811401,
+        "harmful_median": 1.0
+      }
+    },
+    "current_agree": {
+      "exploratory": {
+        "pooled_auc": 0.16666666666666666,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.5
+        ],
+        "helpful_median": -0.08741526305675507,
+        "harmful_median": 0.18115746974945068
+      },
+      "comparison": {
+        "pooled_auc": 0.5473684210526316,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.3333333333333333,
+          0.6666666666666666,
+          0.2,
+          0.0,
+          0.7333333333333333,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.09980255365371704,
+        "harmful_median": 0.04181116074323654
+      }
+    },
+    "mean_agree": {
+      "exploratory": {
+        "pooled_auc": 0.1111111111111111,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.5
+        ],
+        "helpful_median": -0.17536090314388275,
+        "harmful_median": 0.2984466552734375
+      },
+      "comparison": {
+        "pooled_auc": 0.55,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.3333333333333333,
+          0.7777777777777778,
+          0.4,
+          0.0,
+          0.6666666666666666,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.17795704305171967,
+        "harmful_median": 0.03509923815727234
+      }
+    },
+    "current_vs_past_phase_alignment": {
+      "exploratory": {
+        "pooled_auc": 0.6111111111111112,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          1.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.5
+        ],
+        "helpful_median": 0.9878787398338318,
+        "harmful_median": 0.9898658990859985
+      },
+      "comparison": {
+        "pooled_auc": 0.5710526315789474,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.3333333333333333,
+          0.5555555555555556,
+          0.4,
+          0.0,
+          0.3333333333333333,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.9973001480102539,
+        "harmful_median": 0.996496856212616
+      }
+    },
+    "current_symmetric_phase_kernel": {
+      "exploratory": {
+        "pooled_auc": 0.2222222222222222,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.0
+        ],
+        "helpful_median": -0.14939457178115845,
+        "harmful_median": -0.05374915897846222
+      },
+      "comparison": {
+        "pooled_auc": 0.4342105263157895,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.8333333333333334,
+          0.1111111111111111,
+          0.6,
+          0.0,
+          0.4,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": -0.053990114480257034,
+        "harmful_median": -0.039671123027801514
+      }
+    },
+    "mean_symmetric_phase_kernel": {
+      "exploratory": {
+        "pooled_auc": 0.2777777777777778,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.5
+        ],
+        "helpful_median": -0.12924841046333313,
+        "harmful_median": -0.027810897678136826
+      },
+      "comparison": {
+        "pooled_auc": 0.44473684210526315,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.8333333333333334,
+          0.1111111111111111,
+          0.5,
+          0.0,
+          0.4,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": -0.04286637902259827,
+        "harmful_median": -0.03164182975888252
+      }
+    },
+    "source_confidence": {
+      "exploratory": {
+        "pooled_auc": 0.7222222222222222,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          1.0
+        ],
+        "helpful_median": 0.952860951423645,
+        "harmful_median": 0.7518999576568604
+      },
+      "comparison": {
+        "pooled_auc": 0.38026315789473686,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.8333333333333334,
+          0.1111111111111111,
+          0.6,
+          0.0,
+          0.3333333333333333,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.6049891710281372,
+        "harmful_median": 0.7339258790016174
+      }
+    },
+    "target_confidence": {
+      "exploratory": {
+        "pooled_auc": 0.2777777777777778,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.0
+        ],
+        "helpful_median": 0.630160391330719,
+        "harmful_median": 0.8261904716491699
+      },
+      "comparison": {
+        "pooled_auc": 0.45789473684210524,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.6666666666666666,
+          0.2222222222222222,
+          0.7,
+          1.0,
+          0.5333333333333333,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.525251030921936,
+        "harmful_median": 0.5618082880973816
+      }
+    },
+    "history_relative_size": {
+      "exploratory": {
+        "pooled_auc": 0.5,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          1.0,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          NaN,
+          0.5
+        ],
+        "helpful_median": 0.5926479697227478,
+        "harmful_median": 0.46339040994644165
+      },
+      "comparison": {
+        "pooled_auc": 0.5289473684210526,
+        "puzzle_mean_auc": null,
+        "puzzles_with_both_signs": 0,
+        "head_auc": [
+          0.16666666666666666,
+          0.3333333333333333,
+          0.5,
+          0.5,
+          0.7333333333333333,
+          NaN,
+          NaN,
+          NaN
+        ],
+        "helpful_median": 0.18975171446800232,
+        "harmful_median": 0.15624481439590454
+      }
+    }
+  },
+  "exploratory": {
+    "puzzles": 4,
+    "selected_edges_times": 9,
+    "positive_effect_fraction": 0.3333333333333333
+  },
+  "comparison": {
+    "puzzles": 4,
+    "selected_edges_times": 39,
+    "positive_effect_fraction": 0.5128205128205128
+  },
+  "args": {
+    "n": 8,
+    "pairs_per_head": 2,
+    "segs": 17,
+    "stride": 8,
+    "split_at": 4,
+    "seed": 0,
+    "checkpoint": "checkpoints/v1.1_step160000.npz",
+    "out": "runs/phase_coherence_smoke"
+  },
+  "feature_order": [
+    "phase_coherence_unweighted",
+    "phase_coherence_amplitude_weighted",
+    "phase_agree_coherence",
+    "symmetric_component_sign_coherence",
+    "symmetric_edge_sign_coherence",
+    "agree_sign_coherence",
+    "current_agree",
+    "mean_agree",
+    "current_vs_past_phase_alignment",
+    "current_symmetric_phase_kernel",
+    "mean_symmetric_phase_kernel",
+    "source_confidence",
+    "target_confidence",
+    "history_relative_size"
+  ],
+  "precision": "FP32; autocast/TF32 off; packed checkpoint",
+  "max_symmetric_memory_reconstruction_error": 3.8743019104003906e-07,
+  "exact_by_seg": [
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    0,
+    1,
+    1,
+    2,
+    2
+  ]
+}

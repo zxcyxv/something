@@ -1,0 +1,78 @@
+
+===== train: /usr/local/bin/python /workspace/LinearTuring/arc_analysis/train_arc_s.py --data /workspace/LinearTuring/data/arc_s10_aug1000 --out-dir /workspace/LinearTuring/runs/arc_s10/base_aug1000 --model base --max-steps 20000 --encoding frame --batch-size 128 --seed 0 --eval-every 2000 --eval-max-augmentations 32 --save-every 1000 --log-every 100 --lr-warmup-steps 2000
+[ARC-S] canvas 10×10 = 100 tokens; model=base encoding=frame; coupling carry 39.1 MiB (train_arc's own line below assumes 900)
+[ARC] device=cuda tokens=900 IDs=260699 batch=128 loops=16 blocks=8 stop_step=20000
+[ARC] coupling carry alone=3164.1 MiB; activations/gradients require extra memory
+[ARC train] {"step": 1, "loss": 2.5132123230956602, "halted": 0, "seconds": 0.8641648283228278}
+[ARC train] {"step": 100, "loss": 1.914529678090982, "halted": 0, "seconds": 36.01386815775186}
+[ARC train] {"step": 200, "loss": 1.2476123107126464, "halted": 0, "seconds": 71.7089749891311}
+[ARC train] {"step": 300, "loss": 0.8465192832514231, "halted": 0, "seconds": 107.47946662828326}
+[ARC train] {"step": 400, "loss": 0.6877414189012034, "halted": 128, "seconds": 143.2478599594906, "exact": 0.0390625}
+[ARC train] {"step": 500, "loss": 0.9506098555932285, "halted": 0, "seconds": 179.04387173894793}
+[ARC train] {"step": 600, "loss": 0.6464728505792969, "halted": 0, "seconds": 214.80871338397264}
+[ARC train] {"step": 700, "loss": 0.4787175322040851, "halted": 0, "seconds": 253.7409794041887}
+[ARC train] {"step": 800, "loss": 0.45960364296287415, "halted": 128, "seconds": 289.35925374366343, "exact": 0.140625}
+[ARC train] {"step": 900, "loss": 0.7196638990020151, "halted": 0, "seconds": 324.9242437593639}
+[ARC train] {"step": 1000, "loss": 0.5153125072789264, "halted": 0, "seconds": 360.48790723644197}
+[ARC train] {"step": 1100, "loss": 0.4697591332563713, "halted": 0, "seconds": 396.7518686801195}
+[ARC train] {"step": 1200, "loss": 0.3496257799777781, "halted": 128, "seconds": 432.40212460048497, "exact": 0.1328125}
+[ARC train] {"step": 1300, "loss": 0.5942661072599464, "halted": 0, "seconds": 468.1695713819936}
+[ARC train] {"step": 1400, "loss": 0.40224054086226435, "halted": 0, "seconds": 503.8883580537513}
+[ARC train] {"step": 1500, "loss": 0.40781657535466576, "halted": 0, "seconds": 539.3844937756658}
+[ARC train] {"step": 1600, "loss": 0.2284577699713859, "halted": 128, "seconds": 574.9967264700681, "exact": 0.2578125}
+[ARC train] {"step": 1700, "loss": 0.5792904479707177, "halted": 0, "seconds": 610.5758874434978}
+[ARC train] {"step": 1800, "loss": 0.41190498571102707, "halted": 0, "seconds": 646.2464946908876}
+[ARC train] {"step": 1900, "loss": 0.32789559576606947, "halted": 0, "seconds": 681.7555073630065}
+[ARC train] {"step": 2000, "loss": 0.26473041947555465, "halted": 128, "seconds": 717.3675417602062, "exact": 0.3359375}
+[ARC eval] {"ARC/pass@1": 0.0, "ARC/pass@2": 0.006493506493506494, "ARC/pass@5": 0.006493506493506494, "ARC/pass@10": 0.012987012987012988, "ARC/tasks": 77, "ARC/queries": 88, "token_accuracy": 0.509871010075916, "sequence_exact": 0.0, "evaluated_augmented_examples": 2816, "eval_segments": 16, "max_augmentations_per_task": 32, "total_available_tasks": 77, "seconds": 38.67625424172729, "step": 2000, "weights": "ema_parameters_raw_puzzle_embeddings"}
+[ARC train] {"step": 2100, "loss": 0.4855766612661929, "halted": 0, "seconds": 792.8914178209379}
+[ARC train] {"step": 2200, "loss": 0.3362644045799433, "halted": 0, "seconds": 828.5136854890734}
+[ARC train] {"step": 2300, "loss": 0.2731144369033741, "halted": 0, "seconds": 864.1423060018569}
+[ARC train] {"step": 2400, "loss": 0.19628071934423316, "halted": 128, "seconds": 905.1376338675618, "exact": 0.3125}
+[ARC train] {"step": 2500, "loss": 0.5225039691764617, "halted": 0, "seconds": 940.7683456186205}
+[ARC train] {"step": 2600, "loss": 0.3565855901449838, "halted": 0, "seconds": 976.5309671442956}
+[ARC train] {"step": 2700, "loss": 0.26368123672880694, "halted": 0, "seconds": 1015.184264427051}
+[ARC train] {"step": 2800, "loss": 0.1841375507541563, "halted": 128, "seconds": 1058.583902128972, "exact": 0.2734375}
+[ARC train] {"step": 2900, "loss": 0.4883673012873302, "halted": 0, "seconds": 1107.0981691591442}
+[ARC train] {"step": 3000, "loss": 0.3027215000566482, "halted": 0, "seconds": 1155.4112778268754}
+[ARC train] {"step": 3100, "loss": 0.22184751360797708, "halted": 0, "seconds": 1190.8714579558}
+[ARC train] {"step": 3200, "loss": 0.10526488000701953, "halted": 128, "seconds": 1226.5551800681278, "exact": 0.5625}
+[ARC train] {"step": 3300, "loss": 0.5243220818250229, "halted": 0, "seconds": 1262.1030357666314}
+[ARC train] {"step": 3400, "loss": 0.25719752113621, "halted": 0, "seconds": 1297.670091893524}
+[ARC train] {"step": 3500, "loss": 0.19739149888978158, "halted": 0, "seconds": 1334.6585280448198}
+[ARC train] {"step": 3600, "loss": 0.15465124427390647, "halted": 128, "seconds": 1370.1828109715134, "exact": 0.390625}
+[ARC train] {"step": 3700, "loss": 0.42750514398319883, "halted": 0, "seconds": 1405.929875667207}
+[ARC train] {"step": 3800, "loss": 0.2829566568503801, "halted": 0, "seconds": 1441.5703068841249}
+[ARC train] {"step": 3900, "loss": 0.21031194049411314, "halted": 0, "seconds": 1477.0668922290206}
+[ARC train] {"step": 4000, "loss": 0.09857416243832606, "halted": 128, "seconds": 1512.866317623295, "exact": 0.546875}
+[ARC eval] {"ARC/pass@1": 0.0, "ARC/pass@2": 0.0, "ARC/pass@5": 0.0, "ARC/pass@10": 0.0, "ARC/tasks": 77, "ARC/queries": 88, "token_accuracy": 0.5184001285921443, "sequence_exact": 0.0003551136363636364, "evaluated_augmented_examples": 2816, "eval_segments": 16, "max_augmentations_per_task": 32, "total_available_tasks": 77, "seconds": 38.51688943058252, "step": 4000, "weights": "ema_parameters_raw_puzzle_embeddings"}
+[ARC train] {"step": 4100, "loss": 0.3973913890686813, "halted": 0, "seconds": 1588.2650190163404}
+[ARC train] {"step": 4200, "loss": 0.19984045514673646, "halted": 0, "seconds": 1624.1026105508208}
+[ARC train] {"step": 4300, "loss": 0.17208730279468984, "halted": 0, "seconds": 1659.8632870633155}
+[ARC train] {"step": 4400, "loss": 0.07746429402702287, "halted": 128, "seconds": 1695.4404808180407, "exact": 0.640625}
+[ARC train] {"step": 4500, "loss": 0.4337855677557444, "halted": 0, "seconds": 1730.9991612331942}
+[ARC train] {"step": 4600, "loss": 0.21826397743041975, "halted": 0, "seconds": 1766.8889198591933}
+[ARC train] {"step": 4700, "loss": 0.17752210675877356, "halted": 0, "seconds": 1803.1753478348255}
+[ARC train] {"step": 4800, "loss": 0.1540874549024961, "halted": 128, "seconds": 1838.7399092298, "exact": 0.5234375}
+[ARC train] {"step": 4900, "loss": 0.42520119170528736, "halted": 0, "seconds": 1876.7844012500718}
+[ARC train] {"step": 5000, "loss": 0.2245652001657697, "halted": 0, "seconds": 1920.2559929899871}
+[ARC train] {"step": 5100, "loss": 0.18300401137974306, "halted": 0, "seconds": 1964.1210702238604}
+[ARC train] {"step": 5200, "loss": 0.08817349449078477, "halted": 128, "seconds": 2007.7622616458684, "exact": 0.703125}
+[ARC train] {"step": 5300, "loss": 0.444833756936741, "halted": 0, "seconds": 2051.3026712685823}
+[ARC train] {"step": 5400, "loss": 0.212398181773411, "halted": 0, "seconds": 2094.965936441906}
+[ARC train] {"step": 5500, "loss": 0.11027310621006581, "halted": 0, "seconds": 2138.3336793482304}
+[ARC train] {"step": 5600, "loss": 0.12056012802265945, "halted": 128, "seconds": 2181.7020947588608, "exact": 0.4765625}
+[ARC train] {"step": 5700, "loss": 0.38793293190988626, "halted": 0, "seconds": 2225.162290056236}
+[ARC train] {"step": 5800, "loss": 0.2422886626452581, "halted": 0, "seconds": 2266.225730702281}
+[ARC train] {"step": 5900, "loss": 0.14395224186147004, "halted": 0, "seconds": 2309.569278358482}
+[ARC train] {"step": 6000, "loss": 0.03978592815025064, "halted": 128, "seconds": 2353.2914763437584, "exact": 0.7890625}
+[ARC eval] {"ARC/pass@1": 0.0, "ARC/pass@2": 0.0, "ARC/pass@5": 0.0, "ARC/pass@10": 0.0, "ARC/tasks": 77, "ARC/queries": 88, "token_accuracy": 0.544801954518665, "sequence_exact": 0.0, "evaluated_augmented_examples": 2816, "eval_segments": 16, "max_augmentations_per_task": 32, "total_available_tasks": 77, "seconds": 45.30085823498666, "step": 6000, "weights": "ema_parameters_raw_puzzle_embeddings"}
+[ARC train] {"step": 6100, "loss": 0.3246280048066977, "halted": 0, "seconds": 2447.906281841919}
+[ARC train] {"step": 6200, "loss": 0.2009687250846186, "halted": 0, "seconds": 2483.5931159975007}
+[ARC train] {"step": 6300, "loss": 0.08196651974592896, "halted": 0, "seconds": 2519.576834429987}
+[ARC train] {"step": 6400, "loss": 0.06290161891259655, "halted": 128, "seconds": 2555.1450139395893, "exact": 0.8046875}
+[ARC train] {"step": 6500, "loss": 0.3298780681207242, "halted": 0, "seconds": 2590.888378387317}
+[ARC train] {"step": 6600, "loss": 0.15446351209468684, "halted": 0, "seconds": 2626.5169423641637}
+[ARC train] {"step": 6700, "loss": 0.053876428547418365, "halted": 0, "seconds": 2662.0114737218246}
+[ARC] stop requested; completing the current step before checkpointing
+[ARC] checkpoint -> /workspace/LinearTuring/runs/arc_s10/base_aug1000/latest.pt

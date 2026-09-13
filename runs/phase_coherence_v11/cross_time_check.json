@@ -1,0 +1,29 @@
+{
+  "n": 4,
+  "head": 0,
+  "target_cells": [
+    10,
+    40
+  ],
+  "blocks": 32,
+  "max_abs_message_error": 6.67572021484375e-06,
+  "cross_time_matrix_asymmetry": [
+    {
+      "past_block": 1,
+      "current_block": 32,
+      "skew_over_sym_norm": 0.7222174406051636
+    },
+    {
+      "past_block": 16,
+      "current_block": 32,
+      "skew_over_sym_norm": 0.11815960705280304
+    },
+    {
+      "past_block": 32,
+      "current_block": 32,
+      "skew_over_sym_norm": 3.241843415935364e-08
+    }
+  ],
+  "precision": "FP32; autocast/TF32 off",
+  "note": "Algebraic check; not a causal test of usefulness."
+}

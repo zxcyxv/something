@@ -1,0 +1,287 @@
+{
+  "quadrature": {
+    "quadrature_max_error": 3.552713678800501e-15,
+    "lifted_max_error": 3.552713678800501e-15
+  },
+  "double_window": {
+    "overlapping_windows_pair_weight": 0.06892654942412293,
+    "closed_form": 0.06892654942412293,
+    "single_pair_once_weight": 0.045289312841430014,
+    "ratio_to_single_count": 1.521916432370109
+  },
+  "even_window_learning_geometry": {
+    "common_gain": 0.2982195481303022,
+    "same_initial_loss": 26.639279416521397,
+    "angle_gradient_norm": 7.545841682110343e-16,
+    "gain_gradient": 3.552713678800501e-15,
+    "real_spectrum_gradient_norm": 44.474226270874865,
+    "target_coefficients": [
+      0.25,
+      1.3,
+      -0.4
+    ],
+    "scope": "synthetic symmetric-kernel fitting objective, not checkpoint training"
+  },
+  "checkpoint_step": 160000,
+  "checkpoint": {
+    "beta_cos_min_by_head": [
+      0.6513762503388985,
+      -0.5380989034256075,
+      -0.8966666216860547,
+      0.005918066922562045,
+      -0.4126869584358167,
+      0.8035691102441265,
+      0.05489231035303278,
+      0.4951029781525774
+    ],
+    "states": {
+      "152": [
+        {
+          "lifted_kernel_max_error": 6.661338147750939e-16,
+          "zero_beta_min_eigenvalue": 0.4367296892122564,
+          "actual_write_sym_min_eigenvalue": 0.4190492890039368,
+          "actual_memory_sym_min_eigenvalue": 0.7731379667347297,
+          "zero_beta_diag_max_deviation_from_one": 3.4726709672305844e-05,
+          "zero_beta_diag_spread": 2.063328997903291e-05,
+          "actual_memory_diag_relative_spread": 0.012408663216233264,
+          "actual_memory_negative_offdiag_fraction": 0.21265432098765433
+        },
+        {
+          "lifted_kernel_max_error": 7.771561172376096e-16,
+          "zero_beta_min_eigenvalue": 0.3746421058466255,
+          "actual_write_sym_min_eigenvalue": 0.3406861525690085,
+          "actual_memory_sym_min_eigenvalue": 0.853771325639531,
+          "zero_beta_diag_max_deviation_from_one": 2.6063990896330047e-05,
+          "zero_beta_diag_spread": 1.478160525325567e-05,
+          "actual_memory_diag_relative_spread": 0.04587415382096291,
+          "actual_memory_negative_offdiag_fraction": 0.5212962962962963
+        },
+        {
+          "lifted_kernel_max_error": 8.881784197001252e-16,
+          "zero_beta_min_eigenvalue": 0.43839860921781054,
+          "actual_write_sym_min_eigenvalue": 0.43211758721296156,
+          "actual_memory_sym_min_eigenvalue": 1.5501441625021308,
+          "zero_beta_diag_max_deviation_from_one": 3.395725165555863e-05,
+          "zero_beta_diag_spread": 2.1188665730420553e-05,
+          "actual_memory_diag_relative_spread": 0.007207384441771945,
+          "actual_memory_negative_offdiag_fraction": 0.5345679012345679
+        },
+        {
+          "lifted_kernel_max_error": 6.661338147750939e-16,
+          "zero_beta_min_eigenvalue": 0.5847786156515075,
+          "actual_write_sym_min_eigenvalue": 0.40335615163390204,
+          "actual_memory_sym_min_eigenvalue": 0.11072545340657626,
+          "zero_beta_diag_max_deviation_from_one": 4.016244697480076e-05,
+          "zero_beta_diag_spread": 2.1111931469697254e-05,
+          "actual_memory_diag_relative_spread": 0.04395480981307371,
+          "actual_memory_negative_offdiag_fraction": 0.5157407407407407
+        },
+        {
+          "lifted_kernel_max_error": 8.881784197001252e-16,
+          "zero_beta_min_eigenvalue": 0.49225548487744186,
+          "actual_write_sym_min_eigenvalue": 0.44214420061504245,
+          "actual_memory_sym_min_eigenvalue": 0.4903227956994736,
+          "zero_beta_diag_max_deviation_from_one": 3.323676325039937e-05,
+          "zero_beta_diag_spread": 1.6479914961675668e-05,
+          "actual_memory_diag_relative_spread": 0.020283388031822572,
+          "actual_memory_negative_offdiag_fraction": 0.4981481481481482
+        },
+        {
+          "lifted_kernel_max_error": 9.992007221626409e-16,
+          "zero_beta_min_eigenvalue": 0.6682949361917748,
+          "actual_write_sym_min_eigenvalue": 0.6567585926940115,
+          "actual_memory_sym_min_eigenvalue": 1.029856655884506,
+          "zero_beta_diag_max_deviation_from_one": 2.9157848000505027e-05,
+          "zero_beta_diag_spread": 1.647704050922183e-05,
+          "actual_memory_diag_relative_spread": 0.0023627051847643615,
+          "actual_memory_negative_offdiag_fraction": 0.528395061728395
+        },
+        {
+          "lifted_kernel_max_error": 1.2212453270876722e-15,
+          "zero_beta_min_eigenvalue": 0.5184740918145921,
+          "actual_write_sym_min_eigenvalue": 0.489546448398631,
+          "actual_memory_sym_min_eigenvalue": 0.5636040560496381,
+          "zero_beta_diag_max_deviation_from_one": 3.464356590288098e-05,
+          "zero_beta_diag_spread": 1.8705333651891642e-05,
+          "actual_memory_diag_relative_spread": 0.01037625357087899,
+          "actual_memory_negative_offdiag_fraction": 0.5154320987654321
+        },
+        {
+          "lifted_kernel_max_error": 9.992007221626409e-16,
+          "zero_beta_min_eigenvalue": 0.3852059518557117,
+          "actual_write_sym_min_eigenvalue": 0.3675869461161686,
+          "actual_memory_sym_min_eigenvalue": 0.6132996315051917,
+          "zero_beta_diag_max_deviation_from_one": 3.0908983755240094e-05,
+          "zero_beta_diag_spread": 1.718850082255141e-05,
+          "actual_memory_diag_relative_spread": 0.007713870837266992,
+          "actual_memory_negative_offdiag_fraction": 0.5351851851851852
+        }
+      ],
+      "192": [
+        {
+          "lifted_kernel_max_error": 1.1102230246251565e-15,
+          "zero_beta_min_eigenvalue": 0.3702094060901395,
+          "actual_write_sym_min_eigenvalue": 0.36297140631740155,
+          "actual_memory_sym_min_eigenvalue": 0.7912464864362655,
+          "zero_beta_diag_max_deviation_from_one": 9.063985711432743e-06,
+          "zero_beta_diag_spread": 2.1382007041603757e-06,
+          "actual_memory_diag_relative_spread": 0.007754033693986525,
+          "actual_memory_negative_offdiag_fraction": 0.03734567901234568
+        },
+        {
+          "lifted_kernel_max_error": 9.992007221626409e-16,
+          "zero_beta_min_eigenvalue": 0.1909780955603324,
+          "actual_write_sym_min_eigenvalue": 0.18687849986868926,
+          "actual_memory_sym_min_eigenvalue": 0.9441079729854319,
+          "zero_beta_diag_max_deviation_from_one": 7.69451663640286e-06,
+          "zero_beta_diag_spread": 1.5081781377102033e-06,
+          "actual_memory_diag_relative_spread": 0.03447860308102669,
+          "actual_memory_negative_offdiag_fraction": 0.5555555555555556
+        },
+        {
+          "lifted_kernel_max_error": 7.771561172376096e-16,
+          "zero_beta_min_eigenvalue": 0.27841671044532207,
+          "actual_write_sym_min_eigenvalue": 0.27236333122074563,
+          "actual_memory_sym_min_eigenvalue": 1.4659060026696824,
+          "zero_beta_diag_max_deviation_from_one": 8.175231196116961e-06,
+          "zero_beta_diag_spread": 1.643541702844864e-06,
+          "actual_memory_diag_relative_spread": 0.012727855257178353,
+          "actual_memory_negative_offdiag_fraction": 0.8308641975308642
+        },
+        {
+          "lifted_kernel_max_error": 6.661338147750939e-16,
+          "zero_beta_min_eigenvalue": 0.6662680672013114,
+          "actual_write_sym_min_eigenvalue": 0.45224155981536274,
+          "actual_memory_sym_min_eigenvalue": 0.12406653633112827,
+          "zero_beta_diag_max_deviation_from_one": 1.35982779450039e-05,
+          "zero_beta_diag_spread": 4.451895227131075e-06,
+          "actual_memory_diag_relative_spread": 0.0340927006537642,
+          "actual_memory_negative_offdiag_fraction": 0.5077160493827161
+        },
+        {
+          "lifted_kernel_max_error": 8.881784197001252e-16,
+          "zero_beta_min_eigenvalue": 0.6127748796572137,
+          "actual_write_sym_min_eigenvalue": 0.534921160741639,
+          "actual_memory_sym_min_eigenvalue": 0.6082737331327552,
+          "zero_beta_diag_max_deviation_from_one": 1.2695168812970614e-05,
+          "zero_beta_diag_spread": 3.276637517646286e-06,
+          "actual_memory_diag_relative_spread": 0.021829142381572603,
+          "actual_memory_negative_offdiag_fraction": 0.5151234567901235
+        },
+        {
+          "lifted_kernel_max_error": 7.771561172376096e-16,
+          "zero_beta_min_eigenvalue": 0.6695357510469251,
+          "actual_write_sym_min_eigenvalue": 0.6597405414713233,
+          "actual_memory_sym_min_eigenvalue": 0.9589591468549191,
+          "zero_beta_diag_max_deviation_from_one": 7.327376648436079e-06,
+          "zero_beta_diag_spread": 1.4162389920802099e-06,
+          "actual_memory_diag_relative_spread": 0.001283868804317319,
+          "actual_memory_negative_offdiag_fraction": 0.08981481481481482
+        },
+        {
+          "lifted_kernel_max_error": 1.1102230246251565e-15,
+          "zero_beta_min_eigenvalue": 0.3647583373534875,
+          "actual_write_sym_min_eigenvalue": 0.3359901670067038,
+          "actual_memory_sym_min_eigenvalue": 0.4233552453090525,
+          "zero_beta_diag_max_deviation_from_one": 9.684944000332152e-06,
+          "zero_beta_diag_spread": 2.0492049506160015e-06,
+          "actual_memory_diag_relative_spread": 0.010550851725955147,
+          "actual_memory_negative_offdiag_fraction": 0.48487654320987655
+        },
+        {
+          "lifted_kernel_max_error": 7.771561172376096e-16,
+          "zero_beta_min_eigenvalue": 0.24733224932979672,
+          "actual_write_sym_min_eigenvalue": 0.2366206287685021,
+          "actual_memory_sym_min_eigenvalue": 0.662305787353836,
+          "zero_beta_diag_max_deviation_from_one": 9.040581363195521e-06,
+          "zero_beta_diag_spread": 2.0736860371073362e-06,
+          "actual_memory_diag_relative_spread": 0.008706489052381182,
+          "actual_memory_negative_offdiag_fraction": 0.5873456790123457
+        }
+      ],
+      "256": [
+        {
+          "lifted_kernel_max_error": 7.771561172376096e-16,
+          "zero_beta_min_eigenvalue": 0.3667140721691081,
+          "actual_write_sym_min_eigenvalue": 0.3596893139395241,
+          "actual_memory_sym_min_eigenvalue": 0.5776787399665965,
+          "zero_beta_diag_max_deviation_from_one": 8.223418145658634e-06,
+          "zero_beta_diag_spread": 1.6270721605593508e-06,
+          "actual_memory_diag_relative_spread": 0.005541255173144371,
+          "actual_memory_negative_offdiag_fraction": 0.004320987654320987
+        },
+        {
+          "lifted_kernel_max_error": 8.881784197001252e-16,
+          "zero_beta_min_eigenvalue": 0.18701551264405186,
+          "actual_write_sym_min_eigenvalue": 0.1827419694546352,
+          "actual_memory_sym_min_eigenvalue": 0.5689293221605853,
+          "zero_beta_diag_max_deviation_from_one": 7.158963441722399e-06,
+          "zero_beta_diag_spread": 1.1547065117412103e-06,
+          "actual_memory_diag_relative_spread": 0.019664683619825124,
+          "actual_memory_negative_offdiag_fraction": 0.6256172839506173
+        },
+        {
+          "lifted_kernel_max_error": 7.771561172376096e-16,
+          "zero_beta_min_eigenvalue": 0.27309428455070606,
+          "actual_write_sym_min_eigenvalue": 0.267629929114563,
+          "actual_memory_sym_min_eigenvalue": 0.8713588949860076,
+          "zero_beta_diag_max_deviation_from_one": 7.564673893623031e-06,
+          "zero_beta_diag_spread": 1.292441415445822e-06,
+          "actual_memory_diag_relative_spread": 0.01923670125604615,
+          "actual_memory_negative_offdiag_fraction": 0.9
+        },
+        {
+          "lifted_kernel_max_error": 5.551115123125783e-16,
+          "zero_beta_min_eigenvalue": 0.6571251574754264,
+          "actual_write_sym_min_eigenvalue": 0.4467829766835471,
+          "actual_memory_sym_min_eigenvalue": 0.11943456513663397,
+          "zero_beta_diag_max_deviation_from_one": 1.2304576777255605e-05,
+          "zero_beta_diag_spread": 3.6825622163894067e-06,
+          "actual_memory_diag_relative_spread": 0.03527394832325249,
+          "actual_memory_negative_offdiag_fraction": 0.5111111111111111
+        },
+        {
+          "lifted_kernel_max_error": 7.771561172376096e-16,
+          "zero_beta_min_eigenvalue": 0.6148297370894493,
+          "actual_write_sym_min_eigenvalue": 0.5369359861797885,
+          "actual_memory_sym_min_eigenvalue": 0.610526349264499,
+          "zero_beta_diag_max_deviation_from_one": 1.1764394896918162e-05,
+          "zero_beta_diag_spread": 2.879279812240121e-06,
+          "actual_memory_diag_relative_spread": 0.02037350348241597,
+          "actual_memory_negative_offdiag_fraction": 0.5188271604938272
+        },
+        {
+          "lifted_kernel_max_error": 1.1102230246251565e-15,
+          "zero_beta_min_eigenvalue": 0.6711542909911066,
+          "actual_write_sym_min_eigenvalue": 0.6619484806969371,
+          "actual_memory_sym_min_eigenvalue": 0.9565899248015204,
+          "zero_beta_diag_max_deviation_from_one": 6.7939404840844375e-06,
+          "zero_beta_diag_spread": 1.0875837127555243e-06,
+          "actual_memory_diag_relative_spread": 0.0011225820616982962,
+          "actual_memory_negative_offdiag_fraction": 0.12623456790123458
+        },
+        {
+          "lifted_kernel_max_error": 8.881784197001252e-16,
+          "zero_beta_min_eigenvalue": 0.3789328608814266,
+          "actual_write_sym_min_eigenvalue": 0.3439252980544306,
+          "actual_memory_sym_min_eigenvalue": 0.3501745452919279,
+          "zero_beta_diag_max_deviation_from_one": 9.067767578807562e-06,
+          "zero_beta_diag_spread": 1.5850157113472818e-06,
+          "actual_memory_diag_relative_spread": 0.014573202201953928,
+          "actual_memory_negative_offdiag_fraction": 0.48117283950617284
+        },
+        {
+          "lifted_kernel_max_error": 9.992007221626409e-16,
+          "zero_beta_min_eigenvalue": 0.24348731642992544,
+          "actual_write_sym_min_eigenvalue": 0.2326308687791664,
+          "actual_memory_sym_min_eigenvalue": 0.3614355866434592,
+          "zero_beta_diag_max_deviation_from_one": 8.497746970648201e-06,
+          "zero_beta_diag_spread": 1.6839443995886327e-06,
+          "actual_memory_diag_relative_spread": 0.013063146050290537,
+          "actual_memory_negative_offdiag_fraction": 0.6509259259259259
+        }
+      ]
+    }
+  },
+  "cuda_initialized": false
+}

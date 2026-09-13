@@ -1,0 +1,5 @@
+[ARC-S] canvas 10×10 = 100 tokens; model=color encoding=frame stdp=True; coupling carry 39.1 MiB (train_arc's own line below assumes 900)
+[ARC] device=cuda tokens=900 IDs=2647 batch=128 loops=16 blocks=8 stop_step=20000
+[ARC] coupling carry alone=3164.1 MiB; activations/gradients require extra memory
+[ARC train] {"step": 1, "loss": 2.8607369856056346, "halted": 0, "seconds": 0.8246332556009293}
+[ARC train] {"step": 100, "loss": 1.9054042999450633, "halted": 0, "seconds": 18.0294003598392}

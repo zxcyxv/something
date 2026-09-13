@@ -1,0 +1,49 @@
+{
+  "conversion": {
+    "152": {
+      "blocks": 8,
+      "hidden_max_error": 7.993605777301127e-15,
+      "write_target_max_error": 7.771561172376096e-16
+    },
+    "192": {
+      "blocks": 8,
+      "hidden_max_error": 5.10702591327572e-15,
+      "write_target_max_error": 6.661338147750939e-16
+    },
+    "state_elements": {
+      "original": 52488,
+      "packed": 26568,
+      "fraction": 0.5061728395061729
+    },
+    "parameter_counts": {
+      "original": 7155243,
+      "candidate": 7155235
+    },
+    "retained_fast_kernel_skew_norm": 2.8647089537908013
+  },
+  "training_smoke": {
+    "initial_loss": 2.3468041304861464,
+    "final_loss": 1.295848783918173,
+    "optimizer_steps": 20,
+    "directional_gradient": 0.012668097442649318,
+    "finite_difference": 0.012668097459922477,
+    "gradient_abs_error": 1.727315859789691e-11,
+    "gradient_norms": {
+      "inner.embed.weight": 0.7345345391762237,
+      "inner.w_cls.weight": 1.3061549441342304,
+      "inner.w_cls.bias": 0.3237679309766709,
+      "inner.layers.0.wc_raw": 0.5340325129527519,
+      "inner.layers.0.psi": 0.05624315957085165,
+      "inner.layers.0.theta": 0.06822128703864276,
+      "inner.layers.0.alpha_raw": 0.006168425932387674,
+      "inner.layers.0.w_sh": 0.7900746631981177,
+      "inner.layers.0.eta_raw": 0.0006998022543091689,
+      "inner.layers.0.base_raw": 0.019147103034891855,
+      "inner.layers.0.plastic_spectrum": 0.0856774399985189,
+      "inner.layers.0.b_gate_up.weight": 0.0,
+      "inner.layers.0.b_down.weight": 0.22025600699578635
+    },
+    "episode_reset_equal": true
+  },
+  "cuda_initialized": false
+}

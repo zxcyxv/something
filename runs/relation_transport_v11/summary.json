@@ -1,0 +1,5472 @@
+{
+  "args": {
+    "n": 128,
+    "segs": 128,
+    "out": "runs/relation_transport_v11",
+    "modes": [
+      "drop_phase",
+      "drop_agree",
+      "drop_covariance",
+      "drop_symmetric",
+      "history_values_lag8",
+      "history_directions_lag8"
+    ],
+    "events_only": false
+  },
+  "precision": "FP32; autocast/TF32 off; EMA checkpoint",
+  "initial_exact": 75,
+  "runs": {
+    "normal": {
+      "final_exact": 101,
+      "new_final_correct": 26,
+      "lost_initial_correct": 0,
+      "normal_only_final": [],
+      "intervention_only_final": [],
+      "final_cell_errors": 855
+    },
+    "drop_phase": {
+      "final_exact": 100,
+      "new_final_correct": 25,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        36,
+        94,
+        114
+      ],
+      "intervention_only_final": [
+        4,
+        25
+      ],
+      "final_cell_errors": 896
+    },
+    "drop_agree": {
+      "final_exact": 78,
+      "new_final_correct": 3,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        2,
+        5,
+        6,
+        10,
+        28,
+        36,
+        40,
+        42,
+        49,
+        55,
+        59,
+        61,
+        63,
+        69,
+        91,
+        94,
+        97,
+        109,
+        111,
+        112,
+        113,
+        114,
+        124
+      ],
+      "intervention_only_final": [],
+      "final_cell_errors": 1443
+    },
+    "drop_covariance": {
+      "final_exact": 98,
+      "new_final_correct": 23,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        91,
+        111,
+        114
+      ],
+      "intervention_only_final": [],
+      "final_cell_errors": 976
+    },
+    "drop_symmetric": {
+      "final_exact": 79,
+      "new_final_correct": 4,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        2,
+        5,
+        6,
+        10,
+        28,
+        36,
+        40,
+        42,
+        55,
+        59,
+        61,
+        63,
+        69,
+        91,
+        94,
+        97,
+        109,
+        111,
+        112,
+        113,
+        114,
+        124
+      ],
+      "intervention_only_final": [],
+      "final_cell_errors": 1430
+    },
+    "history_values_lag8": {
+      "final_exact": 99,
+      "new_final_correct": 24,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        28,
+        111,
+        114
+      ],
+      "intervention_only_final": [
+        81
+      ],
+      "final_cell_errors": 967
+    },
+    "history_directions_lag8": {
+      "final_exact": 96,
+      "new_final_correct": 21,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        28,
+        36,
+        42,
+        94,
+        111,
+        114
+      ],
+      "intervention_only_final": [
+        81
+      ],
+      "final_cell_errors": 1058
+    },
+    "drop_agree_target": {
+      "final_exact": 81,
+      "new_final_correct": 6,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        2,
+        5,
+        6,
+        10,
+        28,
+        36,
+        42,
+        49,
+        55,
+        59,
+        61,
+        69,
+        91,
+        94,
+        97,
+        109,
+        111,
+        112,
+        113,
+        114
+      ],
+      "intervention_only_final": [],
+      "final_cell_errors": 1369
+    },
+    "drop_agree_source": {
+      "final_exact": 91,
+      "new_final_correct": 16,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        5,
+        28,
+        36,
+        42,
+        61,
+        94,
+        109,
+        111,
+        112,
+        114
+      ],
+      "intervention_only_final": [],
+      "final_cell_errors": 1151
+    },
+    "drop_half_agree": {
+      "final_exact": 85,
+      "new_final_correct": 10,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        2,
+        5,
+        6,
+        28,
+        36,
+        42,
+        55,
+        59,
+        61,
+        69,
+        94,
+        97,
+        109,
+        111,
+        112,
+        114
+      ],
+      "intervention_only_final": [],
+      "final_cell_errors": 1276
+    },
+    "only_agree": {
+      "final_exact": 99,
+      "new_final_correct": 24,
+      "lost_initial_correct": 0,
+      "normal_only_final": [
+        36,
+        111,
+        112,
+        114
+      ],
+      "intervention_only_final": [
+        25,
+        58
+      ],
+      "final_cell_errors": 940
+    },
+    "no_memory_read": {
+      "final_exact": 0,
+      "new_final_correct": 0,
+      "lost_initial_correct": 75,
+      "normal_only_final": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        26,
+        27,
+        28,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        39,
+        40,
+        41,
+        42,
+        44,
+        48,
+        49,
+        51,
+        52,
+        53,
+        55,
+        56,
+        57,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        71,
+        73,
+        77,
+        78,
+        79,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        96,
+        97,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        108,
+        109,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        119,
+        121,
+        122,
+        124,
+        126,
+        127
+      ],
+      "intervention_only_final": [],
+      "final_cell_errors": 7263
+    },
+    "read_only": {
+      "final_exact": 0,
+      "new_final_correct": 0,
+      "lost_initial_correct": 75,
+      "normal_only_final": [
+        0,
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15,
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23,
+        24,
+        26,
+        27,
+        28,
+        30,
+        31,
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        39,
+        40,
+        41,
+        42,
+        44,
+        48,
+        49,
+        51,
+        52,
+        53,
+        55,
+        56,
+        57,
+        59,
+        60,
+        61,
+        62,
+        63,
+        64,
+        65,
+        66,
+        67,
+        68,
+        69,
+        71,
+        73,
+        77,
+        78,
+        79,
+        82,
+        83,
+        84,
+        85,
+        86,
+        87,
+        88,
+        89,
+        90,
+        91,
+        92,
+        93,
+        94,
+        96,
+        97,
+        99,
+        100,
+        101,
+        102,
+        103,
+        104,
+        105,
+        106,
+        108,
+        109,
+        111,
+        112,
+        113,
+        114,
+        115,
+        116,
+        117,
+        119,
+        121,
+        122,
+        124,
+        126,
+        127
+      ],
+      "intervention_only_final": [],
+      "final_cell_errors": 7844
+    }
+  },
+  "rollout_seconds": 20.488721798174083,
+  "events": {
+    "events": [
+      {
+        "puzzle": 1,
+        "cell": 3,
+        "block": 148,
+        "previous_choice": 2,
+        "gold": 5
+      },
+      {
+        "puzzle": 1,
+        "cell": 10,
+        "block": 148,
+        "previous_choice": 6,
+        "gold": 5
+      },
+      {
+        "puzzle": 1,
+        "cell": 37,
+        "block": 155,
+        "previous_choice": 8,
+        "gold": 2
+      },
+      {
+        "puzzle": 1,
+        "cell": 38,
+        "block": 150,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 1,
+        "cell": 40,
+        "block": 149,
+        "previous_choice": 3,
+        "gold": 8
+      },
+      {
+        "puzzle": 1,
+        "cell": 41,
+        "block": 150,
+        "previous_choice": 2,
+        "gold": 5
+      },
+      {
+        "puzzle": 1,
+        "cell": 46,
+        "block": 156,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 1,
+        "cell": 47,
+        "block": 150,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 1,
+        "cell": 48,
+        "block": 155,
+        "previous_choice": 4,
+        "gold": 2
+      },
+      {
+        "puzzle": 1,
+        "cell": 49,
+        "block": 154,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 1,
+        "cell": 56,
+        "block": 148,
+        "previous_choice": 6,
+        "gold": 7
+      },
+      {
+        "puzzle": 1,
+        "cell": 67,
+        "block": 160,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 2,
+        "cell": 3,
+        "block": 235,
+        "previous_choice": 5,
+        "gold": 8
+      },
+      {
+        "puzzle": 2,
+        "cell": 7,
+        "block": 231,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 2,
+        "cell": 9,
+        "block": 243,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 2,
+        "cell": 14,
+        "block": 234,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 2,
+        "cell": 16,
+        "block": 235,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 2,
+        "cell": 20,
+        "block": 233,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 2,
+        "cell": 23,
+        "block": 232,
+        "previous_choice": 7,
+        "gold": 4
+      },
+      {
+        "puzzle": 2,
+        "cell": 31,
+        "block": 242,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 2,
+        "cell": 33,
+        "block": 241,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 2,
+        "cell": 36,
+        "block": 239,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 2,
+        "cell": 38,
+        "block": 201,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 2,
+        "cell": 42,
+        "block": 236,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 2,
+        "cell": 45,
+        "block": 195,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 2,
+        "cell": 47,
+        "block": 234,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 2,
+        "cell": 48,
+        "block": 240,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 2,
+        "cell": 59,
+        "block": 229,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 2,
+        "cell": 63,
+        "block": 240,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 2,
+        "cell": 65,
+        "block": 196,
+        "previous_choice": 3,
+        "gold": 7
+      },
+      {
+        "puzzle": 2,
+        "cell": 66,
+        "block": 237,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 2,
+        "cell": 71,
+        "block": 243,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 2,
+        "cell": 76,
+        "block": 238,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 2,
+        "cell": 77,
+        "block": 237,
+        "previous_choice": 5,
+        "gold": 8
+      },
+      {
+        "puzzle": 2,
+        "cell": 80,
+        "block": 239,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 5,
+        "cell": 1,
+        "block": 372,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 5,
+        "cell": 3,
+        "block": 350,
+        "previous_choice": 10,
+        "gold": 5
+      },
+      {
+        "puzzle": 5,
+        "cell": 5,
+        "block": 321,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 5,
+        "cell": 6,
+        "block": 374,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 5,
+        "cell": 9,
+        "block": 358,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 5,
+        "cell": 10,
+        "block": 371,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 5,
+        "cell": 11,
+        "block": 338,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 5,
+        "cell": 12,
+        "block": 329,
+        "previous_choice": 3,
+        "gold": 7
+      },
+      {
+        "puzzle": 5,
+        "cell": 15,
+        "block": 330,
+        "previous_choice": 7,
+        "gold": 6
+      },
+      {
+        "puzzle": 5,
+        "cell": 17,
+        "block": 368,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 5,
+        "cell": 19,
+        "block": 330,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 5,
+        "cell": 20,
+        "block": 366,
+        "previous_choice": 5,
+        "gold": 8
+      },
+      {
+        "puzzle": 5,
+        "cell": 21,
+        "block": 366,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 5,
+        "cell": 22,
+        "block": 354,
+        "previous_choice": 10,
+        "gold": 2
+      },
+      {
+        "puzzle": 5,
+        "cell": 25,
+        "block": 334,
+        "previous_choice": 6,
+        "gold": 7
+      },
+      {
+        "puzzle": 5,
+        "cell": 26,
+        "block": 369,
+        "previous_choice": 8,
+        "gold": 5
+      },
+      {
+        "puzzle": 5,
+        "cell": 27,
+        "block": 341,
+        "previous_choice": 2,
+        "gold": 4
+      },
+      {
+        "puzzle": 5,
+        "cell": 30,
+        "block": 338,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 5,
+        "cell": 33,
+        "block": 376,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 5,
+        "cell": 35,
+        "block": 374,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 5,
+        "cell": 37,
+        "block": 333,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 5,
+        "cell": 39,
+        "block": 340,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 5,
+        "cell": 43,
+        "block": 334,
+        "previous_choice": 7,
+        "gold": 6
+      },
+      {
+        "puzzle": 5,
+        "cell": 46,
+        "block": 333,
+        "previous_choice": 7,
+        "gold": 2
+      },
+      {
+        "puzzle": 5,
+        "cell": 47,
+        "block": 341,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 5,
+        "cell": 50,
+        "block": 317,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 5,
+        "cell": 51,
+        "block": 330,
+        "previous_choice": 6,
+        "gold": 7
+      },
+      {
+        "puzzle": 5,
+        "cell": 53,
+        "block": 339,
+        "previous_choice": 10,
+        "gold": 4
+      },
+      {
+        "puzzle": 5,
+        "cell": 56,
+        "block": 339,
+        "previous_choice": 5,
+        "gold": 10
+      },
+      {
+        "puzzle": 5,
+        "cell": 59,
+        "block": 333,
+        "previous_choice": 4,
+        "gold": 2
+      },
+      {
+        "puzzle": 5,
+        "cell": 60,
+        "block": 345,
+        "previous_choice": 10,
+        "gold": 5
+      },
+      {
+        "puzzle": 5,
+        "cell": 63,
+        "block": 343,
+        "previous_choice": 10,
+        "gold": 9
+      },
+      {
+        "puzzle": 5,
+        "cell": 64,
+        "block": 370,
+        "previous_choice": 5,
+        "gold": 8
+      },
+      {
+        "puzzle": 5,
+        "cell": 67,
+        "block": 337,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 5,
+        "cell": 68,
+        "block": 354,
+        "previous_choice": 8,
+        "gold": 10
+      },
+      {
+        "puzzle": 5,
+        "cell": 74,
+        "block": 363,
+        "previous_choice": 8,
+        "gold": 5
+      },
+      {
+        "puzzle": 5,
+        "cell": 77,
+        "block": 374,
+        "previous_choice": 3,
+        "gold": 8
+      },
+      {
+        "puzzle": 6,
+        "cell": 8,
+        "block": 175,
+        "previous_choice": 2,
+        "gold": 7
+      },
+      {
+        "puzzle": 6,
+        "cell": 10,
+        "block": 178,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 6,
+        "cell": 12,
+        "block": 176,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 6,
+        "cell": 18,
+        "block": 190,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 6,
+        "cell": 19,
+        "block": 192,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 6,
+        "cell": 30,
+        "block": 177,
+        "previous_choice": 5,
+        "gold": 6
+      },
+      {
+        "puzzle": 6,
+        "cell": 33,
+        "block": 180,
+        "previous_choice": 9,
+        "gold": 10
+      },
+      {
+        "puzzle": 6,
+        "cell": 35,
+        "block": 177,
+        "previous_choice": 6,
+        "gold": 9
+      },
+      {
+        "puzzle": 6,
+        "cell": 37,
+        "block": 190,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 6,
+        "cell": 40,
+        "block": 182,
+        "previous_choice": 7,
+        "gold": 10
+      },
+      {
+        "puzzle": 6,
+        "cell": 44,
+        "block": 173,
+        "previous_choice": 10,
+        "gold": 3
+      },
+      {
+        "puzzle": 6,
+        "cell": 49,
+        "block": 183,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 6,
+        "cell": 50,
+        "block": 182,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 6,
+        "cell": 53,
+        "block": 176,
+        "previous_choice": 10,
+        "gold": 6
+      },
+      {
+        "puzzle": 6,
+        "cell": 63,
+        "block": 187,
+        "previous_choice": 7,
+        "gold": 10
+      },
+      {
+        "puzzle": 6,
+        "cell": 65,
+        "block": 189,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 6,
+        "cell": 66,
+        "block": 171,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 6,
+        "cell": 67,
+        "block": 176,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 6,
+        "cell": 68,
+        "block": 183,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 6,
+        "cell": 69,
+        "block": 181,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 6,
+        "cell": 72,
+        "block": 184,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 6,
+        "cell": 73,
+        "block": 184,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 6,
+        "cell": 74,
+        "block": 186,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 6,
+        "cell": 77,
+        "block": 177,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 6,
+        "cell": 78,
+        "block": 173,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 6,
+        "cell": 80,
+        "block": 182,
+        "previous_choice": 7,
+        "gold": 10
+      },
+      {
+        "puzzle": 10,
+        "cell": 0,
+        "block": 324,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 10,
+        "cell": 1,
+        "block": 325,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 10,
+        "cell": 8,
+        "block": 314,
+        "previous_choice": 8,
+        "gold": 2
+      },
+      {
+        "puzzle": 10,
+        "cell": 10,
+        "block": 335,
+        "previous_choice": 5,
+        "gold": 2
+      },
+      {
+        "puzzle": 10,
+        "cell": 15,
+        "block": 323,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 10,
+        "cell": 16,
+        "block": 323,
+        "previous_choice": 5,
+        "gold": 10
+      },
+      {
+        "puzzle": 10,
+        "cell": 23,
+        "block": 326,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 10,
+        "cell": 25,
+        "block": 327,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 10,
+        "cell": 26,
+        "block": 263,
+        "previous_choice": 2,
+        "gold": 7
+      },
+      {
+        "puzzle": 10,
+        "cell": 40,
+        "block": 312,
+        "previous_choice": 8,
+        "gold": 2
+      },
+      {
+        "puzzle": 10,
+        "cell": 41,
+        "block": 328,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 10,
+        "cell": 44,
+        "block": 312,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 10,
+        "cell": 45,
+        "block": 317,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 10,
+        "cell": 46,
+        "block": 322,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 10,
+        "cell": 49,
+        "block": 308,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 10,
+        "cell": 51,
+        "block": 321,
+        "previous_choice": 8,
+        "gold": 10
+      },
+      {
+        "puzzle": 10,
+        "cell": 52,
+        "block": 312,
+        "previous_choice": 10,
+        "gold": 2
+      },
+      {
+        "puzzle": 10,
+        "cell": 55,
+        "block": 329,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 10,
+        "cell": 61,
+        "block": 329,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 10,
+        "cell": 63,
+        "block": 329,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 10,
+        "cell": 64,
+        "block": 319,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 10,
+        "cell": 70,
+        "block": 329,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 10,
+        "cell": 72,
+        "block": 212,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 10,
+        "cell": 73,
+        "block": 335,
+        "previous_choice": 2,
+        "gold": 5
+      },
+      {
+        "puzzle": 28,
+        "cell": 1,
+        "block": 340,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 28,
+        "cell": 2,
+        "block": 322,
+        "previous_choice": 10,
+        "gold": 4
+      },
+      {
+        "puzzle": 28,
+        "cell": 3,
+        "block": 314,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 5,
+        "block": 302,
+        "previous_choice": 7,
+        "gold": 10
+      },
+      {
+        "puzzle": 28,
+        "cell": 8,
+        "block": 337,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 28,
+        "cell": 9,
+        "block": 328,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 10,
+        "block": 289,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 28,
+        "cell": 14,
+        "block": 337,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 28,
+        "cell": 19,
+        "block": 342,
+        "previous_choice": 6,
+        "gold": 5
+      },
+      {
+        "puzzle": 28,
+        "cell": 20,
+        "block": 332,
+        "previous_choice": 8,
+        "gold": 6
+      },
+      {
+        "puzzle": 28,
+        "cell": 23,
+        "block": 326,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 28,
+        "cell": 26,
+        "block": 345,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 27,
+        "block": 316,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 28,
+        "cell": 28,
+        "block": 347,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 31,
+        "block": 329,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 28,
+        "cell": 33,
+        "block": 326,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 28,
+        "cell": 34,
+        "block": 325,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 28,
+        "cell": 37,
+        "block": 321,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 28,
+        "cell": 38,
+        "block": 315,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 28,
+        "cell": 42,
+        "block": 339,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 43,
+        "block": 307,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 28,
+        "cell": 50,
+        "block": 244,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 51,
+        "block": 324,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 28,
+        "cell": 55,
+        "block": 340,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 28,
+        "cell": 56,
+        "block": 346,
+        "previous_choice": 6,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 63,
+        "block": 248,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 28,
+        "cell": 66,
+        "block": 237,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 28,
+        "cell": 70,
+        "block": 282,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 72,
+        "block": 298,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 28,
+        "cell": 76,
+        "block": 243,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 28,
+        "cell": 79,
+        "block": 241,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 36,
+        "cell": 1,
+        "block": 773,
+        "previous_choice": 10,
+        "gold": 4
+      },
+      {
+        "puzzle": 36,
+        "cell": 4,
+        "block": 808,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 36,
+        "cell": 8,
+        "block": 793,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 36,
+        "cell": 11,
+        "block": 777,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 36,
+        "cell": 13,
+        "block": 773,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 36,
+        "cell": 14,
+        "block": 786,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 36,
+        "cell": 15,
+        "block": 788,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 36,
+        "cell": 17,
+        "block": 782,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 36,
+        "cell": 19,
+        "block": 800,
+        "previous_choice": 5,
+        "gold": 10
+      },
+      {
+        "puzzle": 36,
+        "cell": 20,
+        "block": 798,
+        "previous_choice": 10,
+        "gold": 5
+      },
+      {
+        "puzzle": 36,
+        "cell": 21,
+        "block": 804,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 36,
+        "cell": 24,
+        "block": 808,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 36,
+        "cell": 29,
+        "block": 779,
+        "previous_choice": 10,
+        "gold": 4
+      },
+      {
+        "puzzle": 36,
+        "cell": 30,
+        "block": 777,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 36,
+        "cell": 34,
+        "block": 743,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 36,
+        "cell": 35,
+        "block": 772,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 36,
+        "cell": 36,
+        "block": 799,
+        "previous_choice": 10,
+        "gold": 5
+      },
+      {
+        "puzzle": 36,
+        "cell": 38,
+        "block": 800,
+        "previous_choice": 5,
+        "gold": 10
+      },
+      {
+        "puzzle": 36,
+        "cell": 45,
+        "block": 746,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 36,
+        "cell": 48,
+        "block": 783,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 36,
+        "cell": 52,
+        "block": 778,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 36,
+        "cell": 55,
+        "block": 785,
+        "previous_choice": 10,
+        "gold": 3
+      },
+      {
+        "puzzle": 36,
+        "cell": 57,
+        "block": 802,
+        "previous_choice": 8,
+        "gold": 10
+      },
+      {
+        "puzzle": 36,
+        "cell": 58,
+        "block": 801,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 36,
+        "cell": 62,
+        "block": 794,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 36,
+        "cell": 63,
+        "block": 770,
+        "previous_choice": 10,
+        "gold": 4
+      },
+      {
+        "puzzle": 36,
+        "cell": 68,
+        "block": 792,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 36,
+        "cell": 70,
+        "block": 790,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 36,
+        "cell": 72,
+        "block": 798,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 36,
+        "cell": 76,
+        "block": 783,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 36,
+        "cell": 78,
+        "block": 796,
+        "previous_choice": 10,
+        "gold": 3
+      },
+      {
+        "puzzle": 36,
+        "cell": 79,
+        "block": 789,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 40,
+        "cell": 20,
+        "block": 138,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 40,
+        "cell": 38,
+        "block": 140,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 40,
+        "cell": 39,
+        "block": 139,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 40,
+        "cell": 46,
+        "block": 137,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 40,
+        "cell": 47,
+        "block": 142,
+        "previous_choice": 3,
+        "gold": 7
+      },
+      {
+        "puzzle": 40,
+        "cell": 50,
+        "block": 141,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 40,
+        "cell": 70,
+        "block": 138,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 40,
+        "cell": 77,
+        "block": 137,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 40,
+        "cell": 78,
+        "block": 137,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 42,
+        "cell": 2,
+        "block": 163,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 42,
+        "cell": 3,
+        "block": 148,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 42,
+        "cell": 5,
+        "block": 179,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 42,
+        "cell": 6,
+        "block": 172,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 42,
+        "cell": 8,
+        "block": 154,
+        "previous_choice": 10,
+        "gold": 9
+      },
+      {
+        "puzzle": 42,
+        "cell": 15,
+        "block": 217,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 42,
+        "cell": 16,
+        "block": 193,
+        "previous_choice": 6,
+        "gold": 4
+      },
+      {
+        "puzzle": 42,
+        "cell": 18,
+        "block": 149,
+        "previous_choice": 6,
+        "gold": 9
+      },
+      {
+        "puzzle": 42,
+        "cell": 23,
+        "block": 212,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 42,
+        "cell": 25,
+        "block": 212,
+        "previous_choice": 5,
+        "gold": 6
+      },
+      {
+        "puzzle": 42,
+        "cell": 26,
+        "block": 213,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 42,
+        "cell": 27,
+        "block": 169,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 42,
+        "cell": 29,
+        "block": 168,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 42,
+        "cell": 33,
+        "block": 217,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 42,
+        "cell": 35,
+        "block": 209,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 42,
+        "cell": 36,
+        "block": 219,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 42,
+        "cell": 37,
+        "block": 181,
+        "previous_choice": 8,
+        "gold": 2
+      },
+      {
+        "puzzle": 42,
+        "cell": 38,
+        "block": 220,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 42,
+        "cell": 40,
+        "block": 221,
+        "previous_choice": 3,
+        "gold": 8
+      },
+      {
+        "puzzle": 42,
+        "cell": 41,
+        "block": 213,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 42,
+        "cell": 42,
+        "block": 204,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 42,
+        "cell": 43,
+        "block": 157,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 42,
+        "cell": 46,
+        "block": 183,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 42,
+        "cell": 47,
+        "block": 178,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 42,
+        "cell": 49,
+        "block": 222,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 42,
+        "cell": 51,
+        "block": 181,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 42,
+        "cell": 52,
+        "block": 207,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 42,
+        "cell": 56,
+        "block": 151,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 42,
+        "cell": 57,
+        "block": 147,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 42,
+        "cell": 58,
+        "block": 194,
+        "previous_choice": 6,
+        "gold": 4
+      },
+      {
+        "puzzle": 42,
+        "cell": 61,
+        "block": 213,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 42,
+        "cell": 62,
+        "block": 213,
+        "previous_choice": 5,
+        "gold": 6
+      },
+      {
+        "puzzle": 42,
+        "cell": 63,
+        "block": 142,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 42,
+        "cell": 64,
+        "block": 165,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 42,
+        "cell": 67,
+        "block": 194,
+        "previous_choice": 4,
+        "gold": 6
+      },
+      {
+        "puzzle": 42,
+        "cell": 69,
+        "block": 191,
+        "previous_choice": 6,
+        "gold": 4
+      },
+      {
+        "puzzle": 42,
+        "cell": 71,
+        "block": 158,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 42,
+        "cell": 72,
+        "block": 217,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 42,
+        "cell": 73,
+        "block": 172,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 42,
+        "cell": 77,
+        "block": 176,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 42,
+        "cell": 78,
+        "block": 147,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 42,
+        "cell": 79,
+        "block": 142,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 49,
+        "cell": 1,
+        "block": 205,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 49,
+        "cell": 2,
+        "block": 199,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 49,
+        "cell": 3,
+        "block": 207,
+        "previous_choice": 6,
+        "gold": 5
+      },
+      {
+        "puzzle": 49,
+        "cell": 4,
+        "block": 212,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 49,
+        "cell": 7,
+        "block": 176,
+        "previous_choice": 3,
+        "gold": 7
+      },
+      {
+        "puzzle": 49,
+        "cell": 8,
+        "block": 175,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 49,
+        "cell": 9,
+        "block": 178,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 49,
+        "cell": 10,
+        "block": 205,
+        "previous_choice": 6,
+        "gold": 10
+      },
+      {
+        "puzzle": 49,
+        "cell": 12,
+        "block": 209,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 49,
+        "cell": 17,
+        "block": 210,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 49,
+        "cell": 28,
+        "block": 196,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 49,
+        "cell": 29,
+        "block": 198,
+        "previous_choice": 2,
+        "gold": 4
+      },
+      {
+        "puzzle": 49,
+        "cell": 33,
+        "block": 167,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 49,
+        "cell": 35,
+        "block": 198,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 49,
+        "cell": 37,
+        "block": 185,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 49,
+        "cell": 41,
+        "block": 193,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 49,
+        "cell": 49,
+        "block": 206,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 49,
+        "cell": 53,
+        "block": 201,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 49,
+        "cell": 57,
+        "block": 210,
+        "previous_choice": 3,
+        "gold": 8
+      },
+      {
+        "puzzle": 49,
+        "cell": 59,
+        "block": 205,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 49,
+        "cell": 62,
+        "block": 166,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 49,
+        "cell": 65,
+        "block": 169,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 49,
+        "cell": 66,
+        "block": 194,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 49,
+        "cell": 68,
+        "block": 196,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 49,
+        "cell": 69,
+        "block": 165,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 49,
+        "cell": 80,
+        "block": 203,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 55,
+        "cell": 2,
+        "block": 208,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 55,
+        "cell": 4,
+        "block": 230,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 55,
+        "cell": 5,
+        "block": 232,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 55,
+        "cell": 8,
+        "block": 188,
+        "previous_choice": 6,
+        "gold": 10
+      },
+      {
+        "puzzle": 55,
+        "cell": 9,
+        "block": 202,
+        "previous_choice": 5,
+        "gold": 10
+      },
+      {
+        "puzzle": 55,
+        "cell": 11,
+        "block": 232,
+        "previous_choice": 5,
+        "gold": 2
+      },
+      {
+        "puzzle": 55,
+        "cell": 14,
+        "block": 161,
+        "previous_choice": 2,
+        "gold": 4
+      },
+      {
+        "puzzle": 55,
+        "cell": 15,
+        "block": 181,
+        "previous_choice": 10,
+        "gold": 9
+      },
+      {
+        "puzzle": 55,
+        "cell": 16,
+        "block": 214,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 55,
+        "cell": 19,
+        "block": 173,
+        "previous_choice": 2,
+        "gold": 4
+      },
+      {
+        "puzzle": 55,
+        "cell": 22,
+        "block": 196,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 55,
+        "cell": 26,
+        "block": 225,
+        "previous_choice": 7,
+        "gold": 2
+      },
+      {
+        "puzzle": 55,
+        "cell": 28,
+        "block": 230,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 55,
+        "cell": 30,
+        "block": 199,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 55,
+        "cell": 32,
+        "block": 227,
+        "previous_choice": 2,
+        "gold": 9
+      },
+      {
+        "puzzle": 55,
+        "cell": 33,
+        "block": 178,
+        "previous_choice": 9,
+        "gold": 10
+      },
+      {
+        "puzzle": 55,
+        "cell": 35,
+        "block": 222,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 55,
+        "cell": 36,
+        "block": 221,
+        "previous_choice": 2,
+        "gold": 4
+      },
+      {
+        "puzzle": 55,
+        "cell": 37,
+        "block": 228,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 55,
+        "cell": 39,
+        "block": 226,
+        "previous_choice": 6,
+        "gold": 2
+      },
+      {
+        "puzzle": 55,
+        "cell": 42,
+        "block": 226,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 55,
+        "cell": 49,
+        "block": 206,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 55,
+        "cell": 52,
+        "block": 206,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 55,
+        "cell": 55,
+        "block": 190,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 55,
+        "cell": 57,
+        "block": 220,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 55,
+        "cell": 63,
+        "block": 231,
+        "previous_choice": 5,
+        "gold": 2
+      },
+      {
+        "puzzle": 55,
+        "cell": 64,
+        "block": 227,
+        "previous_choice": 2,
+        "gold": 7
+      },
+      {
+        "puzzle": 55,
+        "cell": 65,
+        "block": 228,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 55,
+        "cell": 67,
+        "block": 190,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 55,
+        "cell": 68,
+        "block": 231,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 55,
+        "cell": 69,
+        "block": 228,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 55,
+        "cell": 72,
+        "block": 200,
+        "previous_choice": 10,
+        "gold": 9
+      },
+      {
+        "puzzle": 55,
+        "cell": 75,
+        "block": 193,
+        "previous_choice": 8,
+        "gold": 10
+      },
+      {
+        "puzzle": 55,
+        "cell": 77,
+        "block": 226,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 55,
+        "cell": 79,
+        "block": 219,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 55,
+        "cell": 80,
+        "block": 224,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 59,
+        "cell": 0,
+        "block": 199,
+        "previous_choice": 10,
+        "gold": 4
+      },
+      {
+        "puzzle": 59,
+        "cell": 3,
+        "block": 196,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 59,
+        "cell": 4,
+        "block": 201,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 59,
+        "cell": 7,
+        "block": 202,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 59,
+        "cell": 9,
+        "block": 198,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 59,
+        "cell": 14,
+        "block": 199,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 59,
+        "cell": 16,
+        "block": 205,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 59,
+        "cell": 17,
+        "block": 201,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 59,
+        "cell": 25,
+        "block": 200,
+        "previous_choice": 7,
+        "gold": 2
+      },
+      {
+        "puzzle": 59,
+        "cell": 27,
+        "block": 189,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 59,
+        "cell": 30,
+        "block": 191,
+        "previous_choice": 10,
+        "gold": 3
+      },
+      {
+        "puzzle": 59,
+        "cell": 32,
+        "block": 200,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 59,
+        "cell": 36,
+        "block": 193,
+        "previous_choice": 6,
+        "gold": 2
+      },
+      {
+        "puzzle": 59,
+        "cell": 40,
+        "block": 193,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 59,
+        "cell": 43,
+        "block": 199,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 59,
+        "cell": 58,
+        "block": 210,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 59,
+        "cell": 59,
+        "block": 194,
+        "previous_choice": 7,
+        "gold": 6
+      },
+      {
+        "puzzle": 59,
+        "cell": 61,
+        "block": 204,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 59,
+        "cell": 67,
+        "block": 210,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 59,
+        "cell": 71,
+        "block": 209,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 61,
+        "cell": 0,
+        "block": 281,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 61,
+        "cell": 1,
+        "block": 267,
+        "previous_choice": 3,
+        "gold": 7
+      },
+      {
+        "puzzle": 61,
+        "cell": 2,
+        "block": 355,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 61,
+        "cell": 3,
+        "block": 358,
+        "previous_choice": 6,
+        "gold": 2
+      },
+      {
+        "puzzle": 61,
+        "cell": 5,
+        "block": 357,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 61,
+        "cell": 8,
+        "block": 342,
+        "previous_choice": 5,
+        "gold": 6
+      },
+      {
+        "puzzle": 61,
+        "cell": 18,
+        "block": 346,
+        "previous_choice": 5,
+        "gold": 2
+      },
+      {
+        "puzzle": 61,
+        "cell": 19,
+        "block": 351,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 61,
+        "cell": 22,
+        "block": 355,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 61,
+        "cell": 25,
+        "block": 341,
+        "previous_choice": 6,
+        "gold": 5
+      },
+      {
+        "puzzle": 61,
+        "cell": 27,
+        "block": 197,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 61,
+        "cell": 28,
+        "block": 383,
+        "previous_choice": 10,
+        "gold": 2
+      },
+      {
+        "puzzle": 61,
+        "cell": 29,
+        "block": 358,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 61,
+        "cell": 32,
+        "block": 366,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 61,
+        "cell": 34,
+        "block": 382,
+        "previous_choice": 7,
+        "gold": 10
+      },
+      {
+        "puzzle": 61,
+        "cell": 36,
+        "block": 373,
+        "previous_choice": 7,
+        "gold": 4
+      },
+      {
+        "puzzle": 61,
+        "cell": 37,
+        "block": 359,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 61,
+        "cell": 46,
+        "block": 382,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 61,
+        "cell": 48,
+        "block": 360,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 61,
+        "cell": 55,
+        "block": 368,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 61,
+        "cell": 56,
+        "block": 367,
+        "previous_choice": 6,
+        "gold": 2
+      },
+      {
+        "puzzle": 61,
+        "cell": 57,
+        "block": 367,
+        "previous_choice": 4,
+        "gold": 6
+      },
+      {
+        "puzzle": 61,
+        "cell": 68,
+        "block": 357,
+        "previous_choice": 8,
+        "gold": 2
+      },
+      {
+        "puzzle": 61,
+        "cell": 70,
+        "block": 332,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 61,
+        "cell": 72,
+        "block": 368,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 61,
+        "cell": 75,
+        "block": 370,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 61,
+        "cell": 76,
+        "block": 367,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 63,
+        "cell": 1,
+        "block": 174,
+        "previous_choice": 2,
+        "gold": 5
+      },
+      {
+        "puzzle": 63,
+        "cell": 4,
+        "block": 193,
+        "previous_choice": 5,
+        "gold": 8
+      },
+      {
+        "puzzle": 63,
+        "cell": 9,
+        "block": 170,
+        "previous_choice": 5,
+        "gold": 6
+      },
+      {
+        "puzzle": 63,
+        "cell": 13,
+        "block": 200,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 63,
+        "cell": 18,
+        "block": 179,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 63,
+        "cell": 19,
+        "block": 168,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 63,
+        "cell": 20,
+        "block": 180,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 63,
+        "cell": 22,
+        "block": 198,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 63,
+        "cell": 25,
+        "block": 194,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 63,
+        "cell": 34,
+        "block": 190,
+        "previous_choice": 4,
+        "gold": 6
+      },
+      {
+        "puzzle": 63,
+        "cell": 35,
+        "block": 189,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 63,
+        "cell": 36,
+        "block": 178,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 63,
+        "cell": 38,
+        "block": 180,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 63,
+        "cell": 54,
+        "block": 164,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 63,
+        "cell": 56,
+        "block": 139,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 63,
+        "cell": 57,
+        "block": 198,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 63,
+        "cell": 62,
+        "block": 196,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 63,
+        "cell": 63,
+        "block": 182,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 63,
+        "cell": 64,
+        "block": 201,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 63,
+        "cell": 65,
+        "block": 176,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 63,
+        "cell": 66,
+        "block": 198,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 63,
+        "cell": 67,
+        "block": 198,
+        "previous_choice": 5,
+        "gold": 6
+      },
+      {
+        "puzzle": 63,
+        "cell": 70,
+        "block": 200,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 63,
+        "cell": 71,
+        "block": 193,
+        "previous_choice": 6,
+        "gold": 10
+      },
+      {
+        "puzzle": 63,
+        "cell": 72,
+        "block": 183,
+        "previous_choice": 8,
+        "gold": 5
+      },
+      {
+        "puzzle": 63,
+        "cell": 73,
+        "block": 198,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 63,
+        "cell": 75,
+        "block": 200,
+        "previous_choice": 5,
+        "gold": 2
+      },
+      {
+        "puzzle": 65,
+        "cell": 1,
+        "block": 477,
+        "previous_choice": 5,
+        "gold": 2
+      },
+      {
+        "puzzle": 65,
+        "cell": 7,
+        "block": 492,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 65,
+        "cell": 12,
+        "block": 480,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 65,
+        "cell": 13,
+        "block": 482,
+        "previous_choice": 8,
+        "gold": 6
+      },
+      {
+        "puzzle": 65,
+        "cell": 14,
+        "block": 483,
+        "previous_choice": 6,
+        "gold": 9
+      },
+      {
+        "puzzle": 65,
+        "cell": 16,
+        "block": 485,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 65,
+        "cell": 20,
+        "block": 477,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 65,
+        "cell": 21,
+        "block": 486,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 65,
+        "cell": 24,
+        "block": 491,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 65,
+        "cell": 25,
+        "block": 487,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 65,
+        "cell": 30,
+        "block": 474,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 65,
+        "cell": 31,
+        "block": 468,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 65,
+        "cell": 36,
+        "block": 463,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 65,
+        "cell": 39,
+        "block": 465,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 65,
+        "cell": 49,
+        "block": 418,
+        "previous_choice": 6,
+        "gold": 4
+      },
+      {
+        "puzzle": 65,
+        "cell": 57,
+        "block": 482,
+        "previous_choice": 2,
+        "gold": 9
+      },
+      {
+        "puzzle": 65,
+        "cell": 69,
+        "block": 491,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 65,
+        "cell": 70,
+        "block": 490,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 65,
+        "cell": 73,
+        "block": 476,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 65,
+        "cell": 76,
+        "block": 482,
+        "previous_choice": 6,
+        "gold": 2
+      },
+      {
+        "puzzle": 65,
+        "cell": 77,
+        "block": 483,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 65,
+        "cell": 78,
+        "block": 481,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 69,
+        "cell": 1,
+        "block": 202,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 69,
+        "cell": 2,
+        "block": 201,
+        "previous_choice": 3,
+        "gold": 8
+      },
+      {
+        "puzzle": 69,
+        "cell": 12,
+        "block": 197,
+        "previous_choice": 6,
+        "gold": 7
+      },
+      {
+        "puzzle": 69,
+        "cell": 14,
+        "block": 194,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 69,
+        "cell": 18,
+        "block": 190,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 69,
+        "cell": 28,
+        "block": 202,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 69,
+        "cell": 31,
+        "block": 199,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 69,
+        "cell": 41,
+        "block": 191,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 69,
+        "cell": 47,
+        "block": 193,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 69,
+        "cell": 71,
+        "block": 192,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 69,
+        "cell": 76,
+        "block": 185,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 91,
+        "cell": 6,
+        "block": 384,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 91,
+        "cell": 7,
+        "block": 382,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 91,
+        "cell": 9,
+        "block": 361,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 91,
+        "cell": 11,
+        "block": 385,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 91,
+        "cell": 15,
+        "block": 364,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 91,
+        "cell": 16,
+        "block": 363,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 91,
+        "cell": 22,
+        "block": 369,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 91,
+        "cell": 25,
+        "block": 378,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 91,
+        "cell": 32,
+        "block": 379,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 91,
+        "cell": 33,
+        "block": 376,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 91,
+        "cell": 35,
+        "block": 388,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 91,
+        "cell": 36,
+        "block": 382,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 91,
+        "cell": 40,
+        "block": 362,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 91,
+        "cell": 46,
+        "block": 361,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 91,
+        "cell": 52,
+        "block": 389,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 91,
+        "cell": 53,
+        "block": 144,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 91,
+        "cell": 56,
+        "block": 362,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 91,
+        "cell": 57,
+        "block": 376,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 91,
+        "cell": 61,
+        "block": 378,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 91,
+        "cell": 65,
+        "block": 385,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 91,
+        "cell": 69,
+        "block": 383,
+        "previous_choice": 6,
+        "gold": 4
+      },
+      {
+        "puzzle": 91,
+        "cell": 73,
+        "block": 374,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 91,
+        "cell": 74,
+        "block": 382,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 91,
+        "cell": 77,
+        "block": 378,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 94,
+        "cell": 9,
+        "block": 919,
+        "previous_choice": 7,
+        "gold": 4
+      },
+      {
+        "puzzle": 94,
+        "cell": 11,
+        "block": 916,
+        "previous_choice": 6,
+        "gold": 7
+      },
+      {
+        "puzzle": 94,
+        "cell": 12,
+        "block": 920,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 94,
+        "cell": 13,
+        "block": 932,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 94,
+        "cell": 17,
+        "block": 926,
+        "previous_choice": 7,
+        "gold": 6
+      },
+      {
+        "puzzle": 94,
+        "cell": 19,
+        "block": 921,
+        "previous_choice": 5,
+        "gold": 6
+      },
+      {
+        "puzzle": 94,
+        "cell": 22,
+        "block": 929,
+        "previous_choice": 10,
+        "gold": 3
+      },
+      {
+        "puzzle": 94,
+        "cell": 25,
+        "block": 928,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 94,
+        "cell": 26,
+        "block": 917,
+        "previous_choice": 6,
+        "gold": 10
+      },
+      {
+        "puzzle": 94,
+        "cell": 27,
+        "block": 947,
+        "previous_choice": 7,
+        "gold": 6
+      },
+      {
+        "puzzle": 94,
+        "cell": 28,
+        "block": 949,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 94,
+        "cell": 37,
+        "block": 944,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 94,
+        "cell": 41,
+        "block": 923,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 94,
+        "cell": 43,
+        "block": 912,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 94,
+        "cell": 44,
+        "block": 945,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 94,
+        "cell": 45,
+        "block": 950,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 94,
+        "cell": 47,
+        "block": 910,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 94,
+        "cell": 48,
+        "block": 911,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 94,
+        "cell": 52,
+        "block": 931,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 94,
+        "cell": 53,
+        "block": 940,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 94,
+        "cell": 55,
+        "block": 906,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 94,
+        "cell": 56,
+        "block": 930,
+        "previous_choice": 10,
+        "gold": 9
+      },
+      {
+        "puzzle": 94,
+        "cell": 58,
+        "block": 915,
+        "previous_choice": 10,
+        "gold": 2
+      },
+      {
+        "puzzle": 94,
+        "cell": 59,
+        "block": 920,
+        "previous_choice": 6,
+        "gold": 10
+      },
+      {
+        "puzzle": 94,
+        "cell": 61,
+        "block": 940,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 94,
+        "cell": 64,
+        "block": 915,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 94,
+        "cell": 66,
+        "block": 920,
+        "previous_choice": 2,
+        "gold": 8
+      },
+      {
+        "puzzle": 94,
+        "cell": 68,
+        "block": 918,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 94,
+        "cell": 71,
+        "block": 915,
+        "previous_choice": 7,
+        "gold": 2
+      },
+      {
+        "puzzle": 94,
+        "cell": 72,
+        "block": 922,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 94,
+        "cell": 74,
+        "block": 935,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 94,
+        "cell": 75,
+        "block": 923,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 94,
+        "cell": 78,
+        "block": 918,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 94,
+        "cell": 80,
+        "block": 939,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 97,
+        "cell": 0,
+        "block": 224,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 97,
+        "cell": 3,
+        "block": 241,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 97,
+        "cell": 6,
+        "block": 205,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 97,
+        "cell": 7,
+        "block": 237,
+        "previous_choice": 10,
+        "gold": 4
+      },
+      {
+        "puzzle": 97,
+        "cell": 11,
+        "block": 222,
+        "previous_choice": 7,
+        "gold": 6
+      },
+      {
+        "puzzle": 97,
+        "cell": 14,
+        "block": 238,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 97,
+        "cell": 15,
+        "block": 236,
+        "previous_choice": 2,
+        "gold": 9
+      },
+      {
+        "puzzle": 97,
+        "cell": 17,
+        "block": 228,
+        "previous_choice": 6,
+        "gold": 5
+      },
+      {
+        "puzzle": 97,
+        "cell": 20,
+        "block": 209,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 97,
+        "cell": 21,
+        "block": 232,
+        "previous_choice": 10,
+        "gold": 3
+      },
+      {
+        "puzzle": 97,
+        "cell": 23,
+        "block": 233,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 97,
+        "cell": 24,
+        "block": 231,
+        "previous_choice": 5,
+        "gold": 10
+      },
+      {
+        "puzzle": 97,
+        "cell": 28,
+        "block": 221,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 97,
+        "cell": 29,
+        "block": 231,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 97,
+        "cell": 30,
+        "block": 234,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 97,
+        "cell": 33,
+        "block": 217,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 97,
+        "cell": 35,
+        "block": 165,
+        "previous_choice": 7,
+        "gold": 2
+      },
+      {
+        "puzzle": 97,
+        "cell": 36,
+        "block": 214,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 97,
+        "cell": 38,
+        "block": 148,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 97,
+        "cell": 41,
+        "block": 232,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 97,
+        "cell": 42,
+        "block": 141,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 97,
+        "cell": 43,
+        "block": 233,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 97,
+        "cell": 46,
+        "block": 220,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 97,
+        "cell": 47,
+        "block": 230,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 97,
+        "cell": 52,
+        "block": 224,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 97,
+        "cell": 53,
+        "block": 224,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 97,
+        "cell": 55,
+        "block": 221,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 97,
+        "cell": 60,
+        "block": 206,
+        "previous_choice": 10,
+        "gold": 3
+      },
+      {
+        "puzzle": 97,
+        "cell": 61,
+        "block": 235,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 97,
+        "cell": 62,
+        "block": 190,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 97,
+        "cell": 63,
+        "block": 146,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 97,
+        "cell": 65,
+        "block": 242,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 97,
+        "cell": 68,
+        "block": 240,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 97,
+        "cell": 71,
+        "block": 235,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 97,
+        "cell": 74,
+        "block": 242,
+        "previous_choice": 7,
+        "gold": 10
+      },
+      {
+        "puzzle": 97,
+        "cell": 77,
+        "block": 226,
+        "previous_choice": 6,
+        "gold": 9
+      },
+      {
+        "puzzle": 97,
+        "cell": 78,
+        "block": 144,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 97,
+        "cell": 79,
+        "block": 229,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 109,
+        "cell": 0,
+        "block": 861,
+        "previous_choice": 6,
+        "gold": 4
+      },
+      {
+        "puzzle": 109,
+        "cell": 1,
+        "block": 859,
+        "previous_choice": 10,
+        "gold": 3
+      },
+      {
+        "puzzle": 109,
+        "cell": 2,
+        "block": 855,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 109,
+        "cell": 12,
+        "block": 842,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 109,
+        "cell": 17,
+        "block": 842,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 109,
+        "cell": 22,
+        "block": 834,
+        "previous_choice": 9,
+        "gold": 10
+      },
+      {
+        "puzzle": 109,
+        "cell": 24,
+        "block": 847,
+        "previous_choice": 6,
+        "gold": 5
+      },
+      {
+        "puzzle": 109,
+        "cell": 37,
+        "block": 853,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 109,
+        "cell": 54,
+        "block": 857,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 109,
+        "cell": 58,
+        "block": 844,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 109,
+        "cell": 80,
+        "block": 856,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 111,
+        "cell": 0,
+        "block": 859,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 111,
+        "cell": 2,
+        "block": 910,
+        "previous_choice": 6,
+        "gold": 7
+      },
+      {
+        "puzzle": 111,
+        "cell": 3,
+        "block": 921,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 111,
+        "cell": 5,
+        "block": 855,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 111,
+        "cell": 7,
+        "block": 908,
+        "previous_choice": 7,
+        "gold": 2
+      },
+      {
+        "puzzle": 111,
+        "cell": 9,
+        "block": 859,
+        "previous_choice": 10,
+        "gold": 5
+      },
+      {
+        "puzzle": 111,
+        "cell": 11,
+        "block": 910,
+        "previous_choice": 8,
+        "gold": 6
+      },
+      {
+        "puzzle": 111,
+        "cell": 12,
+        "block": 909,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 111,
+        "cell": 15,
+        "block": 889,
+        "previous_choice": 6,
+        "gold": 10
+      },
+      {
+        "puzzle": 111,
+        "cell": 18,
+        "block": 869,
+        "previous_choice": 9,
+        "gold": 10
+      },
+      {
+        "puzzle": 111,
+        "cell": 20,
+        "block": 911,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 111,
+        "cell": 23,
+        "block": 906,
+        "previous_choice": 8,
+        "gold": 9
+      },
+      {
+        "puzzle": 111,
+        "cell": 25,
+        "block": 909,
+        "previous_choice": 2,
+        "gold": 7
+      },
+      {
+        "puzzle": 111,
+        "cell": 26,
+        "block": 920,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 111,
+        "cell": 30,
+        "block": 922,
+        "previous_choice": 6,
+        "gold": 2
+      },
+      {
+        "puzzle": 111,
+        "cell": 56,
+        "block": 894,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 111,
+        "cell": 57,
+        "block": 892,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 111,
+        "cell": 59,
+        "block": 876,
+        "previous_choice": 10,
+        "gold": 6
+      },
+      {
+        "puzzle": 111,
+        "cell": 61,
+        "block": 874,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 111,
+        "cell": 64,
+        "block": 853,
+        "previous_choice": 10,
+        "gold": 5
+      },
+      {
+        "puzzle": 111,
+        "cell": 65,
+        "block": 894,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 111,
+        "cell": 66,
+        "block": 902,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 111,
+        "cell": 68,
+        "block": 874,
+        "previous_choice": 9,
+        "gold": 10
+      },
+      {
+        "puzzle": 111,
+        "cell": 71,
+        "block": 896,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 111,
+        "cell": 73,
+        "block": 853,
+        "previous_choice": 4,
+        "gold": 10
+      },
+      {
+        "puzzle": 111,
+        "cell": 75,
+        "block": 904,
+        "previous_choice": 8,
+        "gold": 5
+      },
+      {
+        "puzzle": 111,
+        "cell": 78,
+        "block": 885,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 111,
+        "cell": 80,
+        "block": 898,
+        "previous_choice": 10,
+        "gold": 9
+      },
+      {
+        "puzzle": 112,
+        "cell": 2,
+        "block": 437,
+        "previous_choice": 6,
+        "gold": 7
+      },
+      {
+        "puzzle": 112,
+        "cell": 12,
+        "block": 457,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 112,
+        "cell": 13,
+        "block": 456,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 112,
+        "cell": 14,
+        "block": 460,
+        "previous_choice": 3,
+        "gold": 7
+      },
+      {
+        "puzzle": 112,
+        "cell": 27,
+        "block": 464,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 112,
+        "cell": 29,
+        "block": 439,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 112,
+        "cell": 30,
+        "block": 459,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 112,
+        "cell": 35,
+        "block": 461,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 112,
+        "cell": 38,
+        "block": 444,
+        "previous_choice": 10,
+        "gold": 5
+      },
+      {
+        "puzzle": 112,
+        "cell": 41,
+        "block": 456,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 112,
+        "cell": 44,
+        "block": 453,
+        "previous_choice": 3,
+        "gold": 10
+      },
+      {
+        "puzzle": 112,
+        "cell": 45,
+        "block": 464,
+        "previous_choice": 2,
+        "gold": 9
+      },
+      {
+        "puzzle": 112,
+        "cell": 50,
+        "block": 449,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 112,
+        "cell": 56,
+        "block": 442,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 112,
+        "cell": 57,
+        "block": 458,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 112,
+        "cell": 59,
+        "block": 456,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 112,
+        "cell": 62,
+        "block": 444,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 112,
+        "cell": 72,
+        "block": 448,
+        "previous_choice": 6,
+        "gold": 5
+      },
+      {
+        "puzzle": 112,
+        "cell": 74,
+        "block": 445,
+        "previous_choice": 5,
+        "gold": 6
+      },
+      {
+        "puzzle": 112,
+        "cell": 76,
+        "block": 453,
+        "previous_choice": 5,
+        "gold": 7
+      },
+      {
+        "puzzle": 112,
+        "cell": 80,
+        "block": 446,
+        "previous_choice": 7,
+        "gold": 4
+      },
+      {
+        "puzzle": 113,
+        "cell": 15,
+        "block": 481,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 113,
+        "cell": 16,
+        "block": 483,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 113,
+        "cell": 21,
+        "block": 482,
+        "previous_choice": 6,
+        "gold": 9
+      },
+      {
+        "puzzle": 113,
+        "cell": 23,
+        "block": 482,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 113,
+        "cell": 24,
+        "block": 490,
+        "previous_choice": 3,
+        "gold": 2
+      },
+      {
+        "puzzle": 113,
+        "cell": 26,
+        "block": 490,
+        "previous_choice": 2,
+        "gold": 3
+      },
+      {
+        "puzzle": 113,
+        "cell": 32,
+        "block": 482,
+        "previous_choice": 7,
+        "gold": 9
+      },
+      {
+        "puzzle": 113,
+        "cell": 34,
+        "block": 482,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 113,
+        "cell": 37,
+        "block": 489,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 113,
+        "cell": 41,
+        "block": 493,
+        "previous_choice": 10,
+        "gold": 7
+      },
+      {
+        "puzzle": 113,
+        "cell": 42,
+        "block": 487,
+        "previous_choice": 5,
+        "gold": 3
+      },
+      {
+        "puzzle": 113,
+        "cell": 46,
+        "block": 490,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 113,
+        "cell": 48,
+        "block": 487,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 113,
+        "cell": 53,
+        "block": 488,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 113,
+        "cell": 54,
+        "block": 473,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 113,
+        "cell": 60,
+        "block": 487,
+        "previous_choice": 2,
+        "gold": 9
+      },
+      {
+        "puzzle": 113,
+        "cell": 62,
+        "block": 485,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 113,
+        "cell": 63,
+        "block": 473,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 113,
+        "cell": 65,
+        "block": 483,
+        "previous_choice": 3,
+        "gold": 6
+      },
+      {
+        "puzzle": 113,
+        "cell": 69,
+        "block": 470,
+        "previous_choice": 7,
+        "gold": 5
+      },
+      {
+        "puzzle": 113,
+        "cell": 74,
+        "block": 487,
+        "previous_choice": 2,
+        "gold": 9
+      },
+      {
+        "puzzle": 113,
+        "cell": 78,
+        "block": 461,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 113,
+        "cell": 80,
+        "block": 490,
+        "previous_choice": 4,
+        "gold": 2
+      },
+      {
+        "puzzle": 114,
+        "cell": 0,
+        "block": 774,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 114,
+        "cell": 3,
+        "block": 739,
+        "previous_choice": 9,
+        "gold": 7
+      },
+      {
+        "puzzle": 114,
+        "cell": 12,
+        "block": 766,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 114,
+        "cell": 13,
+        "block": 757,
+        "previous_choice": 7,
+        "gold": 6
+      },
+      {
+        "puzzle": 114,
+        "cell": 17,
+        "block": 755,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 114,
+        "cell": 19,
+        "block": 769,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 114,
+        "cell": 20,
+        "block": 741,
+        "previous_choice": 7,
+        "gold": 8
+      },
+      {
+        "puzzle": 114,
+        "cell": 25,
+        "block": 780,
+        "previous_choice": 2,
+        "gold": 9
+      },
+      {
+        "puzzle": 114,
+        "cell": 26,
+        "block": 785,
+        "previous_choice": 7,
+        "gold": 2
+      },
+      {
+        "puzzle": 114,
+        "cell": 42,
+        "block": 770,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 114,
+        "cell": 43,
+        "block": 728,
+        "previous_choice": 8,
+        "gold": 6
+      },
+      {
+        "puzzle": 114,
+        "cell": 45,
+        "block": 736,
+        "previous_choice": 8,
+        "gold": 7
+      },
+      {
+        "puzzle": 114,
+        "cell": 46,
+        "block": 766,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 114,
+        "cell": 49,
+        "block": 775,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 114,
+        "cell": 50,
+        "block": 727,
+        "previous_choice": 4,
+        "gold": 6
+      },
+      {
+        "puzzle": 114,
+        "cell": 52,
+        "block": 781,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 114,
+        "cell": 55,
+        "block": 742,
+        "previous_choice": 5,
+        "gold": 2
+      },
+      {
+        "puzzle": 114,
+        "cell": 58,
+        "block": 773,
+        "previous_choice": 9,
+        "gold": 3
+      },
+      {
+        "puzzle": 114,
+        "cell": 59,
+        "block": 770,
+        "previous_choice": 3,
+        "gold": 9
+      },
+      {
+        "puzzle": 114,
+        "cell": 60,
+        "block": 753,
+        "previous_choice": 3,
+        "gold": 5
+      },
+      {
+        "puzzle": 114,
+        "cell": 62,
+        "block": 742,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 114,
+        "cell": 64,
+        "block": 745,
+        "previous_choice": 2,
+        "gold": 5
+      },
+      {
+        "puzzle": 114,
+        "cell": 66,
+        "block": 739,
+        "previous_choice": 7,
+        "gold": 2
+      },
+      {
+        "puzzle": 114,
+        "cell": 67,
+        "block": 750,
+        "previous_choice": 3,
+        "gold": 7
+      },
+      {
+        "puzzle": 114,
+        "cell": 68,
+        "block": 759,
+        "previous_choice": 5,
+        "gold": 4
+      },
+      {
+        "puzzle": 114,
+        "cell": 69,
+        "block": 790,
+        "previous_choice": 8,
+        "gold": 3
+      },
+      {
+        "puzzle": 114,
+        "cell": 70,
+        "block": 789,
+        "previous_choice": 3,
+        "gold": 8
+      },
+      {
+        "puzzle": 114,
+        "cell": 72,
+        "block": 784,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 114,
+        "cell": 74,
+        "block": 785,
+        "previous_choice": 5,
+        "gold": 9
+      },
+      {
+        "puzzle": 114,
+        "cell": 75,
+        "block": 745,
+        "previous_choice": 2,
+        "gold": 6
+      },
+      {
+        "puzzle": 114,
+        "cell": 77,
+        "block": 758,
+        "previous_choice": 4,
+        "gold": 5
+      },
+      {
+        "puzzle": 114,
+        "cell": 79,
+        "block": 761,
+        "previous_choice": 6,
+        "gold": 2
+      },
+      {
+        "puzzle": 114,
+        "cell": 80,
+        "block": 781,
+        "previous_choice": 2,
+        "gold": 4
+      },
+      {
+        "puzzle": 124,
+        "cell": 0,
+        "block": 305,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 124,
+        "cell": 4,
+        "block": 309,
+        "previous_choice": 10,
+        "gold": 5
+      },
+      {
+        "puzzle": 124,
+        "cell": 6,
+        "block": 326,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 124,
+        "cell": 9,
+        "block": 302,
+        "previous_choice": 7,
+        "gold": 3
+      },
+      {
+        "puzzle": 124,
+        "cell": 10,
+        "block": 298,
+        "previous_choice": 3,
+        "gold": 8
+      },
+      {
+        "puzzle": 124,
+        "cell": 11,
+        "block": 307,
+        "previous_choice": 9,
+        "gold": 5
+      },
+      {
+        "puzzle": 124,
+        "cell": 13,
+        "block": 307,
+        "previous_choice": 5,
+        "gold": 10
+      },
+      {
+        "puzzle": 124,
+        "cell": 15,
+        "block": 340,
+        "previous_choice": 6,
+        "gold": 9
+      },
+      {
+        "puzzle": 124,
+        "cell": 17,
+        "block": 339,
+        "previous_choice": 9,
+        "gold": 6
+      },
+      {
+        "puzzle": 124,
+        "cell": 27,
+        "block": 325,
+        "previous_choice": 2,
+        "gold": 10
+      },
+      {
+        "puzzle": 124,
+        "cell": 29,
+        "block": 326,
+        "previous_choice": 10,
+        "gold": 8
+      },
+      {
+        "puzzle": 124,
+        "cell": 31,
+        "block": 326,
+        "previous_choice": 8,
+        "gold": 4
+      },
+      {
+        "puzzle": 124,
+        "cell": 35,
+        "block": 327,
+        "previous_choice": 4,
+        "gold": 3
+      },
+      {
+        "puzzle": 124,
+        "cell": 42,
+        "block": 338,
+        "previous_choice": 8,
+        "gold": 6
+      },
+      {
+        "puzzle": 124,
+        "cell": 44,
+        "block": 339,
+        "previous_choice": 6,
+        "gold": 8
+      },
+      {
+        "puzzle": 124,
+        "cell": 46,
+        "block": 323,
+        "previous_choice": 6,
+        "gold": 3
+      },
+      {
+        "puzzle": 124,
+        "cell": 49,
+        "block": 327,
+        "previous_choice": 4,
+        "gold": 8
+      },
+      {
+        "puzzle": 124,
+        "cell": 53,
+        "block": 324,
+        "previous_choice": 3,
+        "gold": 4
+      },
+      {
+        "puzzle": 124,
+        "cell": 60,
+        "block": 327,
+        "previous_choice": 9,
+        "gold": 2
+      },
+      {
+        "puzzle": 124,
+        "cell": 63,
+        "block": 334,
+        "previous_choice": 9,
+        "gold": 4
+      },
+      {
+        "puzzle": 124,
+        "cell": 66,
+        "block": 337,
+        "previous_choice": 4,
+        "gold": 7
+      },
+      {
+        "puzzle": 124,
+        "cell": 71,
+        "block": 335,
+        "previous_choice": 7,
+        "gold": 10
+      },
+      {
+        "puzzle": 124,
+        "cell": 72,
+        "block": 337,
+        "previous_choice": 4,
+        "gold": 9
+      },
+      {
+        "puzzle": 124,
+        "cell": 74,
+        "block": 324,
+        "previous_choice": 9,
+        "gold": 10
+      },
+      {
+        "puzzle": 124,
+        "cell": 75,
+        "block": 336,
+        "previous_choice": 7,
+        "gold": 4
+      },
+      {
+        "puzzle": 124,
+        "cell": 78,
+        "block": 336,
+        "previous_choice": 9,
+        "gold": 8
+      },
+      {
+        "puzzle": 124,
+        "cell": 80,
+        "block": 338,
+        "previous_choice": 8,
+        "gold": 7
+      }
+    ],
+    "puzzles": 25,
+    "conditions": [
+      "all_symmetric",
+      "phase_history",
+      "agree_history",
+      "covariance",
+      "other_clue",
+      "other_correct_blank",
+      "other_wrong_blank",
+      "self",
+      "fresh_values_lag8",
+      "fresh_directions_lag8",
+      "agree_target",
+      "agree_source"
+    ],
+    "metrics": [
+      "removal_loss_increase",
+      "history_gold_margin_gain",
+      "history_fixed_margin_gain",
+      "correctness_lost_on_removal"
+    ],
+    "selection": "Wrong at block128; eventually fully solved puzzle; target remains correct from event until end, for >=32 blocks.",
+    "by_offset": {
+      "-8": {
+        "puzzle_mean": [
+          [
+            -0.008136477321386337,
+            0.03367864713072777,
+            0.06496748328208923,
+            0.015188825316727161
+          ],
+          [
+            0.0005928800092078745,
+            -0.0054407608695328236,
+            -0.004160232841968536,
+            -0.001212121220305562
+          ],
+          [
+            -0.008763984777033329,
+            0.04787058010697365,
+            0.07577161490917206,
+            0.016479147598147392
+          ],
+          [
+            3.8556259823963046e-05,
+            -0.007078482303768396,
+            -0.0067750453017652035,
+            0.0
+          ],
+          [
+            -0.007031748071312904,
+            0.054733484983444214,
+            0.09993042796850204,
+            0.010461951605975628
+          ],
+          [
+            -0.003970264457166195,
+            0.08436843007802963,
+            0.0630195364356041,
+            0.008636364713311195
+          ],
+          [
+            0.004411539528518915,
+            -0.10071305185556412,
+            -0.09802548587322235,
+            -0.001212121220305562
+          ],
+          [
+            -5.719903697354312e-07,
+            0.0010482922662049532,
+            0.0009559215395711362,
+            0.0
+          ],
+          [
+            0.0028671494219452143,
+            0.03438841179013252,
+            0.017439888790249825,
+            0.000614035117905587
+          ],
+          [
+            0.0037628659047186375,
+            0.017472626641392708,
+            0.0063323467038571835,
+            0.0004348237707745284
+          ],
+          [
+            -0.008723926730453968,
+            0.012182626873254776,
+            0.051484715193510056,
+            0.01640094630420208
+          ],
+          [
+            8.036345388973132e-05,
+            0.03336125612258911,
+            0.024963296949863434,
+            0.0
+          ]
+        ],
+        "changed_target_counts": [
+          10,
+          1,
+          11,
+          0,
+          10,
+          3,
+          1,
+          0,
+          5,
+          5,
+          9,
+          0
+        ],
+        "correctness_lost": [
+          9,
+          0,
+          10,
+          0,
+          8,
+          3,
+          0,
+          0,
+          2,
+          2,
+          9,
+          0
+        ],
+        "correctness_gained": [
+          1,
+          1,
+          1,
+          0,
+          2,
+          0,
+          1,
+          0,
+          3,
+          3,
+          0,
+          0
+        ]
+      },
+      "-4": {
+        "puzzle_mean": [
+          [
+            -0.002467937534675002,
+            -0.04875200614333153,
+            -0.043008871376514435,
+            0.013924210332334042
+          ],
+          [
+            -0.0001268455380341038,
+            -0.013515272177755833,
+            -0.014619071036577225,
+            0.0037674992345273495
+          ],
+          [
+            -0.0026555336080491543,
+            -0.03203081712126732,
+            -0.025069361552596092,
+            0.012442726641893387
+          ],
+          [
+            0.0001877226313808933,
+            -0.003373425919562578,
+            -0.0036805695854127407,
+            -0.001212121220305562
+          ],
+          [
+            -0.0023804428055882454,
+            -0.053701747208833694,
+            -0.04575931653380394,
+            0.008808344602584839
+          ],
+          [
+            0.0025788398925215006,
+            0.10721176862716675,
+            0.10093877464532852,
+            0.014619150198996067
+          ],
+          [
+            -0.0022022135090082884,
+            -0.10028889030218124,
+            -0.09686291962862015,
+            -0.0013159358641132712
+          ],
+          [
+            -6.8169656515237875e-06,
+            -0.0003498148580547422,
+            -0.0007145579438656569,
+            0.003538461634889245
+          ],
+          [
+            0.007193610537797213,
+            0.07744348794221878,
+            0.06273151934146881,
+            0.0032690817024558783
+          ],
+          [
+            0.006426376290619373,
+            0.06955946981906891,
+            0.058767691254615784,
+            0.0035384418442845345
+          ],
+          [
+            -0.004718781914561987,
+            -0.08661933243274689,
+            -0.07380340248346329,
+            0.013537845574319363
+          ],
+          [
+            0.0018327432917430997,
+            0.053240180015563965,
+            0.0494985394179821,
+            0.0038685095496475697
+          ]
+        ],
+        "changed_target_counts": [
+          20,
+          6,
+          19,
+          1,
+          17,
+          8,
+          10,
+          2,
+          8,
+          10,
+          21,
+          10
+        ],
+        "correctness_lost": [
+          14,
+          4,
+          13,
+          0,
+          11,
+          8,
+          4,
+          2,
+          5,
+          6,
+          15,
+          6
+        ],
+        "correctness_gained": [
+          6,
+          2,
+          6,
+          1,
+          6,
+          0,
+          6,
+          0,
+          3,
+          4,
+          6,
+          4
+        ]
+      },
+      "-1": {
+        "puzzle_mean": [
+          [
+            0.016760408878326416,
+            0.35610926151275635,
+            0.3492668867111206,
+            -0.04454243555665016
+          ],
+          [
+            0.0011362775694578886,
+            -0.0018176493467763066,
+            -0.0018176493467763066,
+            -0.024014752358198166
+          ],
+          [
+            0.015952743589878082,
+            0.36377784609794617,
+            0.35699206590652466,
+            -0.03343041241168976
+          ],
+          [
+            -0.0001485675893491134,
+            -0.00607831496745348,
+            -0.00607831496745348,
+            -0.001212121220305562
+          ],
+          [
+            0.01569431461393833,
+            0.21028687059879303,
+            0.20576632022857666,
+            -0.03709925338625908
+          ],
+          [
+            0.012858104892075062,
+            0.3164581060409546,
+            0.3154817521572113,
+            -0.017600106075406075
+          ],
+          [
+            -0.010799050331115723,
+            -0.1684231162071228,
+            -0.17084135115146637,
+            -0.06346067041158676
+          ],
+          [
+            -1.5737610738142394e-05,
+            1.9703758880496025e-05,
+            1.9703758880496025e-05,
+            -0.0010810811072587967
+          ],
+          [
+            0.0038276442792266607,
+            0.1761084496974945,
+            0.17161546647548676,
+            -0.04535357654094696
+          ],
+          [
+            0.002693727845326066,
+            0.1613679826259613,
+            0.15972153842449188,
+            -0.039814118295907974
+          ],
+          [
+            0.013179694302380085,
+            0.23148176074028015,
+            0.22917938232421875,
+            -0.03936614468693733
+          ],
+          [
+            0.002682844176888466,
+            0.13215093314647675,
+            0.12897677719593048,
+            -0.022846179082989693
+          ]
+        ],
+        "changed_target_counts": [
+          25,
+          13,
+          19,
+          1,
+          22,
+          10,
+          39,
+          1,
+          24,
+          22,
+          23,
+          16
+        ],
+        "correctness_lost": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "correctness_gained": [
+          25,
+          13,
+          19,
+          1,
+          22,
+          10,
+          39,
+          1,
+          24,
+          22,
+          23,
+          16
+        ]
+      },
+      "0": {
+        "puzzle_mean": [
+          [
+            0.02317347750067711,
+            0.6877830028533936,
+            0.6814219951629639,
+            0.12372259050607681
+          ],
+          [
+            0.0005069313920103014,
+            0.0002604241599328816,
+            -0.004196332301944494,
+            0.018798230215907097
+          ],
+          [
+            0.02298436313867569,
+            0.6957888603210449,
+            0.6918977499008179,
+            0.1259237825870514
+          ],
+          [
+            -0.0003762552805710584,
+            -0.006135650910437107,
+            -0.006307555828243494,
+            0.0
+          ],
+          [
+            0.01401037722826004,
+            0.28719833493232727,
+            0.2598031759262085,
+            0.07897809147834778
+          ],
+          [
+            0.014072333462536335,
+            0.4973960220813751,
+            0.5170761346817017,
+            0.08959494531154633
+          ],
+          [
+            -0.0046317498199641705,
+            -0.09414327889680862,
+            -0.09547220915555954,
+            0.0119005236774683
+          ],
+          [
+            4.7243669541785493e-05,
+            0.0007365354686044157,
+            0.0009005851461552083,
+            0.0
+          ],
+          [
+            0.00720521155744791,
+            0.36469900608062744,
+            0.3784986734390259,
+            0.07691985368728638
+          ],
+          [
+            0.005608938168734312,
+            0.3186730146408081,
+            0.33164164423942566,
+            0.07613838464021683
+          ],
+          [
+            0.015489617362618446,
+            0.418794721364975,
+            0.4089359641075134,
+            0.09559841454029083
+          ],
+          [
+            0.007346484810113907,
+            0.27430522441864014,
+            0.28391242027282715,
+            0.042470160871744156
+          ]
+        ],
+        "changed_target_counts": [
+          81,
+          10,
+          82,
+          0,
+          53,
+          53,
+          9,
+          0,
+          49,
+          48,
+          61,
+          30
+        ],
+        "correctness_lost": [
+          81,
+          10,
+          82,
+          0,
+          53,
+          53,
+          9,
+          0,
+          49,
+          48,
+          61,
+          30
+        ],
+        "correctness_gained": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    }
+  },
+  "verification": {
+    "normal_first_block_hidden_and_memory": "bitwise equal to original runner",
+    "event_replay_predictions": "equal at all sampled blocks",
+    "decomposition_check": "block200, n8, covariance and target/source transpose checked at atol2e-6 rtol2e-5"
+  }
+}

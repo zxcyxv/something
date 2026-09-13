@@ -1,0 +1,17 @@
+{
+  "ARC/pass@1": 0.0,
+  "ARC/pass@2": 0.0,
+  "ARC/pass@5": 0.0,
+  "ARC/pass@10": 0.0,
+  "ARC/tasks": 77,
+  "ARC/queries": 88,
+  "token_accuracy": 0.5184001285921443,
+  "sequence_exact": 0.0003551136363636364,
+  "evaluated_augmented_examples": 2816,
+  "eval_segments": 16,
+  "max_augmentations_per_task": 32,
+  "total_available_tasks": 77,
+  "seconds": 38.51688943058252,
+  "step": 4000,
+  "weights": "ema_parameters_raw_puzzle_embeddings"
+}

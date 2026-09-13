@@ -1,0 +1,259 @@
+{
+  "args": {
+    "checkpoint": "checkpoints/v1.1_step160000.npz",
+    "n": 8,
+    "segs": 17,
+    "probe_segs": [
+      16
+    ],
+    "horizon": 8,
+    "epsilons": [
+      0.01,
+      0.005
+    ],
+    "seed": 0,
+    "out": "runs/phase_feedback_smoke"
+  },
+  "step": 160000,
+  "precision": "float32, autocast off, TF32 off; checkpoint has fp16-compressed large tensors",
+  "device": "NVIDIA GeForce RTX 4090",
+  "torch_version": "2.8.0+cu128",
+  "runner_verification": {
+    "hidden_max_abs": 3.337860107421875e-06,
+    "memory_max_abs": 7.152557373046875e-07,
+    "logits_max_abs": 6.103515625e-05
+  },
+  "eta": [
+    0.03550626337528229,
+    0.01725604198873043,
+    0.029174720868468285,
+    0.034675225615501404,
+    0.23364856839179993,
+    0.15889841318130493,
+    0.04273639991879463,
+    0.03169327229261398
+  ],
+  "lambda": [
+    0.21149638295173645,
+    0.12410034984350204,
+    0.19012291729450226,
+    0.5804687142372131,
+    0.27991288900375366,
+    0.1588520109653473,
+    0.1763947606086731,
+    0.11137211322784424
+  ],
+  "gain": [
+    1.501299500465393,
+    1.7452009916305542,
+    2.7894723415374756,
+    0.2632300853729248,
+    1.1373037099838257,
+    1.4451425075531006,
+    1.0025490522384644,
+    1.3299988508224487
+  ],
+  "trajectory_summaries": {
+    "normal": {
+      "exact_by_seg": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2
+      ],
+      "final_exact": 2,
+      "best_exact": 2,
+      "new_correct_since16_final": 0,
+      "lost_correct_since16_final": 0,
+      "correct_to_wrong_transitions_after16": 0,
+      "wrong_to_correct_transitions_after16": 0,
+      "final_clue_changed_puzzles": 0
+    },
+    "freeze": {
+      "exact_by_seg": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2
+      ],
+      "final_exact": 2,
+      "best_exact": 2,
+      "new_correct_since16_final": 0,
+      "lost_correct_since16_final": 0,
+      "correct_to_wrong_transitions_after16": 0,
+      "wrong_to_correct_transitions_after16": 0,
+      "final_clue_changed_puzzles": 0
+    },
+    "instant": {
+      "exact_by_seg": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        1,
+        2,
+        2
+      ],
+      "final_exact": 2,
+      "best_exact": 2,
+      "new_correct_since16_final": 0,
+      "lost_correct_since16_final": 0,
+      "correct_to_wrong_transitions_after16": 0,
+      "wrong_to_correct_transitions_after16": 0,
+      "final_clue_changed_puzzles": 0
+    }
+  },
+  "probes": {
+    "seg16_eps0.01": [
+      {
+        "blocks": 0,
+        "full_phase_rms": 1.0000004768371582,
+        "replay_phase_rms": 1.0000004768371582,
+        "full_phase_median_abs": 1.0000009536743164,
+        "replay_phase_median_abs": 1.0000009536743164,
+        "memory_reduces_phase_fraction": 0.0,
+        "full_state_gain_median": 1.0,
+        "replay_state_gain_median": 1.0,
+        "memory_reduces_state_fraction": 0.0
+      },
+      {
+        "blocks": 1,
+        "full_phase_rms": 0.3914494812488556,
+        "replay_phase_rms": 0.39137163758277893,
+        "full_phase_median_abs": 0.41544055938720703,
+        "replay_phase_median_abs": 0.4152841866016388,
+        "memory_reduces_phase_fraction": 0.25,
+        "full_state_gain_median": 0.6838233470916748,
+        "replay_state_gain_median": 0.683988094329834,
+        "memory_reduces_state_fraction": 0.5
+      },
+      {
+        "blocks": 2,
+        "full_phase_rms": 0.16205447912216187,
+        "replay_phase_rms": 0.16198672354221344,
+        "full_phase_median_abs": 0.17521286010742188,
+        "replay_phase_median_abs": 0.17505337297916412,
+        "memory_reduces_phase_fraction": 0.5,
+        "full_state_gain_median": 0.5089902877807617,
+        "replay_state_gain_median": 0.5088387727737427,
+        "memory_reduces_state_fraction": 0.625
+      },
+      {
+        "blocks": 4,
+        "full_phase_rms": 0.02836475521326065,
+        "replay_phase_rms": 0.0283461082726717,
+        "full_phase_median_abs": 0.026568464934825897,
+        "replay_phase_median_abs": 0.026353303343057632,
+        "memory_reduces_phase_fraction": 0.25,
+        "full_state_gain_median": 0.41021662950515747,
+        "replay_state_gain_median": 0.4106769561767578,
+        "memory_reduces_state_fraction": 0.875
+      },
+      {
+        "blocks": 8,
+        "full_phase_rms": 0.004366314969956875,
+        "replay_phase_rms": 0.004561309702694416,
+        "full_phase_median_abs": 0.0012604393996298313,
+        "replay_phase_median_abs": 0.0014574199449270964,
+        "memory_reduces_phase_fraction": 1.0,
+        "full_state_gain_median": 0.4007956385612488,
+        "replay_state_gain_median": 0.40024885535240173,
+        "memory_reduces_state_fraction": 0.5
+      }
+    ],
+    "seg16_eps0.005": [
+      {
+        "blocks": 0,
+        "full_phase_rms": 0.9999986886978149,
+        "replay_phase_rms": 0.9999986886978149,
+        "full_phase_median_abs": 0.9999991655349731,
+        "replay_phase_median_abs": 0.9999991655349731,
+        "memory_reduces_phase_fraction": 0.0,
+        "full_state_gain_median": 1.0,
+        "replay_state_gain_median": 1.0,
+        "memory_reduces_state_fraction": 0.0
+      },
+      {
+        "blocks": 1,
+        "full_phase_rms": 0.39144617319107056,
+        "replay_phase_rms": 0.39137059450149536,
+        "full_phase_median_abs": 0.4154360294342041,
+        "replay_phase_median_abs": 0.41527560353279114,
+        "memory_reduces_phase_fraction": 0.25,
+        "full_state_gain_median": 0.6838262677192688,
+        "replay_state_gain_median": 0.6839895248413086,
+        "memory_reduces_state_fraction": 0.5
+      },
+      {
+        "blocks": 2,
+        "full_phase_rms": 0.16205766797065735,
+        "replay_phase_rms": 0.1619870960712433,
+        "full_phase_median_abs": 0.1752062737941742,
+        "replay_phase_median_abs": 0.17504733800888062,
+        "memory_reduces_phase_fraction": 0.5,
+        "full_state_gain_median": 0.5089817047119141,
+        "replay_state_gain_median": 0.5088304281234741,
+        "memory_reduces_state_fraction": 0.625
+      },
+      {
+        "blocks": 4,
+        "full_phase_rms": 0.028362903743982315,
+        "replay_phase_rms": 0.02834511548280716,
+        "full_phase_median_abs": 0.026568498462438583,
+        "replay_phase_median_abs": 0.026357010006904602,
+        "memory_reduces_phase_fraction": 0.25,
+        "full_state_gain_median": 0.41021043062210083,
+        "replay_state_gain_median": 0.41068702936172485,
+        "memory_reduces_state_fraction": 0.875
+      },
+      {
+        "blocks": 8,
+        "full_phase_rms": 0.004364783875644207,
+        "replay_phase_rms": 0.0045609502121806145,
+        "full_phase_median_abs": 0.001262191915884614,
+        "replay_phase_median_abs": 0.0014609668869525194,
+        "memory_reduces_phase_fraction": 1.0,
+        "full_state_gain_median": 0.40080487728118896,
+        "replay_state_gain_median": 0.40028321743011475,
+        "memory_reduces_state_fraction": 0.625
+      }
+    ]
+  },
+  "elapsed_seconds": 0.36058640480041504
+}

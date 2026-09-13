@@ -1,0 +1,249 @@
+{
+  "horizon": 8,
+  "method": "FP64 CPU JVP plus two central finite differences",
+  "states": [
+    {
+      "start_block": 152,
+      "target": 48,
+      "directions": {
+        "toward_old_wrong_digit": {
+          "records": [
+            {
+              "blocks": 1,
+              "closed_norm": 1.0821891093015397,
+              "replay_norm": 1.0823020181360035,
+              "closed_projection_on_initial": 0.2694927549716361,
+              "replay_projection_on_initial": 0.2707992449253044,
+              "closed_wrong_minus_gold_derivative": 1.070342302218812,
+              "replay_wrong_minus_gold_derivative": 1.0755312783194206,
+              "feedback_wrong_minus_gold_derivative": -0.0051889761006086105
+            },
+            {
+              "blocks": 2,
+              "closed_norm": 1.2124126445613304,
+              "replay_norm": 1.2129852445259397,
+              "closed_projection_on_initial": 0.16625433113993743,
+              "replay_projection_on_initial": 0.1697396754404174,
+              "closed_wrong_minus_gold_derivative": 0.6603110483059123,
+              "replay_wrong_minus_gold_derivative": 0.6741537634579153,
+              "feedback_wrong_minus_gold_derivative": -0.013842715152003164
+            },
+            {
+              "blocks": 4,
+              "closed_norm": 1.6529106942412253,
+              "replay_norm": 1.6539024755304368,
+              "closed_projection_on_initial": 0.1741586794374455,
+              "replay_projection_on_initial": 0.18141683448514445,
+              "closed_wrong_minus_gold_derivative": 0.6917046876458068,
+              "replay_wrong_minus_gold_derivative": 0.7205318462253865,
+              "feedback_wrong_minus_gold_derivative": -0.028827158579579796
+            },
+            {
+              "blocks": 8,
+              "closed_norm": 5.886127534596615,
+              "replay_norm": 5.990633710218282,
+              "closed_projection_on_initial": 0.25466688954368955,
+              "replay_projection_on_initial": 0.2707119607551724,
+              "closed_wrong_minus_gold_derivative": 1.011458526526197,
+              "replay_wrong_minus_gold_derivative": 1.0751846124522209,
+              "feedback_wrong_minus_gold_derivative": -0.06372608592602384
+            }
+          ],
+          "chain_identity_max_error": 1.004655190826485e-16,
+          "finite_difference": [
+            {
+              "epsilon": 0.001,
+              "closed_relative_error": 3.9827993226363845e-09,
+              "replay_relative_error": 3.9900596786550846e-09
+            },
+            {
+              "epsilon": 0.0005,
+              "closed_relative_error": 9.832777553586936e-10,
+              "replay_relative_error": 1.0018958223542787e-09
+            }
+          ]
+        },
+        "observed_next_state_velocity": {
+          "records": [
+            {
+              "blocks": 1,
+              "closed_norm": 1.0323936379948762,
+              "replay_norm": 1.0322432678401559,
+              "closed_projection_on_initial": 0.12324350320342792,
+              "replay_projection_on_initial": 0.12351996323636466,
+              "closed_wrong_minus_gold_derivative": 0.040443301942382964,
+              "replay_wrong_minus_gold_derivative": 0.04047217729873452,
+              "feedback_wrong_minus_gold_derivative": -2.8875356351558637e-05
+            },
+            {
+              "blocks": 2,
+              "closed_norm": 1.0726206951588144,
+              "replay_norm": 1.0729741508040598,
+              "closed_projection_on_initial": -0.28885090572229544,
+              "replay_projection_on_initial": -0.287590328357327,
+              "closed_wrong_minus_gold_derivative": -0.10842762913890575,
+              "replay_wrong_minus_gold_derivative": -0.10834312504404148,
+              "feedback_wrong_minus_gold_derivative": -8.450409486426732e-05
+            },
+            {
+              "blocks": 4,
+              "closed_norm": 1.3501497687213113,
+              "replay_norm": 1.3499686037786816,
+              "closed_projection_on_initial": 0.23610447006138963,
+              "replay_projection_on_initial": 0.23746509090151557,
+              "closed_wrong_minus_gold_derivative": -0.2645502204978749,
+              "replay_wrong_minus_gold_derivative": -0.26210587390339735,
+              "feedback_wrong_minus_gold_derivative": -0.002444346594477571
+            },
+            {
+              "blocks": 8,
+              "closed_norm": 1.4946547235397432,
+              "replay_norm": 1.4894950138027074,
+              "closed_projection_on_initial": 0.066189191037651,
+              "replay_projection_on_initial": 0.06765229964051589,
+              "closed_wrong_minus_gold_derivative": -0.14384628085673498,
+              "replay_wrong_minus_gold_derivative": -0.1546390652236158,
+              "feedback_wrong_minus_gold_derivative": 0.010792784366880838
+            }
+          ],
+          "chain_identity_max_error": 4.5621194539116616e-17,
+          "finite_difference": [
+            {
+              "epsilon": 0.001,
+              "closed_relative_error": 8.55430153651546e-10,
+              "replay_relative_error": 8.265204390776174e-10
+            },
+            {
+              "epsilon": 0.0005,
+              "closed_relative_error": 5.692593937886161e-10,
+              "replay_relative_error": 5.626896585652363e-10
+            }
+          ]
+        }
+      },
+      "baseline_cell_prediction_disagreements": 0
+    },
+    {
+      "start_block": 192,
+      "target": 48,
+      "directions": {
+        "toward_old_wrong_digit": {
+          "records": [
+            {
+              "blocks": 1,
+              "closed_norm": 1.6218720988880777,
+              "replay_norm": 1.6191501401476371,
+              "closed_projection_on_initial": 0.12200135203832449,
+              "replay_projection_on_initial": 0.1221845355632687,
+              "closed_wrong_minus_gold_derivative": 0.48455183156315934,
+              "replay_wrong_minus_gold_derivative": 0.48527938016029304,
+              "feedback_wrong_minus_gold_derivative": -0.0007275485971336745
+            },
+            {
+              "blocks": 2,
+              "closed_norm": 0.8995854403645108,
+              "replay_norm": 0.903502036666165,
+              "closed_projection_on_initial": -0.1053903625014205,
+              "replay_projection_on_initial": -0.10636636162796796,
+              "closed_wrong_minus_gold_derivative": -0.41857809217660813,
+              "replay_wrong_minus_gold_derivative": -0.42245446040098694,
+              "feedback_wrong_minus_gold_derivative": 0.0038763682243788842
+            },
+            {
+              "blocks": 4,
+              "closed_norm": 0.42616044887868515,
+              "replay_norm": 0.426970540032947,
+              "closed_projection_on_initial": 0.04321669154245466,
+              "replay_projection_on_initial": 0.043746526662547296,
+              "closed_wrong_minus_gold_derivative": 0.1716434014142594,
+              "replay_wrong_minus_gold_derivative": 0.17374774348570404,
+              "feedback_wrong_minus_gold_derivative": -0.0021043420714446453
+            },
+            {
+              "blocks": 8,
+              "closed_norm": 0.09612623988801026,
+              "replay_norm": 0.0959553913422697,
+              "closed_projection_on_initial": 0.0051760192711166,
+              "replay_projection_on_initial": 0.005250034425997365,
+              "closed_wrong_minus_gold_derivative": 0.02055755592969084,
+              "replay_wrong_minus_gold_derivative": 0.020851521351071087,
+              "feedback_wrong_minus_gold_derivative": -0.0002939654213802457
+            }
+          ],
+          "chain_identity_max_error": 1.0495077029659683e-16,
+          "finite_difference": [
+            {
+              "epsilon": 0.001,
+              "closed_relative_error": 7.310413521149291e-09,
+              "replay_relative_error": 6.9027539619172994e-09
+            },
+            {
+              "epsilon": 0.0005,
+              "closed_relative_error": 5.536966962292125e-09,
+              "replay_relative_error": 6.553929721374848e-09
+            }
+          ]
+        },
+        "observed_next_state_velocity": {
+          "records": [
+            {
+              "blocks": 1,
+              "closed_norm": 0.9256557868116542,
+              "replay_norm": 0.9252244030796357,
+              "closed_projection_on_initial": -0.9057080305039837,
+              "replay_projection_on_initial": -0.9053107722251381,
+              "closed_wrong_minus_gold_derivative": -0.026721536975203818,
+              "replay_wrong_minus_gold_derivative": -0.026212315531357493,
+              "feedback_wrong_minus_gold_derivative": -0.0005092214438463345
+            },
+            {
+              "blocks": 2,
+              "closed_norm": 1.0937774845324655,
+              "replay_norm": 1.0937027633997352,
+              "closed_projection_on_initial": 1.0500205973025658,
+              "replay_projection_on_initial": 1.0494920429746066,
+              "closed_wrong_minus_gold_derivative": 0.011140687799880413,
+              "replay_wrong_minus_gold_derivative": 0.011517400791789801,
+              "feedback_wrong_minus_gold_derivative": -0.0003767129919093898
+            },
+            {
+              "blocks": 4,
+              "closed_norm": 0.9519361293125368,
+              "replay_norm": 0.9515026295060882,
+              "closed_projection_on_initial": 0.8438598227156944,
+              "replay_projection_on_initial": 0.841976164315884,
+              "closed_wrong_minus_gold_derivative": 0.006743039771843701,
+              "replay_wrong_minus_gold_derivative": 0.00738321498503304,
+              "feedback_wrong_minus_gold_derivative": -0.0006401752131893462
+            },
+            {
+              "blocks": 8,
+              "closed_norm": 0.5855513675757197,
+              "replay_norm": 0.5886491786600194,
+              "closed_projection_on_initial": -0.10849602057952235,
+              "replay_projection_on_initial": -0.1135067619924319,
+              "closed_wrong_minus_gold_derivative": -0.006774742663511596,
+              "replay_wrong_minus_gold_derivative": -0.005807593186770271,
+              "feedback_wrong_minus_gold_derivative": -0.0009671494767413253
+            }
+          ],
+          "chain_identity_max_error": 6.205532778174455e-17,
+          "finite_difference": [
+            {
+              "epsilon": 0.001,
+              "closed_relative_error": 5.288319504141618e-10,
+              "replay_relative_error": 4.744953883284187e-10
+            },
+            {
+              "epsilon": 0.0005,
+              "closed_relative_error": 9.794723575784967e-10,
+              "replay_relative_error": 9.132207799385181e-10
+            }
+          ]
+        }
+      },
+      "baseline_cell_prediction_disagreements": 0
+    }
+  ],
+  "cuda_initialized": false
+}

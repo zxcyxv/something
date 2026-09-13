@@ -1,0 +1,1 @@
+{"canvas": 10, "model": "v3", "encoding": "frame", "stdp": true, "transport": "laplacian", "sheaf_cond": "scale"}

@@ -1,0 +1,22 @@
+{
+  "ARC/pass@1": 0.0,
+  "ARC/pass@2": 0.0,
+  "ARC/pass@5": 0.0,
+  "ARC/pass@10": 0.0,
+  "ARC/tasks": 77,
+  "ARC/queries": 88,
+  "token_accuracy": 0.47320309763002877,
+  "sequence_exact": 0.0,
+  "evaluated_augmented_examples": 792,
+  "eval_segments": 16,
+  "max_augmentations_per_task": 0,
+  "total_available_tasks": 77,
+  "seconds": 144.44494671560824,
+  "protocol": "in-context",
+  "k_demos": 2,
+  "inductive": false,
+  "exact_hit_count": 0,
+  "exact_hits": [],
+  "step": 2000,
+  "weights": "ema_parameters_raw_puzzle_embeddings"
+}

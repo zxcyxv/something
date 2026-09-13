@@ -2,3 +2,5 @@ runs/
 *.pt
 __pycache__/
 *.pyc
+data/arc_s10_*/
+*.npy

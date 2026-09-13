@@ -1,0 +1,235 @@
+{
+  "event": {
+    "puzzle": 1,
+    "cell": 48,
+    "block": 155,
+    "previous_choice": 4,
+    "gold": 2
+  },
+  "human_target_rc": [
+    6,
+    4
+  ],
+  "normal": {
+    "prediction_digit": 1,
+    "gold_margin": 0.31434059143066406,
+    "gold_logit": 11.178214073181152,
+    "previous_choice_logit": 10.863873481750488
+  },
+  "single_edges": [
+    {
+      "head": 2,
+      "source": 66,
+      "source_rc": [
+        8,
+        4
+      ],
+      "source_digit": 3,
+      "source_correct": true,
+      "source_clue": false,
+      "removed": {
+        "prediction_digit": 3,
+        "gold_margin": -0.40808868408203125,
+        "gold_logit": 11.092597961425781,
+        "previous_choice_logit": 11.500686645507812
+      },
+      "contribution": 0.7236799597740173,
+      "gold_logit_contribution": 0.08527948707342148,
+      "previous_logit_contribution": -0.6384004950523376,
+      "memory": 0.11135265231132507,
+      "current_write": 0.4102916717529297,
+      "phase": 0.6482688188552856,
+      "phase_mean": 0.7916759848594666,
+      "agree": 0.6329035758972168,
+      "agree_mean": 0.1470428705215454,
+      "source_direction_cosine": 0.5771252512931824
+    },
+    {
+      "head": 1,
+      "source": 66,
+      "source_rc": [
+        8,
+        4
+      ],
+      "source_digit": 3,
+      "source_correct": true,
+      "source_clue": false,
+      "removed": {
+        "prediction_digit": 3,
+        "gold_margin": -0.26621150970458984,
+        "gold_logit": 11.109722137451172,
+        "previous_choice_logit": 11.375933647155762
+      },
+      "contribution": 0.5815363526344299,
+      "gold_logit_contribution": 0.06826641410589218,
+      "previous_logit_contribution": -0.5132699608802795,
+      "memory": 0.0451764240860939,
+      "current_write": 0.3112694025039673,
+      "phase": 0.5071924328804016,
+      "phase_mean": 0.42353537678718567,
+      "agree": 0.6137106418609619,
+      "agree_mean": 0.18822075426578522,
+      "source_direction_cosine": 0.6065056324005127
+    },
+    {
+      "head": 2,
+      "source": 49,
+      "source_rc": [
+        6,
+        5
+      ],
+      "source_digit": 3,
+      "source_correct": true,
+      "source_clue": false,
+      "removed": {
+        "prediction_digit": 3,
+        "gold_margin": -0.16368484497070312,
+        "gold_logit": 11.265541076660156,
+        "previous_choice_logit": 11.42922592163086
+      },
+      "contribution": 0.47916072607040405,
+      "gold_logit_contribution": -0.08844512701034546,
+      "previous_logit_contribution": -0.5676058530807495,
+      "memory": 0.36679142713546753,
+      "current_write": 1.0867782831192017,
+      "phase": 1.5777555704116821,
+      "phase_mean": 1.5953309535980225,
+      "agree": 0.6888128519058228,
+      "agree_mean": 0.2331773042678833,
+      "source_direction_cosine": 0.7916002869606018
+    },
+    {
+      "head": 2,
+      "source": 63,
+      "source_rc": [
+        8,
+        1
+      ],
+      "source_digit": 1,
+      "source_correct": true,
+      "source_clue": true,
+      "removed": {
+        "prediction_digit": 3,
+        "gold_margin": -0.054691314697265625,
+        "gold_logit": 10.861276626586914,
+        "previous_choice_logit": 10.91596794128418
+      },
+      "contribution": 0.3686917722225189,
+      "gold_logit_contribution": 0.31652283668518066,
+      "previous_logit_contribution": -0.05216893553733826,
+      "memory": -0.1081332191824913,
+      "current_write": -0.2275964766740799,
+      "phase": -0.46857839822769165,
+      "phase_mean": -0.38095369935035706,
+      "agree": 0.48571696877479553,
+      "agree_mean": 0.26747459173202515,
+      "source_direction_cosine": 0.9763046503067017
+    },
+    {
+      "head": 2,
+      "source": 80,
+      "source_rc": [
+        9,
+        9
+      ],
+      "source_digit": 1,
+      "source_correct": true,
+      "source_clue": false,
+      "removed": {
+        "prediction_digit": 1,
+        "gold_margin": 0.04906654357910156,
+        "gold_logit": 10.943198204040527,
+        "previous_choice_logit": 10.894131660461426
+      },
+      "contribution": 0.2650734782218933,
+      "gold_logit_contribution": 0.23477111756801605,
+      "previous_logit_contribution": -0.03030236065387726,
+      "memory": -0.15690001845359802,
+      "current_write": -0.27489644289016724,
+      "phase": -0.5564818382263184,
+      "phase_mean": -0.5215476751327515,
+      "agree": 0.4939900040626526,
+      "agree_mean": 0.287667453289032,
+      "source_direction_cosine": 0.9895049333572388
+    },
+    {
+      "head": 1,
+      "source": 34,
+      "source_rc": [
+        4,
+        8
+      ],
+      "source_digit": 1,
+      "source_correct": true,
+      "source_clue": false,
+      "removed": {
+        "prediction_digit": 1,
+        "gold_margin": 0.17267513275146484,
+        "gold_logit": 11.053409576416016,
+        "previous_choice_logit": 10.88073444366455
+      },
+      "contribution": 0.1416066586971283,
+      "gold_logit_contribution": 0.12473297119140625,
+      "previous_logit_contribution": -0.016873687505722046,
+      "memory": -0.09909000992774963,
+      "current_write": -0.15610601007938385,
+      "phase": -0.3950445055961609,
+      "phase_mean": -0.37055104970932007,
+      "agree": 0.39516058564186096,
+      "agree_mean": 0.27198028564453125,
+      "source_direction_cosine": 0.8372781276702881
+    }
+  ],
+  "continuations": {
+    "normal": {
+      "first_puzzle_correct_block": 156,
+      "first_target_correct_block": 155,
+      "final_puzzle_correct": true,
+      "final_target_correct": true,
+      "final_error_count": 0
+    },
+    "pulse_top1": {
+      "first_puzzle_correct_block": 156,
+      "first_target_correct_block": 156,
+      "final_puzzle_correct": true,
+      "final_target_correct": true,
+      "final_error_count": 0
+    },
+    "persistent_top1": {
+      "first_puzzle_correct_block": 156,
+      "first_target_correct_block": 156,
+      "final_puzzle_correct": true,
+      "final_target_correct": true,
+      "final_error_count": 0
+    },
+    "persistent_top3": {
+      "first_puzzle_correct_block": 156,
+      "first_target_correct_block": 156,
+      "final_puzzle_correct": true,
+      "final_target_correct": true,
+      "final_error_count": 0
+    },
+    "pulse_all_agree_target": {
+      "first_puzzle_correct_block": 156,
+      "first_target_correct_block": 156,
+      "final_puzzle_correct": true,
+      "final_target_correct": true,
+      "final_error_count": 0
+    },
+    "persistent_all_agree_target": {
+      "first_puzzle_correct_block": 156,
+      "first_target_correct_block": 156,
+      "final_puzzle_correct": true,
+      "final_target_correct": true,
+      "final_error_count": 0
+    }
+  },
+  "normal_fixed_margin_algebraic_split": {
+    "prepared_hidden": -2.4498820304870605,
+    "classifier_bias": -0.022863447666168213,
+    "instant_read": 3.8411033153533936,
+    "instant_write": -2.2896480560302734,
+    "history": 1.2356319427490234
+  },
+  "normal_fixed_margin_split_sum": 0.3143417239189148
+}
