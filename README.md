@@ -136,6 +136,12 @@ python lt/phase_oscillation.py && python lt/phase_oscillation_vs_difficulty.py  
 
 `lt/train.py --selftest` 는 GPU 없이 증강 규칙을 원본과 대조한다. 데이터는 `data/prep_dataset.py` 로 다시 만들 수 있다.
 
+새코드3의 스도쿠 학습기는 `python -m lt.train_new3 --config configs/new3_sudoku.json`으로 실행한다.
+기본값은 **1세그먼트 × 8블록**, 배치 128이며 기존 데이터·증강을 유지한다. 설정, 재개 및 외삽 평가는 [학습 안내](docs/new3_training.md)를 참고한다.
+Expert 8개를 모든 토큰에 순서대로 적용하고 마지막에 토큰별 expert를 선택하는 실험은
+`python -m lt.train_new3 --config configs/new3_sudoku_sequential_experts.json`으로 실행한다.
+이 설정은 **1세그먼트 × 9블록**, 배치 128, 20,000스텝이며 별도 출력 경로를 사용한다.
+
 ## 체크포인트
 
 | 파일 | 판 | 내용 |
