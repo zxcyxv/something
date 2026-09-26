@@ -1,0 +1,13 @@
+{
+  "name": "late_58",
+  "start_block": 4084,
+  "stop_block": 4339,
+  "files": [
+    {
+      "puzzle": 58,
+      "file": "late_58_puzzle_58_raw.npy"
+    }
+  ],
+  "predictions_checked": 248832,
+  "prediction_disagreements": 0
+}

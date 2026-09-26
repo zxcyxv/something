@@ -1,0 +1,28 @@
+{
+  "checkpoint": "checkpoints/v1.1_step160000.npz",
+  "puzzles": [
+    38,
+    58,
+    72,
+    111,
+    128,
+    147,
+    209,
+    215,
+    222,
+    230,
+    240,
+    248
+  ],
+  "blocks": 8192,
+  "state": "Fresh model initialization; no old full-G memory is retained",
+  "intrinsic_phase_even": "G_new = (G(u)+G(conj(u)))/2; spatial position, beta, values and amplitudes retained",
+  "cell_exchange_even": "G_new = (G+G.transpose(-1,-2))/2; remove cell-exchange antisymmetric writing, not intrinsic-phase odd writing",
+  "intrinsic_phase_mirrored": "G_new=G(conj(u)); all intrinsic phase differences reversed, spatial phase fixed",
+  "intrinsic_phase_even_energy_matched": "Follow-up magnitude control: sign(E)*sqrt(E^2+O^2), E=(G+Gmirror)/2, O=(G-Gmirror)/2. This remains phase-even and preserves the RMS magnitude of the two phase orders per edge. Exactly E=0 maps to zero.",
+  "read": "Original instantaneous a_psi(u), original v, original lambda, original eta; only the write target is changed",
+  "end_point": "Whole-puzzle completion at block8192 and uninterrupted completion for the last256 blocks; first completion and final errors also saved",
+  "scope": "Inference intervention on twelve previously selected late puzzles; no retraining or unbiased accuracy estimate",
+  "arithmetic": "Both normal and conjugate G use gain*(window*agree), exactly the same FP32 multiplication order. Phase-even and paired-energy targets are checked bitwise invariant under swapping G/Gmirror.",
+  "expected_interpretation": "Preserved solutions show the removed component is not necessary for those solutions in this trained inference run; failure shows dependence on that component, not a proof of temporal STDP"
+}

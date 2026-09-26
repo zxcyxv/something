@@ -1,0 +1,483 @@
+{
+  "protocol": {
+    "checkpoint": "checkpoints/v1.1_step160000.npz",
+    "precision": "CPU float64; cached FP32 cases",
+    "primary": "Keep positions, beta, gain, amplitudes and all values/agree fixed; conjugate the unpositioned addresses. Compare G(delta) with G(-delta) on the same directed edges.",
+    "equation": "G(delta)=g*D*agree*sum_j(r_tj*r_nj*cos(delta_j+beta_j+theta_j.dot(pos_t-pos_n)))",
+    "observable": "The signed write target G; eta is positive and does not change its sign. No leak, reading or subsequent feedback in this measurement.",
+    "snapshots": "Puzzle 1, after blocks 152 and 192, all 8 heads, all 6480 directed off-diagonal edges",
+    "cases": "Pre-existing selected edges in late puzzles 58, 209, 230; no reselection based on phase result",
+    "curves": "Complete channelwise phase response and a clearly labeled common-angle cross-section. The latter is not a temporal-frequency assignment.",
+    "sign_tolerance": "1e-9 * max(1, absolute coefficient sum)",
+    "temporal_scope": "No omega_j is assumed; a phase-mirror is not automatically a reversal of actual event time. Temporal identification is a separate part of this research."
+  },
+  "snapshots": [
+    {
+      "block": 152,
+      "analytical_vs_production_max_error": 1.3322676295501878e-15,
+      "heads": [
+        {
+          "head_1based": 1,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 557,
+          "observed_negative_mirrored_positive": 692,
+          "both_positive": 4111,
+          "both_negative": 1120,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.48839517809932503,
+          "odd_energy_fraction": 0.1925911192148239,
+          "odd_beta_l2": 0.5373296735478208,
+          "odd_position_l2": 2.571728535232763,
+          "both_directions_opposite_in_both_phase_orders": 10
+        },
+        {
+          "head_1based": 2,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 1022,
+          "observed_negative_mirrored_positive": 1040,
+          "both_positive": 2253,
+          "both_negative": 2165,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.612365679321502,
+          "odd_energy_fraction": 0.27272289595297133,
+          "odd_beta_l2": 0.23828436173988762,
+          "odd_position_l2": 3.2546636171002215,
+          "both_directions_opposite_in_both_phase_orders": 0
+        },
+        {
+          "head_1based": 3,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 553,
+          "observed_negative_mirrored_positive": 592,
+          "both_positive": 2647,
+          "both_negative": 2688,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.3246844154161446,
+          "odd_energy_fraction": 0.09536644217755831,
+          "odd_beta_l2": 0.11416158580270926,
+          "odd_position_l2": 2.523575979023853,
+          "both_directions_opposite_in_both_phase_orders": 0
+        },
+        {
+          "head_1based": 4,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 1088,
+          "observed_negative_mirrored_positive": 1130,
+          "both_positive": 2080,
+          "both_negative": 2182,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.30303271059160575,
+          "odd_energy_fraction": 0.08410551333337499,
+          "odd_beta_l2": 0.07944670925158714,
+          "odd_position_l2": 0.10042424396488557,
+          "both_directions_opposite_in_both_phase_orders": 352
+        },
+        {
+          "head_1based": 5,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 906,
+          "observed_negative_mirrored_positive": 836,
+          "both_positive": 2313,
+          "both_negative": 2425,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.3621295931439474,
+          "odd_energy_fraction": 0.11593444877769928,
+          "odd_beta_l2": 0.19821125240360646,
+          "odd_position_l2": 0.9639256828774774,
+          "both_directions_opposite_in_both_phase_orders": 24
+        },
+        {
+          "head_1based": 6,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 1003,
+          "observed_negative_mirrored_positive": 988,
+          "both_positive": 2055,
+          "both_negative": 2434,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.4191130688541952,
+          "odd_energy_fraction": 0.14941088181660078,
+          "odd_beta_l2": 0.18927715862499908,
+          "odd_position_l2": 0.6298504461808154,
+          "both_directions_opposite_in_both_phase_orders": 64
+        },
+        {
+          "head_1based": 7,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 1028,
+          "observed_negative_mirrored_positive": 998,
+          "both_positive": 2200,
+          "both_negative": 2254,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.5149247573606698,
+          "odd_energy_fraction": 0.2095783333874887,
+          "odd_beta_l2": 0.20813087381225281,
+          "odd_position_l2": 1.198027369446989,
+          "both_directions_opposite_in_both_phase_orders": 2
+        },
+        {
+          "head_1based": 8,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 1132,
+          "observed_negative_mirrored_positive": 1080,
+          "both_positive": 2107,
+          "both_negative": 2161,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.5396297065474821,
+          "odd_energy_fraction": 0.22552677395454976,
+          "odd_beta_l2": 0.34245340101701016,
+          "odd_position_l2": 2.191963237219236,
+          "both_directions_opposite_in_both_phase_orders": 6
+        }
+      ]
+    },
+    {
+      "block": 192,
+      "analytical_vs_production_max_error": 1.7763568394002505e-15,
+      "heads": [
+        {
+          "head_1based": 1,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 18,
+          "observed_negative_mirrored_positive": 14,
+          "both_positive": 6433,
+          "both_negative": 15,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.10479992014414563,
+          "odd_energy_fraction": 0.010863706916442084,
+          "odd_beta_l2": 0.4124066786984746,
+          "odd_position_l2": 0.582020483520996,
+          "both_directions_opposite_in_both_phase_orders": 2
+        },
+        {
+          "head_1based": 2,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 218,
+          "observed_negative_mirrored_positive": 247,
+          "both_positive": 2206,
+          "both_negative": 3809,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.057287166219708516,
+          "odd_energy_fraction": 0.0032710843055075538,
+          "odd_beta_l2": 0.11099723858837798,
+          "odd_position_l2": 0.4459972100475481,
+          "both_directions_opposite_in_both_phase_orders": 0
+        },
+        {
+          "head_1based": 3,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 0,
+          "observed_negative_mirrored_positive": 0,
+          "both_positive": 647,
+          "both_negative": 5833,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.03096644384424761,
+          "odd_energy_fraction": 0.0009580019964671912,
+          "odd_beta_l2": 0.09075850539489273,
+          "odd_position_l2": 0.566811634772115,
+          "both_directions_opposite_in_both_phase_orders": 0
+        },
+        {
+          "head_1based": 4,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 1081,
+          "observed_negative_mirrored_positive": 982,
+          "both_positive": 2153,
+          "both_negative": 2264,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.4237572104493649,
+          "odd_energy_fraction": 0.15223356562928475,
+          "odd_beta_l2": 0.10273967410028885,
+          "odd_position_l2": 0.1546666654716158,
+          "both_directions_opposite_in_both_phase_orders": 220
+        },
+        {
+          "head_1based": 5,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 601,
+          "observed_negative_mirrored_positive": 572,
+          "both_positive": 2558,
+          "both_negative": 2749,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.1687079945691459,
+          "odd_energy_fraction": 0.02767469941474888,
+          "odd_beta_l2": 0.1699556102685251,
+          "odd_position_l2": 0.3584961596740784,
+          "both_directions_opposite_in_both_phase_orders": 58
+        },
+        {
+          "head_1based": 6,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 333,
+          "observed_negative_mirrored_positive": 333,
+          "both_positive": 5519,
+          "both_negative": 295,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.09787306776403383,
+          "odd_energy_fraction": 0.009488248160786942,
+          "odd_beta_l2": 0.024877532858003953,
+          "odd_position_l2": 0.20031856673679738,
+          "both_directions_opposite_in_both_phase_orders": 2
+        },
+        {
+          "head_1based": 7,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 489,
+          "observed_negative_mirrored_positive": 485,
+          "both_positive": 2699,
+          "both_negative": 2807,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.08630044020305373,
+          "odd_energy_fraction": 0.007392706828826612,
+          "odd_beta_l2": 0.10473258082123896,
+          "odd_position_l2": 0.28641793906282953,
+          "both_directions_opposite_in_both_phase_orders": 8
+        },
+        {
+          "head_1based": 8,
+          "pairs": 6480,
+          "observed_positive_mirrored_negative": 522,
+          "observed_negative_mirrored_positive": 530,
+          "both_positive": 1840,
+          "both_negative": 3588,
+          "near_zero": 0,
+          "odd_over_even_l2": 0.09659391092723812,
+          "odd_energy_fraction": 0.009244132327295524,
+          "odd_beta_l2": 0.16117655603590056,
+          "odd_position_l2": 0.4391949782582097,
+          "both_directions_opposite_in_both_phase_orders": 6
+        }
+      ]
+    }
+  ],
+  "cases": [
+    {
+      "puzzle": 58,
+      "source_rc": [
+        3,
+        6
+      ],
+      "target_rc": [
+        3,
+        9
+      ],
+      "block": 4212,
+      "head_1based": 3,
+      "agree": 0.59394371509552,
+      "gain": 2.789472210911718,
+      "distance_decay": 0.8682366013526917,
+      "observed": 0.48397279243510316,
+      "mirrored": 0.4636076329267538,
+      "cached_G_reconstruction_error": 8.482891966643535e-08,
+      "observed_phase_even": 0.47379021268092847,
+      "observed_phase_odd": 0.010182579754174692,
+      "common_angle_cos_coefficient": 0.48390464959318125,
+      "common_angle_sin_coefficient": 0.1796822724230062,
+      "common_angle_samples": [
+        {
+          "relative_phase_degrees": 0,
+          "G_positive": 0.48390464959318125,
+          "G_negative": 0.48390464959318125
+        },
+        {
+          "relative_phase_degrees": 15,
+          "G_positive": 0.5139211926737891,
+          "G_negative": 0.4209108043330422
+        },
+        {
+          "relative_phase_degrees": 30,
+          "G_positive": 0.5089148557686052,
+          "G_negative": 0.329232583345599
+        },
+        {
+          "relative_phase_degrees": 45,
+          "G_positive": 0.4692268124643548,
+          "G_negative": 0.21511770588572232
+        },
+        {
+          "relative_phase_degrees": 60,
+          "G_positive": 0.39756173732463007,
+          "G_negative": 0.08634291226855126
+        },
+        {
+          "relative_phase_degrees": 90,
+          "G_positive": 0.17968227242300622,
+          "G_negative": -0.17968227242300616
+        },
+        {
+          "relative_phase_degrees": 120,
+          "G_positive": -0.08634291226855106,
+          "G_negative": -0.39756173732462996
+        },
+        {
+          "relative_phase_degrees": 150,
+          "G_positive": -0.329232583345599,
+          "G_negative": -0.5089148557686052
+        },
+        {
+          "relative_phase_degrees": 180,
+          "G_positive": -0.48390464959318125,
+          "G_negative": -0.48390464959318125
+        }
+      ],
+      "fixed_position_channel_odd_coefficient_l2": 0.2652036888805392,
+      "fixed_position_channel_even_coefficient_l2": 0.40987205008645927,
+      "observed_phase_odd_from_beta": -0.0014920471394983092,
+      "observed_phase_odd_from_position": 0.011674626893672988,
+      "same_physical_plus90_phase_G_forward": 0.1796822724230062,
+      "same_physical_plus90_phase_G_reverse": 0.25919880660153394
+    },
+    {
+      "puzzle": 209,
+      "source_rc": [
+        3,
+        1
+      ],
+      "target_rc": [
+        3,
+        2
+      ],
+      "block": 3778,
+      "head_1based": 3,
+      "agree": 0.41026464104652405,
+      "gain": 2.789472210911718,
+      "distance_decay": 0.9539948105812073,
+      "observed": 0.6740266534741856,
+      "mirrored": 0.5563196280615035,
+      "cached_G_reconstruction_error": 1.4597561270868198e-08,
+      "observed_phase_even": 0.6151731407678445,
+      "observed_phase_odd": 0.05885351270634104,
+      "common_angle_cos_coefficient": 0.6767182095028578,
+      "common_angle_sin_coefficient": -0.2797833053417097,
+      "common_angle_samples": [
+        {
+          "relative_phase_degrees": 0,
+          "G_positive": 0.6767182095028578,
+          "G_negative": 0.6767182095028578
+        },
+        {
+          "relative_phase_degrees": 15,
+          "G_positive": 0.5812463477547385,
+          "G_negative": 0.726072843603075
+        },
+        {
+          "relative_phase_degrees": 30,
+          "G_positive": 0.44616350796214,
+          "G_negative": 0.7259468133038496
+        },
+        {
+          "relative_phase_degrees": 45,
+          "G_positive": 0.28067536242198016,
+          "G_negative": 0.6763487073617989
+        },
+        {
+          "relative_phase_degrees": 60,
+          "G_positive": 0.09605965477072992,
+          "G_negative": 0.5806585547321279
+        },
+        {
+          "relative_phase_degrees": 90,
+          "G_positive": -0.27978330534170964,
+          "G_negative": 0.27978330534170975
+        },
+        {
+          "relative_phase_degrees": 120,
+          "G_positive": -0.5806585547321278,
+          "G_negative": -0.09605965477072967
+        },
+        {
+          "relative_phase_degrees": 150,
+          "G_positive": -0.7259468133038496,
+          "G_negative": -0.44616350796214
+        },
+        {
+          "relative_phase_degrees": 180,
+          "G_positive": -0.6767182095028578,
+          "G_negative": -0.6767182095028578
+        }
+      ],
+      "fixed_position_channel_odd_coefficient_l2": 0.13869977016830282,
+      "fixed_position_channel_even_coefficient_l2": 0.34409782187633564,
+      "observed_phase_odd_from_beta": -0.004392603201751932,
+      "observed_phase_odd_from_position": 0.06324611590809305,
+      "same_physical_plus90_phase_G_forward": -0.2797833053417097,
+      "same_physical_plus90_phase_G_reverse": -0.23136428837103254
+    },
+    {
+      "puzzle": 230,
+      "source_rc": [
+        6,
+        2
+      ],
+      "target_rc": [
+        4,
+        2
+      ],
+      "block": 3649,
+      "head_1based": 3,
+      "agree": 0.6335439682006836,
+      "gain": 2.789472210911718,
+      "distance_decay": 0.9101061224937439,
+      "observed": 0.9615670756881078,
+      "mirrored": 0.777042021801507,
+      "cached_G_reconstruction_error": 8.777929938474927e-08,
+      "observed_phase_even": 0.8693045487448074,
+      "observed_phase_odd": 0.0922625269433004,
+      "common_angle_cos_coefficient": 0.1378305388471327,
+      "common_angle_sin_coefficient": -0.15224866815131738,
+      "common_angle_samples": [
+        {
+          "relative_phase_degrees": 0,
+          "G_positive": 0.1378305388471327,
+          "G_negative": 0.1378305388471327
+        },
+        {
+          "relative_phase_degrees": 15,
+          "G_positive": 0.09372922221472968,
+          "G_negative": 0.1725389320328387
+        },
+        {
+          "relative_phase_degrees": 30,
+          "G_positive": 0.04324041398325619,
+          "G_negative": 0.19548908213457356
+        },
+        {
+          "relative_phase_degrees": 45,
+          "G_positive": -0.01019515700301346,
+          "G_negative": 0.20511697434982026
+        },
+        {
+          "relative_phase_degrees": 60,
+          "G_positive": -0.06293594488782127,
+          "G_negative": 0.20076648373495398
+        },
+        {
+          "relative_phase_degrees": 90,
+          "G_positive": -0.15224866815131738,
+          "G_negative": 0.15224866815131738
+        },
+        {
+          "relative_phase_degrees": 120,
+          "G_positive": -0.20076648373495398,
+          "G_negative": 0.06293594488782134
+        },
+        {
+          "relative_phase_degrees": 150,
+          "G_positive": -0.19548908213457356,
+          "G_negative": -0.04324041398325619
+        },
+        {
+          "relative_phase_degrees": 180,
+          "G_positive": -0.13783053884713273,
+          "G_negative": -0.13783053884713267
+        }
+      ],
+      "fixed_position_channel_odd_coefficient_l2": 0.19525805855264625,
+      "fixed_position_channel_even_coefficient_l2": 0.5730887695190767,
+      "observed_phase_odd_from_beta": 0.002699480477093046,
+      "observed_phase_odd_from_position": 0.08956304646620741,
+      "same_physical_plus90_phase_G_forward": -0.15224866815131738,
+      "same_physical_plus90_phase_G_reverse": -0.1748724771341305
+    }
+  ],
+  "checkpoint_sha256": "63f478a6563a9c8419db17bc1e44c223f364d1b3a2f2180e32fe4f1e02c9c0cd"
+}

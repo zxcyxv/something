@@ -1,0 +1,33 @@
+{
+  "source": "completed BF16 batch2048 seg1024 run",
+  "eligible_n": 78,
+  "selection": "first 12 original test indices; no internal-state selection",
+  "indices": [
+    38,
+    58,
+    72,
+    111,
+    128,
+    147,
+    209,
+    215,
+    222,
+    230,
+    240,
+    248
+  ],
+  "source_first_complete_segments": [
+    779,
+    350,
+    852,
+    334,
+    296,
+    579,
+    256,
+    571,
+    416,
+    698,
+    471,
+    361
+  ]
+}

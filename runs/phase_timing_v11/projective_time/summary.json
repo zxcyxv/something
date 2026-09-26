@@ -1,0 +1,5217 @@
+{
+  "protocol": {
+    "hypothesis": "z_next = a(k)*diag(lambda)*z + b*c(k), arbitrary complex scalars a(k),c(k), fixed complex lambda,b within each cell/time window",
+    "rationale": "A common-activity damped Fourier bank under arbitrary common time-dependent amplitude and phase gauges has this form. Unit address normalization is included.",
+    "necessary_condition": "For any three channels, the six time series Y_i*X_j (i!=j) have a constant linear dependence. Their temporal differences must therefore have rank <=5.",
+    "cell_selection": "Each late target plus fixed cells 0,8,40,72,80; same as the four-column test",
+    "triples_zero_based": [
+      [
+        0,
+        1,
+        2
+      ],
+      [
+        0,
+        17,
+        34
+      ],
+      [
+        0,
+        17,
+        35
+      ],
+      [
+        0,
+        18,
+        35
+      ],
+      [
+        1,
+        18,
+        35
+      ],
+      [
+        1,
+        18,
+        36
+      ],
+      [
+        1,
+        19,
+        36
+      ],
+      [
+        2,
+        19,
+        36
+      ],
+      [
+        2,
+        19,
+        37
+      ],
+      [
+        2,
+        20,
+        37
+      ],
+      [
+        3,
+        20,
+        37
+      ],
+      [
+        3,
+        20,
+        38
+      ],
+      [
+        3,
+        21,
+        38
+      ],
+      [
+        4,
+        21,
+        38
+      ],
+      [
+        4,
+        21,
+        39
+      ],
+      [
+        4,
+        22,
+        39
+      ],
+      [
+        5,
+        7,
+        11
+      ],
+      [
+        5,
+        22,
+        39
+      ],
+      [
+        5,
+        22,
+        40
+      ],
+      [
+        5,
+        23,
+        40
+      ],
+      [
+        6,
+        23,
+        40
+      ],
+      [
+        6,
+        23,
+        41
+      ],
+      [
+        6,
+        24,
+        41
+      ],
+      [
+        7,
+        24,
+        41
+      ],
+      [
+        7,
+        24,
+        42
+      ],
+      [
+        7,
+        25,
+        42
+      ],
+      [
+        8,
+        25,
+        42
+      ],
+      [
+        8,
+        25,
+        43
+      ],
+      [
+        8,
+        26,
+        43
+      ],
+      [
+        9,
+        26,
+        43
+      ],
+      [
+        9,
+        26,
+        44
+      ],
+      [
+        9,
+        27,
+        44
+      ],
+      [
+        10,
+        27,
+        44
+      ],
+      [
+        10,
+        27,
+        45
+      ],
+      [
+        10,
+        28,
+        45
+      ],
+      [
+        11,
+        28,
+        45
+      ],
+      [
+        11,
+        28,
+        46
+      ],
+      [
+        11,
+        29,
+        46
+      ],
+      [
+        12,
+        29,
+        46
+      ],
+      [
+        12,
+        29,
+        47
+      ],
+      [
+        12,
+        30,
+        47
+      ],
+      [
+        13,
+        30,
+        47
+      ],
+      [
+        13,
+        30,
+        48
+      ],
+      [
+        13,
+        31,
+        48
+      ],
+      [
+        14,
+        31,
+        48
+      ],
+      [
+        14,
+        31,
+        49
+      ],
+      [
+        14,
+        32,
+        49
+      ],
+      [
+        15,
+        32,
+        49
+      ],
+      [
+        15,
+        32,
+        50
+      ],
+      [
+        15,
+        33,
+        50
+      ],
+      [
+        16,
+        30,
+        45
+      ],
+      [
+        16,
+        33,
+        50
+      ],
+      [
+        16,
+        33,
+        51
+      ],
+      [
+        16,
+        34,
+        51
+      ],
+      [
+        17,
+        34,
+        51
+      ],
+      [
+        49,
+        50,
+        51
+      ]
+    ],
+    "criterion": "Active product differences exceed 1e-4 of level RMS; reject if sigma6/sigma1 > max(1e-3,10*conservative FP32 noise scale)",
+    "normalization": "Normalize each product-difference column to unit L2; no fitting to choose a favorable triple",
+    "scope": "No assumed frequency, input activity, gauge scale, or decay. Tests the native frequency coordinates; independent unconstrained inputs for every frequency are a different, unidentifiable model."
+  },
+  "positive_control": {
+    "active_triples": 56,
+    "total_triples": 56,
+    "triples_violating_necessary_identity": 0,
+    "sigma6_over_sigma1_quantiles": {
+      "min": 7.754023491068801e-10,
+      "p10": 1.363727996670499e-08,
+      "median": 1.528490032536613e-08,
+      "p90": 1.7723294178746498e-08,
+      "max": 1.880071431092975e-08
+    },
+    "threshold_max": 0.001,
+    "time_shuffled_control": {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 54,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 2.0969604401964877e-05,
+        "p10": 0.14998387629614363,
+        "median": 0.23424717615056923,
+        "p90": 0.3296220537888645,
+        "max": 0.37547561566963183
+      },
+      "threshold_max": 0.001
+    }
+  },
+  "cases": [
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.039724158155435216,
+        "p10": 0.09357749205999663,
+        "median": 0.2036035014854421,
+        "p90": 0.33490558037877804,
+        "max": 0.38327793408248956
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.014269689536550351,
+        "p10": 0.0787464149474233,
+        "median": 0.16788719916502207,
+        "p90": 0.27171975922522007,
+        "max": 0.41088521740245804
+      },
+      "threshold_max": 0.0011380927502046268,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05329053631716915,
+        "p10": 0.09661476770088256,
+        "median": 0.21307128019889313,
+        "p90": 0.28522600019197786,
+        "max": 0.39386111883673885
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05824085917154723,
+        "p10": 0.08521409576750169,
+        "median": 0.1353205403440879,
+        "p90": 0.20892354715752337,
+        "max": 0.3835328115431317
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06496533088671688,
+        "p10": 0.08559495788117841,
+        "median": 0.16246326761287866,
+        "p90": 0.23837853043739,
+        "max": 0.3180288850817843
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04134128107938749,
+        "p10": 0.07517025444990727,
+        "median": 0.17053549535675994,
+        "p90": 0.27767796037630743,
+        "max": 0.3945235344115892
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03267525819716573,
+        "p10": 0.06613237910361322,
+        "median": 0.1614862875025618,
+        "p90": 0.2947972408321946,
+        "max": 0.522970486001328
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.046867978430705635,
+        "p10": 0.09245979618768708,
+        "median": 0.21188693082943494,
+        "p90": 0.33698481482585574,
+        "max": 0.4586647530914009
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.052587865356374684,
+        "p10": 0.10277157605024236,
+        "median": 0.18027527537050997,
+        "p90": 0.3061250271580753,
+        "max": 0.4459500155833993
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02750348299665466,
+        "p10": 0.06245190057838752,
+        "median": 0.1590142763332752,
+        "p90": 0.29072797712232534,
+        "max": 0.48127961108258094
+      },
+      "threshold_max": 0.0013786506880210446,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06670279466622224,
+        "p10": 0.10283299579174843,
+        "median": 0.17621142250832103,
+        "p90": 0.2981609465981866,
+        "max": 0.4618067952381977
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.051119003726668985,
+        "p10": 0.09232091703466969,
+        "median": 0.164637780553975,
+        "p90": 0.26196436457123157,
+        "max": 0.37095020620712654
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08089587444489706,
+        "p10": 0.11218701511599155,
+        "median": 0.15796260617169575,
+        "p90": 0.24850421317609042,
+        "max": 0.3840809753498398
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.038860724116576296,
+        "p10": 0.07488987745374197,
+        "median": 0.1738094512871415,
+        "p90": 0.356582823364859,
+        "max": 0.4740894051532864
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03424097191476383,
+        "p10": 0.06368990789062884,
+        "median": 0.15614026347574794,
+        "p90": 0.2753184984117869,
+        "max": 0.48974882330973574
+      },
+      "threshold_max": 0.0010781297925095085,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04275005320504219,
+        "p10": 0.1001323422188941,
+        "median": 0.16505176917831924,
+        "p90": 0.31453217056713256,
+        "max": 0.4698384329149369
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07940069245258391,
+        "p10": 0.09821446594950348,
+        "median": 0.19494842485675107,
+        "p90": 0.35141247871629794,
+        "max": 0.4393400870479247
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.013452026780188584,
+        "p10": 0.04948895778871998,
+        "median": 0.20411870508933772,
+        "p90": 0.3260695067091005,
+        "max": 0.4327502467333594
+      },
+      "threshold_max": 0.0013081033349025442,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07284178498428613,
+        "p10": 0.106275473853907,
+        "median": 0.1927486821073379,
+        "p90": 0.31064721210917406,
+        "max": 0.39568038855483173
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05173075936804099,
+        "p10": 0.07023665954856806,
+        "median": 0.11723559302411238,
+        "p90": 0.23029915108101504,
+        "max": 0.45737615818751653
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05504626685431544,
+        "p10": 0.09994606428845218,
+        "median": 0.15965451351411622,
+        "p90": 0.25605468627866934,
+        "max": 0.47672085184034985
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.028003645886343513,
+        "p10": 0.05809802239068845,
+        "median": 0.19487707467831772,
+        "p90": 0.316835659577412,
+        "max": 0.45424271730154464
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.035611407681014395,
+        "p10": 0.07945341324277329,
+        "median": 0.15491966798040221,
+        "p90": 0.2650241706169305,
+        "max": 0.3590146283757079
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04403433811777262,
+        "p10": 0.11827093672082475,
+        "median": 0.18310333353075525,
+        "p90": 0.32193254010694367,
+        "max": 0.4153690346992603
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.058038400744490376,
+        "p10": 0.09934497465625282,
+        "median": 0.17033799326852894,
+        "p90": 0.3551679772658042,
+        "max": 0.5160519918176777
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.028245952208187385,
+        "p10": 0.05836473076813556,
+        "median": 0.16158490390640345,
+        "p90": 0.25378939069479045,
+        "max": 0.396996999323989
+      },
+      "threshold_max": 0.0011094983891682677,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07907636062015128,
+        "p10": 0.09442510627587639,
+        "median": 0.17913305797425522,
+        "p90": 0.29343965051913495,
+        "max": 0.41485006871773955
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06894150904770464,
+        "p10": 0.0960079705866288,
+        "median": 0.15253578960816405,
+        "p90": 0.261512842815536,
+        "max": 0.3798222250796739
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09335006387474715,
+        "p10": 0.1261754503137638,
+        "median": 0.1977177987270317,
+        "p90": 0.3206964343724753,
+        "max": 0.4427906417236524
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04055434502175852,
+        "p10": 0.07418662775453445,
+        "median": 0.18263567029666655,
+        "p90": 0.3091481187514992,
+        "max": 0.3851014806871719
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04395241925452337,
+        "p10": 0.08299091573852539,
+        "median": 0.1804602287757474,
+        "p90": 0.2794647780517281,
+        "max": 0.32588058094458555
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08036479925497343,
+        "p10": 0.0968918448511182,
+        "median": 0.17478249125394824,
+        "p90": 0.3575250987691373,
+        "max": 0.5236849454867767
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06584265553423707,
+        "p10": 0.07871399121887018,
+        "median": 0.185498493505646,
+        "p90": 0.306004714989493,
+        "max": 0.403729262140635
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.01731836457144694,
+        "p10": 0.06729971881421522,
+        "median": 0.2095108182378975,
+        "p90": 0.32267624380405235,
+        "max": 0.5006936185392326
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08156079255379466,
+        "p10": 0.10887522912018449,
+        "median": 0.19469132378434792,
+        "p90": 0.31138729887521993,
+        "max": 0.40840319759062993
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05994185085077356,
+        "p10": 0.09057166884346778,
+        "median": 0.144998518201423,
+        "p90": 0.25708796994367267,
+        "max": 0.35290277711371165
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10529152978486513,
+        "p10": 0.112145192397584,
+        "median": 0.17722209612414577,
+        "p90": 0.3434361040253814,
+        "max": 0.4420865122136085
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04407673213804927,
+        "p10": 0.07419181508466936,
+        "median": 0.21159381305170985,
+        "p90": 0.31232881727084527,
+        "max": 0.46412672324091075
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.054577661456877306,
+        "p10": 0.07862185913818648,
+        "median": 0.1427606496378091,
+        "p90": 0.25999882254611684,
+        "max": 0.36469270216423255
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.046877244325586084,
+        "p10": 0.0988672564874064,
+        "median": 0.1870128075568297,
+        "p90": 0.2766536755469974,
+        "max": 0.4552475060029676
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04661286529609135,
+        "p10": 0.07886782314096497,
+        "median": 0.15922098290522896,
+        "p90": 0.28166095795646306,
+        "max": 0.4366221522240219
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.013586021275745114,
+        "p10": 0.0791446082296455,
+        "median": 0.17944489000451527,
+        "p90": 0.329404376211038,
+        "max": 0.4947671482122285
+      },
+      "threshold_max": 0.001031931418825031,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05327046650119583,
+        "p10": 0.0975409114936478,
+        "median": 0.1736898713310541,
+        "p90": 0.2848901779199632,
+        "max": 0.41339253457460623
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05179372902524558,
+        "p10": 0.0803249392796764,
+        "median": 0.13060626403726838,
+        "p90": 0.212808427992784,
+        "max": 0.3231514142572725
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05430932249855661,
+        "p10": 0.08698228850574571,
+        "median": 0.13672436818747785,
+        "p90": 0.3386691382764508,
+        "max": 0.3603979989464397
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03940888723555692,
+        "p10": 0.06730978988428511,
+        "median": 0.16849506171145073,
+        "p90": 0.3382926606909738,
+        "max": 0.4819053987692611
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.039751326337019145,
+        "p10": 0.06877491948192412,
+        "median": 0.13949632164140968,
+        "p90": 0.24977551104341283,
+        "max": 0.39823465651610007
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05938921641390578,
+        "p10": 0.10327136401831351,
+        "median": 0.20676912214603554,
+        "p90": 0.28100758075082255,
+        "max": 0.3778132681649542
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03168443907407255,
+        "p10": 0.06989302792130594,
+        "median": 0.1283197750036528,
+        "p90": 0.2661714696398363,
+        "max": 0.35784123271167323
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.01915600102942879,
+        "p10": 0.03693731728869666,
+        "median": 0.13139908851033397,
+        "p90": 0.20809376477480832,
+        "max": 0.3933248749642234
+      },
+      "threshold_max": 0.0011757222042485358,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04490490259727876,
+        "p10": 0.0684822856921053,
+        "median": 0.12488365319736716,
+        "p90": 0.2190380380584272,
+        "max": 0.33517588445344815
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.050270603057174616,
+        "p10": 0.07056839464383126,
+        "median": 0.10409122258382106,
+        "p90": 0.1683230891597441,
+        "max": 0.2859364563761336
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0491360203751353,
+        "p10": 0.07185029492875408,
+        "median": 0.11499715347719139,
+        "p90": 0.21059445109898844,
+        "max": 0.40707834970851514
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02329849771371154,
+        "p10": 0.05018683575312558,
+        "median": 0.12375653380945936,
+        "p90": 0.19779370868903923,
+        "max": 0.34621229728033515
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.028910792048745318,
+        "p10": 0.0462662361304739,
+        "median": 0.12174044122214411,
+        "p90": 0.22008310352494828,
+        "max": 0.32434240946901977
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05360505959990251,
+        "p10": 0.08226129044674672,
+        "median": 0.14927810858042773,
+        "p90": 0.251293713001441,
+        "max": 0.3665831833377832
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.035551957472027544,
+        "p10": 0.05916858294219223,
+        "median": 0.09142254096066849,
+        "p90": 0.1475956194848076,
+        "max": 0.23717414904054487
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.013872705087992734,
+        "p10": 0.04202533471511728,
+        "median": 0.0983387329558193,
+        "p90": 0.18450001066565047,
+        "max": 0.2680531794035304
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.039079980774122676,
+        "p10": 0.06282407471622771,
+        "median": 0.10919830354628128,
+        "p90": 0.1724715233380033,
+        "max": 0.2600932462281744
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.028604540089574644,
+        "p10": 0.05942928155314239,
+        "median": 0.0877847548929965,
+        "p90": 0.1563388614181127,
+        "max": 0.23098716751961354
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04652842913610509,
+        "p10": 0.05708611710834373,
+        "median": 0.09413754585059797,
+        "p90": 0.17808729369579984,
+        "max": 0.2325942582526913
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.030374372058920504,
+        "p10": 0.054894703685912455,
+        "median": 0.09810765884063383,
+        "p90": 0.1754060581993967,
+        "max": 0.239053276742725
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03351025234190787,
+        "p10": 0.04794234479124833,
+        "median": 0.07829742135380491,
+        "p90": 0.11713874863405221,
+        "max": 0.18188006386460656
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.044881537043963415,
+        "p10": 0.063207518813583,
+        "median": 0.11585864614738388,
+        "p90": 0.20060592737346528,
+        "max": 0.3213129229802909
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.024337919984454094,
+        "p10": 0.034388838392706844,
+        "median": 0.05907445414201469,
+        "p90": 0.0897731761547661,
+        "max": 0.11288324159456686
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.00508745228068322,
+        "p10": 0.02040454171196568,
+        "median": 0.07768736495208815,
+        "p90": 0.1738764400110167,
+        "max": 0.34351312459700234
+      },
+      "threshold_max": 0.0019973749993548646,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.019405141142699703,
+        "p10": 0.031896234195952354,
+        "median": 0.05635207486664724,
+        "p90": 0.11551741141734836,
+        "max": 0.22040323068806073
+      },
+      "threshold_max": 0.0011820334167567008,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02287402812866972,
+        "p10": 0.028219520632482193,
+        "median": 0.045477021840638426,
+        "p90": 0.07377936974870414,
+        "max": 0.2349652548555709
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.01805256014324399,
+        "p10": 0.02919968721881158,
+        "median": 0.04674323904511246,
+        "p90": 0.09420987705076464,
+        "max": 0.14068449836710722
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.015309514162042756,
+        "p10": 0.022814659384508912,
+        "median": 0.045148806442569106,
+        "p90": 0.08088062305856436,
+        "max": 0.11084661261375683
+      },
+      "threshold_max": 0.0011151274841064958,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.01917491759953175,
+        "p10": 0.02234471272535618,
+        "median": 0.0485026096404157,
+        "p90": 0.09897526924675937,
+        "max": 0.10949678651797179
+      },
+      "threshold_max": 0.0017627161181438453,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.013317977112775733,
+        "p10": 0.0382891424464359,
+        "median": 0.0580173276582127,
+        "p90": 0.11788622374626292,
+        "max": 0.18591259992994916
+      },
+      "threshold_max": 0.0012092508261201834,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.032387491525550496,
+        "p10": 0.052165888407304586,
+        "median": 0.12009428898180682,
+        "p90": 0.2048407226993849,
+        "max": 0.23667454842527197
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02134268244502284,
+        "p10": 0.030352150810044203,
+        "median": 0.1221554977447406,
+        "p90": 0.19957968428948933,
+        "max": 0.3494002852775189
+      },
+      "threshold_max": 0.0010123602316319906,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03846405262160859,
+        "p10": 0.0677230780239007,
+        "median": 0.11732484731916545,
+        "p90": 0.2213128354654314,
+        "max": 0.3302386585246684
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03474771112448032,
+        "p10": 0.05492904599956351,
+        "median": 0.09385226689631802,
+        "p90": 0.16332690925069998,
+        "max": 0.19945429066196085
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05532035134928698,
+        "p10": 0.067893503869664,
+        "median": 0.1230075122119848,
+        "p90": 0.2005647148248655,
+        "max": 0.4446969388773955
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.026163569212101955,
+        "p10": 0.04829092093408645,
+        "median": 0.09694263938876306,
+        "p90": 0.19796053571281796,
+        "max": 0.30226916246306196
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.033302681576656445,
+        "p10": 0.05143591332539649,
+        "median": 0.09425747199185197,
+        "p90": 0.18717920605936333,
+        "max": 0.30167765094180976
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.059354064218296525,
+        "p10": 0.07950309535636332,
+        "median": 0.14633332146703673,
+        "p90": 0.2095217279279234,
+        "max": 0.2642890695349558
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0463299946826178,
+        "p10": 0.07465896357169473,
+        "median": 0.1519873532901162,
+        "p90": 0.23591166481167952,
+        "max": 0.4174306718547697
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.015293405230872779,
+        "p10": 0.03863132390167372,
+        "median": 0.18732619861801836,
+        "p90": 0.2473803103051398,
+        "max": 0.3887710815717784
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03295243753208812,
+        "p10": 0.07206929234207027,
+        "median": 0.14625002975215345,
+        "p90": 0.24669448173439237,
+        "max": 0.31203641355778244
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.046081995502559196,
+        "p10": 0.05843684749226771,
+        "median": 0.10289780341569679,
+        "p90": 0.21173601764109984,
+        "max": 0.3139878444030156
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04594877359253925,
+        "p10": 0.0674238229401648,
+        "median": 0.1066242894831016,
+        "p90": 0.1999898468945963,
+        "max": 0.33267021201045005
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0337987354504169,
+        "p10": 0.04272135661450399,
+        "median": 0.12898904113672457,
+        "p90": 0.24283113785341462,
+        "max": 0.3237574495898313
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02342530196464285,
+        "p10": 0.04581932573601435,
+        "median": 0.10031016370357443,
+        "p90": 0.2555938137457962,
+        "max": 0.32241781158489197
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.029608661078988026,
+        "p10": 0.0752454857333481,
+        "median": 0.1398865868876381,
+        "p90": 0.2457839224902466,
+        "max": 0.5481540906499355
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02293556946124519,
+        "p10": 0.06416508061158753,
+        "median": 0.12326495976655275,
+        "p90": 0.19386442875494114,
+        "max": 0.26665419829146986
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.008068729316792766,
+        "p10": 0.04312606748525338,
+        "median": 0.09821772938877185,
+        "p90": 0.24244958819019247,
+        "max": 0.34875407072951004
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03387677182754268,
+        "p10": 0.06578337181280353,
+        "median": 0.11712518009777209,
+        "p90": 0.23524636024859855,
+        "max": 0.3999042237015346
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04208425215088931,
+        "p10": 0.05186457475016798,
+        "median": 0.08710170779327968,
+        "p90": 0.16526583697347755,
+        "max": 0.28269754926880303
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0434566834536307,
+        "p10": 0.060919966113090716,
+        "median": 0.09309572573796596,
+        "p90": 0.2156425213594665,
+        "max": 0.29604030026686873
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02429563357162395,
+        "p10": 0.039858350614780394,
+        "median": 0.08134186289964829,
+        "p90": 0.15237935517509069,
+        "max": 0.45023674364943905
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.026480568130803815,
+        "p10": 0.04839070403075815,
+        "median": 0.08856161753785705,
+        "p90": 0.15219495114869436,
+        "max": 0.27033826834385855
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.020813521615289272,
+        "p10": 0.06759389310120152,
+        "median": 0.09805157133939484,
+        "p90": 0.29086214457195675,
+        "max": 0.361708830090531
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03108531205707051,
+        "p10": 0.04827927891764885,
+        "median": 0.11815832019514363,
+        "p90": 0.20968275189774438,
+        "max": 0.2641050275122905
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02556821816969497,
+        "p10": 0.03746069539986312,
+        "median": 0.12505628239824432,
+        "p90": 0.2314984940258426,
+        "max": 0.3498373082103569
+      },
+      "threshold_max": 0.0011344392313745776,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04042143248695471,
+        "p10": 0.06936163257958444,
+        "median": 0.12005556193656185,
+        "p90": 0.20875094832055632,
+        "max": 0.37459060639212205
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04099320000382731,
+        "p10": 0.05635105950898485,
+        "median": 0.09015754791662978,
+        "p90": 0.1632520064612712,
+        "max": 0.19312778494682536
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.034352974835037214,
+        "p10": 0.0565658207292499,
+        "median": 0.10001584958378451,
+        "p90": 0.16543820091313943,
+        "max": 0.27098831786983324
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02540981991357532,
+        "p10": 0.03414447122934021,
+        "median": 0.09312804217267501,
+        "p90": 0.19228968481914196,
+        "max": 0.4049232206829135
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04154847161568953,
+        "p10": 0.04871368887931661,
+        "median": 0.10349362531899803,
+        "p90": 0.19759857856986895,
+        "max": 0.30012864994294164
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.054076263612798006,
+        "p10": 0.07743143977121011,
+        "median": 0.12002564869718865,
+        "p90": 0.18659604741076635,
+        "max": 0.24124539081733024
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04352011153198547,
+        "p10": 0.05793194004258244,
+        "median": 0.1239027502983678,
+        "p90": 0.2788641440491901,
+        "max": 0.3268906052066513
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.011298518683168939,
+        "p10": 0.04200340549687556,
+        "median": 0.10160224690751762,
+        "p90": 0.17087908808758642,
+        "max": 0.31294929470013194
+      },
+      "threshold_max": 0.0013536374705708017,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03991729866838697,
+        "p10": 0.06404585155865537,
+        "median": 0.12822992024195806,
+        "p90": 0.25537818198997175,
+        "max": 0.37112143772010664
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03546194126729122,
+        "p10": 0.05381398550288133,
+        "median": 0.0949550608004214,
+        "p90": 0.20157584161526945,
+        "max": 0.2914857575290747
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04748701088426366,
+        "p10": 0.05596789563896644,
+        "median": 0.10123543897161447,
+        "p90": 0.1754709390438811,
+        "max": 0.2527741094101351
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.028955042391717215,
+        "p10": 0.049791245641261014,
+        "median": 0.10064018196624157,
+        "p90": 0.1486520187474089,
+        "max": 0.31793839374683475
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.02074444098086543,
+        "p10": 0.04293111199479153,
+        "median": 0.08934267046411146,
+        "p90": 0.1587066443474478,
+        "max": 0.3947315885016662
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.023646975115154376,
+        "p10": 0.06752554437977881,
+        "median": 0.11626970338397823,
+        "p90": 0.2228208258944837,
+        "max": 0.28450620219936307
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.047981116963544145,
+        "p10": 0.08952594373884448,
+        "median": 0.2046423778002734,
+        "p90": 0.3160614846091485,
+        "max": 0.41908157610014546
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.018087197359270838,
+        "p10": 0.06625984217088077,
+        "median": 0.18534820424867615,
+        "p90": 0.31931984463784713,
+        "max": 0.46865433327936906
+      },
+      "threshold_max": 0.0012444042099397274,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06671409656776003,
+        "p10": 0.1112737477329924,
+        "median": 0.1958647726294508,
+        "p90": 0.3298716451091612,
+        "max": 0.45312299283426694
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04833904494105645,
+        "p10": 0.09881962024985638,
+        "median": 0.147229301811526,
+        "p90": 0.2276872461188761,
+        "max": 0.2768503127890563
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07192567472708829,
+        "p10": 0.09316522856269338,
+        "median": 0.15374353412327196,
+        "p90": 0.2288974635010681,
+        "max": 0.35650893674382916
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05063269064229687,
+        "p10": 0.07242124560797111,
+        "median": 0.18661691091344348,
+        "p90": 0.31681971330563385,
+        "max": 0.4465135458175322
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03669051203947,
+        "p10": 0.06755270580228744,
+        "median": 0.1678459847219103,
+        "p90": 0.288952828749231,
+        "max": 0.5638053601422782
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.058411582530619725,
+        "p10": 0.10809435719820422,
+        "median": 0.18768820299923888,
+        "p90": 0.3340864934569078,
+        "max": 0.4117774211153065
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04141810368013008,
+        "p10": 0.10111037605329978,
+        "median": 0.18643017394381242,
+        "p90": 0.3032363727619578,
+        "max": 0.41226883112963564
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.031841141479757945,
+        "p10": 0.044283461427226486,
+        "median": 0.2208603796055642,
+        "p90": 0.3416944570647844,
+        "max": 0.5392816047750507
+      },
+      "threshold_max": 0.0010798242272646325,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05431804050446544,
+        "p10": 0.10172231191539524,
+        "median": 0.16270001604582696,
+        "p90": 0.25282537547442563,
+        "max": 0.3533975511933798
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.056318960102792144,
+        "p10": 0.08802827199504032,
+        "median": 0.13488066039260604,
+        "p90": 0.22891939268216738,
+        "max": 0.3268571291915831
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07620570063664943,
+        "p10": 0.10792802924363966,
+        "median": 0.16530365591191012,
+        "p90": 0.27478104438569195,
+        "max": 0.3443889392883188
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03541596578871831,
+        "p10": 0.06174170898589435,
+        "median": 0.1670926688039443,
+        "p90": 0.24026934764696098,
+        "max": 0.32229480136966937
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.027049626078625398,
+        "p10": 0.06914558275825695,
+        "median": 0.13790313185974637,
+        "p90": 0.24831121129290012,
+        "max": 0.33580855430721396
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06988017600589243,
+        "p10": 0.09594310358145394,
+        "median": 0.2032136046582507,
+        "p90": 0.30259231450512036,
+        "max": 0.3582098644496483
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.041307817687441475,
+        "p10": 0.08977790498258278,
+        "median": 0.1625373904163549,
+        "p90": 0.28105668493703734,
+        "max": 0.350113436220793
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.018069783321651576,
+        "p10": 0.0645102879989359,
+        "median": 0.16132964728119636,
+        "p90": 0.34498979670343244,
+        "max": 0.43246568066643726
+      },
+      "threshold_max": 0.0010680525573999256,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05987157225160224,
+        "p10": 0.10187060946560585,
+        "median": 0.14989736515730867,
+        "p90": 0.24921510057074708,
+        "max": 0.2903906183753066
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04328440048591024,
+        "p10": 0.08040683876637189,
+        "median": 0.14089825501820258,
+        "p90": 0.21445495618607607,
+        "max": 0.29923564565795596
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06607315301870242,
+        "p10": 0.0895305309888835,
+        "median": 0.1463215799313225,
+        "p90": 0.2558125203454269,
+        "max": 0.32428683379003104
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03301457464327631,
+        "p10": 0.07103943713376532,
+        "median": 0.15941297069621851,
+        "p90": 0.31025485018266524,
+        "max": 0.5027489470172405
+      },
+      "threshold_max": 0.0010475212361160504,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03398435936747353,
+        "p10": 0.0627725245541093,
+        "median": 0.12373082923452752,
+        "p90": 0.20626333332977592,
+        "max": 0.25203339857425816
+      },
+      "threshold_max": 0.0011245388585657216,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03773191797448035,
+        "p10": 0.10370838780481176,
+        "median": 0.18163842160149613,
+        "p90": 0.2999239485912193,
+        "max": 0.3806441993973713
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06782319623290506,
+        "p10": 0.10797444788116536,
+        "median": 0.1906170735231387,
+        "p90": 0.36555384581712214,
+        "max": 0.48687269789955756
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.012831926648527886,
+        "p10": 0.0659988238880243,
+        "median": 0.18292188243638258,
+        "p90": 0.3018364590414496,
+        "max": 0.3249904561896614
+      },
+      "threshold_max": 0.0014191504104204414,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06769955803893832,
+        "p10": 0.10996769822894961,
+        "median": 0.17610280112090415,
+        "p90": 0.31910486406194044,
+        "max": 0.46596047013856196
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05811571879021732,
+        "p10": 0.09608656064123342,
+        "median": 0.1533336382654077,
+        "p90": 0.25230588334162674,
+        "max": 0.3560303626405632
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07022616090671878,
+        "p10": 0.10612176494740465,
+        "median": 0.18488273406391892,
+        "p90": 0.2825582613005768,
+        "max": 0.41377309039744686
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04298783364941313,
+        "p10": 0.07847893050320368,
+        "median": 0.1692593472588793,
+        "p90": 0.30571194784752886,
+        "max": 0.3705533978826624
+      },
+      "threshold_max": 0.0011057225235381394,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04837830964742415,
+        "p10": 0.08596486041205548,
+        "median": 0.18923887976815973,
+        "p90": 0.34225641005739316,
+        "max": 0.539426058203916
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.049631626699690234,
+        "p10": 0.10285544030944385,
+        "median": 0.20042009300337596,
+        "p90": 0.2998560748439738,
+        "max": 0.3920895784631328
+      },
+      "threshold_max": 0.001,
+      "file": "early_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07839861520027808,
+        "p10": 0.13259559266602833,
+        "median": 0.2390293620065313,
+        "p90": 0.34105250755275385,
+        "max": 0.4771735081698839
+      },
+      "threshold_max": 0.0021043754265981816,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06088245837752133,
+        "p10": 0.09665635702401253,
+        "median": 0.24206688814641053,
+        "p90": 0.3591867074403766,
+        "max": 0.611802525419845
+      },
+      "threshold_max": 0.0019511144365288958,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10019361420812146,
+        "p10": 0.13921943861010527,
+        "median": 0.25416536613728347,
+        "p90": 0.36782378481089184,
+        "max": 0.4813279901043264
+      },
+      "threshold_max": 0.001773852188236307,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09488230347655925,
+        "p10": 0.14635405561115783,
+        "median": 0.23263117295914643,
+        "p90": 0.35426342465972827,
+        "max": 0.4578815423978918
+      },
+      "threshold_max": 0.0024018566185839262,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.1019310109147878,
+        "p10": 0.15860300253680554,
+        "median": 0.2314688685632913,
+        "p90": 0.3557446371133175,
+        "max": 0.418543893613609
+      },
+      "threshold_max": 0.0021198107983203987,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08050975383994555,
+        "p10": 0.12234102645187576,
+        "median": 0.23109534466930154,
+        "p90": 0.33779064272323023,
+        "max": 0.37852008957053873
+      },
+      "threshold_max": 0.00225316292074037,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09278387542428339,
+        "p10": 0.13402631931343484,
+        "median": 0.24373604652217934,
+        "p90": 0.4076384234612416,
+        "max": 0.48626391400760616
+      },
+      "threshold_max": 0.0024121384764386974,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.053660892239362795,
+        "p10": 0.09783419930754228,
+        "median": 0.24748482454497278,
+        "p90": 0.37003828436332087,
+        "max": 0.6424765107133947
+      },
+      "threshold_max": 0.0024637726776898508,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 26,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.11596736603017951,
+        "p10": 0.15082719909585307,
+        "median": 0.23323217120018808,
+        "p90": 0.3348960601494987,
+        "max": 0.4650594024456299
+      },
+      "threshold_max": 0.0024131709668715464,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06288890490263092,
+        "p10": 0.13347172487315095,
+        "median": 0.24348257065164788,
+        "p90": 0.4143670890507636,
+        "max": 0.5473484178154617
+      },
+      "threshold_max": 0.002386574651945476,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05122375547737413,
+        "p10": 0.15980406266748642,
+        "median": 0.2465840095332064,
+        "p90": 0.3227047561349667,
+        "max": 0.45654791202672335
+      },
+      "threshold_max": 0.0026027437193230077,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09347682353908324,
+        "p10": 0.1212443154589135,
+        "median": 0.2315377988421964,
+        "p90": 0.33839721683176194,
+        "max": 0.4214911589689102
+      },
+      "threshold_max": 0.0029140573987289147,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08337868071399962,
+        "p10": 0.15404399444261152,
+        "median": 0.23793373448314503,
+        "p90": 0.36466336652663245,
+        "max": 0.41494299787312655
+      },
+      "threshold_max": 0.0024226990241342124,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07669535109467182,
+        "p10": 0.13553545772079,
+        "median": 0.25924978329087356,
+        "p90": 0.3704644187846463,
+        "max": 0.5187679542398901
+      },
+      "threshold_max": 0.0026357445692982403,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10123320771328793,
+        "p10": 0.13874581997282015,
+        "median": 0.23248466409440793,
+        "p90": 0.40517002595137563,
+        "max": 0.5277980244011969
+      },
+      "threshold_max": 0.0027408386295031065,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09037917311357296,
+        "p10": 0.12952097183646077,
+        "median": 0.24615759850146252,
+        "p90": 0.3778130869208157,
+        "max": 0.5218616897777182
+      },
+      "threshold_max": 0.002793079648537235,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 0,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08825816847606589,
+        "p10": 0.1354882689971738,
+        "median": 0.24712414329918514,
+        "p90": 0.3433132850298991,
+        "max": 0.4805922856718247
+      },
+      "threshold_max": 0.0025625760495561114,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03789579749457741,
+        "p10": 0.12263325217903763,
+        "median": 0.2452805515009296,
+        "p90": 0.37399701455276785,
+        "max": 0.4754129435892406
+      },
+      "threshold_max": 0.002972002852359667,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.13893862856949166,
+        "p10": 0.15778527029074257,
+        "median": 0.23091361424954815,
+        "p90": 0.3667395102279111,
+        "max": 0.4026896394524436
+      },
+      "threshold_max": 0.0027054045411166005,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08715391784258873,
+        "p10": 0.14313983323884333,
+        "median": 0.24038616846705074,
+        "p90": 0.35596024310077734,
+        "max": 0.4240710265619173
+      },
+      "threshold_max": 0.0022343370871928236,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0786467848642041,
+        "p10": 0.16503472506302685,
+        "median": 0.25114961453947937,
+        "p90": 0.3158054743486157,
+        "max": 0.4710892726759699
+      },
+      "threshold_max": 0.002656477071532361,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0634614298457648,
+        "p10": 0.12778474644816923,
+        "median": 0.224504294182013,
+        "p90": 0.3919925345686852,
+        "max": 0.5123942025055596
+      },
+      "threshold_max": 0.002892929093081438,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05499902949844536,
+        "p10": 0.11990897464005655,
+        "median": 0.23350935033174167,
+        "p90": 0.35011841928076803,
+        "max": 0.46785909079844706
+      },
+      "threshold_max": 0.002339320498825256,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04707115077600291,
+        "p10": 0.10784949622900658,
+        "median": 0.2590854055844307,
+        "p90": 0.3285282232378288,
+        "max": 0.45324002101867367
+      },
+      "threshold_max": 0.0027088929051081612,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 8,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10409362797946106,
+        "p10": 0.16081227719756297,
+        "median": 0.24527229136083317,
+        "p90": 0.3566123315884093,
+        "max": 0.4183390538370184
+      },
+      "threshold_max": 0.002413016699153376,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07429626474046089,
+        "p10": 0.12321227857838182,
+        "median": 0.2290301172468003,
+        "p90": 0.34372875120457314,
+        "max": 0.41573577656020755
+      },
+      "threshold_max": 0.00231082307011393,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06613606031656954,
+        "p10": 0.15400049145254657,
+        "median": 0.23243416072812267,
+        "p90": 0.3331619133385922,
+        "max": 0.40457541213840553
+      },
+      "threshold_max": 0.0019489336002802607,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.1035044888576709,
+        "p10": 0.1526702561812352,
+        "median": 0.22036046733862985,
+        "p90": 0.3325094248581767,
+        "max": 0.5385739201879156
+      },
+      "threshold_max": 0.002519168394298269,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09998227498493156,
+        "p10": 0.16906050371984055,
+        "median": 0.2532284276109127,
+        "p90": 0.3341691118653508,
+        "max": 0.4140950700394402
+      },
+      "threshold_max": 0.002489616551232573,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08374807266172136,
+        "p10": 0.1311139904395222,
+        "median": 0.2026963989778396,
+        "p90": 0.3426063358335882,
+        "max": 0.37502406462696564
+      },
+      "threshold_max": 0.0021138631324976306,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06595256979847477,
+        "p10": 0.12170919359313224,
+        "median": 0.23974096164434328,
+        "p90": 0.354645474658866,
+        "max": 0.5017822846152699
+      },
+      "threshold_max": 0.0021160608737966903,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05900208916147703,
+        "p10": 0.14226821605006412,
+        "median": 0.23550411157856221,
+        "p90": 0.3441691440135735,
+        "max": 0.3896392706033991
+      },
+      "threshold_max": 0.001987275134509233,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 40,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.12881319273348052,
+        "p10": 0.16696243824715695,
+        "median": 0.25576783724816954,
+        "p90": 0.3752566555684882,
+        "max": 0.47221645607162926
+      },
+      "threshold_max": 0.0022090423105355513,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03178297984957693,
+        "p10": 0.132992608003269,
+        "median": 0.23021787521149129,
+        "p90": 0.36891610502665506,
+        "max": 0.4441036596022973
+      },
+      "threshold_max": 0.001938738206173443,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.15622496971776595,
+        "p10": 0.22594353095936742,
+        "median": 0.3031258724452924,
+        "p90": 0.3903250559682889,
+        "max": 0.529518681540204
+      },
+      "threshold_max": 0.0024612470857367343,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.11495503353247831,
+        "p10": 0.15092963513550434,
+        "median": 0.2333808196954658,
+        "p90": 0.32878573548880224,
+        "max": 0.3988559637073049
+      },
+      "threshold_max": 0.002428231740774783,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.15615971192657316,
+        "p10": 0.20174232116107343,
+        "median": 0.2931294160222794,
+        "p90": 0.36858334383712016,
+        "max": 0.44270199538572935
+      },
+      "threshold_max": 0.0020617384848390444,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09398057508188953,
+        "p10": 0.16491355787410827,
+        "median": 0.2666920558953405,
+        "p90": 0.37612658221250683,
+        "max": 0.4363742825359836
+      },
+      "threshold_max": 0.0028644921234216147,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10004475735122485,
+        "p10": 0.14065395341363365,
+        "median": 0.23986046270423828,
+        "p90": 0.3313515971468823,
+        "max": 0.39257089043076765
+      },
+      "threshold_max": 0.002614546243916274,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09771306598027406,
+        "p10": 0.1557721859009838,
+        "median": 0.2795117363927236,
+        "p90": 0.38641940019529897,
+        "max": 0.4433554814282298
+      },
+      "threshold_max": 0.002416725407525054,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 72,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08161358279464184,
+        "p10": 0.1471905409002574,
+        "median": 0.2296855454124238,
+        "p90": 0.32694985440659075,
+        "max": 0.3654924225111162
+      },
+      "threshold_max": 0.0023316288206383065,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05681795250833465,
+        "p10": 0.12370505424415583,
+        "median": 0.22927132958647883,
+        "p90": 0.3402924113584206,
+        "max": 0.43987208749882334
+      },
+      "threshold_max": 0.0024474703781360296,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10477576311342092,
+        "p10": 0.1430282436571947,
+        "median": 0.22773848773428593,
+        "p90": 0.3319740145546827,
+        "max": 0.46012237659658894
+      },
+      "threshold_max": 0.0019223564818249017,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05151879338332344,
+        "p10": 0.11211740662946554,
+        "median": 0.21558064916457387,
+        "p90": 0.31588284928676824,
+        "max": 0.3744894763057827
+      },
+      "threshold_max": 0.002729966404941153,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09297457415587945,
+        "p10": 0.13291729428353205,
+        "median": 0.24680408080890162,
+        "p90": 0.3355292571995826,
+        "max": 0.46464362712343876
+      },
+      "threshold_max": 0.0022665852949635907,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.043564602134823535,
+        "p10": 0.09971312588644522,
+        "median": 0.2347581820513407,
+        "p90": 0.358338135993007,
+        "max": 0.5876214264253223
+      },
+      "threshold_max": 0.0023775660199024233,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06255775899872235,
+        "p10": 0.12128749038302974,
+        "median": 0.20887932185800706,
+        "p90": 0.3111469779795458,
+        "max": 0.5489380684531575
+      },
+      "threshold_max": 0.00244160889460158,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08455683586615624,
+        "p10": 0.12575423757957946,
+        "median": 0.21271112701452544,
+        "p90": 0.353204423885902,
+        "max": 0.42387867851891675
+      },
+      "threshold_max": 0.0018353081314906412,
+      "file": "late_58_puzzle_58_raw.npy",
+      "puzzle": 58,
+      "cell": 80,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07150700343169412,
+        "p10": 0.11134321745601763,
+        "median": 0.19659644092514714,
+        "p90": 0.2868468929533453,
+        "max": 0.35296322773795025
+      },
+      "threshold_max": 0.0022894046830367063,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.041377912840766126,
+        "p10": 0.10282761918535699,
+        "median": 0.14975167011909496,
+        "p90": 0.29605790146550526,
+        "max": 0.4330204918440267
+      },
+      "threshold_max": 0.0016770798134619876,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08488453176803111,
+        "p10": 0.11651427029997413,
+        "median": 0.1808415483377634,
+        "p90": 0.2675025818180803,
+        "max": 0.43135647894759627
+      },
+      "threshold_max": 0.0017632691621411968,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08227143474837775,
+        "p10": 0.12091387056558922,
+        "median": 0.1689345197443669,
+        "p90": 0.24150180262955762,
+        "max": 0.2930431358770759
+      },
+      "threshold_max": 0.002163341218926227,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10026498422511904,
+        "p10": 0.13075551423164697,
+        "median": 0.21492639468521135,
+        "p90": 0.29690547206326184,
+        "max": 0.32749625167436225
+      },
+      "threshold_max": 0.0018934044088791306,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0640871599525849,
+        "p10": 0.10501327711016051,
+        "median": 0.1896113209549728,
+        "p90": 0.30558378291468946,
+        "max": 0.38605150868423715
+      },
+      "threshold_max": 0.0020570536269643833,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04752430059570183,
+        "p10": 0.10216780500775346,
+        "median": 0.18902688920210267,
+        "p90": 0.29598854135056063,
+        "max": 0.47590736244927667
+      },
+      "threshold_max": 0.001905692382641051,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08387863824665566,
+        "p10": 0.10169750822366051,
+        "median": 0.18232169328298087,
+        "p90": 0.2784622303167184,
+        "max": 0.35053745004811265
+      },
+      "threshold_max": 0.0014157368927576197,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 19,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.1250933071155256,
+        "p10": 0.1481891636201411,
+        "median": 0.21234031676531873,
+        "p90": 0.2867665170913899,
+        "max": 0.42833828836863314
+      },
+      "threshold_max": 0.0013572211803851452,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10141707187979976,
+        "p10": 0.12242667529306098,
+        "median": 0.19717308540062267,
+        "p90": 0.3554867510110822,
+        "max": 0.4757322075127385
+      },
+      "threshold_max": 0.0017893685777194712,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09294705215161411,
+        "p10": 0.1223008206801979,
+        "median": 0.18529163511185015,
+        "p90": 0.25396556977106544,
+        "max": 0.34476615260125726
+      },
+      "threshold_max": 0.001953402012575593,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06323902359642636,
+        "p10": 0.13918199572553547,
+        "median": 0.201206147758048,
+        "p90": 0.2714897643098452,
+        "max": 0.3733676204831602
+      },
+      "threshold_max": 0.0018253182068777738,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.1043277816473736,
+        "p10": 0.14249307503066527,
+        "median": 0.19944992249912638,
+        "p90": 0.32694742701245094,
+        "max": 0.41648964276148887
+      },
+      "threshold_max": 0.0014697549342423974,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07218498455162713,
+        "p10": 0.10985694351309089,
+        "median": 0.1920915197306333,
+        "p90": 0.28623952657202545,
+        "max": 0.3596981580508287
+      },
+      "threshold_max": 0.0018862791130421312,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0679565358027794,
+        "p10": 0.12460409819043419,
+        "median": 0.19533117512195303,
+        "p90": 0.27431728303674985,
+        "max": 0.360417574676111
+      },
+      "threshold_max": 0.0019856038598260683,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.061224936835189966,
+        "p10": 0.11334081926876718,
+        "median": 0.1906081724309634,
+        "p90": 0.28748605330927746,
+        "max": 0.3911821802819777
+      },
+      "threshold_max": 0.0018728088253324774,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 0,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.053559541683211906,
+        "p10": 0.07311441359011213,
+        "median": 0.1217961902743465,
+        "p90": 0.2036503375643244,
+        "max": 0.2630911678532245
+      },
+      "threshold_max": 0.0015272543692174657,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05291637184970262,
+        "p10": 0.07340307775240751,
+        "median": 0.14676952033423485,
+        "p90": 0.2274786474829412,
+        "max": 0.3497623317508138
+      },
+      "threshold_max": 0.001699014441652556,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.052831906963531565,
+        "p10": 0.06564675983051077,
+        "median": 0.12445868847218414,
+        "p90": 0.20299036787057007,
+        "max": 0.27717120889577557
+      },
+      "threshold_max": 0.0011838825998291517,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06442144506960654,
+        "p10": 0.0911691824135373,
+        "median": 0.13669945796288557,
+        "p90": 0.2047175470075303,
+        "max": 0.2476934878860844
+      },
+      "threshold_max": 0.001507110327161577,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.028114893610142522,
+        "p10": 0.07060629571613987,
+        "median": 0.13218304686877824,
+        "p90": 0.20853834821556635,
+        "max": 0.295712400051245
+      },
+      "threshold_max": 0.0015493290887851462,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04212599398751879,
+        "p10": 0.054356402351108515,
+        "median": 0.11975913492676854,
+        "p90": 0.19611957013858985,
+        "max": 0.23605811249788383
+      },
+      "threshold_max": 0.0019995229651944653,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03807295865597071,
+        "p10": 0.07485991292166848,
+        "median": 0.11881664968763002,
+        "p90": 0.23524155291792412,
+        "max": 0.3490359849924044
+      },
+      "threshold_max": 0.0017692427034322292,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04038321979375755,
+        "p10": 0.05897488502060676,
+        "median": 0.13676829462188783,
+        "p90": 0.23555320013983866,
+        "max": 0.3049056209062622
+      },
+      "threshold_max": 0.0017414340069937145,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 8,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05828949106984099,
+        "p10": 0.09675316756933536,
+        "median": 0.15711869581064652,
+        "p90": 0.24219921120079207,
+        "max": 0.3291548721943118
+      },
+      "threshold_max": 0.0017285154215448484,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.048653029612287374,
+        "p10": 0.0706941846372677,
+        "median": 0.12174842845633482,
+        "p90": 0.21905296980752595,
+        "max": 0.33182720601499843
+      },
+      "threshold_max": 0.0012943960949792863,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06754349592933703,
+        "p10": 0.09454614953083613,
+        "median": 0.14480518482568283,
+        "p90": 0.22761901922013877,
+        "max": 0.2638294814564343
+      },
+      "threshold_max": 0.0013903658496826666,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05320902255765965,
+        "p10": 0.09043094826796128,
+        "median": 0.16224622773044775,
+        "p90": 0.23758657850384274,
+        "max": 0.2968981538004771
+      },
+      "threshold_max": 0.0018432730049658748,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08617454250125939,
+        "p10": 0.1185490323595654,
+        "median": 0.16601054263937814,
+        "p90": 0.21477512741565918,
+        "max": 0.26714796748375114
+      },
+      "threshold_max": 0.001791601460622809,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05235934143289612,
+        "p10": 0.07511431570263041,
+        "median": 0.16165359635912602,
+        "p90": 0.24999736316473103,
+        "max": 0.32607638602798905
+      },
+      "threshold_max": 0.001607912894949329,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.049372403292198344,
+        "p10": 0.08437425429402966,
+        "median": 0.14142952536853107,
+        "p90": 0.24551093619342484,
+        "max": 0.353258271031334
+      },
+      "threshold_max": 0.0018136969642094636,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04458051392600083,
+        "p10": 0.08210413375042488,
+        "median": 0.15930297004473368,
+        "p90": 0.24028123957678788,
+        "max": 0.3034653346644681
+      },
+      "threshold_max": 0.0013812864214173548,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 40,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.034683476739898994,
+        "p10": 0.10998629682475755,
+        "median": 0.15247877852889508,
+        "p90": 0.24751455044471427,
+        "max": 0.38867735563201583
+      },
+      "threshold_max": 0.001739560084202669,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.025134963354158366,
+        "p10": 0.0866418436491146,
+        "median": 0.17066846170773986,
+        "p90": 0.27232193089306395,
+        "max": 0.3482884571123902
+      },
+      "threshold_max": 0.001313433529488372,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09570661978757738,
+        "p10": 0.11056649542175323,
+        "median": 0.16279663956098964,
+        "p90": 0.2693649685541991,
+        "max": 0.31772112492099186
+      },
+      "threshold_max": 0.001725988448667697,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08320786763864549,
+        "p10": 0.12189023526039122,
+        "median": 0.18470164189410965,
+        "p90": 0.2512401537063238,
+        "max": 0.3058637098221173
+      },
+      "threshold_max": 0.001518743813300962,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07843453319006997,
+        "p10": 0.12255241371874753,
+        "median": 0.19260688610669294,
+        "p90": 0.2546359215912818,
+        "max": 0.2901489408628223
+      },
+      "threshold_max": 0.0017211742853736464,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05043495815885084,
+        "p10": 0.10389730146989778,
+        "median": 0.18009573656612154,
+        "p90": 0.27828642840809587,
+        "max": 0.41453539583858334
+      },
+      "threshold_max": 0.0017574936663940501,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05273410229361694,
+        "p10": 0.08818689932791923,
+        "median": 0.16128988119632864,
+        "p90": 0.24561616886443155,
+        "max": 0.3094598079180582
+      },
+      "threshold_max": 0.0015347603372522752,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.054089438966258674,
+        "p10": 0.09595675631879846,
+        "median": 0.17339083469412625,
+        "p90": 0.2634516254720854,
+        "max": 0.30778088022330297
+      },
+      "threshold_max": 0.0014681329770258622,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 72,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.046598892871118756,
+        "p10": 0.08605899021470703,
+        "median": 0.14468016721852672,
+        "p90": 0.21133397949604404,
+        "max": 0.28682867274304985
+      },
+      "threshold_max": 0.0014699547854330288,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04213108730926419,
+        "p10": 0.06482815702849393,
+        "median": 0.13839801391520196,
+        "p90": 0.20744677273817325,
+        "max": 0.3524545575504106
+      },
+      "threshold_max": 0.001675815453047753,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04585246804711442,
+        "p10": 0.09256259439144018,
+        "median": 0.13068190878764513,
+        "p90": 0.21137120301803572,
+        "max": 0.3531027998987508
+      },
+      "threshold_max": 0.00129190093247914,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04726144867204643,
+        "p10": 0.08947012704221305,
+        "median": 0.16661550079855708,
+        "p90": 0.24506565649582543,
+        "max": 0.35240987873601365
+      },
+      "threshold_max": 0.001987063438540525,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05579654723473941,
+        "p10": 0.08265214097392254,
+        "median": 0.1472571867252424,
+        "p90": 0.25233846203374694,
+        "max": 0.31013790186182344
+      },
+      "threshold_max": 0.0018807481997375477,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.03979945080972632,
+        "p10": 0.07318750138746648,
+        "median": 0.13125126160437584,
+        "p90": 0.2140892540795089,
+        "max": 0.296390057710813
+      },
+      "threshold_max": 0.001838976748644141,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.049591527936961755,
+        "p10": 0.07355837114436847,
+        "median": 0.14296537953002394,
+        "p90": 0.2270565224501399,
+        "max": 0.3131272806143274
+      },
+      "threshold_max": 0.0014922377782760892,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04935368823048458,
+        "p10": 0.08172850185716937,
+        "median": 0.12566932823245475,
+        "p90": 0.21138086230991376,
+        "max": 0.28477390873226494
+      },
+      "threshold_max": 0.0015903966267542193,
+      "file": "late_209_puzzle_209_raw.npy",
+      "puzzle": 209,
+      "cell": 80,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.10123968493678694,
+        "p10": 0.12823326486945907,
+        "median": 0.1866553760007214,
+        "p90": 0.29929263772441334,
+        "max": 0.38240791872236507
+      },
+      "threshold_max": 0.0021610978348083677,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05690950739794186,
+        "p10": 0.10311554857835362,
+        "median": 0.1973728228999555,
+        "p90": 0.3044194746567045,
+        "max": 0.4272281705773149
+      },
+      "threshold_max": 0.002454590493991207,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06820093749442097,
+        "p10": 0.12882985096463478,
+        "median": 0.21117427539634073,
+        "p90": 0.308267333663657,
+        "max": 0.38290296627720216
+      },
+      "threshold_max": 0.0019423116104755906,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09691427330383483,
+        "p10": 0.13344694105945482,
+        "median": 0.2310177586911153,
+        "p90": 0.3219425862294556,
+        "max": 0.40626482077523246
+      },
+      "threshold_max": 0.0025414803752375472,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09515275281555743,
+        "p10": 0.17030939160979897,
+        "median": 0.2257954353513007,
+        "p90": 0.29061100885911956,
+        "max": 0.3414606597088902
+      },
+      "threshold_max": 0.0022539005582226605,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0792389250155991,
+        "p10": 0.13211445601398314,
+        "median": 0.22888097191628648,
+        "p90": 0.36277419414141854,
+        "max": 0.45292180315190833
+      },
+      "threshold_max": 0.0022678114359490644,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04426627100534072,
+        "p10": 0.13460785617496732,
+        "median": 0.20202736524172615,
+        "p90": 0.3177338566613166,
+        "max": 0.4014027477518781
+      },
+      "threshold_max": 0.0018923376193168283,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09836806744003732,
+        "p10": 0.1170301383704174,
+        "median": 0.22643387686105476,
+        "p90": 0.327254268097229,
+        "max": 0.37228865721688603
+      },
+      "threshold_max": 0.0027886012654777213,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 28,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07209617251657678,
+        "p10": 0.106410115822861,
+        "median": 0.18065162819312175,
+        "p90": 0.2444027317552352,
+        "max": 0.3323711018890765
+      },
+      "threshold_max": 0.0019059711827327692,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.061175009121653565,
+        "p10": 0.09736406931885663,
+        "median": 0.15430811677423228,
+        "p90": 0.2586046436977283,
+        "max": 0.3078168825730668
+      },
+      "threshold_max": 0.0015505004752177413,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08493420845237046,
+        "p10": 0.10967833910294968,
+        "median": 0.18965257954217857,
+        "p90": 0.26612303874458737,
+        "max": 0.3527697137093877
+      },
+      "threshold_max": 0.0016910807803080094,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08121693060207066,
+        "p10": 0.11109690374245315,
+        "median": 0.1942456799128024,
+        "p90": 0.2866536171193927,
+        "max": 0.41813917752537305
+      },
+      "threshold_max": 0.0020820170686171357,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07960811423512472,
+        "p10": 0.10960035387949446,
+        "median": 0.17722345050985883,
+        "p90": 0.2571962190342172,
+        "max": 0.36521900331384793
+      },
+      "threshold_max": 0.002306139363229447,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06676249436456717,
+        "p10": 0.09625514811064148,
+        "median": 0.18209219323835946,
+        "p90": 0.24334745021543358,
+        "max": 0.36780944575398106
+      },
+      "threshold_max": 0.002002536582672731,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04240067470706499,
+        "p10": 0.1134271171967139,
+        "median": 0.1768626082066086,
+        "p90": 0.27912950931515135,
+        "max": 0.3344979892324395
+      },
+      "threshold_max": 0.001981400091885726,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05038725812313801,
+        "p10": 0.08166221895620254,
+        "median": 0.18396385263477583,
+        "p90": 0.26436261732568145,
+        "max": 0.38580976027637404
+      },
+      "threshold_max": 0.0018303728460279496,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 0,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07683440125160862,
+        "p10": 0.14527210225303078,
+        "median": 0.20283941286323365,
+        "p90": 0.28241478328099484,
+        "max": 0.37743133437461124
+      },
+      "threshold_max": 0.0020982613546920003,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.038916108516068956,
+        "p10": 0.1112478437144703,
+        "median": 0.18959163941607882,
+        "p90": 0.27265007979869493,
+        "max": 0.43664843989094426
+      },
+      "threshold_max": 0.0019329977317698588,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04851679306151988,
+        "p10": 0.1070960677380577,
+        "median": 0.17805477351175106,
+        "p90": 0.2524102264626956,
+        "max": 0.3465669403901526
+      },
+      "threshold_max": 0.00164628806957162,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07169819294743328,
+        "p10": 0.1395630096473106,
+        "median": 0.1945808503012325,
+        "p90": 0.2842490639626799,
+        "max": 0.3638195777670189
+      },
+      "threshold_max": 0.0021499334998306514,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.11117490679998075,
+        "p10": 0.14159222940050487,
+        "median": 0.20117711108711317,
+        "p90": 0.27210768857680434,
+        "max": 0.34501700480044856
+      },
+      "threshold_max": 0.002013140717754353,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08928240363424232,
+        "p10": 0.13306865385126182,
+        "median": 0.18506349664145064,
+        "p90": 0.2536505710045528,
+        "max": 0.37032735949989354
+      },
+      "threshold_max": 0.001998713338157331,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0642694783380591,
+        "p10": 0.11186383254875923,
+        "median": 0.20193934891759188,
+        "p90": 0.3049719937240247,
+        "max": 0.5883619406591643
+      },
+      "threshold_max": 0.0017499482206008337,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05580762422373801,
+        "p10": 0.11312598223644169,
+        "median": 0.20893325789720357,
+        "p90": 0.2875392112304432,
+        "max": 0.37693829412623864
+      },
+      "threshold_max": 0.0019464753797724813,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 8,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09748386934310968,
+        "p10": 0.12409560951503601,
+        "median": 0.18278561676355937,
+        "p90": 0.30288554609393814,
+        "max": 0.3847694852014924
+      },
+      "threshold_max": 0.0020284245108857014,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06421844154209308,
+        "p10": 0.09077724616445493,
+        "median": 0.16393180469366947,
+        "p90": 0.29772565360661973,
+        "max": 0.39112136416491633
+      },
+      "threshold_max": 0.0020612096174995277,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07069818337984145,
+        "p10": 0.10810490614573817,
+        "median": 0.20838322843856932,
+        "p90": 0.2659413214706883,
+        "max": 0.35402888364192797
+      },
+      "threshold_max": 0.0015843529852859338,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04659793465303248,
+        "p10": 0.10947334770941262,
+        "median": 0.18199643537498716,
+        "p90": 0.28429330141178416,
+        "max": 0.363007594578551
+      },
+      "threshold_max": 0.002801592260476324,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09711254058902836,
+        "p10": 0.15578514749346284,
+        "median": 0.211166877385949,
+        "p90": 0.29430546571919763,
+        "max": 0.36560831306241004
+      },
+      "threshold_max": 0.002032482965708793,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.055799498946602646,
+        "p10": 0.09732050543853804,
+        "median": 0.16854991261286223,
+        "p90": 0.26914906808999917,
+        "max": 0.4597499829649253
+      },
+      "threshold_max": 0.0023813131458536962,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05102082414586719,
+        "p10": 0.09312619420324182,
+        "median": 0.18350126042451906,
+        "p90": 0.27647505514221316,
+        "max": 0.4952012453827647
+      },
+      "threshold_max": 0.0025279014669291663,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05170803907194597,
+        "p10": 0.1117647318295986,
+        "median": 0.1717778074537721,
+        "p90": 0.2818891691841836,
+        "max": 0.46097226886441856
+      },
+      "threshold_max": 0.001634053323839123,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 40,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0792170813625353,
+        "p10": 0.12151977050115044,
+        "median": 0.209347278271875,
+        "p90": 0.3401485918122422,
+        "max": 0.48822137358842416
+      },
+      "threshold_max": 0.002253454691991281,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05645202235401711,
+        "p10": 0.10993961200274403,
+        "median": 0.17585840914462889,
+        "p90": 0.30458333122211784,
+        "max": 0.4372604436841297
+      },
+      "threshold_max": 0.0024830401073546874,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.08085487734835713,
+        "p10": 0.15270760956417573,
+        "median": 0.2348711703308165,
+        "p90": 0.3110719640398376,
+        "max": 0.34567084814678994
+      },
+      "threshold_max": 0.0018122007519970058,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.09410295868162236,
+        "p10": 0.12433120167602707,
+        "median": 0.1953319493385692,
+        "p90": 0.2799828094298835,
+        "max": 0.4229241465210754
+      },
+      "threshold_max": 0.0027699483115373445,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05959880084379923,
+        "p10": 0.12887750492412367,
+        "median": 0.21694339095261753,
+        "p90": 0.3303664584763224,
+        "max": 0.39798607810118103
+      },
+      "threshold_max": 0.0023691912833688185,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.058225624489957384,
+        "p10": 0.10003427902219181,
+        "median": 0.2049913519244116,
+        "p90": 0.31763432234610867,
+        "max": 0.45778280262271137
+      },
+      "threshold_max": 0.0028723928174741635,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.07959567022509782,
+        "p10": 0.10792359255936679,
+        "median": 0.19265056926475915,
+        "p90": 0.28061067295277453,
+        "max": 0.3831602224775125
+      },
+      "threshold_max": 0.0028161431062770034,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0902273503315309,
+        "p10": 0.11168892604486401,
+        "median": 0.20751626912719814,
+        "p90": 0.31917108873049094,
+        "max": 0.5143339391798445
+      },
+      "threshold_max": 0.0018791960017862245,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 72,
+      "head_1based": 8
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.06866679911618666,
+        "p10": 0.11017120680691321,
+        "median": 0.18526409349546244,
+        "p90": 0.2609706278970721,
+        "max": 0.3582384977923721
+      },
+      "threshold_max": 0.0017086211723682798,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 1
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0385400860952739,
+        "p10": 0.07838326565987402,
+        "median": 0.18854237364241602,
+        "p90": 0.3125767549366808,
+        "max": 0.37921744090078807
+      },
+      "threshold_max": 0.0019873875684974364,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 2
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.05323765946975426,
+        "p10": 0.12073729725177268,
+        "median": 0.17860154371642994,
+        "p90": 0.2392417619006857,
+        "max": 0.3237679535936253
+      },
+      "threshold_max": 0.0016808369437613672,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 3
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.04123055232393187,
+        "p10": 0.0974195838676738,
+        "median": 0.1905326582291508,
+        "p90": 0.28416274569664235,
+        "max": 0.3914426089975659
+      },
+      "threshold_max": 0.0018793819173485162,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 4
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0672932630287216,
+        "p10": 0.1081598974248286,
+        "median": 0.18644957056810524,
+        "p90": 0.31176414775126937,
+        "max": 0.3812940071408684
+      },
+      "threshold_max": 0.0018945832399291714,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 5
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0236253558068388,
+        "p10": 0.0999253131222416,
+        "median": 0.17397988079710197,
+        "p90": 0.28834562976316147,
+        "max": 0.3376361305141628
+      },
+      "threshold_max": 0.0020592817760336987,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 6
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.0600854343576858,
+        "p10": 0.10469390941594206,
+        "median": 0.19810483131770332,
+        "p90": 0.2941300500873316,
+        "max": 0.40508405261274555
+      },
+      "threshold_max": 0.0020641505817106704,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 7
+    },
+    {
+      "active_triples": 56,
+      "total_triples": 56,
+      "triples_violating_necessary_identity": 56,
+      "sigma6_over_sigma1_quantiles": {
+        "min": 0.058058402419339475,
+        "p10": 0.09533042405733191,
+        "median": 0.1895279115030714,
+        "p90": 0.2744156106175474,
+        "max": 0.4124857997248864
+      },
+      "threshold_max": 0.0019569184167183974,
+      "file": "late_230_puzzle_230_raw.npy",
+      "puzzle": 230,
+      "cell": 80,
+      "head_1based": 8
+    }
+  ]
+}

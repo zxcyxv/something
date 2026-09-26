@@ -1,0 +1,22 @@
+{
+  "pair_test": {
+    "active_channels": 52,
+    "pair_count": 1326,
+    "pairs_violating_necessary_identity": 0,
+    "sigma4_over_sigma1_quantiles": {
+      "min": 1.4588592595990737e-08,
+      "p10": 1.9608719447927857e-08,
+      "median": 2.498504243822327e-08,
+      "p90": 3.3606059606086106e-08,
+      "max": 3.6371623303292156e-08
+    },
+    "threshold_max": 0.001
+  },
+  "fit_holdout": {
+    "relative_residual_norm": 1.1292634443807024e-06,
+    "residual_energy_fraction": 1.2752359268145679e-12
+  },
+  "max_lambda_error": 4.744341217056877e-06,
+  "max_frequency_error_radians_per_block": 1.460794781286746e-06,
+  "purpose": "Verify the procedure recovers a true common-drive damped rotation from FP32 traces; this is not an untrained-model comparison"
+}

@@ -1,0 +1,41 @@
+{
+  "source": "r3c6, correct digit 8; destination r3c9, correct digit 6; head 3",
+  "block": 4212,
+  "gain": 2.7894723415374756,
+  "agree": 0.59394371509552,
+  "a_beta": 0.29211488366127014,
+  "G": 0.4839728772640228,
+  "eta": 0.029174720868468285,
+  "w_before": 0.14354923367500305,
+  "w_after": 0.15348099172115326,
+  "a_psi": -0.2256050854921341,
+  "lambda": 0.19012291729450226,
+  "psi_coefficient": -0.1827123910188675,
+  "memory_coefficient": 0.02918025478720665,
+  "J": -0.15353213250637054,
+  "J_if_only_this_edge_w_replaced_by_G": -0.09069805592298508,
+  "unit_value_projection_at_normal_phi_scale": {
+    "logit_6": -0.7552013397216797,
+    "logit_8": 5.648177623748779,
+    "6_minus_8": -6.403378963470459
+  },
+  "normal_edge_logit_contributions": {
+    "logit_6": 0.1159476712346077,
+    "logit_8": -0.8671767711639404,
+    "6_minus_8": 0.9831244349479675
+  },
+  "edge_margin_components": {
+    "psi": 1.1699767112731934,
+    "w": -0.18685223162174225,
+    "if_w_equals_G": 0.5807740092277527
+  },
+  "all_other_terms_margin_at_normal_phi_scale": -0.7819792628288269,
+  "normal": {
+    "digit": 6,
+    "6_minus_8": 0.20114517211914062
+  },
+  "only_this_edge_w_replaced_by_G_with_phi_recomputed": {
+    "digit": 8,
+    "6_minus_8": -0.20090866088867188
+  }
+}

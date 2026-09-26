@@ -1,0 +1,12 @@
+{
+  "checkpoint": "checkpoints/v1.1_step160000.npz",
+  "precision": "CPU float64; cached FP32 cases",
+  "primary": "Keep positions, beta, gain, amplitudes and all values/agree fixed; conjugate the unpositioned addresses. Compare G(delta) with G(-delta) on the same directed edges.",
+  "equation": "G(delta)=g*D*agree*sum_j(r_tj*r_nj*cos(delta_j+beta_j+theta_j.dot(pos_t-pos_n)))",
+  "observable": "The signed write target G; eta is positive and does not change its sign. No leak, reading or subsequent feedback in this measurement.",
+  "snapshots": "Puzzle 1, after blocks 152 and 192, all 8 heads, all 6480 directed off-diagonal edges",
+  "cases": "Pre-existing selected edges in late puzzles 58, 209, 230; no reselection based on phase result",
+  "curves": "Complete channelwise phase response and a clearly labeled common-angle cross-section. The latter is not a temporal-frequency assignment.",
+  "sign_tolerance": "1e-9 * max(1, absolute coefficient sum)",
+  "temporal_scope": "No omega_j is assumed; a phase-mirror is not automatically a reversal of actual event time. Temporal identification is a separate part of this research."
+}

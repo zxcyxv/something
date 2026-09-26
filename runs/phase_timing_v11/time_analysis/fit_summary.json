@@ -1,0 +1,1171 @@
+{
+  "protocol": {
+    "hypothesis": "Native address channels are fixed damped Fourier traces of a common scalar activity: z_j(k+1)=lambda_j*z_j(k)+b_j*x(k+1). lambda and b may be unknown, complex, and learned.",
+    "necessary_identity": "For every pair j,l, [dz_j(k+1),dz_j(k),dz_l(k+1),dz_l(k)] has complex rank <=3. This condition even allows complex x and arbitrary lambda, without fitting either.",
+    "no_intervention": "Use actual model trajectories only; compare with a generated known trace as a measurement control.",
+    "pair_scope": "Test each cell separately, allowing different hypothetical lambda/b across cells; fixed across its recorded time window.",
+    "pair_rejection": "sigma4/sigma1 > max(1e-3,10*conservative_FP32_noise_scale); exclude channels with RMS increment below 1e-4 of RMS level",
+    "target_cells": [
+      26,
+      19,
+      28
+    ],
+    "diagnostic_cells": [
+      0,
+      8,
+      40,
+      72,
+      80
+    ],
+    "approximate_fit": "Fixed lambda and real rank-r innovations across training puzzles; fresh activity coefficients allowed freely on every holdout step. This is structural reconstruction, not forecasting.",
+    "ranks": [
+      1,
+      2,
+      4,
+      8,
+      16,
+      32
+    ],
+    "normalization": "RMS of complex increments in training data, per channel. This fixed rescaling leaves lambda invariant.",
+    "exact_acceptance": "Necessary rank identities and holdout residual <=1e-4; synthetic control must recover frequency to 1e-3 rad/block.",
+    "approximate_threshold": "Report error continuously. <=0.1 relative residual norm is a predeclared useful-approximation target, not mathematical identity.",
+    "limitation": "An unconstrained independent complex activity per channel permits any chosen lambda by definition; it does not identify a temporal frequency from v1.1 alone."
+  },
+  "control": {
+    "pair_test": {
+      "active_channels": 52,
+      "pair_count": 1326,
+      "pairs_violating_necessary_identity": 0,
+      "sigma4_over_sigma1_quantiles": {
+        "min": 1.4588592595990737e-08,
+        "p10": 1.9608719447927857e-08,
+        "median": 2.498504243822327e-08,
+        "p90": 3.3606059606086106e-08,
+        "max": 3.6371623303292156e-08
+      },
+      "threshold_max": 0.001
+    },
+    "fit_holdout": {
+      "relative_residual_norm": 1.1292634443807024e-06,
+      "residual_energy_fraction": 1.2752359268145679e-12
+    },
+    "max_lambda_error": 4.744341217056877e-06,
+    "max_frequency_error_radians_per_block": 1.460794781286746e-06,
+    "purpose": "Verify the procedure recovers a true common-drive damped rotation from FP32 traces; this is not an untrained-model comparison"
+  },
+  "heads": [
+    {
+      "head_1based": 1,
+      "fits": [
+        {
+          "rank_real_innovation": 1,
+          "iterations": 21,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.8001028211132243,
+              "residual_energy_fraction": 0.6401645243533401
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.9381594084943851,
+              "residual_energy_fraction": 0.8801430757465345
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.920699830648045,
+              "residual_energy_fraction": 0.8476881781553387
+            }
+          },
+          "median_abs_frequency": 3.085060355692092,
+          "median_rho": 0.4517086202859068
+        },
+        {
+          "rank_real_innovation": 2,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7531361395813841,
+              "residual_energy_fraction": 0.5672140447435502
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8967411027642593,
+              "residual_energy_fraction": 0.80414460538686
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8833116721908896,
+              "residual_energy_fraction": 0.7802395102286656
+            }
+          },
+          "median_abs_frequency": 3.087576784302837,
+          "median_rho": 0.45079442939293257
+        },
+        {
+          "rank_real_innovation": 4,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.6722320271836449,
+              "residual_energy_fraction": 0.45189589837143274
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8087206627141131,
+              "residual_energy_fraction": 0.6540291103007543
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8046888065624651,
+              "residual_energy_fraction": 0.6475240754069244
+            }
+          },
+          "median_abs_frequency": 3.089766570381399,
+          "median_rho": 0.44719426799927803
+        },
+        {
+          "rank_real_innovation": 8,
+          "iterations": 26,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.5306297303297771,
+              "residual_energy_fraction": 0.28156791070985204
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.6330286759740527,
+              "residual_energy_fraction": 0.40072530460546213
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.656536446577806,
+              "residual_energy_fraction": 0.4310401056850122
+            }
+          },
+          "median_abs_frequency": 3.0957024389913625,
+          "median_rho": 0.44479027323180964
+        },
+        {
+          "rank_real_innovation": 16,
+          "iterations": 73,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.352465231119289,
+              "residual_energy_fraction": 0.12423173914797382
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.43219443210118147,
+              "residual_energy_fraction": 0.18679202713926274
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.46242385934002317,
+              "residual_energy_fraction": 0.21383582568692153
+            }
+          },
+          "median_abs_frequency": 3.099251056812914,
+          "median_rho": 0.4458009283643464
+        },
+        {
+          "rank_real_innovation": 32,
+          "iterations": 241,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.19107241161810268,
+              "residual_energy_fraction": 0.03650866648155766
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.2447367537024763,
+              "residual_energy_fraction": 0.059896078612826545
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.2733602566568385,
+              "residual_energy_fraction": 0.0747258299194926
+            }
+          },
+          "median_abs_frequency": 3.1106295160276076,
+          "median_rho": 0.41885868773131907
+        }
+      ],
+      "rank1_real_lambda_only": {
+        "train": {
+          "relative_residual_norm": 0.8014095045577707,
+          "residual_energy_fraction": 0.6422571939955315
+        },
+        "holdout_early": {
+          "relative_residual_norm": 0.9391514704989764,
+          "residual_energy_fraction": 0.8820054845403899
+        },
+        "holdout_late": {
+          "relative_residual_norm": 0.9212394917742855,
+          "residual_energy_fraction": 0.848682201204544
+        }
+      }
+    },
+    {
+      "head_1based": 2,
+      "fits": [
+        {
+          "rank_real_innovation": 1,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7606521495334833,
+              "residual_energy_fraction": 0.5785916925899086
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.904505241245876,
+              "residual_energy_fraction": 0.8181297314412603
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8907793134715417,
+              "residual_energy_fraction": 0.7934877853088312
+            }
+          },
+          "median_abs_frequency": 3.0780351799158474,
+          "median_rho": 0.45136147201540966
+        },
+        {
+          "rank_real_innovation": 2,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7150561500787568,
+              "residual_energy_fraction": 0.5113052977654535
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8622198425387928,
+              "residual_energy_fraction": 0.7434230568676207
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8550256638515934,
+              "residual_energy_fraction": 0.7310688858448581
+            }
+          },
+          "median_abs_frequency": 3.0713519139469367,
+          "median_rho": 0.4469801554252213
+        },
+        {
+          "rank_real_innovation": 4,
+          "iterations": 40,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.6469929966917134,
+              "residual_energy_fraction": 0.4185999377681235
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.7855620242804083,
+              "residual_energy_fraction": 0.6171076939915329
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.7841715234072074,
+              "residual_energy_fraction": 0.6149249781227805
+            }
+          },
+          "median_abs_frequency": 3.076945064711703,
+          "median_rho": 0.441651381908715
+        },
+        {
+          "rank_real_innovation": 8,
+          "iterations": 42,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.534786091093733,
+              "residual_energy_fraction": 0.2859961632273145
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.651283601382494,
+              "residual_energy_fraction": 0.42417032942975125
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.6688915856743587,
+              "residual_energy_fraction": 0.4474159533859579
+            }
+          },
+          "median_abs_frequency": 3.0849385416203967,
+          "median_rho": 0.4465225619262856
+        },
+        {
+          "rank_real_innovation": 16,
+          "iterations": 89,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.37091815500275194,
+              "residual_energy_fraction": 0.13758027771064552
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.4638716385195742,
+              "residual_energy_fraction": 0.21517689702283452
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.4863724415645104,
+              "residual_energy_fraction": 0.2365581519134231
+            }
+          },
+          "median_abs_frequency": 3.1152631601275163,
+          "median_rho": 0.43940107994083155
+        },
+        {
+          "rank_real_innovation": 32,
+          "iterations": 161,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.21567094340368897,
+              "residual_energy_fraction": 0.04651395582863722
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.28228322102478903,
+              "residual_energy_fraction": 0.0796838168721299
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.3159285146177478,
+              "residual_energy_fraction": 0.09981082634857649
+            }
+          },
+          "median_abs_frequency": 3.1237537071962844,
+          "median_rho": 0.41806539003299503
+        }
+      ],
+      "rank1_real_lambda_only": {
+        "train": {
+          "relative_residual_norm": 0.7624936013021035,
+          "residual_energy_fraction": 0.5813964920266512
+        },
+        "holdout_early": {
+          "relative_residual_norm": 0.9056238045085999,
+          "residual_energy_fraction": 0.8201544752926307
+        },
+        "holdout_late": {
+          "relative_residual_norm": 0.8904888675483339,
+          "residual_energy_fraction": 0.7929704232275141
+        }
+      }
+    },
+    {
+      "head_1based": 3,
+      "fits": [
+        {
+          "rank_real_innovation": 1,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7904324598783201,
+              "residual_energy_fraction": 0.6247834736292921
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.92944781441371,
+              "residual_energy_fraction": 0.8638732397184224
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8906046667975884,
+              "residual_energy_fraction": 0.7931766725216436
+            }
+          },
+          "median_abs_frequency": 3.089201003380539,
+          "median_rho": 0.44953633463566267
+        },
+        {
+          "rank_real_innovation": 2,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.750411073116455,
+              "residual_energy_fraction": 0.5631167786557897
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8931978534256626,
+              "residual_energy_fraction": 0.7978024053642114
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8590668077487287,
+              "residual_energy_fraction": 0.7379957801755912
+            }
+          },
+          "median_abs_frequency": 3.0839332846560383,
+          "median_rho": 0.44793363259817653
+        },
+        {
+          "rank_real_innovation": 4,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.6778880958774995,
+              "residual_energy_fraction": 0.45953227053242207
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8110967841790899,
+              "residual_energy_fraction": 0.6578779933056612
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.7942950838571097,
+              "residual_energy_fraction": 0.6309046802395728
+            }
+          },
+          "median_abs_frequency": 3.0880942167407226,
+          "median_rho": 0.44653886058256864
+        },
+        {
+          "rank_real_innovation": 8,
+          "iterations": 34,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.5472239730935635,
+              "residual_energy_fraction": 0.2994540767283051
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.6618671080670702,
+              "residual_energy_fraction": 0.43806806874106674
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.6700776401109382,
+              "residual_energy_fraction": 0.449004043776644
+            }
+          },
+          "median_abs_frequency": 3.092229223858583,
+          "median_rho": 0.438889150522606
+        },
+        {
+          "rank_real_innovation": 16,
+          "iterations": 68,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.3773317093716231,
+              "residual_energy_fraction": 0.142379218897311
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.4640665363463313,
+              "residual_energy_fraction": 0.21535775015648087
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.48830124828709875,
+              "residual_energy_fraction": 0.23843810907873889
+            }
+          },
+          "median_abs_frequency": 3.1113006121041913,
+          "median_rho": 0.4391920571582
+        },
+        {
+          "rank_real_innovation": 32,
+          "iterations": 193,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.21672720549968405,
+              "residual_energy_fraction": 0.046970681603702276
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.2755995152331992,
+              "residual_energy_fraction": 0.07595509279677438
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.30386471918963837,
+              "residual_energy_fraction": 0.09233376756819778
+            }
+          },
+          "median_abs_frequency": 3.1157399164512984,
+          "median_rho": 0.4152667935789407
+        }
+      ],
+      "rank1_real_lambda_only": {
+        "train": {
+          "relative_residual_norm": 0.7917856549970633,
+          "residual_energy_fraction": 0.6269245234591286
+        },
+        "holdout_early": {
+          "relative_residual_norm": 0.9309649528386197,
+          "residual_energy_fraction": 0.8666957434138133
+        },
+        "holdout_late": {
+          "relative_residual_norm": 0.8912992440359014,
+          "residual_energy_fraction": 0.7944143424189694
+        }
+      }
+    },
+    {
+      "head_1based": 4,
+      "fits": [
+        {
+          "rank_real_innovation": 1,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7855809166390514,
+              "residual_energy_fraction": 0.6171373765874522
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.9299822380209147,
+              "residual_energy_fraction": 0.8648669630343894
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.9045894817287123,
+              "residual_energy_fraction": 0.8182821304542204
+            }
+          },
+          "median_abs_frequency": 3.0603448422815447,
+          "median_rho": 0.4580582203496907
+        },
+        {
+          "rank_real_innovation": 2,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7405473585511967,
+              "residual_energy_fraction": 0.5484103902571547
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8886816222751127,
+              "residual_energy_fraction": 0.7897550257695262
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8644500693382573,
+              "residual_energy_fraction": 0.7472739223789179
+            }
+          },
+          "median_abs_frequency": 3.0723558508184374,
+          "median_rho": 0.4510456994480585
+        },
+        {
+          "rank_real_innovation": 4,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.6571128643091286,
+              "residual_energy_fraction": 0.43179731644054736
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.800097282178404,
+              "residual_energy_fraction": 0.6401556609492687
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.7880552744872379,
+              "residual_energy_fraction": 0.6210311156471559
+            }
+          },
+          "median_abs_frequency": 3.0672110684831746,
+          "median_rho": 0.44644605919598046
+        },
+        {
+          "rank_real_innovation": 8,
+          "iterations": 27,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.5099039702437442,
+              "residual_energy_fraction": 0.2600020588703332
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.6251005639827777,
+              "residual_energy_fraction": 0.39075071509158676
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.6373784549233561,
+              "residual_energy_fraction": 0.40625129480048466
+            }
+          },
+          "median_abs_frequency": 3.0815736863002456,
+          "median_rho": 0.44203664257972164
+        },
+        {
+          "rank_real_innovation": 16,
+          "iterations": 84,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.34743973016315993,
+              "residual_energy_fraction": 0.12071436609584937
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.42803285824275955,
+              "residual_energy_fraction": 0.1832121277354663
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.45216543699401884,
+              "residual_energy_fraction": 0.20445358241199205
+            }
+          },
+          "median_abs_frequency": 3.1018453177300196,
+          "median_rho": 0.44832622637696007
+        },
+        {
+          "rank_real_innovation": 32,
+          "iterations": 244,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.1890173665049052,
+              "residual_energy_fraction": 0.03572756484044965
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.24089228877282834,
+              "residual_energy_fraction": 0.05802909479021171
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.2768817445666473,
+              "residual_energy_fraction": 0.07666350047427015
+            }
+          },
+          "median_abs_frequency": 3.1169796819711695,
+          "median_rho": 0.4214832989682047
+        }
+      ],
+      "rank1_real_lambda_only": {
+        "train": {
+          "relative_residual_norm": 0.7871133934056305,
+          "residual_energy_fraction": 0.6195474940785268
+        },
+        "holdout_early": {
+          "relative_residual_norm": 0.9313569063931418,
+          "residual_energy_fraction": 0.8674256870862036
+        },
+        "holdout_late": {
+          "relative_residual_norm": 0.9049891997842835,
+          "residual_energy_fraction": 0.8190054517261979
+        }
+      }
+    },
+    {
+      "head_1based": 5,
+      "fits": [
+        {
+          "rank_real_innovation": 1,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7865685150826284,
+              "residual_energy_fraction": 0.6186900289192909
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.9257895377028279,
+              "residual_energy_fraction": 0.8570862681200158
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.9004596534683135,
+              "residual_energy_fraction": 0.8108275875242752
+            }
+          },
+          "median_abs_frequency": 3.0873140456714108,
+          "median_rho": 0.4589317496213432
+        },
+        {
+          "rank_real_innovation": 2,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7388072271222341,
+              "residual_energy_fraction": 0.5458361188480445
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8872331544886821,
+              "residual_energy_fraction": 0.7871826704239376
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.864863692587252,
+              "residual_energy_fraction": 0.7479892067556568
+            }
+          },
+          "median_abs_frequency": 3.0973104930396635,
+          "median_rho": 0.4564513793919285
+        },
+        {
+          "rank_real_innovation": 4,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.6597683356748252,
+              "residual_energy_fraction": 0.43529425675912886
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8019392419329678,
+              "residual_energy_fraction": 0.6431065477520231
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.7899130134575798,
+              "residual_energy_fraction": 0.6239625688296346
+            }
+          },
+          "median_abs_frequency": 3.1029355557733984,
+          "median_rho": 0.45172732884527456
+        },
+        {
+          "rank_real_innovation": 8,
+          "iterations": 35,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.5164306372981629,
+              "residual_energy_fraction": 0.2667006031401867
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.6264566837259362,
+              "residual_energy_fraction": 0.3924479765848976
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.6408250650841795,
+              "residual_energy_fraction": 0.4106567640401428
+            }
+          },
+          "median_abs_frequency": 3.096552830227025,
+          "median_rho": 0.45444019578064776
+        },
+        {
+          "rank_real_innovation": 16,
+          "iterations": 86,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.3410776581756988,
+              "residual_energy_fraction": 0.11633396890661883
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.42298166193298603,
+              "residual_energy_fraction": 0.1789134863315909
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.44754202476101457,
+              "residual_energy_fraction": 0.2002938639271886
+            }
+          },
+          "median_abs_frequency": 3.1076761498465895,
+          "median_rho": 0.44289329569245073
+        },
+        {
+          "rank_real_innovation": 32,
+          "iterations": 252,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.1863396610432628,
+              "residual_energy_fraction": 0.03472246927771808
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.23793073185447225,
+              "residual_energy_fraction": 0.05661103316080477
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.268977343454787,
+              "residual_energy_fraction": 0.07234881129199447
+            }
+          },
+          "median_abs_frequency": 3.1213139123240823,
+          "median_rho": 0.42750706760453316
+        }
+      ],
+      "rank1_real_lambda_only": {
+        "train": {
+          "relative_residual_norm": 0.7879995453969115,
+          "residual_energy_fraction": 0.6209432835457392
+        },
+        "holdout_early": {
+          "relative_residual_norm": 0.9267731282130168,
+          "residual_energy_fraction": 0.858908431177741
+        },
+        "holdout_late": {
+          "relative_residual_norm": 0.9007324852635235,
+          "residual_energy_fraction": 0.8113190100090035
+        }
+      }
+    },
+    {
+      "head_1based": 6,
+      "fits": [
+        {
+          "rank_real_innovation": 1,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7724802707031628,
+              "residual_energy_fraction": 0.5967257686256318
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.910286791690757,
+              "residual_energy_fraction": 0.8286220431266516
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8941561621676216,
+              "residual_energy_fraction": 0.7995152423423301
+            }
+          },
+          "median_abs_frequency": 3.071180689053311,
+          "median_rho": 0.45837290414108617
+        },
+        {
+          "rank_real_innovation": 2,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7278797632756275,
+              "residual_energy_fraction": 0.5298089497861835
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8736792295927512,
+              "residual_energy_fraction": 0.7633153962217833
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8601478719973631,
+              "residual_energy_fraction": 0.739854361701592
+            }
+          },
+          "median_abs_frequency": 3.0740177787896634,
+          "median_rho": 0.4498342048673257
+        },
+        {
+          "rank_real_innovation": 4,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.6584380926222947,
+              "residual_energy_fraction": 0.4335407218160855
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.7932658777142174,
+              "residual_energy_fraction": 0.6292707527457077
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.791934571401356,
+              "residual_energy_fraction": 0.6271603653806496
+            }
+          },
+          "median_abs_frequency": 3.0767443769252276,
+          "median_rho": 0.4508620826087574
+        },
+        {
+          "rank_real_innovation": 8,
+          "iterations": 36,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.5296425428878869,
+              "residual_energy_fraction": 0.2805212232367471
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.6380586998957226,
+              "residual_energy_fraction": 0.4071189045126198
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.6618371518336706,
+              "residual_energy_fraction": 0.43802841554730515
+            }
+          },
+          "median_abs_frequency": 3.0854332074913864,
+          "median_rho": 0.4478969432377723
+        },
+        {
+          "rank_real_innovation": 16,
+          "iterations": 64,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.3432936735303683,
+              "residual_energy_fraction": 0.11785054628597512
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.43074832295821114,
+              "residual_energy_fraction": 0.18554411773131138
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.462882736995056,
+              "residual_energy_fraction": 0.2142604282080342
+            }
+          },
+          "median_abs_frequency": 3.1065077321546477,
+          "median_rho": 0.4177779938315091
+        },
+        {
+          "rank_real_innovation": 32,
+          "iterations": 193,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.18715411882876085,
+              "residual_energy_fraction": 0.035026664194569936
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.24097541049710836,
+              "residual_energy_fraction": 0.05806914846424988
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.2832208913508199,
+              "residual_energy_fraction": 0.08021407329755292
+            }
+          },
+          "median_abs_frequency": 3.1229751074045096,
+          "median_rho": 0.42657850827361316
+        }
+      ],
+      "rank1_real_lambda_only": {
+        "train": {
+          "relative_residual_norm": 0.7739398345012255,
+          "residual_energy_fraction": 0.5989828674277844
+        },
+        "holdout_early": {
+          "relative_residual_norm": 0.9114555443183999,
+          "residual_energy_fraction": 0.8307512092687507
+        },
+        "holdout_late": {
+          "relative_residual_norm": 0.8945289023683589,
+          "residual_energy_fraction": 0.800181957172341
+        }
+      }
+    },
+    {
+      "head_1based": 7,
+      "fits": [
+        {
+          "rank_real_innovation": 1,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7759904599170263,
+              "residual_energy_fraction": 0.602161193882238
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.9140442541935931,
+              "residual_energy_fraction": 0.8354768986243218
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8885286250462372,
+              "residual_energy_fraction": 0.7894831175265569
+            }
+          },
+          "median_abs_frequency": 3.0711372161838444,
+          "median_rho": 0.45824298646288203
+        },
+        {
+          "rank_real_innovation": 2,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7368434282036548,
+              "residual_energy_fraction": 0.5429382376869146
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8770660638647714,
+              "residual_energy_fraction": 0.7692448803832432
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.856698341583197,
+              "residual_energy_fraction": 0.7339320484714001
+            }
+          },
+          "median_abs_frequency": 3.075862661728478,
+          "median_rho": 0.4571228079405608
+        },
+        {
+          "rank_real_innovation": 4,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.6653620503995455,
+              "residual_energy_fraction": 0.4427066581118874
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8024144111451154,
+              "residual_energy_fraction": 0.6438688872133622
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.7908061358450115,
+              "residual_energy_fraction": 0.6253743444901187
+            }
+          },
+          "median_abs_frequency": 3.0810330836322204,
+          "median_rho": 0.4578987140493451
+        },
+        {
+          "rank_real_innovation": 8,
+          "iterations": 23,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.5442352713668661,
+              "residual_energy_fraction": 0.2961920305997664
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.6553569039493983,
+              "residual_energy_fraction": 0.4294926715541409
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.6688610963384092,
+              "residual_energy_fraction": 0.4473751661950187
+            }
+          },
+          "median_abs_frequency": 3.074974471049799,
+          "median_rho": 0.4604929573015699
+        },
+        {
+          "rank_real_innovation": 16,
+          "iterations": 75,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.3573091297507617,
+              "residual_energy_fraction": 0.12766981420324663
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.4444202476879174,
+              "residual_energy_fraction": 0.19750935655498983
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.470393977733838,
+              "residual_energy_fraction": 0.2212704942882625
+            }
+          },
+          "median_abs_frequency": 3.101253470976952,
+          "median_rho": 0.4379854769704309
+        },
+        {
+          "rank_real_innovation": 32,
+          "iterations": 255,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.196511242943603,
+              "residual_energy_fraction": 0.038616668603239764
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.25258632105093615,
+              "residual_energy_fraction": 0.06379984958204658
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.2834549004485805,
+              "residual_energy_fraction": 0.0803466805883147
+            }
+          },
+          "median_abs_frequency": 3.1163297068234552,
+          "median_rho": 0.41764030048312556
+        }
+      ],
+      "rank1_real_lambda_only": {
+        "train": {
+          "relative_residual_norm": 0.7779378828942397,
+          "residual_energy_fraction": 0.6051873496419717
+        },
+        "holdout_early": {
+          "relative_residual_norm": 0.9151277746787089,
+          "residual_energy_fraction": 0.8374588439884058
+        },
+        "holdout_late": {
+          "relative_residual_norm": 0.8880302652142986,
+          "residual_energy_fraction": 0.7885977519365776
+        }
+      }
+    },
+    {
+      "head_1based": 8,
+      "fits": [
+        {
+          "rank_real_innovation": 1,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7653386590012319,
+              "residual_energy_fraction": 0.5857432629618039
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.9016373087735458,
+              "residual_energy_fraction": 0.8129498365724023
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8841288968397016,
+              "residual_energy_fraction": 0.7816839062269877
+            }
+          },
+          "median_abs_frequency": 3.065555943691977,
+          "median_rho": 0.4489512621322558
+        },
+        {
+          "rank_real_innovation": 2,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.7168567195582984,
+              "residual_energy_fraction": 0.5138835563758849
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.8587810714253092,
+              "residual_energy_fraction": 0.737504928638402
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.8477118451086443,
+              "residual_energy_fraction": 0.7186153723375022
+            }
+          },
+          "median_abs_frequency": 3.0659937257206993,
+          "median_rho": 0.4385487135308339
+        },
+        {
+          "rank_real_innovation": 4,
+          "iterations": 22,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.6452286396966403,
+              "residual_energy_fraction": 0.41631999748477694
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.7759987915107026,
+              "residual_energy_fraction": 0.6021741244260709
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.780547635122251,
+              "residual_energy_fraction": 0.6092546106949387
+            }
+          },
+          "median_abs_frequency": 3.0746612825065154,
+          "median_rho": 0.4336243839502153
+        },
+        {
+          "rank_real_innovation": 8,
+          "iterations": 27,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.5325496462360174,
+              "residual_energy_fraction": 0.2836091257061073
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.6322279911395202,
+              "residual_energy_fraction": 0.3997122327803132
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.6580408873098219,
+              "residual_energy_fraction": 0.43301780937149775
+            }
+          },
+          "median_abs_frequency": 3.0895062577217347,
+          "median_rho": 0.4399888320650651
+        },
+        {
+          "rank_real_innovation": 16,
+          "iterations": 71,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.363320043999709,
+              "residual_energy_fraction": 0.13200145437195052
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.45009086152465927,
+              "residual_energy_fraction": 0.20258178362801002
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.4759608090049433,
+              "residual_energy_fraction": 0.2265386917086401
+            }
+          },
+          "median_abs_frequency": 3.1078653331873687,
+          "median_rho": 0.4440897946695077
+        },
+        {
+          "rank_real_innovation": 32,
+          "iterations": 217,
+          "scores": {
+            "train": {
+              "relative_residual_norm": 0.20374562148166753,
+              "residual_energy_fraction": 0.04151227827295094
+            },
+            "holdout_early": {
+              "relative_residual_norm": 0.26213224506195293,
+              "residual_energy_fraction": 0.06871331390121975
+            },
+            "holdout_late": {
+              "relative_residual_norm": 0.29803991132024305,
+              "residual_energy_fraction": 0.08882778873977834
+            }
+          },
+          "median_abs_frequency": 3.1181089084350866,
+          "median_rho": 0.41733505496936973
+        }
+      ],
+      "rank1_real_lambda_only": {
+        "train": {
+          "relative_residual_norm": 0.766877735384666,
+          "residual_energy_fraction": 0.5881014610287137
+        },
+        "holdout_early": {
+          "relative_residual_norm": 0.9026953070768645,
+          "residual_energy_fraction": 0.8148588174185948
+        },
+        "holdout_late": {
+          "relative_residual_norm": 0.8844986852846004,
+          "residual_energy_fraction": 0.7823379242701867
+        }
+      }
+    }
+  ],
+  "elapsed_seconds": 34.789289727807045
+}

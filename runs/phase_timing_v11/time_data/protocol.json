@@ -1,0 +1,24 @@
+{
+  "checkpoint": "checkpoints/v1.1_step160000.npz",
+  "source": "unmodified cached baseline replay",
+  "precision": "GPU FP32; autocast and TF32 disabled; original batch of 12 preserved",
+  "tensor": "raw complex address W_C q, BEFORE normalization; shape [block,cell,head,channel]",
+  "train_puzzles": [
+    38,
+    72,
+    111,
+    128
+  ],
+  "holdout_puzzles": [
+    58,
+    209,
+    230
+  ],
+  "early_blocks_inclusive": [
+    129,
+    384
+  ],
+  "late_blocks": "Each preselected late event T-128 through T+127 inclusive",
+  "validation": "Every puzzle prediction at every replayed block must match the saved reference",
+  "interventions": "None; neither h nor address nor W is changed"
+}

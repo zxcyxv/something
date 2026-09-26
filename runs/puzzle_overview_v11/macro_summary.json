@@ -1,0 +1,1198 @@
+[
+  {
+    "puzzle": 58,
+    "T": 4212,
+    "at_offsets": {
+      "-128": {
+        "wrong_cells": 47,
+        "conflict_pairs": 13,
+        "conflict_cells": 20,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 4,
+        "row_duplicate_excess": 5,
+        "column_duplicate_excess": 6,
+        "box_duplicate_excess": 7,
+        "reciprocal_wrong_pairs": [
+          [
+            0,
+            20
+          ],
+          [
+            0,
+            27
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            8,
+            25
+          ],
+          [
+            11,
+            29
+          ],
+          [
+            12,
+            23
+          ],
+          [
+            20,
+            56
+          ],
+          [
+            29,
+            36
+          ],
+          [
+            38,
+            47
+          ],
+          [
+            62,
+            79
+          ],
+          [
+            75,
+            76
+          ]
+        ],
+        "unit_duplicate_excess": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          2,
+          1,
+          0
+        ]
+      },
+      "-64": {
+        "wrong_cells": 36,
+        "conflict_pairs": 11,
+        "conflict_cells": 16,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 2,
+        "row_duplicate_excess": 4,
+        "column_duplicate_excess": 4,
+        "box_duplicate_excess": 6,
+        "reciprocal_wrong_pairs": [
+          [
+            1,
+            8
+          ],
+          [
+            1,
+            20
+          ],
+          [
+            14,
+            23
+          ],
+          [
+            16,
+            43
+          ],
+          [
+            21,
+            22
+          ],
+          [
+            25,
+            79
+          ],
+          [
+            29,
+            30
+          ],
+          [
+            38,
+            47
+          ],
+          [
+            40,
+            42
+          ],
+          [
+            47,
+            53
+          ],
+          [
+            53,
+            80
+          ],
+          [
+            56,
+            62
+          ],
+          [
+            62,
+            79
+          ],
+          [
+            66,
+            75
+          ],
+          [
+            69,
+            80
+          ]
+        ],
+        "unit_duplicate_excess": [
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          2,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          2,
+          1,
+          0,
+          1,
+          1,
+          0
+        ]
+      },
+      "-16": {
+        "wrong_cells": 24,
+        "conflict_pairs": 24,
+        "conflict_cells": 26,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 5,
+        "row_duplicate_excess": 8,
+        "column_duplicate_excess": 10,
+        "box_duplicate_excess": 10,
+        "reciprocal_wrong_pairs": [
+          [
+            1,
+            20
+          ],
+          [
+            25,
+            79
+          ],
+          [
+            29,
+            56
+          ]
+        ],
+        "unit_duplicate_excess": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          2,
+          2,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          2,
+          2,
+          1,
+          1,
+          1,
+          2
+        ]
+      },
+      "-1": {
+        "wrong_cells": 1,
+        "conflict_pairs": 3,
+        "conflict_cells": 4,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 2,
+        "row_duplicate_excess": 1,
+        "column_duplicate_excess": 1,
+        "box_duplicate_excess": 1,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "0": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 1,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "16": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 0,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "128": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 0,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "changes_after_T": 0,
+    "max_given_violations": 0,
+    "matrix_RMS_change_T_to_T128": {
+      "psi": 0.13096533715724945,
+      "beta": 0.16824524104595184,
+      "agree": 0.260477751493454,
+      "w": 0.11440960317850113
+    }
+  },
+  {
+    "puzzle": 209,
+    "T": 3778,
+    "at_offsets": {
+      "-128": {
+        "wrong_cells": 40,
+        "conflict_pairs": 3,
+        "conflict_cells": 4,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 1,
+        "row_duplicate_excess": 1,
+        "column_duplicate_excess": 1,
+        "box_duplicate_excess": 1,
+        "reciprocal_wrong_pairs": [
+          [
+            0,
+            18
+          ],
+          [
+            7,
+            43
+          ],
+          [
+            9,
+            54
+          ],
+          [
+            10,
+            28
+          ],
+          [
+            18,
+            23
+          ],
+          [
+            34,
+            70
+          ],
+          [
+            40,
+            58
+          ],
+          [
+            48,
+            57
+          ],
+          [
+            60,
+            70
+          ],
+          [
+            74,
+            76
+          ]
+        ],
+        "unit_duplicate_excess": [
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "-64": {
+        "wrong_cells": 25,
+        "conflict_pairs": 10,
+        "conflict_cells": 15,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 4,
+        "row_duplicate_excess": 4,
+        "column_duplicate_excess": 4,
+        "box_duplicate_excess": 3,
+        "reciprocal_wrong_pairs": [
+          [
+            0,
+            18
+          ],
+          [
+            7,
+            43
+          ],
+          [
+            10,
+            19
+          ],
+          [
+            18,
+            23
+          ],
+          [
+            19,
+            24
+          ],
+          [
+            29,
+            38
+          ],
+          [
+            58,
+            59
+          ]
+        ],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          2,
+          1,
+          0,
+          0
+        ]
+      },
+      "-16": {
+        "wrong_cells": 14,
+        "conflict_pairs": 6,
+        "conflict_cells": 10,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 3,
+        "row_duplicate_excess": 2,
+        "column_duplicate_excess": 3,
+        "box_duplicate_excess": 3,
+        "reciprocal_wrong_pairs": [
+          [
+            18,
+            19
+          ],
+          [
+            19,
+            37
+          ],
+          [
+            37,
+            38
+          ],
+          [
+            65,
+            70
+          ]
+        ],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1
+        ]
+      },
+      "-1": {
+        "wrong_cells": 1,
+        "conflict_pairs": 2,
+        "conflict_cells": 3,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 2,
+        "row_duplicate_excess": 1,
+        "column_duplicate_excess": 1,
+        "box_duplicate_excess": 1,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "0": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 1,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "16": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 0,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "128": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 0,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "changes_after_T": 0,
+    "max_given_violations": 0,
+    "matrix_RMS_change_T_to_T128": {
+      "psi": 0.13118155300617218,
+      "beta": 0.16891713440418243,
+      "agree": 0.26284387707710266,
+      "w": 0.11300265043973923
+    }
+  },
+  {
+    "puzzle": 230,
+    "T": 3649,
+    "at_offsets": {
+      "-128": {
+        "wrong_cells": 33,
+        "conflict_pairs": 15,
+        "conflict_cells": 20,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 6,
+        "row_duplicate_excess": 5,
+        "column_duplicate_excess": 8,
+        "box_duplicate_excess": 5,
+        "reciprocal_wrong_pairs": [
+          [
+            1,
+            5
+          ],
+          [
+            5,
+            77
+          ],
+          [
+            9,
+            36
+          ],
+          [
+            12,
+            57
+          ],
+          [
+            21,
+            22
+          ],
+          [
+            30,
+            31
+          ],
+          [
+            30,
+            75
+          ],
+          [
+            36,
+            38
+          ],
+          [
+            47,
+            74
+          ]
+        ],
+        "unit_duplicate_excess": [
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          1,
+          1,
+          1,
+          1,
+          0,
+          2,
+          1,
+          0,
+          1,
+          0,
+          2,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0
+        ]
+      },
+      "-64": {
+        "wrong_cells": 30,
+        "conflict_pairs": 8,
+        "conflict_cells": 13,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 4,
+        "row_duplicate_excess": 4,
+        "column_duplicate_excess": 2,
+        "box_duplicate_excess": 2,
+        "reciprocal_wrong_pairs": [
+          [
+            1,
+            5
+          ],
+          [
+            5,
+            77
+          ],
+          [
+            12,
+            57
+          ],
+          [
+            30,
+            31
+          ],
+          [
+            30,
+            75
+          ],
+          [
+            52,
+            70
+          ],
+          [
+            56,
+            57
+          ],
+          [
+            56,
+            64
+          ]
+        ],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "-16": {
+        "wrong_cells": 13,
+        "conflict_pairs": 12,
+        "conflict_cells": 19,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 3,
+        "row_duplicate_excess": 6,
+        "column_duplicate_excess": 5,
+        "box_duplicate_excess": 4,
+        "reciprocal_wrong_pairs": [
+          [
+            1,
+            19
+          ],
+          [
+            35,
+            62
+          ],
+          [
+            38,
+            47
+          ],
+          [
+            61,
+            62
+          ]
+        ],
+        "unit_duplicate_excess": [
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          1,
+          0,
+          1,
+          1,
+          1,
+          1,
+          0,
+          1,
+          1,
+          0,
+          0,
+          1,
+          0,
+          1,
+          0
+        ]
+      },
+      "-1": {
+        "wrong_cells": 1,
+        "conflict_pairs": 2,
+        "conflict_cells": 3,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 1,
+        "row_duplicate_excess": 1,
+        "column_duplicate_excess": 1,
+        "box_duplicate_excess": 1,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          1,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "0": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 1,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "16": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 0,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      },
+      "128": {
+        "wrong_cells": 0,
+        "conflict_pairs": 0,
+        "conflict_cells": 0,
+        "given_violations": 0,
+        "invalid_cells": 0,
+        "changed_cells": 0,
+        "row_duplicate_excess": 0,
+        "column_duplicate_excess": 0,
+        "box_duplicate_excess": 0,
+        "reciprocal_wrong_pairs": [],
+        "unit_duplicate_excess": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ]
+      }
+    },
+    "changes_after_T": 0,
+    "max_given_violations": 0,
+    "matrix_RMS_change_T_to_T128": {
+      "psi": 0.12989535927772522,
+      "beta": 0.16760696470737457,
+      "agree": 0.25455519556999207,
+      "w": 0.11385844647884369
+    }
+  }
+]

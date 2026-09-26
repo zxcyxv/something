@@ -1,0 +1,106 @@
+{
+  "protocol": {
+    "checkpoint": "checkpoints/v1.1_step160000.npz",
+    "source": "unmodified cached baseline replay",
+    "precision": "GPU FP32; autocast and TF32 disabled; original batch of 12 preserved",
+    "tensor": "raw complex address W_C q, BEFORE normalization; shape [block,cell,head,channel]",
+    "train_puzzles": [
+      38,
+      72,
+      111,
+      128
+    ],
+    "holdout_puzzles": [
+      58,
+      209,
+      230
+    ],
+    "early_blocks_inclusive": [
+      129,
+      384
+    ],
+    "late_blocks": "Each preselected late event T-128 through T+127 inclusive",
+    "validation": "Every puzzle prediction at every replayed block must match the saved reference",
+    "interventions": "None; neither h nor address nor W is changed"
+  },
+  "windows": [
+    {
+      "name": "early",
+      "start_block": 129,
+      "stop_block": 384,
+      "files": [
+        {
+          "puzzle": 38,
+          "file": "early_puzzle_38_raw.npy"
+        },
+        {
+          "puzzle": 72,
+          "file": "early_puzzle_72_raw.npy"
+        },
+        {
+          "puzzle": 111,
+          "file": "early_puzzle_111_raw.npy"
+        },
+        {
+          "puzzle": 128,
+          "file": "early_puzzle_128_raw.npy"
+        },
+        {
+          "puzzle": 58,
+          "file": "early_puzzle_58_raw.npy"
+        },
+        {
+          "puzzle": 209,
+          "file": "early_puzzle_209_raw.npy"
+        },
+        {
+          "puzzle": 230,
+          "file": "early_puzzle_230_raw.npy"
+        }
+      ],
+      "predictions_checked": 248832,
+      "prediction_disagreements": 0
+    },
+    {
+      "name": "late_58",
+      "start_block": 4084,
+      "stop_block": 4339,
+      "files": [
+        {
+          "puzzle": 58,
+          "file": "late_58_puzzle_58_raw.npy"
+        }
+      ],
+      "predictions_checked": 248832,
+      "prediction_disagreements": 0
+    },
+    {
+      "name": "late_209",
+      "start_block": 3650,
+      "stop_block": 3905,
+      "files": [
+        {
+          "puzzle": 209,
+          "file": "late_209_puzzle_209_raw.npy"
+        }
+      ],
+      "predictions_checked": 248832,
+      "prediction_disagreements": 0
+    },
+    {
+      "name": "late_230",
+      "start_block": 3521,
+      "stop_block": 3776,
+      "files": [
+        {
+          "puzzle": 230,
+          "file": "late_230_puzzle_230_raw.npy"
+        }
+      ],
+      "predictions_checked": 248832,
+      "prediction_disagreements": 0
+    }
+  ],
+  "elapsed_seconds": 6.227622099220753,
+  "checkpoint_sha256": "63f478a6563a9c8419db17bc1e44c223f364d1b3a2f2180e32fe4f1e02c9c0cd"
+}

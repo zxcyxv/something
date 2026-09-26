@@ -1,0 +1,32 @@
+{
+  "hypothesis": "Native address channels are fixed damped Fourier traces of a common scalar activity: z_j(k+1)=lambda_j*z_j(k)+b_j*x(k+1). lambda and b may be unknown, complex, and learned.",
+  "necessary_identity": "For every pair j,l, [dz_j(k+1),dz_j(k),dz_l(k+1),dz_l(k)] has complex rank <=3. This condition even allows complex x and arbitrary lambda, without fitting either.",
+  "no_intervention": "Use actual model trajectories only; compare with a generated known trace as a measurement control.",
+  "pair_scope": "Test each cell separately, allowing different hypothetical lambda/b across cells; fixed across its recorded time window.",
+  "pair_rejection": "sigma4/sigma1 > max(1e-3,10*conservative_FP32_noise_scale); exclude channels with RMS increment below 1e-4 of RMS level",
+  "target_cells": [
+    26,
+    19,
+    28
+  ],
+  "diagnostic_cells": [
+    0,
+    8,
+    40,
+    72,
+    80
+  ],
+  "approximate_fit": "Fixed lambda and real rank-r innovations across training puzzles; fresh activity coefficients allowed freely on every holdout step. This is structural reconstruction, not forecasting.",
+  "ranks": [
+    1,
+    2,
+    4,
+    8,
+    16,
+    32
+  ],
+  "normalization": "RMS of complex increments in training data, per channel. This fixed rescaling leaves lambda invariant.",
+  "exact_acceptance": "Necessary rank identities and holdout residual <=1e-4; synthetic control must recover frequency to 1e-3 rad/block.",
+  "approximate_threshold": "Report error continuously. <=0.1 relative residual norm is a predeclared useful-approximation target, not mathematical identity.",
+  "limitation": "An unconstrained independent complex activity per channel permits any chosen lambda by definition; it does not identify a temporal frequency from v1.1 alone."
+}

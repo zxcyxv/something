@@ -1,0 +1,544 @@
+{
+  "protocol": {
+    "checkpoint": "checkpoints/v1.1_step160000.npz",
+    "puzzles": [
+      38,
+      58,
+      72,
+      111,
+      128,
+      147,
+      209,
+      215,
+      222,
+      230,
+      240,
+      248
+    ],
+    "blocks": 8192,
+    "state": "Fresh model initialization; no old full-G memory is retained",
+    "intrinsic_phase_even": "G_new = (G(u)+G(conj(u)))/2; spatial position, beta, values and amplitudes retained",
+    "cell_exchange_even": "G_new = (G+G.transpose(-1,-2))/2; remove cell-exchange antisymmetric writing, not intrinsic-phase odd writing",
+    "intrinsic_phase_mirrored": "G_new=G(conj(u)); all intrinsic phase differences reversed, spatial phase fixed",
+    "intrinsic_phase_even_energy_matched": "Follow-up magnitude control: sign(E)*sqrt(E^2+O^2), E=(G+Gmirror)/2, O=(G-Gmirror)/2. This remains phase-even and preserves the RMS magnitude of the two phase orders per edge. Exactly E=0 maps to zero.",
+    "read": "Original instantaneous a_psi(u), original v, original lambda, original eta; only the write target is changed",
+    "end_point": "Whole-puzzle completion at block8192 and uninterrupted completion for the last256 blocks; first completion and final errors also saved",
+    "scope": "Inference intervention on twelve previously selected late puzzles; no retraining or unbiased accuracy estimate",
+    "arithmetic": "Both normal and conjugate G use gain*(window*agree), exactly the same FP32 multiplication order. Phase-even and paired-energy targets are checked bitwise invariant under swapping G/Gmirror.",
+    "expected_interpretation": "Preserved solutions show the removed component is not necessary for those solutions in this trained inference run; failure shows dependence on that component, not a proof of temporal STDP"
+  },
+  "original": {
+    "final_complete_count": 9,
+    "final_256_stable_count": 9,
+    "puzzles": [
+      {
+        "puzzle": 38,
+        "first_complete_block": null,
+        "final_complete": false,
+        "final_256_all_complete": false,
+        "stable_complete_block": null,
+        "final_wrong_cells": 39
+      },
+      {
+        "puzzle": 58,
+        "first_complete_block": 4212,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 4212,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 72,
+        "first_complete_block": 776,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 776,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 111,
+        "first_complete_block": 508,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 508,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 128,
+        "first_complete_block": 4131,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 4131,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 147,
+        "first_complete_block": null,
+        "final_complete": false,
+        "final_256_all_complete": false,
+        "stable_complete_block": null,
+        "final_wrong_cells": 41
+      },
+      {
+        "puzzle": 209,
+        "first_complete_block": 3778,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 3778,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 215,
+        "first_complete_block": 2551,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 2551,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 222,
+        "first_complete_block": 3827,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 3827,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 230,
+        "first_complete_block": 3649,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 3649,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 240,
+        "first_complete_block": 3542,
+        "final_complete": true,
+        "final_256_all_complete": true,
+        "stable_complete_block": 3542,
+        "final_wrong_cells": 0
+      },
+      {
+        "puzzle": 248,
+        "first_complete_block": null,
+        "final_complete": false,
+        "final_256_all_complete": false,
+        "stable_complete_block": null,
+        "final_wrong_cells": 27
+      }
+    ]
+  },
+  "baseline_128block_prediction_match": true,
+  "modes": {
+    "intrinsic_phase_even": {
+      "final_complete_count": 8,
+      "final_256_stable_count": 8,
+      "puzzles": [
+        {
+          "puzzle": 38,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 35
+        },
+        {
+          "puzzle": 58,
+          "first_complete_block": 692,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 692,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 72,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 20
+        },
+        {
+          "puzzle": 111,
+          "first_complete_block": 1515,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 1517,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 128,
+          "first_complete_block": 2875,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 2875,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 147,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 20
+        },
+        {
+          "puzzle": 209,
+          "first_complete_block": 434,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 434,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 215,
+          "first_complete_block": 253,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 253,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 222,
+          "first_complete_block": 297,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 299,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 230,
+          "first_complete_block": 6564,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 6564,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 240,
+          "first_complete_block": 5577,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 5579,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 248,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 20
+        }
+      ]
+    },
+    "cell_exchange_even": {
+      "final_complete_count": 10,
+      "final_256_stable_count": 9,
+      "puzzles": [
+        {
+          "puzzle": 38,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 31
+        },
+        {
+          "puzzle": 58,
+          "first_complete_block": 4842,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 4842,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 72,
+          "first_complete_block": 2317,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 2317,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 111,
+          "first_complete_block": 239,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 239,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 128,
+          "first_complete_block": 775,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 775,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 147,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 35
+        },
+        {
+          "puzzle": 209,
+          "first_complete_block": 1624,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 1624,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 215,
+          "first_complete_block": 1428,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 1428,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 222,
+          "first_complete_block": 870,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 870,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 230,
+          "first_complete_block": 4152,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 4152,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 240,
+          "first_complete_block": 3305,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 3305,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 248,
+          "first_complete_block": 8096,
+          "final_complete": true,
+          "final_256_all_complete": false,
+          "stable_complete_block": 8096,
+          "final_wrong_cells": 0
+        }
+      ]
+    },
+    "intrinsic_phase_mirrored": {
+      "final_complete_count": 5,
+      "final_256_stable_count": 5,
+      "puzzles": [
+        {
+          "puzzle": 38,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 39
+        },
+        {
+          "puzzle": 58,
+          "first_complete_block": 1377,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 1377,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 72,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 39
+        },
+        {
+          "puzzle": 111,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 31
+        },
+        {
+          "puzzle": 128,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 31
+        },
+        {
+          "puzzle": 147,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 50
+        },
+        {
+          "puzzle": 209,
+          "first_complete_block": 218,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 218,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 215,
+          "first_complete_block": 109,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 109,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 222,
+          "first_complete_block": 3298,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 3298,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 230,
+          "first_complete_block": 3189,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 3189,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 240,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 41
+        },
+        {
+          "puzzle": 248,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 16
+        }
+      ]
+    },
+    "intrinsic_phase_even_energy_matched": {
+      "final_complete_count": 9,
+      "final_256_stable_count": 9,
+      "puzzles": [
+        {
+          "puzzle": 38,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 31
+        },
+        {
+          "puzzle": 58,
+          "first_complete_block": 1698,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 1698,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 72,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 21
+        },
+        {
+          "puzzle": 111,
+          "first_complete_block": 630,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 634,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 128,
+          "first_complete_block": 2162,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 2162,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 147,
+          "first_complete_block": 923,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 923,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 209,
+          "first_complete_block": 702,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 702,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 215,
+          "first_complete_block": 970,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 970,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 222,
+          "first_complete_block": 5717,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 5717,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 230,
+          "first_complete_block": 4459,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 4459,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 240,
+          "first_complete_block": 7652,
+          "final_complete": true,
+          "final_256_all_complete": true,
+          "stable_complete_block": 7652,
+          "final_wrong_cells": 0
+        },
+        {
+          "puzzle": 248,
+          "first_complete_block": null,
+          "final_complete": false,
+          "final_256_all_complete": false,
+          "stable_complete_block": null,
+          "final_wrong_cells": 14
+        }
+      ]
+    }
+  },
+  "elapsed_seconds": 158.5832947269082
+}

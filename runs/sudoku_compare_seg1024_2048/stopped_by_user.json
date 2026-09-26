@@ -1,0 +1,6 @@
+{
+  "stopped_at_utc": "2026-09-26T03:09:38.484855+00:00",
+  "reason": "User stopped extrapolation/comparison and requested an internal agree probe.",
+  "lt_v11": "Already completed 1024 segments before stop request; artifacts preserved.",
+  "trm_mlp": "Stopped PID 3842 and scheduler PID 2255 with SIGTERM; incomplete artifacts preserved."
+}

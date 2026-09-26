@@ -1,0 +1,975 @@
+{
+  "v1.1_160k": {
+    "checkpoint": "checkpoints/v1.1_step160000.npz",
+    "sha256": "63f478a6563a9c8419db17bc1e44c223f364d1b3a2f2180e32fe4f1e02c9c0cd",
+    "key": "ema/model.inner.layers.0.beta",
+    "storage_dtype": "float32",
+    "overall": {
+      "count": 416,
+      "circular_mean_deg": 0.5445490363878029,
+      "circular_concentration": 0.908402493493276,
+      "min_deg": -122.55431650397057,
+      "max_deg": 153.7233110454335,
+      "median_abs_deg": 8.887882695222057,
+      "abs_deg_p90": 39.624065224454185,
+      "even_coefficient_energy": 0.8738391661686399,
+      "odd_coefficient_energy": 0.12616083383136015,
+      "odd_even_rms_ratio": 0.3799675619536744,
+      "nearer_even_axis": 379,
+      "nearer_odd_axis": 37,
+      "near": {
+        "15": {
+          "zero": 289,
+          "pi": 0,
+          "even_axis": 289,
+          "odd_axis": 11
+        },
+        "30": {
+          "zero": 347,
+          "pi": 1,
+          "even_axis": 348,
+          "odd_axis": 23
+        },
+        "45": {
+          "zero": 378,
+          "pi": 1,
+          "even_axis": 379,
+          "odd_axis": 37
+        }
+      }
+    },
+    "heads": [
+      {
+        "head": 1,
+        "count": 52,
+        "circular_mean_deg": 4.0684948018289795,
+        "circular_concentration": 0.9832870401904455,
+        "min_deg": -18.062821165786826,
+        "max_deg": 49.354554206634866,
+        "median_abs_deg": 6.348855067031375,
+        "abs_deg_p90": 14.446615929537653,
+        "even_coefficient_energy": 0.9644754783664721,
+        "odd_coefficient_energy": 0.03552452163352777,
+        "odd_even_rms_ratio": 0.19191924396475873,
+        "nearer_even_axis": 51,
+        "nearer_odd_axis": 1,
+        "near": {
+          "15": {
+            "zero": 48,
+            "pi": 0,
+            "even_axis": 48,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 1
+          }
+        }
+      },
+      {
+        "head": 2,
+        "count": 52,
+        "circular_mean_deg": -0.9795205529776005,
+        "circular_concentration": 0.9510508537972988,
+        "min_deg": -122.55431650397057,
+        "max_deg": 25.329870942660886,
+        "median_abs_deg": 7.432845361900125,
+        "abs_deg_p90": 18.665263145866355,
+        "even_coefficient_energy": 0.9485949461438603,
+        "odd_coefficient_energy": 0.05140505385613966,
+        "odd_even_rms_ratio": 0.23278902748636476,
+        "nearer_even_axis": 51,
+        "nearer_odd_axis": 1,
+        "near": {
+          "15": {
+            "zero": 39,
+            "pi": 0,
+            "even_axis": 39,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 1
+          }
+        }
+      },
+      {
+        "head": 3,
+        "count": 52,
+        "circular_mean_deg": 2.755076505260031,
+        "circular_concentration": 0.952715966255445,
+        "min_deg": -13.861958566773735,
+        "max_deg": 153.7233110454335,
+        "median_abs_deg": 5.64634919344123,
+        "abs_deg_p90": 13.512240928438032,
+        "even_coefficient_energy": 0.9732211325491206,
+        "odd_coefficient_energy": 0.026778867450879675,
+        "odd_even_rms_ratio": 0.1658785909009615,
+        "nearer_even_axis": 52,
+        "nearer_odd_axis": 0,
+        "near": {
+          "15": {
+            "zero": 48,
+            "pi": 0,
+            "even_axis": 48,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 50,
+            "pi": 1,
+            "even_axis": 51,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 51,
+            "pi": 1,
+            "even_axis": 52,
+            "odd_axis": 0
+          }
+        }
+      },
+      {
+        "head": 4,
+        "count": 52,
+        "circular_mean_deg": 1.6302699437282258,
+        "circular_concentration": 0.6514003481605708,
+        "min_deg": -89.66091776313289,
+        "max_deg": 83.43978339159933,
+        "median_abs_deg": 39.194782712477,
+        "abs_deg_p90": 81.7202941963513,
+        "even_coefficient_energy": 0.5187077013664062,
+        "odd_coefficient_energy": 0.48129229863359374,
+        "odd_even_rms_ratio": 0.9632590725429937,
+        "nearer_even_axis": 29,
+        "nearer_odd_axis": 23,
+        "near": {
+          "15": {
+            "zero": 9,
+            "pi": 0,
+            "even_axis": 9,
+            "odd_axis": 10
+          },
+          "30": {
+            "zero": 16,
+            "pi": 0,
+            "even_axis": 16,
+            "odd_axis": 16
+          },
+          "45": {
+            "zero": 29,
+            "pi": 0,
+            "even_axis": 29,
+            "odd_axis": 23
+          }
+        }
+      },
+      {
+        "head": 5,
+        "count": 52,
+        "circular_mean_deg": 2.5569250154461853,
+        "circular_concentration": 0.8611694635527951,
+        "min_deg": -69.59276330231407,
+        "max_deg": 114.37373746334377,
+        "median_abs_deg": 18.837233990298394,
+        "abs_deg_p90": 48.00669901922179,
+        "even_coefficient_energy": 0.797929669341772,
+        "odd_coefficient_energy": 0.20207033065822802,
+        "odd_even_rms_ratio": 0.5032328337796795,
+        "nearer_even_axis": 46,
+        "nearer_odd_axis": 6,
+        "near": {
+          "15": {
+            "zero": 23,
+            "pi": 0,
+            "even_axis": 23,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 35,
+            "pi": 0,
+            "even_axis": 35,
+            "odd_axis": 5
+          },
+          "45": {
+            "zero": 46,
+            "pi": 0,
+            "even_axis": 46,
+            "odd_axis": 6
+          }
+        }
+      },
+      {
+        "head": 6,
+        "count": 52,
+        "circular_mean_deg": -1.0606293445944084,
+        "circular_concentration": 0.9884818114906566,
+        "min_deg": -17.719754424155425,
+        "max_deg": 36.527708247255624,
+        "median_abs_deg": 4.500134808016605,
+        "abs_deg_p90": 10.504711756678594,
+        "even_coefficient_energy": 0.9776685266476339,
+        "odd_coefficient_energy": 0.02233147335236623,
+        "odd_even_rms_ratio": 0.15113424171551537,
+        "nearer_even_axis": 52,
+        "nearer_odd_axis": 0,
+        "near": {
+          "15": {
+            "zero": 48,
+            "pi": 0,
+            "even_axis": 48,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          }
+        }
+      },
+      {
+        "head": 7,
+        "count": 52,
+        "circular_mean_deg": -5.6285228273805465,
+        "circular_concentration": 0.9327831992647445,
+        "min_deg": -86.85332069347496,
+        "max_deg": 35.67523233694633,
+        "median_abs_deg": 10.90239533761172,
+        "abs_deg_p90": 31.61422178854802,
+        "even_coefficient_energy": 0.8880940198468713,
+        "odd_coefficient_energy": 0.11190598015312861,
+        "odd_even_rms_ratio": 0.35497451533172125,
+        "nearer_even_axis": 48,
+        "nearer_odd_axis": 4,
+        "near": {
+          "15": {
+            "zero": 37,
+            "pi": 0,
+            "even_axis": 37,
+            "odd_axis": 1
+          },
+          "30": {
+            "zero": 46,
+            "pi": 0,
+            "even_axis": 46,
+            "odd_axis": 1
+          },
+          "45": {
+            "zero": 48,
+            "pi": 0,
+            "even_axis": 48,
+            "odd_axis": 4
+          }
+        }
+      },
+      {
+        "head": 8,
+        "count": 52,
+        "circular_mean_deg": 1.3550142385590567,
+        "circular_concentration": 0.9557760901546597,
+        "min_deg": -60.32345893817641,
+        "max_deg": 33.86558396163521,
+        "median_abs_deg": 9.827286423098101,
+        "abs_deg_p90": 25.90766772191298,
+        "even_coefficient_energy": 0.9220218550869824,
+        "odd_coefficient_energy": 0.07797814491301748,
+        "odd_even_rms_ratio": 0.2908143561872579,
+        "nearer_even_axis": 50,
+        "nearer_odd_axis": 2,
+        "near": {
+          "15": {
+            "zero": 37,
+            "pi": 0,
+            "even_axis": 37,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 48,
+            "pi": 0,
+            "even_axis": 48,
+            "odd_axis": 1
+          },
+          "45": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 2
+          }
+        }
+      }
+    ]
+  },
+  "v1_310527": {
+    "checkpoint": "checkpoints/v1_step310527.npz",
+    "sha256": "23a7af59021082c20b4401c286116779fd742634e47c77fb8e6e39b1082215ce",
+    "key": "ema/_orig_mod.model.inner.beta",
+    "storage_dtype": "float32",
+    "overall": {
+      "count": 416,
+      "circular_mean_deg": -0.03685066308955485,
+      "circular_concentration": 0.9261201054599214,
+      "min_deg": -117.00779308657002,
+      "max_deg": 124.42246886461744,
+      "median_abs_deg": 4.685802828432823,
+      "abs_deg_p90": 36.13911658725879,
+      "even_coefficient_energy": 0.898623780386962,
+      "odd_coefficient_energy": 0.10137621961303808,
+      "odd_even_rms_ratio": 0.33587609278121644,
+      "nearer_even_axis": 383,
+      "nearer_odd_axis": 33,
+      "near": {
+        "15": {
+          "zero": 320,
+          "pi": 0,
+          "even_axis": 320,
+          "odd_axis": 9
+        },
+        "30": {
+          "zero": 369,
+          "pi": 0,
+          "even_axis": 369,
+          "odd_axis": 24
+        },
+        "45": {
+          "zero": 383,
+          "pi": 0,
+          "even_axis": 383,
+          "odd_axis": 33
+        }
+      }
+    },
+    "heads": [
+      {
+        "head": 1,
+        "count": 52,
+        "circular_mean_deg": -0.006883198845426504,
+        "circular_concentration": 0.9937044335886968,
+        "min_deg": -27.82896373543497,
+        "max_deg": 14.213111398608783,
+        "median_abs_deg": 3.352609986766689,
+        "abs_deg_p90": 9.442794584150572,
+        "even_coefficient_energy": 0.9877249911690538,
+        "odd_coefficient_energy": 0.012275008830946356,
+        "odd_even_rms_ratio": 0.11147895409174595,
+        "nearer_even_axis": 52,
+        "nearer_odd_axis": 0,
+        "near": {
+          "15": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          }
+        }
+      },
+      {
+        "head": 2,
+        "count": 52,
+        "circular_mean_deg": -0.08790133754530016,
+        "circular_concentration": 0.945181333091208,
+        "min_deg": -30.6345117483419,
+        "max_deg": 72.95758769502915,
+        "median_abs_deg": 11.779716061026933,
+        "abs_deg_p90": 23.783470523057286,
+        "even_coefficient_energy": 0.911020470924698,
+        "odd_coefficient_energy": 0.08897952907530214,
+        "odd_even_rms_ratio": 0.31252227964749807,
+        "nearer_even_axis": 50,
+        "nearer_odd_axis": 2,
+        "near": {
+          "15": {
+            "zero": 34,
+            "pi": 0,
+            "even_axis": 34,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 49,
+            "pi": 0,
+            "even_axis": 49,
+            "odd_axis": 2
+          },
+          "45": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 2
+          }
+        }
+      },
+      {
+        "head": 3,
+        "count": 52,
+        "circular_mean_deg": -0.9442448769786164,
+        "circular_concentration": 0.9805089684427597,
+        "min_deg": -26.834848484759835,
+        "max_deg": 28.251305067668127,
+        "median_abs_deg": 4.668238570095312,
+        "abs_deg_p90": 22.009982364495308,
+        "even_coefficient_energy": 0.9622540989750903,
+        "odd_coefficient_energy": 0.037745901024909635,
+        "odd_even_rms_ratio": 0.19805691657831728,
+        "nearer_even_axis": 52,
+        "nearer_odd_axis": 0,
+        "near": {
+          "15": {
+            "zero": 45,
+            "pi": 0,
+            "even_axis": 45,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          }
+        }
+      },
+      {
+        "head": 4,
+        "count": 52,
+        "circular_mean_deg": 0.3694762265626234,
+        "circular_concentration": 0.9977702774881223,
+        "min_deg": -13.370142257850503,
+        "max_deg": 9.678109115209498,
+        "median_abs_deg": 1.779457871962609,
+        "abs_deg_p90": 6.096771866607197,
+        "even_coefficient_energy": 0.9955239103325438,
+        "odd_coefficient_energy": 0.004476089667456244,
+        "odd_even_rms_ratio": 0.06705382263182494,
+        "nearer_even_axis": 52,
+        "nearer_odd_axis": 0,
+        "near": {
+          "15": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          }
+        }
+      },
+      {
+        "head": 5,
+        "count": 52,
+        "circular_mean_deg": -2.692512380206835,
+        "circular_concentration": 0.9721375031007085,
+        "min_deg": -71.04559918028914,
+        "max_deg": 43.48665331331228,
+        "median_abs_deg": 3.117924153276522,
+        "abs_deg_p90": 14.023247251475965,
+        "even_coefficient_energy": 0.9539188646980199,
+        "odd_coefficient_energy": 0.046081135301980075,
+        "odd_even_rms_ratio": 0.2197889561400541,
+        "nearer_even_axis": 51,
+        "nearer_odd_axis": 1,
+        "near": {
+          "15": {
+            "zero": 48,
+            "pi": 0,
+            "even_axis": 48,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 49,
+            "pi": 0,
+            "even_axis": 49,
+            "odd_axis": 1
+          },
+          "45": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 1
+          }
+        }
+      },
+      {
+        "head": 6,
+        "count": 52,
+        "circular_mean_deg": 3.9184727381821576,
+        "circular_concentration": 0.9649407771057174,
+        "min_deg": -13.052255008594356,
+        "max_deg": 74.19021827416302,
+        "median_abs_deg": 2.3909698309957284,
+        "abs_deg_p90": 17.879989552178177,
+        "even_coefficient_energy": 0.9426031707271675,
+        "odd_coefficient_energy": 0.057396829272832434,
+        "odd_even_rms_ratio": 0.24676269384897218,
+        "nearer_even_axis": 50,
+        "nearer_odd_axis": 2,
+        "near": {
+          "15": {
+            "zero": 46,
+            "pi": 0,
+            "even_axis": 46,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 48,
+            "pi": 0,
+            "even_axis": 48,
+            "odd_axis": 2
+          },
+          "45": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 2
+          }
+        }
+      },
+      {
+        "head": 7,
+        "count": 52,
+        "circular_mean_deg": 4.004415065306393,
+        "circular_concentration": 0.9495955685388138,
+        "min_deg": -23.53327676640095,
+        "max_deg": 88.9633232224428,
+        "median_abs_deg": 7.439564133609302,
+        "abs_deg_p90": 22.726980960353217,
+        "even_coefficient_energy": 0.920604725111011,
+        "odd_coefficient_energy": 0.07939527488898902,
+        "odd_even_rms_ratio": 0.2936707744582354,
+        "nearer_even_axis": 50,
+        "nearer_odd_axis": 2,
+        "near": {
+          "15": {
+            "zero": 34,
+            "pi": 0,
+            "even_axis": 34,
+            "odd_axis": 1
+          },
+          "30": {
+            "zero": 49,
+            "pi": 0,
+            "even_axis": 49,
+            "odd_axis": 2
+          },
+          "45": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 2
+          }
+        }
+      },
+      {
+        "head": 8,
+        "count": 52,
+        "circular_mean_deg": -7.465856496468619,
+        "circular_concentration": 0.6161460976110361,
+        "min_deg": -117.00779308657002,
+        "max_deg": 124.42246886461744,
+        "median_abs_deg": 44.408529068230784,
+        "abs_deg_p90": 86.94305845086623,
+        "even_coefficient_energy": 0.5153400111581113,
+        "odd_coefficient_energy": 0.48465998884188877,
+        "odd_even_rms_ratio": 0.9697764928729118,
+        "nearer_even_axis": 26,
+        "nearer_odd_axis": 26,
+        "near": {
+          "15": {
+            "zero": 10,
+            "pi": 0,
+            "even_axis": 10,
+            "odd_axis": 8
+          },
+          "30": {
+            "zero": 18,
+            "pi": 0,
+            "even_axis": 18,
+            "odd_axis": 17
+          },
+          "45": {
+            "zero": 26,
+            "pi": 0,
+            "even_axis": 26,
+            "odd_axis": 26
+          }
+        }
+      }
+    ]
+  },
+  "v1_repro_120k": {
+    "checkpoint": "checkpoints/v1_repro_step120000.npz",
+    "sha256": "35a4ec279c75349d78edb99bd231b2d988d2e78e7efb2398ffd0828dd7198ccd",
+    "key": "ema/model.inner.layers.0.beta",
+    "storage_dtype": "float32",
+    "overall": {
+      "count": 416,
+      "circular_mean_deg": 0.3576473324002255,
+      "circular_concentration": 0.9422977737737225,
+      "min_deg": -109.96306767472717,
+      "max_deg": 118.78056868564683,
+      "median_abs_deg": 6.693223600029897,
+      "abs_deg_p90": 29.77025034661975,
+      "even_coefficient_energy": 0.9161458475916942,
+      "odd_coefficient_energy": 0.0838541524083059,
+      "odd_even_rms_ratio": 0.30253803233797993,
+      "nearer_even_axis": 398,
+      "nearer_odd_axis": 18,
+      "near": {
+        "15": {
+          "zero": 307,
+          "pi": 0,
+          "even_axis": 307,
+          "odd_axis": 6
+        },
+        "30": {
+          "zero": 375,
+          "pi": 0,
+          "even_axis": 375,
+          "odd_axis": 10
+        },
+        "45": {
+          "zero": 398,
+          "pi": 0,
+          "even_axis": 398,
+          "odd_axis": 18
+        }
+      }
+    },
+    "heads": [
+      {
+        "head": 1,
+        "count": 52,
+        "circular_mean_deg": 0.9798836745773661,
+        "circular_concentration": 0.9950743986825351,
+        "min_deg": -16.24083746883466,
+        "max_deg": 12.427045105180776,
+        "median_abs_deg": 4.298145196804994,
+        "abs_deg_p90": 8.969462901555513,
+        "even_coefficient_energy": 0.9899362428887153,
+        "odd_coefficient_energy": 0.010063757111284757,
+        "odd_even_rms_ratio": 0.10082691074101859,
+        "nearer_even_axis": 52,
+        "nearer_odd_axis": 0,
+        "near": {
+          "15": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          }
+        }
+      },
+      {
+        "head": 2,
+        "count": 52,
+        "circular_mean_deg": -0.1899570310343466,
+        "circular_concentration": 0.8847080815491679,
+        "min_deg": -90.66292700494127,
+        "max_deg": 118.78056868564683,
+        "median_abs_deg": 9.61405987004135,
+        "abs_deg_p90": 45.528447524171625,
+        "even_coefficient_energy": 0.848361165701899,
+        "odd_coefficient_energy": 0.15163883429810093,
+        "odd_even_rms_ratio": 0.4227803836388302,
+        "nearer_even_axis": 46,
+        "nearer_odd_axis": 6,
+        "near": {
+          "15": {
+            "zero": 29,
+            "pi": 0,
+            "even_axis": 29,
+            "odd_axis": 1
+          },
+          "30": {
+            "zero": 41,
+            "pi": 0,
+            "even_axis": 41,
+            "odd_axis": 2
+          },
+          "45": {
+            "zero": 46,
+            "pi": 0,
+            "even_axis": 46,
+            "odd_axis": 6
+          }
+        }
+      },
+      {
+        "head": 3,
+        "count": 52,
+        "circular_mean_deg": -0.2650837645218448,
+        "circular_concentration": 0.9759069914439884,
+        "min_deg": -37.28044973530439,
+        "max_deg": 34.95119130378996,
+        "median_abs_deg": 6.073501967057834,
+        "abs_deg_p90": 20.027157616363645,
+        "even_coefficient_energy": 0.9540481067229603,
+        "odd_coefficient_energy": 0.04595189327703957,
+        "odd_even_rms_ratio": 0.21946565613458946,
+        "nearer_even_axis": 52,
+        "nearer_odd_axis": 0,
+        "near": {
+          "15": {
+            "zero": 40,
+            "pi": 0,
+            "even_axis": 40,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          }
+        }
+      },
+      {
+        "head": 4,
+        "count": 52,
+        "circular_mean_deg": -0.9373495512012083,
+        "circular_concentration": 0.9679940810523723,
+        "min_deg": -109.96306767472717,
+        "max_deg": 20.05682146943847,
+        "median_abs_deg": 2.6287451511465623,
+        "abs_deg_p90": 9.882179714306481,
+        "even_coefficient_energy": 0.970702449886475,
+        "odd_coefficient_energy": 0.029297550113524994,
+        "odd_even_rms_ratio": 0.17372910809480646,
+        "nearer_even_axis": 51,
+        "nearer_odd_axis": 1,
+        "near": {
+          "15": {
+            "zero": 48,
+            "pi": 0,
+            "even_axis": 48,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 1
+          },
+          "45": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 1
+          }
+        }
+      },
+      {
+        "head": 5,
+        "count": 52,
+        "circular_mean_deg": 6.234488261423834,
+        "circular_concentration": 0.8282870407194299,
+        "min_deg": -95.22304816278692,
+        "max_deg": 89.03739662399158,
+        "median_abs_deg": 20.787419484198054,
+        "abs_deg_p90": 58.67594388583574,
+        "even_coefficient_energy": 0.7530429588938271,
+        "odd_coefficient_energy": 0.24695704110617298,
+        "odd_even_rms_ratio": 0.572665250054383,
+        "nearer_even_axis": 44,
+        "nearer_odd_axis": 8,
+        "near": {
+          "15": {
+            "zero": 18,
+            "pi": 0,
+            "even_axis": 18,
+            "odd_axis": 4
+          },
+          "30": {
+            "zero": 34,
+            "pi": 0,
+            "even_axis": 34,
+            "odd_axis": 5
+          },
+          "45": {
+            "zero": 44,
+            "pi": 0,
+            "even_axis": 44,
+            "odd_axis": 8
+          }
+        }
+      },
+      {
+        "head": 6,
+        "count": 52,
+        "circular_mean_deg": 0.6741692316405861,
+        "circular_concentration": 0.9604386867080785,
+        "min_deg": -47.57168700305936,
+        "max_deg": 81.33603048572205,
+        "median_abs_deg": 7.014372691501549,
+        "abs_deg_p90": 19.670777640756782,
+        "even_coefficient_energy": 0.9375938668823032,
+        "odd_coefficient_energy": 0.062406133117696765,
+        "odd_even_rms_ratio": 0.2579920109346851,
+        "nearer_even_axis": 50,
+        "nearer_odd_axis": 2,
+        "near": {
+          "15": {
+            "zero": 40,
+            "pi": 0,
+            "even_axis": 40,
+            "odd_axis": 1
+          },
+          "30": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 1
+          },
+          "45": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 2
+          }
+        }
+      },
+      {
+        "head": 7,
+        "count": 52,
+        "circular_mean_deg": 1.551302876996067,
+        "circular_concentration": 0.9696813489156245,
+        "min_deg": -22.57051208401617,
+        "max_deg": 66.71090841599975,
+        "median_abs_deg": 7.002962006719397,
+        "abs_deg_p90": 18.00363569832664,
+        "even_coefficient_energy": 0.9470777507114847,
+        "odd_coefficient_energy": 0.05292224928851523,
+        "odd_even_rms_ratio": 0.23638849195770387,
+        "nearer_even_axis": 51,
+        "nearer_odd_axis": 1,
+        "near": {
+          "15": {
+            "zero": 42,
+            "pi": 0,
+            "even_axis": 42,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 50,
+            "pi": 0,
+            "even_axis": 50,
+            "odd_axis": 1
+          },
+          "45": {
+            "zero": 51,
+            "pi": 0,
+            "even_axis": 51,
+            "odd_axis": 1
+          }
+        }
+      },
+      {
+        "head": 8,
+        "count": 52,
+        "circular_mean_deg": -4.410492916211955,
+        "circular_concentration": 0.9646121437581197,
+        "min_deg": -43.621809096608494,
+        "max_deg": 31.401702501579827,
+        "median_abs_deg": 9.925989913680779,
+        "abs_deg_p90": 27.070459616783467,
+        "even_coefficient_energy": 0.9284042390458881,
+        "odd_coefficient_energy": 0.07159576095411199,
+        "odd_even_rms_ratio": 0.27769949967419966,
+        "nearer_even_axis": 52,
+        "nearer_odd_axis": 0,
+        "near": {
+          "15": {
+            "zero": 39,
+            "pi": 0,
+            "even_axis": 39,
+            "odd_axis": 0
+          },
+          "30": {
+            "zero": 47,
+            "pi": 0,
+            "even_axis": 47,
+            "odd_axis": 0
+          },
+          "45": {
+            "zero": 52,
+            "pi": 0,
+            "even_axis": 52,
+            "odd_axis": 0
+          }
+        }
+      }
+    ]
+  },
+  "interpretation": {
+    "angles": "wrapped to [-pi, pi); EMA weights; heads numbered 1..8",
+    "even_odd": "cos(delta+beta)=cos(beta)*cos(delta)-sin(beta)*sin(delta)",
+    "energy": "unweighted parameter coefficient squares, NOT measured memory/message energy",
+    "initialization": "LTLayer initializes beta ~ Normal(0, 0.5^2), already centered on zero",
+    "initial_expected_odd_energy": 0.1967346701436833
+  }
+}

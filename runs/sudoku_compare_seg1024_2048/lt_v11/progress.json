@@ -1,0 +1,12 @@
+{
+  "completed_batches": 0,
+  "current_batch": [
+    0,
+    2048
+  ],
+  "current_segment": 1024,
+  "exact_at_segment": 1519,
+  "evaluated_puzzles_at_segment": 2048,
+  "elapsed_seconds": 3113.9848975539207,
+  "peak_allocated_gib": 8.219044208526611
+}

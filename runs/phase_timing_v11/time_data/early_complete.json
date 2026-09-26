@@ -1,0 +1,37 @@
+{
+  "name": "early",
+  "start_block": 129,
+  "stop_block": 384,
+  "files": [
+    {
+      "puzzle": 38,
+      "file": "early_puzzle_38_raw.npy"
+    },
+    {
+      "puzzle": 72,
+      "file": "early_puzzle_72_raw.npy"
+    },
+    {
+      "puzzle": 111,
+      "file": "early_puzzle_111_raw.npy"
+    },
+    {
+      "puzzle": 128,
+      "file": "early_puzzle_128_raw.npy"
+    },
+    {
+      "puzzle": 58,
+      "file": "early_puzzle_58_raw.npy"
+    },
+    {
+      "puzzle": 209,
+      "file": "early_puzzle_209_raw.npy"
+    },
+    {
+      "puzzle": 230,
+      "file": "early_puzzle_230_raw.npy"
+    }
+  ],
+  "predictions_checked": 248832,
+  "prediction_disagreements": 0
+}

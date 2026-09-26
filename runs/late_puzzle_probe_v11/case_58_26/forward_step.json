@@ -1,0 +1,93 @@
+{
+  "event": {
+    "puzzle": 58,
+    "batch_index": 1,
+    "first_complete_block": 4212,
+    "stable_complete_block": 4212,
+    "final_exact": true,
+    "eligible": true,
+    "cell": 26,
+    "target_rc": [
+      3,
+      9
+    ],
+    "prior_1024_wrong_fraction": 1.0,
+    "old_digit": 8,
+    "gold_digit": 6
+  },
+  "normal_replay_predictions_exact_at_previous_and_current": true,
+  "scope": "One-block read interventions at fixed normal pre-transition state; no rollout claims.",
+  "scores": {
+    "normal": {
+      "digit": 6,
+      "gold_minus_old_margin": 0.20114517211914062
+    },
+    "previous_block_output": {
+      "digit": 8,
+      "gold_minus_old_margin": -0.19912242889404297
+    },
+    "skip_current_write": {
+      "digit": 6,
+      "gold_minus_old_margin": 0.24367713928222656
+    },
+    "read_current_G": {
+      "digit": 8,
+      "gold_minus_old_margin": -1.7233514785766602
+    },
+    "previous_all_values": {
+      "digit": 5,
+      "gold_minus_old_margin": 2.598665714263916
+    },
+    "previous_other_cell_values": {
+      "digit": 5,
+      "gold_minus_old_margin": 1.258131504058838
+    },
+    "previous_self_value": {
+      "digit": 6,
+      "gold_minus_old_margin": 1.5552654266357422
+    },
+    "previous_read_kernel": {
+      "digit": 6,
+      "gold_minus_old_margin": 0.2537851333618164
+    },
+    "previous_residual_q": {
+      "digit": 8,
+      "gold_minus_old_margin": -2.4148969650268555
+    }
+  },
+  "chronological_margin_components": {
+    "instant_read": -1.0879790782928467,
+    "memory_before_current_write": 1.6396656036376953,
+    "current_write_increment": -0.04246463626623154,
+    "prepared_hidden": -0.3165711760520935,
+    "classifier_bias": 0.008496761322021484
+  },
+  "chronological_reconstruction_error": 2.302229404449463e-06,
+  "last_block_margin_change_symmetric_algebra": {
+    "prepared_hidden_change": 2.6657609939575195,
+    "values_change": -2.2880795001983643,
+    "instant_read_kernel_change": 0.05997884273529053,
+    "memory_write_change": -0.03740110620856285,
+    "normalization_change": 8.091994459391572e-06
+  },
+  "prepared_hidden_change_split": {
+    "incoming_hidden_change": 1.0344339609146118,
+    "local_MLP_output_change": 1.6313270330429077,
+    "original_input_embedding_change": 0.0
+  },
+  "observed_last_block_margin_change": 0.4002676010131836,
+  "change_reconstruction_error": -2.787328412523493e-07,
+  "previously_discussed_peer_head": {
+    "agree": 0.59394371509552,
+    "write_window": 0.29211488366127014,
+    "G": 0.4839728772640228,
+    "w_after": 0.15348099172115326,
+    "read_kernel": -0.2256050854921341,
+    "w_before": 0.14354923367500305,
+    "eta": 0.029174720868468285,
+    "lambda": 0.19012291729450226,
+    "normal_effective_read": -0.15353213250637054,
+    "G_effective_read": -0.09069805592298508,
+    "write_increment_margin": -0.01209121011197567
+  }
+}

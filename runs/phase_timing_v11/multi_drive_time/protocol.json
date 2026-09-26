@@ -1,0 +1,12 @@
+{
+  "hypothesis": "Y=a(k)*diag(lambda)*X+B*c(k), arbitrary complex activity vector c(k), fixed B/lambda within the cell/window, arbitrary complex scalar a(k)",
+  "selections": "Late windows of puzzles58/209/230, original target cell, all8 heads, fixed channel groups starting at0,17,35",
+  "group_sizes": [
+    4,
+    6,
+    10
+  ],
+  "meaning": "Full column rank on m channels excludes up to m-2 complex input activities for that group; no activity identity or frequency is chosen",
+  "validation": "Known synthetic filters with exactly m-2 independent complex drives must pass",
+  "scope": "Finite native coordinate groups and fixed frequency dynamics. This does not exclude freely independent input innovations in every channel, which cannot identify frequencies from state observations alone."
+}

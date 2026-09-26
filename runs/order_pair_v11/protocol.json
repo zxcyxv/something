@@ -1,0 +1,32 @@
+{
+  "checkpoint": "checkpoints/v1.1_step160000.npz",
+  "puzzle_test_index": 1,
+  "source_cell_zero_based": 66,
+  "target_cell_zero_based": 48,
+  "starts": [
+    152,
+    192
+  ],
+  "lags": [
+    0,
+    1,
+    2,
+    4,
+    8,
+    16
+  ],
+  "tail_blocks": 8,
+  "pulse": "Before boundary MLP, add epsilon times that cell's starting hidden vector; the vectors are fixed across pulse times and orders.",
+  "epsilons": [
+    0.002,
+    0.001
+  ],
+  "precision": "CPU FP64",
+  "arms": "baseline; Aearly, Blate, AB; Bearly, Alate, BA, for each epsilon. A=cell66, B=cell48.",
+  "interaction": "(both - first_alone - second_alone + baseline) / epsilon^2",
+  "primary": "Interaction in W, eight blocks after the second pulse, for each head and each directed edge.",
+  "secondary": "Interaction in G and W at the second pulse; full temporal response retained.",
+  "expected_causal_sign": "For each directed edge, source-first interaction positive and target-first negative; test all preselected nonzero lags and heads without choosing a favorable sign orientation.",
+  "classification": "Convergence: epsilon difference <= max(1e-6,0.1*max magnitude). Reliable sign: magnitude > max(1e-6,5*epsilon difference). Order difference: > max(1e-6,5*sum epsilon differences).",
+  "limits": "Conditional finite-pulse test on one pair and two states. Pair interaction is not total Delta W. Baseline drift and nonlinear recurrence remain. No untrained checkpoint comparison, so this cannot establish that training created the behavior, or prove global absence/presence of a universal STDP law."
+}

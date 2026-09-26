@@ -1,0 +1,26 @@
+{
+  "checkpoint": "checkpoints/v1.1_step160000.npz",
+  "checkpoint_sha256": "63f478a6563a9c8419db17bc1e44c223f364d1b3a2f2180e32fe4f1e02c9c0cd",
+  "puzzle_test_index": 1,
+  "target_cell_zero_based": 48,
+  "snapshots_after_blocks": [
+    152,
+    192
+  ],
+  "precision": "FP64 CPU",
+  "hypothesis": "raw address z_next = Lambda z + b x(h,w), one real scalar x per cell/head, fixed Lambda and b, throughout an open neighborhood",
+  "necessary_condition": "at fixed h, rank_R(d z_next / d w) <= 1",
+  "interventions": "all 640 orthonormal symmetric off-diagonal incident-memory directions, 80 per head; current h fixed",
+  "scope": "Native address coordinates and a state-space identity. Does not rule out restricted natural trajectories, approximate filters, arbitrary nonlinear latent coordinates, or multivariate activity histories.",
+  "note_on_normalization": "Raw address is primary; unit address is an additional check. Coordinate order is real[0:p], imag[0:p].",
+  "rank_thresholds_relative_to_sigma1": [
+    0.01,
+    0.001,
+    1e-06,
+    1e-10
+  ],
+  "finite_difference_epsilons": [
+    0.0001,
+    5e-05
+  ]
+}
