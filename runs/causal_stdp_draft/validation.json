@@ -1,0 +1,52 @@
+{
+  "pairs": {
+    "lags": [
+      -128,
+      128
+    ],
+    "heads": 3,
+    "checks": 771,
+    "maximum_pair_error": 6.938893903907228e-18,
+    "maximum_reverse_error": 1.0408340855860843e-17,
+    "simultaneous_write": 0,
+    "repeated_write_after_last_event": 0
+  },
+  "stream": {
+    "blocks": 19,
+    "direct_all_pair_and_outer_leak_error": 1.9081958235744878e-17,
+    "maximum_memory_magnitude": 0.013429684435677321
+  },
+  "spectrum": {
+    "frequency_points": 65,
+    "explicit_DTFT_error": 1.9993769881687536e-15,
+    "balanced_phase_radians": -1.5707963267948966
+  },
+  "model": {
+    "segment_carry_parity": true,
+    "per_puzzle_reset_parity": true,
+    "state_dict_and_carry_parity": true,
+    "gradient_norms": {
+      "inner.layers.0.eta_raw": 6.015912623526192e-05,
+      "inner.layers.0.lam_raw": 0.009261742363369976,
+      "inner.layers.0.gain_raw": 4.1015237656663324e-05,
+      "inner.layers.0.temporal_write.activity_weight": 0.0009151702995152256,
+      "inner.layers.0.temporal_write.timing_tau_raw": 0.0002675237969744565,
+      "inner.layers.0.temporal_write.timing_amplitude_logits": 0.0007277524072933639
+    }
+  },
+  "cuda": {
+    "device": "NVIDIA RTX 2000 Ada Generation",
+    "hidden": 832,
+    "heads": 8,
+    "batch": 2,
+    "blocks": 8,
+    "amp": true,
+    "trace_dtype": "torch.float32",
+    "memory_dtype": "torch.float32",
+    "all_parameter_gradients_finite": true,
+    "parameter_count": 7261451,
+    "history_elements_per_puzzle": 82944,
+    "optimizer_decay_groups_checked": true
+  },
+  "scope": "Constructed-rule and implementation validation only; no Sudoku training or accuracy claim."
+}

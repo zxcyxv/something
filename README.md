@@ -61,6 +61,14 @@ post 순서(v2·v1.7)는 주입 → 스텝(Φ 없이) → 경계 → Φ. 같은 
 연구용 구현은 `lt/even_plasticity.py`, 학습 진입점은 `lt/train_even.py`다.
 기본 모델은 계속 `lt/train.py`의 v1.1이며, 후보의 본 규모 재학습 우위는 아직 검증하지 않았다.
 
+### 2026-09-26 시간차 쓰기 설계
+
+[v1.2 초안](docs/causal_stdp_candidate_v12.md)은 실제 활동의 지수 흔적과 현재 활동을
+비교해 pre 선행은 강화, post 선행은 약화하도록 쓰기 창을 구성한다.
+시간창과 푸리에 표현, 전체 forward, 참조 구현과 독립 검산을 문서에 정리했다.
+`lt/causal_stdp.py`와 `lt/train_causal_stdp.py`는 이 초안의 별도 모델·학습 진입점이며,
+스도쿠 재학습 성능은 아직 측정하지 않았다.
+
 학습 하네스는 URM(arXiv 2512.14693)을 옮긴 것이다: 세그먼트마다 `h, w` 를 detach, 세그먼트마다 감독, AdamATan2, EMA 0.999,
 배치 128, lr 1e-4 상수, 데이터는 Sudoku-Extreme 1k 퍼즐 × 증강 1000.
 
