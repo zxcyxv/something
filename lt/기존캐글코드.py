@@ -1,17 +1,15 @@
 # -*- coding: utf-8 -*-
-# LT v1.71 — 기존캐글코드.py 기반 Kaggle 단일 셀 완성본
-# 이 파일 전체를 한 셀에 붙여넣고 실행합니다. 설정은 아래 CFG에서 변경합니다.
-# 데이터: 기존처럼 sudoku_lt_1k.npz를 Kaggle Input으로 연결하거나 data_npz를 지정합니다.
-# 모델: QR 없는 공유 W_C, post MLP, 회전·감쇠하는 주소 이력 Z, 기존 agree와 W 갱신.
-# Kaggle Input의 step_44919.pt에서 h/W/Z·optimizer·EMA까지 재개합니다.
-# 출력은 /kaggle/working/lt_v171에 저장합니다. 이 폴더의 최신 저장에서 재개하려면 resume_from=None으로 설정합니다.
-# 새로운 실험은 resume_from=None, require_resume=False와 새 out_dir을 지정하세요.
-# max_steps는 추가 횟수가 아닌 절대 종료 step입니다.
-# 기본: batch128, 16seg x 8blocks, lr1e-4 (초기 warmup2000), EMA0.999, max_hours11.5.
-# milestone: 매10000step, 전체 중 고정512문제, seg128까지 평가하고 표를 화면과 train.log에 출력.
-# 기본 정밀도는 BF16. amp_dtype은 bfloat16 / float32 / auto 중 선택할 수 있습니다.
-# auto는 BF16 지원 GPU에서 BF16, 그 밖에서는 FP32. activation_checkpoint는 블록 재계산입니다.
-# 새 학습 beta는 pi/2에서 시작하며 계속 학습됩니다. 기존 초기화: mean=0.0, std=0.5.
+# LT v1.1(pre) + 값 흔적 STDP — Kaggle 단일 셀 완성본
+# 아래 CFG만 수정하고 셀 전체를 실행합니다. 외부 저장소/추가 셀은 필요 없습니다.
+# 데이터: sudoku_lt_1k.npz를 Kaggle Input으로 연결하거나 data_npz에 경로 지정.
+# 신규 모델입니다. 원래 v1.1 체크포인트의 자동 변환/재개는 하지 않습니다.
+# W0=1 고정, A=1에서 학습 시작, rho=0.5에서 학습 시작이 기본 설정입니다.
+# A=0 절제: stdp_A_fixed=0.0 / 직전 블록만 사용: value_trace_rho_fixed=0.0
+# 1 step = 세그먼트 1개 = blocks_per_seg 블록. grad_accum_steps=1을 유지합니다.
+# GPU가 BF16을 직접 지원하지 않으면 FP32를 사용합니다. FP16은 쓰지 않습니다.
+# activation_checkpoint=True는 블록을 재계산해 메모리를 줄이며 h/w/x를 끊지 않습니다.
+# 셀을 다시 실행하면 out_dir의 마지막 체크포인트에서 h/w/x/퍼즐/옵티마이저까지 재개합니다.
+# 다른 실험을 시작할 때는 out_dir을 바꾸세요. max_steps는 추가 스텝이 아닌 절대 종료 스텝입니다.
 
 import json
 import os
@@ -21,84 +19,51 @@ import subprocess
 import sys
 import tempfile
 
-CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.npz',
- 'num_aug': 1000,
- 'test_size': 2048,
- 'hidden_size': 832,
- 'num_heads': 8,
- 'loops': 16,
- 'blocks_per_seg': 8,
- 'num_layers': 1,
- 'grid': 9,
- 'vocab_size': 11,
- 'mlp_expansion': 4.0,
- 'alpha_init': 0.1,
- 'dist_decay': True,
- 'eps': 0.0001,
- 'psi_zero': False,
- 'puzzle_emb_ndim': 832,
- 'legacy_gauge': False,
- 'block_order': 'post',
- 'use_trace': True,
- 'forward_dtype': 'float32',
- 'amp': True,
- 'amp_dtype': 'bfloat16',
- 'activation_checkpoint': True,
- 'stdp': True,
- 'stdp_eta_init': 0.05,
- 'stdp_gain_init': 1.0,
- 'stdp_lam_init': 0.25,
- 'stdp_gain_fixed': -1.0,
- 'stdp_lam_fixed': -1.0,
- 'beta_init_mean': 1.5707963267948966,
- 'beta_init_std': 0.0,
- 'global_batch_size': 128,
- 'epochs': 50000,
- 'lr': 0.0001,
- 'lr_min_ratio': 1.0,
- 'lr_warmup_steps': 2000,
- 'weight_decay': 1.0,
- 'beta1': 0.9,
- 'beta2': 0.95,
- 'puzzle_emb_lr': 0.0001,
- 'puzzle_emb_weight_decay': 1.0,
- 'grad_accum_steps': 1,
- 'q_weight': 0.5,
- 'seed': 0,
- 'ema': True,
- 'ema_rate': 0.999,
- 'eval_interval': 250,
- 'compile': True,
- 'inductor_no_persist': True,
- 'out_dir': None,
- 'resume_from': '/kaggle/input/datasets/jrjinwoo/lt-v171-44919/step_44919.pt',
- 'require_resume': False,
- 'keep_last': 2,
- 'save_every_steps': 2000,
- 'milestone_every': 10000,
- 'milestone_extrap_segs': 128,
- 'milestone_extrap_n': 512,
- 'max_hours': 11.5,
- 'max_steps': None,
- 'log_every': 250,
- 'stop_check_every': 25,
- 'dataloader_workers': 1,
- 'run_selftests': True,
- 'num_processes': 'auto',
- 'address_projection': 'linear',
- 'trace_rho_init': 0.5,
- 'inj_gate_init': 0.25,
- 'gamma_init': 0.1}
+CFG = dict(
+    data_npz=None,                 # None: find sudoku_lt_1k.npz under /kaggle/input
+    num_aug=1000, test_size=2048,
+    hidden_size=832, num_heads=8, loops=16, blocks_per_seg=8, num_layers=1,
+    grid=9, vocab_size=11, mlp_expansion=4.0, alpha_init=0.1,
+    dist_decay=True, eps=1e-4, psi_zero=False, puzzle_emb_ndim=832,
+    legacy_gauge=False, block_order="pre", use_trace=False,
+    forward_dtype="float32", amp=True,
+    amp_dtype="auto",             # native BF16 if supported; otherwise FP32 (no FP16)
+    activation_checkpoint=True,    # recompute blocks; does NOT detach h/w/x
+    stdp=True, stdp_eta_init=0.05, stdp_gain_init=1.0, stdp_lam_init=0.25,
+    stdp_gain_fixed=-1.0, stdp_lam_fixed=-1.0,
+    stdp_w0_init=1.0, stdp_w0_fixed=1.0,   # None -> learn unrestricted W0
+    stdp_A_init=1.0, stdp_A_fixed=None,     # None -> softplus(A_raw); 0.0 -> exact A=0
+    value_trace_rho_init=0.5, value_trace_rho_fixed=None,  # 0.0 -> exact one-block trace
+    global_batch_size=128, epochs=50000,
+    lr=1e-4, lr_min_ratio=1.0, lr_warmup_steps=2000, weight_decay=1.0,
+    beta1=0.9, beta2=0.95, puzzle_emb_lr=1e-4, puzzle_emb_weight_decay=1.0,
+    grad_accum_steps=1, q_weight=0.5,
+    seed=0, ema=True, ema_rate=0.999, eval_interval=250,
+    compile=True, inductor_no_persist=True,
+    out_dir=None,                 # /kaggle/working/lt_value_window
+    resume_from=None,             # explicit file/directory has priority over out_dir
+    require_resume=False, keep_last=2, save_every_steps=2000,
+    milestone_every=10000, milestone_extrap_segs=128, milestone_extrap_n=512,
+    max_hours=11.5, max_steps=None, log_every=250, stop_check_every=25,
+    dataloader_workers=1, run_selftests=True,
+    num_processes="auto",         # notebook wrapper only; 1 to use one GPU
+)
 
-# 독립 실행되는 학습 프로그램 전체
+
+# 아래 문자열에 모델부터 self-test까지 학습 프로그램 전체가 포함되어 있습니다.
 _TRAINER_SOURCE = r'''# -*- coding: utf-8 -*-
-"""LT v1.71: direct shared complex-address projection + rotating address history Z.
+"""LT v1.1(pre, sqrt(d)) + delayed-read value-trace STDP.
 
-The execution, data, loss, optimizer, checkpoint and launcher harness comes from
-the user's existing working Kaggle cell. The model follows v1.71 in this repository:
-post MLP, QR-free W_C, original normalized address/value kernels, write then read W.
-One step is one segment (8 blocks); h/W/Z detach only at segment boundaries.
-Activation checkpointing only recomputes blocks. No repository imports are needed.
+Self-contained adaptation of the train.py supplied in this conversation.
+No repository imports. This is a NEW model, not a bitwise reproduction of v1.1.
+
+One optimizer step = one model(carry, batch) = blocks_per_seg blocks.
+Read w_old -> write w_new -> update x. Detach only at the segment boundary.
+x_new = rho*x_old + (1-rho)*vhat, so the lag-s weight is
+A*(1-rho)*rho**(s-1), not A*rho**(s-1). The recurrence is kept verbatim.
+
+The notebook wrapper below runs this source in a fresh Python/torchrun process;
+it does not fork a CUDA-initialized notebook or require accelerate.
 """
 import argparse
 import copy
@@ -113,7 +78,7 @@ import signal
 import sys
 import time
 from contextlib import nullcontext
-from dataclasses import dataclass, field, fields, replace
+from dataclasses import dataclass, fields, replace
 from pathlib import Path
 from typing import Any, Dict, Optional, Set
 
@@ -126,87 +91,40 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader, IterableDataset
 from torch.utils.checkpoint import checkpoint
 
-MODEL_ID = "lt-v171-address-trace-linear-v1"
+MODEL_ID = "lt-v11-value-trace-stdp-delayed-v1"
 IGNORE_LABEL_ID = -100
 _STOP_REQUESTED = False
 
 # DEFAULT_CFG is also copied to the top of the one-cell notebook.
-DEFAULT_CFG = {'data_npz': None,
- 'num_aug': 1000,
- 'test_size': 2048,
- 'hidden_size': 832,
- 'num_heads': 8,
- 'loops': 16,
- 'blocks_per_seg': 8,
- 'num_layers': 1,
- 'grid': 9,
- 'vocab_size': 11,
- 'mlp_expansion': 4.0,
- 'alpha_init': 0.1,
- 'dist_decay': True,
- 'eps': 0.0001,
- 'psi_zero': False,
- 'puzzle_emb_ndim': 832,
- 'legacy_gauge': False,
- 'block_order': 'post',
- 'use_trace': True,
- 'forward_dtype': 'float32',
- 'amp': True,
- 'amp_dtype': 'bfloat16',
- 'activation_checkpoint': True,
- 'stdp': True,
- 'stdp_eta_init': 0.05,
- 'stdp_gain_init': 1.0,
- 'stdp_lam_init': 0.25,
- 'stdp_gain_fixed': -1.0,
- 'stdp_lam_fixed': -1.0,
- 'beta_init_mean': 1.5707963267948966,
- 'beta_init_std': 0.0,
- 'global_batch_size': 128,
- 'epochs': 50000,
- 'lr': 0.0001,
- 'lr_min_ratio': 1.0,
- 'lr_warmup_steps': 2000,
- 'weight_decay': 1.0,
- 'beta1': 0.9,
- 'beta2': 0.95,
- 'puzzle_emb_lr': 0.0001,
- 'puzzle_emb_weight_decay': 1.0,
- 'grad_accum_steps': 1,
- 'q_weight': 0.5,
- 'seed': 0,
- 'ema': True,
- 'ema_rate': 0.999,
- 'eval_interval': 250,
- 'compile': True,
- 'inductor_no_persist': True,
- 'out_dir': None,
- 'resume_from': None,
- 'require_resume': False,
- 'keep_last': 2,
- 'save_every_steps': 2000,
- 'milestone_every': 10000,
- 'milestone_extrap_segs': 128,
- 'milestone_extrap_n': 512,
- 'max_hours': 11.5,
- 'max_steps': None,
- 'log_every': 250,
- 'stop_check_every': 25,
- 'dataloader_workers': 1,
- 'run_selftests': True,
- 'num_processes': 'auto',
- 'address_projection': 'linear',
- 'trace_rho_init': 0.5,
- 'inj_gate_init': 0.25,
- 'gamma_init': 0.1}
-
-PRESETS = {                       # v1.71 은 v1.7 의 주소 사영에서 QR 만 제거한다
-    "v1":    dict(legacy_gauge=True,  block_order="pre",  use_trace=False, address_projection="qr"),      # 9/1 원본
-    "v1.1":  dict(legacy_gauge=False, block_order="pre",  use_trace=False, address_projection="qr"),      # √d 고정 게이지. 학습·측정 완료
-    "v2":    dict(legacy_gauge=False, block_order="post", use_trace=False, address_projection="qr"),      # v1.1 + post 순서. 아직 학습 안 함
-    "v1.7":  dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="qr"),      # v2 + 주소 흔적 z. 학습 후반 불안정
-    "v1.71": dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="linear"),  # v1.7 + 자유 선형 W_C. 380k 변환 후 재개 진단
-}
+DEFAULT_CFG = dict(
+    data_npz=None,                 # None: find sudoku_lt_1k.npz under /kaggle/input
+    num_aug=1000, test_size=2048,
+    hidden_size=832, num_heads=8, loops=16, blocks_per_seg=8, num_layers=1,
+    grid=9, vocab_size=11, mlp_expansion=4.0, alpha_init=0.1,
+    dist_decay=True, eps=1e-4, psi_zero=False, puzzle_emb_ndim=832,
+    legacy_gauge=False, block_order="pre", use_trace=False,
+    forward_dtype="float32", amp=True,
+    amp_dtype="auto",             # native BF16 if supported; otherwise FP32 (no FP16)
+    activation_checkpoint=True,    # recompute blocks; does NOT detach h/w/x
+    stdp=True, stdp_eta_init=0.05, stdp_gain_init=1.0, stdp_lam_init=0.25,
+    stdp_gain_fixed=-1.0, stdp_lam_fixed=-1.0,
+    stdp_w0_init=1.0, stdp_w0_fixed=1.0,   # None -> learn unrestricted W0
+    stdp_A_init=1.0, stdp_A_fixed=None,     # None -> softplus(A_raw); 0.0 -> exact A=0
+    value_trace_rho_init=0.5, value_trace_rho_fixed=None,  # 0.0 -> exact one-block trace
+    global_batch_size=128, epochs=50000,
+    lr=1e-4, lr_min_ratio=1.0, lr_warmup_steps=2000, weight_decay=1.0,
+    beta1=0.9, beta2=0.95, puzzle_emb_lr=1e-4, puzzle_emb_weight_decay=1.0,
+    grad_accum_steps=1, q_weight=0.5,
+    seed=0, ema=True, ema_rate=0.999, eval_interval=250,
+    compile=True, inductor_no_persist=True,
+    out_dir=None,                 # /kaggle/working/lt_value_window
+    resume_from=None,             # explicit file/directory has priority over out_dir
+    require_resume=False, keep_last=2, save_every_steps=2000,
+    milestone_every=10000, milestone_extrap_segs=128, milestone_extrap_n=512,
+    max_hours=11.5, max_steps=None, log_every=250, stop_check_every=25,
+    dataloader_workers=1, run_selftests=True,
+    num_processes="auto",         # notebook wrapper only; 1 to use one GPU
+)
 
 # 1. Initialization / sparse puzzle embedding ---------------------------------
 def trunc_normal_init_(tensor, std=1.0, lower=-2.0, upper=2.0):
@@ -271,382 +189,316 @@ class CastedSparseEmbeddingSignSGD_Distributed(Optimizer):
         e.weights[unique] = p
 
 
-# 2. v1.71 model: direct address projection, post MLP, rotating Z
-# Canonical v1.71 model; importless fragment for the standalone trainer.
-# Needs the harness imports, trunc_normal_init_, CastedSparseEmbedding, checkpoint.
-# Numerical operations retain original_train.py's precision and ordering.
+# 2. Model -------------------------------------------------------------------
 @dataclass
 class LTCarry:
-    current_hidden: torch.Tensor
-    steps: Optional[torch.Tensor] = None
-    halted: Optional[torch.Tensor] = None
-    current_data: Optional[Dict[str, torch.Tensor]] = None
-    coupling: Optional[torch.Tensor] = None       # STDP 결합 기억 w [B,H,T,T]
-    fresh: Optional[torch.Tensor] = None          # [B] bool — 이 퍼즐의 w·z 가 아직 초기화 전
-    trace: Optional[torch.Tensor] = None          # 주소 흔적 z [B,T,H,p,2] (use_trace 일 때만)
+    current_hidden: torch.Tensor                  # [B,T,d]
+    steps: torch.Tensor                           # [B]
+    halted: torch.Tensor                          # [B]
+    current_data: Dict[str, torch.Tensor]
+    coupling: Optional[torch.Tensor] = None        # w [B,H,T,T]
+    value_trace: Optional[torch.Tensor] = None     # x [B,T,H,dh]; NOT address trace z
 
 
 @dataclass
 class LTConfig:
-    """모델 설정. 기존 판은 QR 주소 사영을 유지하며, v1.71 만 직접 선형 사영을 쓴다.
-      v1   = legacy_gauge=True,  block_order="pre",  use_trace=False   (9/1 원본)
-      v1.1 = legacy_gauge=False, block_order="pre",  use_trace=False   (최신 학습판)
-      v2   = legacy_gauge=False, block_order="post", use_trace=False   (미학습)
-      v1.7 = legacy_gauge=False, block_order="post", use_trace=True
-      v1.71 = v1.7 + address_projection="linear". 공유 W_C 와 복소 주소·정규화·흔적은 동일하다.
-      address_projection 키가 없는 기존 설정은 "qr" 로 읽는다.
-    """
     batch_size: int
     seq_len: int
     vocab_size: int
-    num_puzzle_identifiers: int
-    puzzle_emb_ndim: int = 0
+    num_puzzle_identifiers: int = 1
+    puzzle_emb_ndim: int = 832
     hidden_size: int = 832
     num_heads: int = 8
     loops: int = 16
     grid: int = 9
-    blocks_per_seg: int = 8     # 세그먼트당 블록 수 (× num_layers)
-    num_layers: int = 1         # 가중치 벌 수. 블록 k → layers[k % num_layers]
+    blocks_per_seg: int = 8
+    num_layers: int = 1
     mlp_expansion: float = 4.0
     alpha_init: float = 0.1
-    legacy_gauge: bool = False  # True: 주입 계수·γ 를 학습 스칼라로 (9/1 원본). False: √d 고정, γ=1/d, 임베딩 init 1/√d
-    inj_gate_init: float = 0.25
-    gamma_init: float = 0.1
-    dist_decay: bool = True     # 거리 감쇠 e^{−α‖Δ‖₁} (헤드별 α)
+    dist_decay: bool = True
     eps: float = 1e-4
-    amp: bool = True
-    amp_dtype: str = "auto"  # outer harness resolves auto before compilation
-    activation_checkpoint: bool = True  # recompute each block; no within-segment detach
+    psi_zero: bool = False
+    legacy_gauge: bool = False
+    block_order: str = "pre"
+    use_trace: bool = False
     forward_dtype: str = "float32"
-    address_projection: str = "qr"  # qr: QR(wc_raw.T).Q.T | linear: wc; 둘 다 헤드별 [dh,d]
-    psi_zero: bool = False      # ψ ≡ 0 고정 (읽기 커널 대칭)
-    stdp: bool = True           # 결합 기억 w ← (1−η)w + η·g·a^β·agree,  읽기 a_eff = (1−λ)a + λw
+    amp: bool = True
+    amp_dtype: str = "float32"  # resolved by main, before compilation
+    activation_checkpoint: bool = True
+    stdp: bool = True
     stdp_eta_init: float = 0.05
     stdp_gain_init: float = 1.0
     stdp_lam_init: float = 0.25
-    stdp_gain_fixed: float = -1.0   # ≥0 이면 g 를 이 값으로 고정
-    stdp_lam_fixed: float = -1.0    # ≥0 이면 λ 를 이 값으로 고정
-    beta_init_mean: float = 0.0    # rad; 키 없는 과거 cfg는 기존 N(0, 0.5²) 유지
-    beta_init_std: float = 0.5     # 0이면 mean에서 정확히 시작; 이후 beta는 계속 학습
-    block_order: str = "pre"    # pre: 경계 → 주입 → 스텝(Φ 포함) | post: 주입 → 스텝 → 경계 → Φ
-    use_trace: bool = False     # 쓰기 창의 주소를 흔적 z ← μ⊙z + √(1−ρ²)⊙u 로 (μ_j = ρ_j e^{iω_j})
-    trace_rho_init: float = 0.5
-
-    def __post_init__(self):
-        if not math.isfinite(self.beta_init_mean) or not math.isfinite(self.beta_init_std) or self.beta_init_std < 0:
-            raise ValueError("beta_init_mean/std must be finite and beta_init_std must be nonnegative")
-        if self.amp_dtype not in ("auto", "bfloat16", "float32"):
-            raise ValueError("amp_dtype must be auto, bfloat16, or float32")
-        if self.address_projection not in ("qr", "linear"):
-            raise ValueError(f"address_projection must be 'qr' or 'linear', got {self.address_projection!r}")
+    stdp_gain_fixed: float = -1.0
+    stdp_lam_fixed: float = -1.0
+    stdp_w0_init: float = 1.0
+    stdp_w0_fixed: Optional[float] = 1.0
+    stdp_A_init: float = 1.0
+    stdp_A_fixed: Optional[float] = None
+    value_trace_rho_init: float = 0.5
+    value_trace_rho_fixed: Optional[float] = None
 
     @classmethod
-    def from_dict(cls, d: dict) -> "LTConfig":
-        known = {f.name for f in fields(cls)}
-        dd = {k: v for k, v in d.items() if k in known}
-        if "use_trace" not in d and "trace_rho_init" in d:     # v1.6/v1.7 체크포인트 cfg 호환 (use_trace 키가 없던 시절)
-            dd["use_trace"] = True
-        return cls(**dd)
+    def from_dict(cls, d):
+        names = {f.name for f in fields(cls)}
+        return cls(**{k: v for k, v in d.items() if k in names})
+
+    def __post_init__(self):
+        d, H = self.hidden_size, self.num_heads
+        if self.seq_len != self.grid**2 or d % H or (d//H) % 2:
+            raise ValueError("Require T=grid^2, d%H=0 and an even dh=d/H.")
+        if self.legacy_gauge or self.block_order != "pre" or self.use_trace:
+            raise ValueError("This implementation is v1.1/pre/sqrt(d), with value trace only.")
+        if self.num_layers != 1:
+            raise ValueError("num_layers=1: one shared layer, exactly blocks_per_seg blocks per step.")
+        if self.forward_dtype != "float32":
+            raise ValueError("Keep carry/parameters in float32. Mixed precision is controlled by amp_dtype.")
+        if not 0 <= self.puzzle_emb_ndim <= d or min(self.loops, self.blocks_per_seg) < 1:
+            raise ValueError("Invalid puzzle embedding width, loops, or blocks_per_seg.")
+        if self.eps <= 0 or self.alpha_init <= 0:
+            raise ValueError("eps and alpha_init must be positive.")
+        if self.stdp:
+            for name in ("stdp_eta_init", "stdp_lam_init"):
+                if not 0 < getattr(self, name) < 1:
+                    raise ValueError(f"{name} must be strictly between 0 and 1.")
+            if self.stdp_gain_init <= 0 or self.stdp_lam_fixed > 1:
+                raise ValueError("stdp_gain_init>0; fixed lambda must be in [0,1] or negative (learned).")
+            if self.stdp_A_fixed is None and self.stdp_A_init <= 0:
+                raise ValueError("Learned A requires A_init>0; use stdp_A_fixed=0.0 for exact A=0.")
+            if self.stdp_A_fixed is not None and self.stdp_A_fixed < 0:
+                raise ValueError("stdp_A_fixed must be nonnegative or None.")
+            r = self.value_trace_rho_fixed
+            if r is None and not 0 < self.value_trace_rho_init < 1:
+                raise ValueError("Learned rho requires 0<rho_init<1; use rho_fixed=0.0 for exact rho=0.")
+            if r is not None and not 0 <= r < 1:
+                raise ValueError("value_trace_rho_fixed must be in [0,1) or None.")
 
 
-def inv_softplus(y: float) -> float:
-    return math.log(math.expm1(y))
+def inv_softplus(y):
+    return y + math.log(-math.expm1(-y))
+
+
+def logit(x):
+    return math.log(x / (1 - x))
 
 
 class LTLayer(nn.Module):
-    """가중치 한 벌. QR 판은 기존 wc_raw, 직접 선형 사영 판은 wc 를 학습한다.
-
-    주소 행렬의 모양과 초기 난수 draw 는 같고, 읽기·쓰기에 같은 사영을 공유한다.
-    서로 다른 이름으로 저장해 QR raw 값을 실효 선형 가중치로 오인해 로드하지 않는다.
-    """
-
-    def __init__(self, config: "LTConfig", H, d, dh, p) -> None:
+    def __init__(self, c, H, d, dh, p):
         super().__init__()
-        wc = nn.Parameter(torch.randn(H, dh, d) / math.sqrt(d))
-        if config.address_projection == "qr":
-            self.wc_raw = wc
-        else:
-            self.wc = wc
-        if config.psi_zero:
+        self.wc_raw = nn.Parameter(torch.randn(H, dh, d) / math.sqrt(d))
+        if c.psi_zero:
             self.register_buffer("psi", torch.zeros(H, p), persistent=False)
         else:
-            self.psi = nn.Parameter(torch.rand(H, p) * 2 * math.pi - math.pi)
-        self.theta = nn.Parameter((torch.rand(H, p, 2) * 2 - 1) * (math.pi / 2))
-        self.alpha_raw = nn.Parameter(torch.full((H, 1), inv_softplus(config.alpha_init)))
-        w_sh = torch.zeros(H, dh, d)
+            self.psi = nn.Parameter(torch.rand(H, p)*2*math.pi - math.pi)
+        self.theta = nn.Parameter((torch.rand(H, p, 2)*2-1)*(math.pi/2))
+        self.alpha_raw = nn.Parameter(torch.full((H, 1), inv_softplus(c.alpha_init)))
+        ws = torch.zeros(H, dh, d)
         for m in range(H):
-            w_sh[m, :, m * dh:(m + 1) * dh] = torch.eye(dh)
-        self.w_sh = nn.Parameter(w_sh + 0.01 * torch.randn(H, dh, d) / math.sqrt(d))
-        if config.use_trace:
-            _lg = math.log(config.trace_rho_init / (1 - config.trace_rho_init))
-            self.mu_rho_raw = nn.Parameter(torch.full((H, p), _lg))
-            self.mu_omega = nn.Parameter((torch.rand(H, p) * 2 - 1) * (math.pi / 2))
-        if config.stdp:
-            lg = lambda x: math.log(x / (1 - x))
-            self.eta_raw = nn.Parameter(torch.full((H, 1, 1), lg(config.stdp_eta_init)))
-            self.lam_raw = nn.Parameter(torch.full((H, 1, 1), lg(config.stdp_lam_init)))
-            self.gain_raw = nn.Parameter(torch.full((H, 1, 1), inv_softplus(config.stdp_gain_init)))
-            self.beta = nn.Parameter(torch.zeros(H, p))       # 쓰기 창의 위상 (ψ 와 별개)
-            with torch.no_grad():
-                # Consume the same random draws in every mode: changing beta
-                # initialization alone must not change later weights at a fixed seed.
-                self.beta.normal_(0.0, 0.5)
-                if config.beta_init_std == 0:
-                    self.beta.fill_(config.beta_init_mean)
-                else:
-                    self.beta.mul_(config.beta_init_std / 0.5).add_(config.beta_init_mean)
-        inter = int(config.mlp_expansion * d * 2 / 3 + 255) // 256 * 256
-        self.b_gate_up = nn.Linear(d, 2 * inter, bias=False)
+            ws[m, :, m*dh:(m+1)*dh] = torch.eye(dh)
+        self.w_sh = nn.Parameter(ws + 0.01*torch.randn(H, dh, d)/math.sqrt(d))
+        if c.stdp:
+            shape = (H, 1, 1)
+            self.eta_raw = nn.Parameter(torch.full(shape, logit(c.stdp_eta_init)))
+            # Keep the original names for these learned parameters.
+            self.lam_raw = nn.Parameter(torch.full(shape, logit(c.stdp_lam_init)),
+                                        requires_grad=c.stdp_lam_fixed < 0)
+            self.gain_raw = nn.Parameter(torch.full(shape, inv_softplus(c.stdp_gain_init)),
+                                         requires_grad=c.stdp_gain_fixed < 0)
+            if c.stdp_w0_fixed is None:
+                self.w0 = nn.Parameter(torch.full(shape, float(c.stdp_w0_init)))
+            if c.stdp_A_fixed is None:
+                self.A_raw = nn.Parameter(torch.full(shape, inv_softplus(c.stdp_A_init)))
+            if c.value_trace_rho_fixed is None:
+                self.rho_raw = nn.Parameter(torch.full(shape, logit(c.value_trace_rho_init)))
+            # No beta parameter and no address trace/mu parameters.
+        inter = int(c.mlp_expansion*d*2/3 + 255)//256*256
+        self.b_gate_up = nn.Linear(d, 2*inter, bias=False)
         self.b_down = nn.Linear(inter, d, bias=False)
         with torch.no_grad():
             self.b_down.weight.zero_()
 
     @property
-    def alpha(self): return F.softplus(self.alpha_raw)
+    def alpha(self):
+        return F.softplus(self.alpha_raw)
 
 
 class LT_Inner(nn.Module):
-    def __init__(self, config: LTConfig) -> None:
+    def __init__(self, c):
         super().__init__()
-        self.config = config
-        self.forward_dtype = getattr(torch, config.forward_dtype)
-        T, g, d, H = config.seq_len, config.grid, config.hidden_size, config.num_heads
-        assert T == g * g and d % H == 0 and (d // H) % 2 == 0
-        self.d, self.H = d, H
-        self.dh = d // H
-        self.p = self.dh // 2
-        u = torch.arange(T).float() // g; w = torch.arange(T).float() % g
-        self.register_buffer("pos_u", u, persistent=False); self.register_buffer("pos_w", w, persistent=False)
-        self.register_buffer("l1", (u[:, None] - u[None]).abs() + (w[:, None] - w[None]).abs(), persistent=False)
-        self.embed = nn.Embedding(config.vocab_size, d)
-        if config.legacy_gauge:
-            self.embed_scale = nn.Parameter(torch.tensor(float(config.inj_gate_init)))
-            self.gamma_raw = nn.Parameter(torch.tensor(inv_softplus(config.gamma_init)))
-        else:
-            self.gamma = 1.0 / d
-            self.embed_scale = math.sqrt(d)
-            with torch.no_grad():
-                trunc_normal_init_(self.embed.weight, std=1.0 / self.embed_scale)
-        self.w_cls = nn.Linear(d, config.vocab_size)
-        assert config.num_layers >= 1
-        assert config.block_order in ("pre", "post"), f"block_order: pre | post (받은 값 {config.block_order})"
-        self.stdp = config.stdp
-        self.use_trace = config.use_trace
-        self.layers = nn.ModuleList([LTLayer(config, H, d, self.dh, self.p) for _ in range(config.num_layers)])
-        if config.num_layers > 1:
-            sd0 = self.layers[0].state_dict()
-            for Lx in self.layers[1:]:
-                Lx.load_state_dict({k: v.clone() for k, v in sd0.items()})
-        self.puzzle_emb_ndim = config.puzzle_emb_ndim
-        if config.puzzle_emb_ndim > 0:
-            self.puzzle_emb = CastedSparseEmbedding(config.num_puzzle_identifiers, config.puzzle_emb_ndim,
-                                                    batch_size=config.batch_size, init_std=0, cast_to=self.forward_dtype)
-        self.init_hidden = nn.Buffer(trunc_normal_init_(torch.empty(d, dtype=self.forward_dtype), std=1.0), persistent=True)
+        self.config = c
+        self.d, self.H, self.dh = c.hidden_size, c.num_heads, c.hidden_size//c.num_heads
+        self.p = self.dh//2
+        T, g, d = c.seq_len, c.grid, self.d
+        r = torch.arange(T, dtype=torch.float32)//g
+        col = torch.arange(T, dtype=torch.float32)%g
+        self.register_buffer("pos_u", r, persistent=False)
+        self.register_buffer("pos_w", col, persistent=False)
+        self.register_buffer("l1", (r[:,None]-r[None]).abs()+(col[:,None]-col[None]).abs(), persistent=False)
+        self.embed = nn.Embedding(c.vocab_size, d)
+        self.embed_scale, self.gamma = math.sqrt(d), 1.0/d
+        trunc_normal_init_(self.embed.weight, std=1.0/math.sqrt(d))
+        self.w_cls = nn.Linear(d, c.vocab_size)
+        self.layers = nn.ModuleList([LTLayer(c, self.H, d, self.dh, self.p)])
+        if c.puzzle_emb_ndim:
+            self.puzzle_emb = CastedSparseEmbedding(c.num_puzzle_identifiers, c.puzzle_emb_ndim,
+                                                   c.batch_size, 0, torch.float32)
+        self.register_buffer("init_hidden", trunc_normal_init_(torch.empty(d), std=1.0))
 
-    # ---------------------------------------------------------------- 부품 (L = 레이어)
     def W_C(self, L):
-        """공유 복소 주소의 실수 적층 [A;B]. qr 은 행직교, linear 는 wc 자체."""
-        if self.config.address_projection == "qr":
-            Q, _ = torch.linalg.qr(L.wc_raw.transpose(-1, -2))           # [H,d,dh]
-            AB = Q.transpose(-1, -2)
-        elif self.config.address_projection == "linear":
-            AB = L.wc                                                # [H,dh,d], QR 없이 직접 사용
-        else:
-            raise ValueError(f"Unknown address_projection: {self.config.address_projection!r}")
-        return AB[:, :self.p, :], AB[:, self.p:, :]
-
+        # QR is kept in FP32 even under autocast.
+        with torch.autocast(L.wc_raw.device.type, enabled=False):
+            Q, _ = torch.linalg.qr(L.wc_raw.transpose(-1,-2), mode="reduced")
+        AB = Q.transpose(-1,-2)
+        return AB[:, :self.p], AB[:, self.p:]
 
     def kernel(self, L, psi=None):
-        """decay_h [H,T,T], 위상각 A_t = ψ/2 + θ·pos_t (q), B_t = −ψ/2 + θ·pos_t (k) → cos/sin [T,H,p]. psi 를 주면 그 위상차로 (STDP 창 β 용)."""
         psi = L.psi if psi is None else psi
-        decay_h = torch.exp(-L.alpha[:, 0, None, None] * self.l1) if self.config.dist_decay else torch.ones_like(self.l1).expand(L.alpha.shape[0], -1, -1)
-        ppos = L.theta[..., 0, None] * self.pos_u + L.theta[..., 1, None] * self.pos_w         # [H,p,T]
-        A = (ppos + psi[..., None] / 2).permute(2, 0, 1); B = (ppos - psi[..., None] / 2).permute(2, 0, 1)
-        return decay_h, torch.cos(A), torch.sin(A), torch.cos(B), torch.sin(B)
-
+        decay = (torch.exp(-L.alpha[:,0,None,None]*self.l1) if self.config.dist_decay
+                 else torch.ones_like(self.l1).expand(self.H,-1,-1))
+        pp = L.theta[...,0,None]*self.pos_u + L.theta[...,1,None]*self.pos_w
+        aa = (pp + psi[...,None]/2).permute(2,0,1)
+        bb = (pp - psi[...,None]/2).permute(2,0,1)
+        return decay, aa.cos(), aa.sin(), bb.cos(), bb.sin()
 
     def attn_xy(self, xy, kc):
-        """정규화된 주소에서 커널 kc 로 a 를 만든다 (회전 + 내적 + 감쇠)."""
-        x, y = xy; decay_h, cosA, sinA, cosB, sinB = kc
-        qx = x * cosA - y * sinA; qy = x * sinA + y * cosA
-        kx = x * cosB - y * sinB; ky = x * sinB + y * cosB
-        a = torch.einsum('bthj,bnhj->bhtn', qx, kx) + torch.einsum('bthj,bnhj->bhtn', qy, ky)
-        return a * decay_h.unsqueeze(0)
-
+        # Accumulate address inner products in FP32, not in BF16.
+        with torch.autocast(xy[0].device.type, enabled=False):
+            x, y = xy
+            decay, ca, sa, cb, sb = kc
+            qx, qy = x*ca-y*sa, x*sa+y*ca
+            kx, ky = x*cb-y*sb, x*sb+y*cb
+            return (torch.einsum("bthj,bnhj->bhtn", qx, kx) +
+                    torch.einsum("bthj,bnhj->bhtn", qy, ky))*decay[None]
 
     def phi(self, h):
-        g = F.softplus(self.gamma_raw) if hasattr(self, "gamma_raw") else self.gamma
-        return h / torch.sqrt(1.0 + g * h.pow(2).sum(-1, keepdim=True))
-
-
-    def injection(self, batch):
-        inj = self.embed(batch["inputs"].to(torch.long))
-        if self.puzzle_emb_ndim > 0:
-            pe = self.puzzle_emb(batch["puzzle_identifiers"])
-            pad = self.d - self.puzzle_emb_ndim
-            if pad > 0: pe = F.pad(pe, (0, pad))
-            inj = inj + pe.to(inj.dtype).unsqueeze(1)
-        return inj
-
-    # ---------------------------------------------------------------- 세그먼트
-
-    def empty_carry(self, batch_size, device=None):
-        device = self.init_hidden.device if device is None else device
-        return LTCarry(current_hidden=torch.empty(batch_size, self.config.seq_len, self.d,
-                                                  dtype=self.forward_dtype, device=device))
-
-
-    def reset_carry(self, reset_flag, carry):
-        return replace(carry, current_hidden=torch.where(reset_flag.view(-1, 1, 1), self.init_hidden, carry.current_hidden))
-
-
-    def forward(self, carry, batch):
-        # Main resolves auto once before compilation; direct LT callers can also
-        # use auto. CPU and GPUs without native BF16 use the original FP32 path.
-        device = carry.current_hidden.device
-        enabled = self.config.amp and device.type == "cuda" and self.config.amp_dtype != "float32"
-        if enabled and self.config.amp_dtype == "auto":
-            try:
-                enabled = torch.cuda.is_bf16_supported(including_emulation=False)
-            except TypeError:
-                enabled = torch.cuda.get_device_capability(device)[0] >= 8
-        if enabled:
-            with torch.autocast("cuda", dtype=torch.bfloat16):
-                nc, logits = self._forward(carry, batch)
-            return replace(nc, current_hidden=nc.current_hidden.float()), logits.float()
-        return self._forward(carry, batch)
-
-
-    def addr_raw(self, h, AB):
-        """정규화 전 복소 주소 u = W_C h 의 (실부, 허부) [B,T,H,p]."""
-        A, Bm = AB
-        return torch.einsum('btd,hjd->bthj', h, A), torch.einsum('btd,hjd->bthj', h, Bm)
-
-    def _unit(self, x, y):
-        nrm = (x.pow(2) + y.pow(2)).sum(-1, keepdim=True).sqrt()
-        return x / (nrm + self.config.eps), y / (nrm + self.config.eps)
+        h = h.float()
+        return h / torch.sqrt(1.0 + self.gamma*h.square().sum(-1, keepdim=True))
 
     def addr(self, h, AB):
-        """정규화된 순간 복소 주소 û (분석 스크립트 호환)."""
-        return self._unit(*self.addr_raw(h, AB))
+        a, b = AB
+        ux = torch.einsum("btd,hjd->bthj", h, a).float()
+        uy = torch.einsum("btd,hjd->bthj", h, b).float()
+        # vector_norm has a defined zero subgradient; denominator is norm+eps, not sqrt(norm^2+eps).
+        norm = torch.linalg.vector_norm(torch.cat((ux,uy), dim=-1), dim=-1, keepdim=True)
+        return ux/(norm+self.config.eps), uy/(norm+self.config.eps)
 
-    def trace_step(self, L, ux, uy, ztr, fresh):
-        """흔적 z ← μ⊙z + √(1−ρ²)⊙u,  μ_j = ρ_j e^{iω_j}.  풀면 z_j(k) = Σ_m ρ_j^m e^{iω_j m} u_j(k−m)."""
-        rho = torch.sigmoid(L.mu_rho_raw)
-        cw, sw = torch.cos(L.mu_omega), torch.sin(L.mu_omega)
-        gin = torch.sqrt(torch.clamp(1.0 - rho * rho, min=1e-6))
-        if ztr is None:
-            zx, zy = gin * ux, gin * uy
-        else:
-            zx0, zy0 = ztr[..., 0], ztr[..., 1]
-            if fresh is not None:
-                m = fresh.view(-1, 1, 1, 1)
-                zx0 = torch.where(m, torch.zeros_like(zx0), zx0)
-                zy0 = torch.where(m, torch.zeros_like(zy0), zy0)
-            zx = rho * (cw * zx0 - sw * zy0) + gin * ux
-            zy = rho * (sw * zx0 + cw * zy0) + gin * uy
-        return zx, zy, torch.stack((zx, zy), dim=-1)
+    def injection(self, data):
+        inj = self.embed(data["inputs"].long())
+        if self.config.puzzle_emb_ndim:
+            pe = self.puzzle_emb(data["puzzle_identifiers"])
+            if self.config.puzzle_emb_ndim < self.d:
+                pe = F.pad(pe, (0, self.d-self.config.puzzle_emb_ndim))
+            inj = inj + pe[:,None]
+        return inj
 
-    def step(self, L, h, AB, kc, w=None, fresh=None, kcb=None, ztr=None, apply_phi=True):
-        """한 블록의 어텐션+수송.  읽기 a(û, ψ) · 쓰기 창 a^β(û 또는 ẑ, β) × agree · w 누적 · a_eff 로 v 수송."""
-        ux, uy = self.addr_raw(h, AB)
-        uh = self._unit(ux, uy)                                             # 순간 주소 û
-        a = self.attn_xy(uh, kc)                                            # 읽기 커널 (ψ, 거리감쇠)
-        v = torch.einsum('btd,hcd->bthc', h, L.w_sh)                        # 값 사영
-        ztr_new = None
-        if self.stdp:
-            if self.use_trace:
-                zx, zy, ztr_new = self.trace_step(L, ux, uy, ztr, fresh)
-                win = self.attn_xy(self._unit(zx, zy), kcb)                 # 쓰기 창 on 흔적 ẑ
-            else:
-                win = self.attn_xy(uh, kcb)                                 # 쓰기 창 on 순간 û
-            vv = v / (v.norm(dim=-1, keepdim=True) + self.config.eps)
-            agree = torch.einsum('bthc,bnhc->bhtn', vv, vv)
-            G = win * agree
-            gain = F.softplus(L.gain_raw) if self.config.stdp_gain_fixed < 0 else float(self.config.stdp_gain_fixed)
-            tgt = gain * G
-            eta = torch.sigmoid(L.eta_raw)
-            lam = torch.sigmoid(L.lam_raw) if self.config.stdp_lam_fixed < 0 else torch.full_like(L.lam_raw, float(self.config.stdp_lam_fixed))
-            if w is None:
-                w = tgt
-            else:
-                w = torch.where(fresh.view(-1, 1, 1, 1), tgt, w) if fresh is not None else w
-                w = (1 - eta) * w + eta * tgt
-            a = (1 - lam) * a + lam * w
-        o = torch.einsum('bhtn,bnhc->bthc', a, v)
-        f = torch.einsum('bthc,hcd->btd', o, L.w_sh)
-        hout = self.phi(h + f) if apply_phi else (h + f)
-        return hout, w, ztr_new
+    def plasticity_scalars(self, L):
+        c = self.config
+        eta = L.eta_raw.sigmoid()
+        lam = L.lam_raw.sigmoid() if c.stdp_lam_fixed < 0 else c.stdp_lam_fixed
+        gain = F.softplus(L.gain_raw) if c.stdp_gain_fixed < 0 else c.stdp_gain_fixed
+        w0 = L.w0 if c.stdp_w0_fixed is None else c.stdp_w0_fixed
+        A = F.softplus(L.A_raw) if c.stdp_A_fixed is None else c.stdp_A_fixed
+        rho = L.rho_raw.sigmoid() if c.value_trace_rho_fixed is None else c.value_trace_rho_fixed
+        return eta, lam, gain, w0, A, rho
 
     def boundary(self, L, h):
         g, u = L.b_gate_up(h).chunk(2, dim=-1)
-        return h + L.b_down(0.5 * g * u)
+        return h + L.b_down(0.5*g*u)
 
-    def block(self, L, h, inj, AB, kc, kcb, w, fresh, ztr):
-        # Layer and fresh are explicit arguments so recomputation cannot pick up
-        # another loop iteration's layer or reset mask.
-        pre = self.config.block_order == "pre"
-        if pre:
-            h = self.boundary(L, h)
-        h = h + self.embed_scale * inj
-        h, w, ztr = self.step(L, h, AB, kc, w, fresh, kcb, ztr, apply_phi=pre)
-        if not pre:
-            h = self.boundary(L, h)
-            h = self.phi(h)
-        return h, w, ztr
+    def step(self, L, h, AB, kc, kc0, w, x):
+        """The user's pseudocode: read old w, then write, then update x."""
+        uh = self.addr(h, AB)
+        v = torch.einsum("btd,hcd->bthc", h, L.w_sh)
+        a = self.attn_xy(uh, kc)
+        if self.config.stdp:
+            eta, lam, gain, w0, A, rho = self.plasticity_scalars(L)
+            a_eff = (1-lam)*a + lam*w             # IMPORTANT: OLD w; zero on a fresh puzzle
+        else:
+            a_eff = a
+        o = torch.einsum("bhtn,bnhc->bthc", a_eff, v)
+        f = torch.einsum("bthc,hcd->btd", o, L.w_sh)
+        hout = self.phi(h + f)                     # read finished before the write
+        if self.config.stdp:
+            with torch.autocast(h.device.type, enabled=False):
+                vf = v.float()
+                vv = vf / (torch.linalg.vector_norm(vf, dim=-1, keepdim=True)+self.config.eps)
+                K = self.attn_xy(uh, kc0)          # psi=0; symmetric; beta does not exist
+                agree = torch.einsum("bthc,bnhc->bhtn", vv, vv)
+                M = torch.einsum("bthc,bnhc->bhtn", vv, x)
+                anti = M - M.transpose(-1,-2)      # transpose token axes ONLY
+                tgt = gain*K*(w0*agree + A*anti)
+                w = (1-eta)*w + eta*tgt            # fresh first write is eta*tgt, NOT tgt
+                if isinstance(rho, torch.Tensor):
+                    rho = rho.view(1,1,self.H,1)    # rho [H,1,1] -> value axes [1,1,H,1]
+                x = rho*x + (1-rho)*vv             # old trace used above, update only now
+        return hout, w, x
 
-    def _forward(self, carry, batch):
-        h = carry.current_hidden; inj = self.injection(batch)
-        ABs = [self.W_C(L) for L in self.layers]
-        kcs = [self.kernel(L) for L in self.layers]
-        kcbs = [self.kernel(L, L.beta) if self.stdp else None for L in self.layers]
-        w = carry.coupling if self.stdp else None; fresh = carry.fresh if self.stdp else None
-        ztr = carry.trace if self.use_trace else None
-        for _ in range(self.config.blocks_per_seg):
-            for li, L in enumerate(self.layers):
-                AB, kc, kcb = ABs[li], kcs[li], kcbs[li]
-                if self.config.activation_checkpoint and self.training and torch.is_grad_enabled():
-                    h, w, ztr = checkpoint(self.block, L, h, inj, AB, kc, kcb, w, fresh, ztr,
-                                           use_reentrant=False, preserve_rng_state=False)
+    def block(self, h, inj, AB, kc, kc0, w, x):
+        L = self.layers[0]
+        h = self.boundary(L, h)
+        h = h + self.embed_scale*inj
+        return self.step(L, h, AB, kc, kc0, w, x)
+
+    def forward(self, carry, data):
+        h, w, x = carry.current_hidden, carry.coupling, carry.value_trace
+        c, L = self.config, self.layers[0]
+        enabled = c.amp and c.amp_dtype == "bfloat16" and h.device.type == "cuda"
+        with torch.autocast(h.device.type, dtype=torch.bfloat16, enabled=enabled):
+            inj = self.injection(data)
+            AB, kc = self.W_C(L), self.kernel(L)
+            kc0 = self.kernel(L, torch.zeros_like(L.psi)) if c.stdp else None
+            for _ in range(c.blocks_per_seg):
+                if c.activation_checkpoint and self.training and torch.is_grad_enabled():
+                    h,w,x = checkpoint(self.block, h,inj,AB,kc,kc0,w,x,
+                                       use_reentrant=False, preserve_rng_state=False)
                 else:
-                    h, w, ztr = self.block(L, h, inj, AB, kc, kcb, w, fresh, ztr)
-                fresh = None
-        return replace(carry, current_hidden=h.detach(), coupling=(w.detach() if w is not None else None),
-                       trace=(ztr.detach() if ztr is not None else None), fresh=None), self.w_cls(h)
+                    h,w,x = self.block(h,inj,AB,kc,kc0,w,x)
+            logits = self.w_cls(h).float()
+        # No detach inside the block loop. Gradients flow through writes/traces within a segment.
+        new = replace(carry, current_hidden=h.detach(),
+                      coupling=None if w is None else w.detach(),
+                      value_trace=None if x is None else x.detach())
+        return new, logits
 
 
 class LT(nn.Module):
-    """URM 하네스 인터페이스. ACT 없음 (halted = steps ≥ loops). q 로짓은 상수."""
-    def __init__(self, config_dict: dict):
+    def __init__(self, config_dict):
         super().__init__()
         self.config = LTConfig.from_dict(config_dict)
         self.inner = LT_Inner(self.config)
 
     @property
     def puzzle_emb(self):
-        return self.inner.puzzle_emb
+        return getattr(self.inner, "puzzle_emb", None)
 
     def initial_carry(self, batch):
+        c, device = self.config, self.inner.init_hidden.device
         B = batch["inputs"].shape[0]
-        device = self.inner.init_hidden.device
-        return LTCarry(current_hidden=self.inner.empty_carry(B, device=device).current_hidden,
-                       steps=torch.zeros((B,), dtype=torch.int32, device=device),
-                       halted=torch.ones((B,), dtype=torch.bool, device=device),
-                       current_data={k: torch.empty_like(v, device=device) for k, v in batch.items()})
+        h = torch.zeros(B,c.seq_len,c.hidden_size,device=device)
+        return LTCarry(h, torch.zeros(B,dtype=torch.int32,device=device),
+                       torch.ones(B,dtype=torch.bool,device=device),
+                       {k: torch.zeros_like(v,device=device) for k,v in batch.items()},
+                       torch.zeros(B,c.num_heads,c.seq_len,c.seq_len,device=device) if c.stdp else None,
+                       torch.zeros(B,c.seq_len,c.num_heads,c.hidden_size//c.num_heads,device=device) if c.stdp else None)
 
-    def forward(self, carry, batch, compute_target_q: bool = False):
-        inner = self.inner.reset_carry(carry.halted, carry)
-        inner = replace(inner, fresh=carry.halted.clone())
-        steps = torch.where(carry.halted, 0, carry.steps)
-        data = {k: torch.where(carry.halted.view((-1,) + (1,) * (batch[k].ndim - 1)), batch[k], v) for k, v in carry.current_data.items()}
-        inner, logits = self.inner(inner, data)
-        q = torch.full((logits.shape[0],), -5.0, device=logits.device, dtype=torch.float32)
-        outputs = {"logits": logits, "q_halt_logits": q, "q_continue_logits": q}
-        with torch.no_grad():
-            steps = steps + 1; halted = steps >= self.config.loops
-        return LTCarry(current_hidden=inner.current_hidden, steps=steps, halted=halted, current_data=data,
-                       coupling=inner.coupling, trace=inner.trace), outputs
-
+    def forward(self, carry, batch, compute_target_q=False):
+        fresh = carry.halted
+        h = torch.where(fresh[:,None,None], self.inner.init_hidden, carry.current_hidden)
+        if self.config.stdp:
+            mask = fresh[:,None,None,None]
+            w = torch.where(mask, torch.zeros_like(carry.coupling), carry.coupling)
+            x = torch.where(mask, torch.zeros_like(carry.value_trace), carry.value_trace)
+        else:
+            w = x = None
+        data = {k: torch.where(fresh.view((-1,)+(1,)*(v.ndim-1)), batch[k], v)
+                for k,v in carry.current_data.items()}
+        inner = replace(carry,current_hidden=h,coupling=w,value_trace=x,current_data=data)
+        inner, logits = self.inner(inner,data)
+        steps = torch.where(fresh,0,carry.steps)+1
+        halted = steps >= self.config.loops
+        q = torch.full((logits.shape[0],),-5.0,dtype=torch.float32,device=logits.device)
+        return replace(inner,steps=steps,halted=halted), {
+            "logits":logits,"q_halt_logits":q,"q_continue_logits":q}
 
 
 # 3. Loss and optimizer -------------------------------------------------------
@@ -722,7 +574,7 @@ class AdamATan2(Optimizer):
 
 
 NO_DECAY_KEYS = ("psi","theta","alpha_raw","gamma_raw","inj_gate","st_gain",
-                 "gain_raw","eta_raw","lam_raw","beta","mu")
+                 "gain_raw","eta_raw","lam_raw","w0","A_raw","rho_raw")
 
 
 def _is_no_decay(name,p):
@@ -756,12 +608,6 @@ def cosine_schedule_with_warmup_lr_lambda(current_step,*,base_lr,num_warmup_step
 class EMAHelper:
     def __init__(self,mu=0.999):
         self.mu,self.shadow = mu,{}
-
-    def state_dict(self):
-        return self.shadow
-
-    def load_state_dict(self,state):
-        self.shadow = state
 
     def register(self,module):
         self.shadow = {n:p.detach().clone() for n,p in module.named_parameters() if p.requires_grad}
@@ -1005,7 +851,7 @@ def _collect_rank_states(ts,device,rank,ws):
     return gathered
 
 
-def save_training_checkpoint(out_dir,ts,base,optimizers,ema,cfg,rank,ws,device,keep_last=None):
+def save_checkpoint(out_dir,ts,base,optimizers,ema,cfg,rank,ws,device,keep_last=None):
     """Every rank must call. Atomic file replace; cursor means 'next unread batch'."""
     if ts.in_step:
         raise RuntimeError("Refusing to save a partially completed optimizer step.")
@@ -1065,28 +911,22 @@ def _restore_carry(rank_states,rank,ws,gbs,device):
 
 
 _RESUME_KEYS = tuple(f.name for f in fields(LTConfig) if f.name not in
-                     ("batch_size","amp","amp_dtype","activation_checkpoint",
-                      "beta_init_mean","beta_init_std")) + (
+                     ("batch_size","amp","amp_dtype","activation_checkpoint")) + (
     "global_batch_size","epochs","eval_interval","num_aug","seed","grad_accum_steps",
     "lr","lr_min_ratio","lr_warmup_steps","weight_decay","beta1","beta2","puzzle_emb_lr",
     "puzzle_emb_weight_decay","q_weight","ema","ema_rate","data_fingerprint")
 
 
-def load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device):
+def load_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device):
     # Only load checkpoints you trust: weights_only=False is needed for RNG/optimizer objects.
     ck = torch.load(path,map_location="cpu",weights_only=False)
     if ck.get("model_id") != MODEL_ID:
-        raise ValueError("Expected a Kaggle v1.71 checkpoint. Start a new output directory for "
-                         "v1.71 training from scratch; other architectures are not auto-converted.")
+        raise ValueError("This is not a value-trace delayed-STDP checkpoint. "
+                         "Old v1.1 beta/address-trace checkpoints cannot be resumed as this model.")
     old = ck["cfg"]
     changed = {k:(old.get(k),cfg.get(k)) for k in _RESUME_KEYS if old.get(k)!=cfg.get(k)}
     if changed:
         raise ValueError(f"Resume config/data mismatch (start a new out_dir for a new experiment): {changed}")
-    # Initialization is not reapplied on resume. Preserve the actual experiment's
-    # initializer in subsequent config/checkpoints, including pre-option runs.
-    for key,default in (("beta_init_mean",0.0),("beta_init_std",0.5)):
-        cfg[key] = old.get(key,default)
-        setattr(base.model.config,key,cfg[key])
     base.load_state_dict(ck["raw_model_state_dict"],strict=True,assign=False)
     if len(optimizers)!=len(ck["optimizer_states"]):
         raise ValueError("Optimizer count mismatch.")
@@ -1106,7 +946,7 @@ def load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device):
     if ws==ck["world_size"]:
         _restore_rng(ck["rank_states"][rank]["rng"],device)
     elif rank==0:
-        print(f"[LT] resharded saved h/w/z/data: {ck['world_size']} -> {ws} ranks; "
+        print(f"[LT] resharded saved h/w/x/data: {ck['world_size']} -> {ws} ranks; "
               "bitwise equality across GPU layouts is not promised.",flush=True)
     return ts
 
@@ -1166,9 +1006,6 @@ def extrapolate(base,eval_in,eval_lb,cfg,rank,ws,device,step,ema,segs,out_txt,de
     counts = torch.zeros(segs,dtype=torch.float64,device=device)
     interrupted = False
     t0 = time.monotonic()
-    weights = "ema" if ema is not None else "raw"
-    if rank==0:
-        print(f"[EXTRAP] start step={step} weights={weights} segs={segs} global_n={len(eval_in)}",flush=True)
     with _EMASwap(base,ema):
         base.eval()
         try:
@@ -1209,67 +1046,24 @@ def extrapolate(base,eval_in,eval_lb,cfg,rank,ws,device,step,ema,segs,out_txt,de
     aa = (sums[0]/counts.clamp_min(1)).cpu().numpy()
     ee = sums[1].cpu().numpy()
     cc = (sums[2]/counts.clamp_min(1)).cpu().numpy()
-    elapsed = time.monotonic()-t0
-    rows = [dict(segment=si+1,acc=float(aa[si]),exact=int(ee[si]),n=int(nn[si]),
-                 exact_percent=100*float(ee[si])/int(nn[si]),churn=float(cc[si]))
-            for si in range(segs) if nn[si]>0]
-    by_segment = {row["segment"]:row for row in rows}
-    train_row,final_row = by_segment.get(loops0),by_segment.get(segs)
-    # On interruption, different segments can have different sample counts.
-    # Compare only segments evaluated on the same largest prefix of puzzles.
-    comparison_n = max((row["n"] for row in rows),default=0)
-    comparable = [row for row in rows if row["n"]==comparison_n]
-    best_exact = max(comparable,key=lambda row:row["exact"]) if comparable else None
-    best_acc = max(comparable,key=lambda row:row["acc"]) if comparable else None
-    lines = [f"# step={step} weights={weights} segs={segs} global_n={len(eval_in)} "
-             f"elapsed={elapsed:.1f}s partial={interrupted}",
+    lines = [f"# step={step} weights={'ema' if ema else 'raw'} segs={segs} "
+             f"elapsed={time.monotonic()-t0:.1f}s partial={interrupted}",
              f"# {MODEL_ID}; per segment {cfg['blocks_per_seg']} blocks; train segments={loops0}",
              "# seg acc exact n exact_percent churn"]
-    for row in rows:
-        lines.append(f"{row['segment']:4d} {row['acc']:.6f} {row['exact']:6d} {row['n']:6d} "
-                     f"{row['exact_percent']:.4f} {row['churn']:.6f}"+
-                     ("  <-train" if row["segment"]==loops0 else ""))
-
-    def summary(label,row,segment=None):
-        if row is None:
-            return f"# {label}: seg{segment} not evaluated" if segment is not None else f"# {label}: not evaluated"
-        return (f"# {label}: seg{row['segment']} acc={row['acc']:.6f} "
-                f"exact={row['exact']}/{row['n']} ({row['exact_percent']:.4f}%) churn={row['churn']:.6f}")
-
-    lines += ["",summary("train",train_row,loops0),
-              summary(f"best_acc [same n={comparison_n}]",best_acc),
-              summary(f"best_exact [same n={comparison_n}]",best_exact),
-              summary("final",final_row,segs)]
-    if final_row is None and rows:
-        lines.append(summary("last measured",rows[-1]))
-    if train_row is not None and best_exact is not None and train_row["n"]==comparison_n:
-        lines.append(f"# best-train: exact={best_exact['exact']-train_row['exact']:+d} "
-                     f"percentage_points={best_exact['exact_percent']-train_row['exact_percent']:+.4f}")
-    result = dict(acc=aa.tolist(),exact=ee.tolist(),churn=cc.tolist(),count=nn.tolist(),
-                  step=int(step),weights=weights,segs=int(segs),target_n=len(eval_in),n=comparison_n,
-                  partial=interrupted,elapsed_seconds=elapsed,model_id=MODEL_ID,
-                  blocks_per_segment=int(cfg["blocks_per_seg"]),train_segment=int(loops0),
-                  train=train_row,best_acc=best_acc,best_exact=best_exact,final=final_row,
-                  last_measured=rows[-1] if rows else None,best_comparison_n=comparison_n,segments=rows)
-    # The complete table is printed as well as persisted, so notebook logs suffice.
-    print("\n".join(lines),flush=True)
-    out_txt = os.fspath(out_txt)
-    directory = os.path.dirname(os.path.abspath(out_txt))
-    os.makedirs(directory,exist_ok=True)
+    for si in range(segs):
+        if nn[si]:
+            lines.append(f"{si+1:4d} {aa[si]:.6f} {int(ee[si]):6d} {int(nn[si]):6d} "
+                         f"{100*ee[si]/nn[si]:.4f} {cc[si]:.6f}"+
+                         ("  <-train" if si+1==loops0 else ""))
+    if not interrupted and nn[-1]>0:
+        be = int(np.argmax(ee))
+        lines.append(f"# best_exact_seg={be+1} exact={int(ee[be])}/{int(nn[be])}")
+    os.makedirs(os.path.dirname(os.path.abspath(out_txt)),exist_ok=True)
     with open(out_txt+".tmp","w",encoding="utf-8") as f:
         f.write("\n".join(lines)+"\n")
     os.replace(out_txt+".tmp",out_txt)
-    out_json = os.path.splitext(out_txt)[0]+".json"
-    with open(out_json+".tmp","w",encoding="utf-8") as f:
-        json.dump(result,f,ensure_ascii=False,indent=2,allow_nan=False)
-        f.write("\n")
-    os.replace(out_json+".tmp",out_json)
-    out_jsonl = os.path.join(directory,"extrap_results.jsonl")
-    with open(out_jsonl,"a",encoding="utf-8") as f:
-        f.write(json.dumps(result,ensure_ascii=False,allow_nan=False)+"\n")
-    print(f"[EXTRAP] step {step} weights={weights} -> {out_txt}, {out_json}, {out_jsonl}"+
-          (" [partial: time/stop]" if interrupted else ""),flush=True)
-    return result
+    print(f"[EXTRAP] step {step} -> {out_txt}"+(" [partial]" if interrupted else ""),flush=True)
+    return dict(acc=aa.tolist(),exact=ee.tolist(),churn=cc.tolist(),count=nn.tolist())
 
 # 8. Training ----------------------------------------------------------------
 def _allreduce_parameter_grads(base,device,ws):
@@ -1307,8 +1101,7 @@ def _check_finite_gradients(base,loss,device,ws):
                                  "Stopped without overwriting the last committed checkpoint.")
 
 
-def train_batch(model,base,ts,batch,cfg,optimizers,lrs,total_steps,rank,world_size,device):
-    planned_steps,ws = total_steps,world_size
+def train_batch(model,base,ts,batch,cfg,optimizers,lrs,planned_steps,rank,ws,device):
     ts.in_step = True
     batch = {k:v.to(device,non_blocking=True) for k,v in batch.items()}
     if ts.carry is None:
@@ -1346,7 +1139,7 @@ def resolve_out_dir(cfg):
     if cfg["out_dir"]:
         return os.path.abspath(os.path.expanduser(str(cfg["out_dir"])))
     root = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.getcwd()
-    return os.path.join(root,"lt_v171")
+    return os.path.join(root,"lt_value_window")
 
 
 def init_distributed():
@@ -1453,7 +1246,7 @@ def main(cfg):
         raise FileNotFoundError(f"Explicit resume_from contains no checkpoint: {search_at}")
     if cfg["require_resume"] and not path:
         raise FileNotFoundError("require_resume=True but no checkpoint exists.")
-    ts = (load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device) if path else TrainState())
+    ts = (load_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device) if path else TrainState())
     if ts.step != ts.iter_id*steps_per_iter+ts.batch_in_iter:
         raise ValueError("Checkpoint cursor/step inconsistency.")
     if ts.batch_in_iter>=steps_per_iter or ts.iter_id>total_iters:
@@ -1473,15 +1266,11 @@ def main(cfg):
         print(f"[LT] {MODEL_ID} torch={torch.__version__} device={device} ranks={ws} local_bs={lbs}",flush=True)
         print(f"[LT] params={sum(p.numel() for p in base.parameters()):,} amp={cfg['amp_dtype']} "
               f"activation_checkpoint={cfg['activation_checkpoint']} compile={cfg['compile']}",flush=True)
-        print(f"[LT] beta initialization: mean={cfg['beta_init_mean']:.8f} rad, "
-              f"std={cfg['beta_init_std']:.8f}; "
-              + ("resumed learned beta from checkpoint" if path else "fresh, learnable beta"),flush=True)
         print(f"[LT] data={cfg['data_npz']} train={len(tr_x)} test={len(te_x)}",flush=True)
         print(f"[LT] planned steps={planned_steps}; actual steps={actual_steps}; "
               f"1 step={cfg['blocks_per_seg']} blocks; loops={cfg['loops']} segments",flush=True)
-        print(f"[LT] v1.71: projection={cfg['address_projection']} "
-              f"order={cfg['block_order']} address_trace={cfg['use_trace']} "
-              f"rho_init={cfg['trace_rho_init']}",flush=True)
+        print(f"[LT] W0={cfg['stdp_w0_fixed']} A_fixed={cfg['stdp_A_fixed']} "
+              f"rho_fixed={cfg['value_trace_rho_fixed']} (None means learned)",flush=True)
         print(f"[LT] {'RESUME '+str(path) if path else 'NEW RUN'} step={ts.step} "
               f"next_iter={ts.iter_id} consumed_batches={ts.batch_in_iter} out={out_dir}",flush=True)
         if device.type=="cpu":
@@ -1537,13 +1326,13 @@ def main(cfg):
                 due_save = cfg["save_every_steps"] and ts.step%cfg["save_every_steps"]==0
                 due_milestone = cfg["milestone_every"] and ts.step%cfg["milestone_every"]==0
                 if boundary or due_save:
-                    save_training_checkpoint(out_dir,ts,base,optimizers,ema,cfg,rank,ws,device)
+                    save_checkpoint(out_dir,ts,base,optimizers,ema,cfg,rank,ws,device)
                 if boundary:
                     evaluate(base,te_x,te_y,cfg,rank,ws,device,ts.step,ema,deadline)
                     last_eval_step = ts.step
                 if due_milestone:
                     mdir = os.path.join(out_dir,"milestones")
-                    save_training_checkpoint(mdir,ts,base,optimizers,ema,cfg,rank,ws,device,keep_last=0)
+                    save_checkpoint(mdir,ts,base,optimizers,ema,cfg,rank,ws,device,keep_last=0)
                     extrapolate(base,te_x,te_y,cfg,rank,ws,device,ts.step,ema,
                                 cfg["milestone_extrap_segs"],os.path.join(mdir,f"extrap_step_{ts.step}.txt"),deadline)
                 if ts.step>=stop_at:
@@ -1552,7 +1341,7 @@ def main(cfg):
                     stopped = True
                     break
         # Save before evaluation so interruption during the final eval loses no training progress.
-        p = save_training_checkpoint(out_dir,ts,base,optimizers,ema,cfg,rank,ws,device)
+        p = save_checkpoint(out_dir,ts,base,optimizers,ema,cfg,rank,ws,device)
         stopped = stopped or stop_requested(device,deadline)
         if not stopped and last_eval_step!=ts.step:
             evaluate(base,te_x,te_y,cfg,rank,ws,device,ts.step,ema,deadline)
@@ -1573,250 +1362,216 @@ def main(cfg):
 
 # 9. CPU self-tests (no real dataset and no claims about training accuracy) -----
 def selftest():
-    """CPU-only checks of v1.71 equations, recurrent training, and exact resume."""
     import tempfile
-    from unittest import mock
-    device = torch.device("cpu")
-    old_threads, rng0 = torch.get_num_threads(), _rng_state(device)
-    torch.set_num_threads(min(2, old_threads))
+    old_threads = torch.get_num_threads()
+    rng0 = _rng_state(torch.device("cpu"))
+    torch.set_num_threads(min(2,old_threads))
     checks = []
     try:
         torch.manual_seed(17)
-        cfg = dict(DEFAULT_CFG, hidden_size=16, num_heads=2, puzzle_emb_ndim=16,
-                   global_batch_size=2, batch_size=2, seq_len=81, num_puzzle_identifiers=1,
-                   blocks_per_seg=3, loops=3, amp=False, amp_dtype="float32",
-                   activation_checkpoint=False, compile=False, epochs=4, eval_interval=2,
-                   lr_warmup_steps=0, lr=1e-3, puzzle_emb_lr=1e-3, ema_rate=0.9,
-                   num_aug=10, run_selftests=False, dataloader_workers=0)
-        with mock.patch.object(torch.linalg, "qr", side_effect=AssertionError("v1.71 called QR")):
-            base = ACTLossHead(LT(cfg), q_weight=cfg["q_weight"])
-            inner, L = base.model.inner, base.model.inner.layers[0]
-            assert hasattr(L, "wc") and not hasattr(L, "wc_raw")
-            with torch.no_grad():
-                L.b_down.weight.normal_(0, 0.03)
-                torch.testing.assert_close(torch.cat(inner.W_C(L), 1), L.wc, rtol=0, atol=0)
-            checks.append("direct learned address matrix; no QR")
-            with torch.no_grad():
-                rho, omega = torch.sigmoid(L.mu_rho_raw), L.mu_omega
-                mu = torch.polar(rho, omega)
-                gin = torch.sqrt(torch.clamp(1-rho.square(), min=1e-6))
-                history, trace = [], None
-                for k in range(5):
-                    u = torch.complex(torch.randn(2, 81, 2, 4), torch.randn(2, 81, 2, 4))
-                    history.append(u)
-                    zx, zy, trace = inner.trace_step(L, u.real, u.imag, trace, None)
-                    expected = gin*sum(mu**(k-j)*v for j, v in enumerate(history))
-                    torch.testing.assert_close(torch.complex(zx, zy), expected, rtol=2e-5, atol=2e-6)
-                zx, zy, _ = inner.trace_step(L, u.real, u.imag, trace, torch.ones(2, dtype=torch.bool))
-                torch.testing.assert_close(torch.complex(zx, zy), gin*u, rtol=2e-5, atol=2e-6)
-                checks.append("complex address trace matches finite-history sum and fresh reset")
-                h, w = torch.randn(2, 81, 16), torch.randn(2, 2, 81, 81)*0.03
-                AB, kc, kcb = inner.W_C(L), inner.kernel(L), inner.kernel(L, L.beta)
-                for old_w, old_z, fresh in ((None, None, None), (w, trace, torch.zeros(2, dtype=torch.bool)),
-                                            (w, trace, torch.ones(2, dtype=torch.bool))):
-                    ux, uy = inner.addr_raw(h, AB)
-                    zx, zy, _ = inner.trace_step(L, ux, uy, old_z, fresh)
-                    v = torch.einsum("btd,hcd->bthc", h, L.w_sh)
-                    vv = v/(v.norm(dim=-1, keepdim=True)+cfg["eps"])
-                    tgt = F.softplus(L.gain_raw)*inner.attn_xy(inner._unit(zx, zy), kcb)*torch.einsum("bthc,bnhc->bhtn", vv, vv)
-                    eta, lam = torch.sigmoid(L.eta_raw), torch.sigmoid(L.lam_raw)
-                    expected_w = tgt if old_w is None or bool(fresh.all()) else (1-eta)*old_w+eta*tgt
-                    attention = (1-lam)*inner.attn_xy(inner._unit(ux, uy), kc)+lam*expected_w
-                    message = torch.einsum("bhtn,bnhc->bthc", attention, v)
-                    expected_h = h+torch.einsum("bthc,hcd->btd", message, L.w_sh)
-                    hn, wn, _ = inner.step(L, h, AB, kc, w=old_w, fresh=fresh, kcb=kcb, ztr=old_z, apply_phi=False)
-                    torch.testing.assert_close(wn, expected_w, rtol=2e-5, atol=3e-6)
-                    torch.testing.assert_close(hn, expected_h, rtol=2e-5, atol=3e-6)
-                checks.append("fresh W=tgt; recurrent W update; same-block read uses updated W")
-            batch = dict(inputs=torch.randint(1, 11, (2, 81)), labels=torch.randint(2, 11, (2, 81)),
-                         puzzle_identifiers=torch.zeros(2, dtype=torch.int32))
-            alt = {k: v.clone() for k, v in batch.items()}
-            alt["inputs"], alt["labels"] = torch.randint(1, 11, (2, 81)), torch.randint(2, 11, (2, 81))
-            with torch.no_grad():
-                c1, _ = base.model(base.initial_carry(batch), batch)
-                c2, _ = base.model(c1, alt)
-                assert torch.equal(c2.current_data["inputs"], batch["inputs"])
-                cm, _ = base.model(replace(c1, halted=torch.tensor([True, False])), alt)
-                ca, _ = base.model(base.initial_carry(alt), alt)
-                for name in ("current_hidden", "coupling", "trace"):
-                    torch.testing.assert_close(getattr(cm, name)[0], getattr(ca, name)[0])
-                    torch.testing.assert_close(getattr(cm, name)[1], getattr(c2, name)[1])
-                    assert not getattr(c2, name).requires_grad
-                assert cm.steps.tolist() == [1, 2]
-                ca, oa = base.model(c1, batch)
-                inner.config.blocks_per_seg = 6
-                cb, ob = base.model(base.initial_carry(batch), batch)
-                inner.config.blocks_per_seg = 3
-                for name in ("current_hidden", "coupling", "trace"):
-                    torch.testing.assert_close(getattr(ca, name), getattr(cb, name), rtol=2e-5, atol=3e-6)
-                torch.testing.assert_close(oa["logits"], ob["logits"], rtol=2e-5, atol=3e-6)
-                checks.append("per-lane reset/data retention; two segments match longer unroll; boundary detach")
-            other = ACTLossHead(LT(dict(cfg, activation_checkpoint=True)), q_weight=cfg["q_weight"])
-            other.load_state_dict(base.state_dict())
-            for model in (base, other):
-                model.zero_grad(set_to_none=True)
-                _, loss, _, _, _ = model(carry=model.initial_carry(batch), batch=batch, return_keys=set())
-                loss.backward()
-                for name, p in model.named_parameters():
-                    if p.grad is not None:
-                        assert torch.isfinite(p.grad).all(), name
-                for suffix in ("wc", "beta", "mu_rho_raw", "mu_omega"):
-                    p = next(p for n, p in model.named_parameters() if n.endswith("."+suffix))
-                    assert p.grad is not None and p.grad.norm()>0, suffix
-            for (name, p), (other_name, q) in zip(base.named_parameters(), other.named_parameters()):
-                assert name == other_name and (p.grad is None) == (q.grad is None)
+        cfg = dict(DEFAULT_CFG,hidden_size=16,num_heads=2,puzzle_emb_ndim=16,
+                   global_batch_size=2,batch_size=2,seq_len=81,blocks_per_seg=3,loops=3,
+                   amp=False,amp_dtype="float32",activation_checkpoint=False,compile=False,
+                   epochs=4,eval_interval=2,lr_warmup_steps=0,lr=1e-3,puzzle_emb_lr=1e-3,
+                   ema_rate=0.9,run_selftests=False,dataloader_workers=0)
+        base = ACTLossHead(LT(cfg),q_weight=cfg["q_weight"])
+        inner,L = base.model.inner,base.model.inner.layers[0]
+        B,T,H,dh = 2,81,2,8
+        h = torch.randn(B,T,16)
+        w = torch.randn(B,H,T,T)*0.03
+        x = F.normalize(torch.randn(B,T,H,dh),dim=-1)*0.5
+        AB = inner.W_C(L)
+        kc,kc0 = inner.kernel(L),inner.kernel(L,torch.zeros_like(L.psi))
+
+        # Independent complex-number implementation of the specified attention.
+        def reference_attention(uh,psi):
+            ux,uy = uh
+            z = torch.complex(ux,uy)
+            pp = L.theta[...,0,None]*inner.pos_u + L.theta[...,1,None]*inner.pos_w
+            qa = (pp+psi[...,None]/2).permute(2,0,1)
+            ka = (pp-psi[...,None]/2).permute(2,0,1)
+            q = z*torch.exp(1j*qa)
+            k = z*torch.exp(1j*ka)
+            return torch.einsum("bthj,bnhj->bhtn",q,k.conj()).real*torch.exp(-L.alpha[:,0,None,None]*inner.l1)[None]
+
+        with torch.no_grad():
+            uh = inner.addr(h,AB)
+            ar = reference_attention(uh,L.psi)
+            Kr = reference_attention(uh,torch.zeros_like(L.psi))
+            torch.testing.assert_close(ar,inner.attn_xy(uh,kc),rtol=2e-5,atol=2e-6)
+            v = torch.einsum("btd,hcd->bthc",h,L.w_sh)
+            vv = v/(v.norm(dim=-1,keepdim=True)+cfg["eps"])
+            eta,lam,gain,w0,A,rho = inner.plasticity_scalars(L)
+            agree = torch.einsum("bthc,bnhc->bhtn",vv,vv)
+            M = torch.einsum("bthc,bnhc->bhtn",vv,x)
+            anti = M-M.transpose(-1,-2)
+            read = torch.einsum("bhtn,bnhc->bthc",(1-lam)*ar+lam*w,v)
+            href = inner.phi(h+torch.einsum("bthc,hcd->btd",read,L.w_sh))
+            wref = (1-eta)*w+eta*gain*Kr*(w0*agree+A*anti)
+            xref = rho.view(1,1,H,1)*x+(1-rho.view(1,1,H,1))*vv
+            hn,wn,xn = inner.step(L,h,AB,kc,kc0,w,x)
+            for actual,expected in ((hn,href),(wn,wref),(xn,xref)):
+                torch.testing.assert_close(actual,expected,rtol=2e-5,atol=3e-6)
+            checks.append("independent complex reference: read/write/trace equations")
+            torch.testing.assert_close(Kr,Kr.transpose(-1,-2),rtol=0,atol=1e-6)
+            torch.testing.assert_close(anti,-anti.transpose(-1,-2),rtol=0,atol=0)
+            wz = inner.step(L,h,AB,kc,kc0,torch.zeros_like(w),x)[1]
+            torch.testing.assert_close((wz+wz.transpose(-1,-2))/2,eta*gain*Kr*w0*agree,rtol=2e-5,atol=2e-6)
+            torch.testing.assert_close((wz-wz.transpose(-1,-2))/2,eta*gain*Kr*A*anti,rtol=2e-5,atol=2e-6)
+            checks.append("symmetric K; symmetric/antisymmetric write parity")
+            wf = inner.step(L,h,AB,kc,kc0,torch.zeros_like(w),torch.zeros_like(x))[1]
+            torch.testing.assert_close(wf,eta*gain*Kr*w0*agree,rtol=2e-5,atol=2e-6)
+            old_A = L.A_raw.detach().clone()
+            L.A_raw.add_(1.0)
+            h2,w2,x2 = inner.step(L,h,AB,kc,kc0,w,x)
+            L.A_raw.copy_(old_A)
+            assert torch.equal(hn,h2) and not torch.equal(wn,w2) and torch.equal(xn,x2)
+            checks.append("one-block read delay; fresh first write = eta*tgt")
+            prev = F.normalize(torch.randn_like(vv),dim=-1)
+            mm = torch.einsum("bthc,bnhc->bhtn",vv,prev)
+            delta = vv-prev
+            identity = (torch.einsum("bthc,bnhc->bhtn",delta,vv)-
+                        torch.einsum("bthc,bnhc->bhtn",vv,delta))
+            torch.testing.assert_close(mm-mm.transpose(-1,-2),identity,rtol=2e-5,atol=1e-6)
+            checks.append("rho=0 exact finite-difference identity")
+            # Explicit finite-history sum and the frozen-parameter bounds.
+            rv = torch.tensor([0.2,0.8]).view(1,1,H,1)
+            xx = torch.zeros(B,5,H,dh)
+            history = []
+            ww = torch.zeros(B,H,5,5)
+            for k in range(20):
+                cur = F.normalize(torch.randn_like(xx),dim=-1)
+                expected = sum(((1-rv)*rv**(k-1-j)*history[j] for j in range(k)),torch.zeros_like(xx))
+                torch.testing.assert_close(xx,expected,rtol=2e-5,atol=1e-6)
+                mm = torch.einsum("bthc,bnhc->bhtn",cur,xx)
+                aa = mm-mm.transpose(-1,-2)
+                ag = torch.einsum("bthc,bnhc->bhtn",cur,cur)
+                kk = torch.einsum("bthc,bnhc->bhtn",cur,cur)
+                ww = (1-eta)*ww+eta*gain*kk*(w0*ag+A*aa)
+                assert (aa.abs()<=2.0+1e-6).all()
+                assert (ww.abs()<=gain*(abs(w0)+2*A)+1e-6).all()
+                xx = rv*xx+(1-rv)*cur
+                assert (xx.norm(dim=-1)<=1.0+1e-6).all()
+                history.append(cur)
+            checks.append("normalized exponential history and fixed-parameter bounds")
+
+        batch = dict(inputs=torch.randint(1,11,(B,T),dtype=torch.int32),
+                     labels=torch.randint(2,11,(B,T),dtype=torch.int32),
+                     puzzle_identifiers=torch.zeros(B,dtype=torch.int32))
+        alt = {k:v.clone() for k,v in batch.items()}
+        alt["inputs"] = torch.randint(1,11,(B,T),dtype=torch.int32)
+        alt["labels"] = torch.randint(2,11,(B,T),dtype=torch.int32)
+        with torch.no_grad():
+            c0 = base.initial_carry(batch)
+            c1,_ = base.model(c0,batch)
+            c2,_ = base.model(c1,alt)
+            assert torch.equal(c2.current_data["inputs"],batch["inputs"])
+            mixed = replace(c1,halted=torch.tensor([True,False]))
+            cm,_ = base.model(mixed,alt)
+            fresh_alt,_ = base.model(base.initial_carry(alt),alt)
+            continued,_ = base.model(c1,alt)
+            for name in ("current_hidden","coupling","value_trace"):
+                torch.testing.assert_close(getattr(cm,name)[0],getattr(fresh_alt,name)[0])
+                torch.testing.assert_close(getattr(cm,name)[1],getattr(continued,name)[1])
+            assert cm.steps.tolist()==[1,2]
+            checks.append("per-lane h/w/x/data reset; active puzzle retention")
+            inner.config.blocks_per_seg = 2
+            ca,_ = base.model(base.initial_carry(batch),batch)
+            cb,ob = base.model(ca,batch)
+            inner.config.blocks_per_seg = 4
+            cc,oc = base.model(base.initial_carry(batch),batch)
+            for name in ("current_hidden","coupling","value_trace"):
+                torch.testing.assert_close(getattr(cb,name),getattr(cc,name),rtol=1e-5,atol=2e-6)
+            torch.testing.assert_close(ob["logits"],oc["logits"])
+            inner.config.blocks_per_seg = 3
+            assert not cb.current_hidden.requires_grad and not cb.coupling.requires_grad and not cb.value_trace.requires_grad
+            checks.append("two segments equal one longer unroll in value; boundary detach")
+
+        other = ACTLossHead(LT(dict(cfg,activation_checkpoint=True)),q_weight=cfg["q_weight"])
+        other.load_state_dict(base.state_dict())
+        for m in (base,other):
+            m.zero_grad(set_to_none=True)
+            _,loss,_,_,_ = m(carry=m.initial_carry(batch),batch=batch,return_keys=set())
+            loss.backward()
+            for n,p in m.named_parameters():
                 if p.grad is not None:
-                    torch.testing.assert_close(p.grad, q.grad, rtol=2e-5, atol=3e-6)
-            torch.testing.assert_close(base.model.puzzle_emb.local_weights.grad,
-                                       other.model.puzzle_emb.local_weights.grad, rtol=2e-5, atol=3e-6)
-            checks.append("nonzero finite wc/beta/mu gradients; checkpoint on/off gradient equality")
-        sol = np.array([[(3*(r%3)+r//3+c)%9+1 for c in range(9)] for r in range(9)], dtype=np.uint8)
-        inp = sol.copy(); inp[::2, ::2] = 0
-        for seed in range(20):
+                    assert torch.isfinite(p.grad).all(),n
+            for suffix in ("A_raw","rho_raw"):
+                p = next(p for n,p in m.named_parameters() if n.endswith(suffix))
+                assert p.grad is not None and p.grad.norm()>0,suffix
+        for (n,p),(n2,p2) in zip(base.named_parameters(),other.named_parameters()):
+            assert n==n2
+            if p.grad is not None:
+                torch.testing.assert_close(p.grad,p2.grad,rtol=2e-5,atol=3e-6)
+        torch.testing.assert_close(base.model.puzzle_emb.local_weights.grad,
+                                   other.model.puzzle_emb.local_weights.grad,rtol=2e-5,atol=3e-6)
+        checks.append("finite gradients to A/rho; activation-checkpoint gradient equivalence")
+        for fixes in (dict(stdp_A_fixed=0.0,value_trace_rho_fixed=0.0),dict(stdp=False)):
+            ablated = ACTLossHead(LT(dict(cfg,**fixes)))
+            _,loss,_,_,_ = ablated(carry=ablated.initial_carry(batch),batch=batch,return_keys=set())
+            loss.backward()
+            assert torch.isfinite(loss)
+        checks.append("exact A=0/rho=0 and STDP-off execution")
+
+        sol = np.array([[(3*(r%3)+r//3+c)%9+1 for c in range(9)] for r in range(9)],dtype=np.uint8)
+        inp = sol.copy(); inp[::2,::2] = 0
+        for seed in range(30):
             prm = _draw_aug_params(np.random.default_rng(seed))
-            xx, yy = _apply_aug(inp, *prm), _apply_aug(sol, *prm)
-            _check_boards(xx[None], yy[None], "selftest_aug")
-            dm, tr, rp, cp = prm
-            assert np.array_equal(xx, dm[(inp.T if tr else inp)[np.ix_(rp, cp)]])
-        args = dict(seed=0, num_aug=10, global_batch_size=2, rank=0, world_size=1,
-                    epochs_per_iter=2, start_iter=0, total_iters=2)
-        ds = SudokuTrainDataset(np.repeat(inp[None], 8, 0), np.repeat(sol[None], 8, 0), **args)
-        full = list(ds); skipped = list(SudokuTrainDataset(ds.inputs, ds.labels, **args, skip_batches=3))
-        assert len(skipped) == len(full)-3 and np.array_equal(ds._augmented(0, 7)[0], ds._augmented(0, 7)[0])
-        for expected, actual in zip(full[3:], skipped):
-            assert expected[0] == actual[0] and all(torch.equal(expected[1][k], actual[1][k]) for k in expected[1])
-        checks.append("valid augmentation, fixed pool, and resumed data cursor")
+            xx,yy = _apply_aug(inp,*prm),_apply_aug(sol,*prm)
+            _check_boards(xx[None],yy[None],"selftest_aug")
+            dm,tr,rp,cp = prm
+            ref = dm[(inp.T if tr else inp)[np.ix_(rp,cp)]]
+            assert np.array_equal(xx,ref)
+        args = dict(seed=0,num_aug=10,global_batch_size=2,rank=0,world_size=1,
+                    epochs_per_iter=2,start_iter=0,total_iters=2)
+        ds = SudokuTrainDataset(np.repeat(inp[None],8,axis=0),np.repeat(sol[None],8,axis=0),**args)
+        assert np.array_equal(ds._augmented(0,7)[0],ds._augmented(0,7)[0])
+        full = list(ds)
+        skipped = list(SudokuTrainDataset(ds.inputs,ds.labels,**args,skip_batches=3))
+        assert len(skipped)==len(full)-3
+        assert all(torch.equal(a,b) for a,b in zip(full[3][1].values(),skipped[0][1].values()))
+        checks.append("augmentation validity, fixed pool, and data-cursor skip")
+
+        # Complete training-state save/reload must give the exact same next CPU update.
         torch.manual_seed(91)
-        model = ACTLossHead(LT(cfg), q_weight=cfg["q_weight"])
-        opts, lrs = create_optimizers(model, cfg, 1)
-        ema = EMAHelper(cfg["ema_rate"]); ema.register(model)
+        m = ACTLossHead(LT(cfg),q_weight=cfg["q_weight"])
+        opts,lrs = create_optimizers(m,cfg,1)
+        ema = EMAHelper(cfg["ema_rate"]); ema.register(m)
         ts = TrainState()
-        def update(net, state, optimizers, rates, shadow, data):
-            train_batch(net, net, state, data, cfg, optimizers, rates, 16, 0, 1, device)
-            shadow.update(net); state.batch_in_iter += 1
-        for j in range(2): update(model, ts, opts, lrs, ema, full[j][1])
-        with tempfile.TemporaryDirectory() as directory:
-            path = save_training_checkpoint(directory, ts, model, opts, ema, cfg, 0, 1, device)
-            expected_rng = (torch.rand(4), np.random.random(4), random.random())
-            update(model, ts, opts, lrs, ema, full[2][1])
-            resumed = ACTLossHead(LT(cfg), q_weight=cfg["q_weight"])
-            ro, rl = create_optimizers(resumed, cfg, 1)
+        for j in range(2):
+            train_batch(m,m,ts,full[j][1],cfg,opts,lrs,16,0,1,torch.device("cpu"))
+            ema.update(m); ts.batch_in_iter += 1
+        with tempfile.TemporaryDirectory() as td:
+            p = save_checkpoint(td,ts,m,opts,ema,cfg,0,1,torch.device("cpu"))
+            rand_expected = torch.rand(4)
+            train_batch(m,m,ts,full[2][1],cfg,opts,lrs,16,0,1,torch.device("cpu"))
+            ema.update(m); ts.batch_in_iter += 1
+            resumed = ACTLossHead(LT(cfg),q_weight=cfg["q_weight"])
+            ro,rl = create_optimizers(resumed,cfg,1)
             rema = EMAHelper(cfg["ema_rate"]); rema.register(resumed)
-            rs = load_training_checkpoint(path, resumed, ro, rema, cfg, 0, 1, device)
-            assert rs.step == 2 and rs.batch_in_iter == 2
-            assert torch.equal(expected_rng[0], torch.rand(4)) and np.array_equal(expected_rng[1], np.random.random(4)) and expected_rng[2] == random.random()
-            update(resumed, rs, ro, rl, rema, full[2][1])
-            for name, value in model.state_dict().items(): assert torch.equal(value, resumed.state_dict()[name]), name
-            for name, value in ema.shadow.items(): assert torch.equal(value, rema.shadow[name]), name
-            for name in ("current_hidden", "coupling", "trace", "steps", "halted"):
-                assert torch.equal(getattr(ts.carry, name), getattr(rs.carry, name)), name
-            for name, value in ts.carry.current_data.items():
-                assert torch.equal(value, rs.carry.current_data[name]), name
-        checks.append("resume reproduces next weights/EMA/h/W/Z and Torch/NumPy/Python RNG")
-        for item in checks: print("[selftest] PASS "+item, flush=True)
-        print(f"[selftest] {len(checks)}/{len(checks)} groups passed (CPU, synthetic inputs).", flush=True)
+            rs = load_checkpoint(p,resumed,ro,rema,cfg,0,1,torch.device("cpu"))
+            assert rs.step==2 and rs.batch_in_iter==2
+            assert torch.equal(rand_expected,torch.rand(4))
+            train_batch(resumed,resumed,rs,full[2][1],cfg,ro,rl,16,0,1,torch.device("cpu"))
+            rema.update(resumed); rs.batch_in_iter += 1
+            for n,v in m.state_dict().items():
+                assert torch.equal(v,resumed.state_dict()[n]),n
+            for n,v in ema.shadow.items():
+                assert torch.equal(v,rema.shadow[n]),n
+            for name in ("current_hidden","coupling","value_trace"):
+                assert torch.equal(getattr(ts.carry,name),getattr(rs.carry,name)),name
+        checks.append("checkpoint resume: identical next weights/EMA/h/w/x and RNG on CPU")
+        for item in checks:
+            print("[selftest] PASS "+item,flush=True)
+        print(f"[selftest] {len(checks)}/{len(checks)} groups passed (CPU, synthetic inputs).",flush=True)
         return checks
     finally:
-        _restore_rng(rng0, device)
+        _restore_rng(rng0,torch.device("cpu"))
         torch.set_num_threads(old_threads)
 
 
-
-# Compatibility APIs for existing local weight-conversion/probe utilities.
-def strip_prefix(sd: dict) -> dict:
-    """저장소 체크포인트(`_orig_mod.model.inner...`)도 읽을 수 있게 접두를 정리한다."""
-    out = {}
-    for k, v in sd.items():
-        for pre in ("_orig_mod.", ):
-            if k.startswith(pre):
-                k = k[len(pre):]
-        out[k] = v
-    return out
-
-def save_checkpoint(out_dir: str, step: int, base: nn.Module, optimizers, ema: Optional[EMAHelper],
-                    iter_id: int, batch_in_iter: int, cfg: dict, keep_last: int):
-    os.makedirs(out_dir, exist_ok=True)
-    raw = {k: v.detach().cpu().clone() for k, v in base.state_dict().items()}
-    if ema is not None:
-        with _EMASwap(base, ema):
-            ema_sd = {k: v.detach().cpu().clone() for k, v in base.state_dict().items()}
-    else:
-        ema_sd = raw
-    state = {
-        "step": step,
-        "iter_id": iter_id,
-        "batch_in_iter": batch_in_iter,
-        "model_state_dict": ema_sd,                 # EMA (저장소 규약)
-        "raw_model_state_dict": raw,                # 재개용 원시
-        "ema_shadow": ({k: v.detach().cpu().clone() for k, v in ema.state_dict().items()} if ema is not None else None),
-        "optimizer_states": [o.state_dict() for o in optimizers],
-        "rng_state": torch.random.get_rng_state(),
-        "cfg": cfg,
-    }
-    if torch.cuda.is_available():
-        try:
-            state["cuda_rng_state"] = torch.cuda.get_rng_state_all()
-        except RuntimeError:
-            state["cuda_rng_state"] = torch.cuda.get_rng_state()
-
-    tmp = os.path.join(out_dir, f".step_{step}.pt.tmp")
-    torch.save(state, tmp)
-    os.replace(tmp, os.path.join(out_dir, f"step_{step}.pt"))     # 중간에 끊겨도 반쪽 파일이 안 남는다
-
-    # 용량 관리 — 최신 keep_last 개만 남긴다 (/kaggle/working 는 ~20GB)
-    # [2026-09-04] `step_*.pt` 글롭은 `step_final.pt` 같은 이름도 잡는데 정규식은 숫자만 받는다.
-    # 무방비로 .group(1) 을 부르면 AttributeError 로 **학습이 통째로 죽는다** (재현 확인).
-    # find_latest_checkpoint 는 `if m:` 로 막고 있는데 여기만 빠져 있었다.
-    files = []
-    for p in glob.glob(os.path.join(out_dir, "step_*.pt")):
-        m = _CKPT_RE.search(os.path.basename(p))
-        if m:
-            files.append((int(m.group(1)), p))
-    files.sort()
-    for _, p in files[:-keep_last] if keep_last > 0 else []:
-        try:
-            os.remove(p)
-        except OSError:
-            pass
-    return os.path.join(out_dir, f"step_{step}.pt")
-
-def load_checkpoint(path: str, base: nn.Module, optimizers, device, load_optimizer: bool = True):
-    ck = torch.load(path, map_location=device, weights_only=False)
-    sd = ck.get("raw_model_state_dict") or ck["model_state_dict"]
-    sd = strip_prefix(sd)
-    saved_projection = (ck.get("cfg") or {}).get("address_projection", "qr")
-    model_projection = getattr(base, "model", base).config.address_projection
-    conversion_hint = (
-        "Use an explicitly converted checkpoint when changing the address projection. "
-        "For qr -> linear, copy each effective QR(wc_raw.T).Q.T into wc; "
-        "renaming wc_raw alone is not a conversion."
-    )
-    if saved_projection != model_projection:
-        raise ValueError(
-            f"Checkpoint address_projection={saved_projection!r} does not match "
-            f"model address_projection={model_projection!r}. {conversion_hint}"
-        )
-    # config 오기재도 조용히 통과시키지 않는다. strict=True 는 빠진/추가된 다른 키도 검사한다.
-    incompatible_suffix = ".wc_raw" if model_projection == "linear" else ".wc"
-    incompatible_keys = [name for name in sd if name.endswith(incompatible_suffix)]
-    if incompatible_keys:
-        raise ValueError(
-            f"Checkpoint keys {incompatible_keys} conflict with "
-            f"address_projection={model_projection!r}. {conversion_hint}"
-        )
-    base.load_state_dict(sd, strict=True, assign=False)   # assign=False 필수 (위 주석)
-    if load_optimizer and ck.get("optimizer_states") is not None:
-        if len(ck["optimizer_states"]) == len(optimizers):
-            for o, s in zip(optimizers, ck["optimizer_states"]):
-                o.load_state_dict(s)
-        else:
-            print("[LT] 옵티마이저 개수 불일치 — 상태 로드 생략", flush=True)
-    if ck.get("rng_state") is not None:
-        torch.random.set_rng_state(torch.as_tensor(ck["rng_state"], device="cpu").to(torch.uint8))
-    return ck
-
 def _cli():
-    ap = argparse.ArgumentParser(description="Self-contained LT v1.71 trainer")
+    ap = argparse.ArgumentParser(description="Self-contained LT value-trace STDP trainer")
     ap.add_argument("--config",help="JSON overrides for DEFAULT_CFG")
     ap.add_argument("--data")
     ap.add_argument("--out_dir")
@@ -1848,23 +1603,17 @@ def _cli():
 
 if __name__=="__main__":
     _cli()
-
 '''
 
 
 def launch_lt_one_cell():
     """새 프로세스에서 동기 실행. 노트북의 CUDA 상태와 argparse 인자를 상속하지 않습니다."""
     work_root = Path("/kaggle/working") if Path("/kaggle/working").is_dir() else Path.cwd()
-    runtime = Path(tempfile.mkdtemp(prefix="_lt_v171_", dir=str(work_root)))
-    trainer_path = runtime / "train_v171.py"
+    runtime = Path(tempfile.mkdtemp(prefix="_lt_value_stdp_", dir=str(work_root)))
+    trainer_path = runtime / "train_value_stdp.py"
     config_path = runtime / "config.json"
-    cfg = dict(CFG)
-    log_dir = Path(cfg["out_dir"]).expanduser().resolve() if cfg["out_dir"] else work_root / "lt_v171"
-    log_dir.mkdir(parents=True, exist_ok=True)
-    cfg["out_dir"] = str(log_dir)
-    log_path = log_dir / "train.log"
     trainer_path.write_text(_TRAINER_SOURCE, encoding="utf-8")
-    config_path.write_text(json.dumps(cfg, ensure_ascii=False, indent=2), encoding="utf-8")
+    config_path.write_text(json.dumps(CFG, ensure_ascii=False, indent=2), encoding="utf-8")
 
     # GPU 조회도 별도 프로세스에서 합니다. 부모 노트북에서는 torch를 import할 필요가 없습니다.
     probe = subprocess.run(
@@ -1892,13 +1641,9 @@ def launch_lt_one_cell():
           (" 첫 학습 호출에 컴파일이 포함됩니다." if CFG["compile"] else " compile=False: eager 실행입니다."), flush=True)
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                             text=True, bufsize=1, env=env, start_new_session=(os.name == "posix"))
-    log_file = log_path.open("a", encoding="utf-8", buffering=1)
-    log_file.write("\n[Kaggle] launch v1.71: " + str(trainer_path) + "\n")
-    print(f"[Kaggle] 훈련 로그: {log_path}", flush=True)
     try:
         for line in proc.stdout:
             print(line, end="", flush=True)
-            log_file.write(line)
         rc = proc.wait()
     except KeyboardInterrupt:
         print("\n[Kaggle] 중단 요청을 전달했습니다. 완료된 스텝 경계에서 저장하도록 요청합니다.", flush=True)
@@ -1910,7 +1655,6 @@ def launch_lt_one_cell():
             output, _ = proc.communicate(timeout=120)
             if output:
                 print(output, end="", flush=True)
-                log_file.write(output)
         except subprocess.TimeoutExpired:
             if os.name == "posix":
                 os.killpg(proc.pid, signal.SIGKILL)
@@ -1921,17 +1665,9 @@ def launch_lt_one_cell():
         raise
     finally:
         proc.stdout.close()
-        log_file.close()
     if rc:
         raise RuntimeError(f"LT 학습 프로세스가 종료 코드 {rc}로 실패했습니다. 위 오류 로그를 확인하세요.")
 
+
 if __name__ == "__main__":
-    # The original one-cell launcher ignores Jupyter's kernel arguments.
-    # Explicit shell arguments also allow `python lt/train.py --selftest`.
-    if "__file__" in globals() and "ipykernel" not in sys.modules and len(sys.argv) > 1:
-        exec(compile(_TRAINER_SOURCE, __file__ + "::trainer", "exec"), globals())
-    else:
-        launch_lt_one_cell()
-else:
-    # Keep LT/model helpers importable for the existing research scripts.
-    exec(compile(_TRAINER_SOURCE, globals().get("__file__", "train.py") + "::trainer", "exec"), globals())
+    launch_lt_one_cell()

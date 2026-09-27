@@ -51,7 +51,7 @@ if __name__ == "__main__":
 # ─────────────────────────────────────────────────────────────────────────────
 # 공용 로더: .pt(학습 체크포인트) 또는 .npz(git 보관본) → lt/train.py 의 LT 모델 (EMA 가중치)
 # ─────────────────────────────────────────────────────────────────────────────
-_PER = {"wc_raw", "psi", "theta", "alpha_raw", "w_sh", "eta_raw", "lam_raw", "gain_raw", "beta", "b_gate_up", "b_down",
+_PER = {"wc_raw", "wc", "psi", "theta", "alpha_raw", "w_sh", "eta_raw", "lam_raw", "gain_raw", "beta", "b_gate_up", "b_down",
         "mu_rho_raw", "mu_omega"}
 
 def _strip(k):

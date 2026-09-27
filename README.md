@@ -19,9 +19,11 @@ held-out 512 퍼즐. 오차 감소율 = (seg16 오차 − seg128 최고 오차) 
 | `v1.1` | √d 고정 | pre | 없음 | **최신 학습판.** 단서 불변, 같은 스텝에서 v1 보다 빠르게 정답에 도달 |
 | `v2` | √d 고정 | post | 없음 | **아직 학습하지 않았다.** v1.1 에 v1.7 의 블록 순서만 적용한 것 |
 | `v1.7` | √d 고정 | post | 있음 | v2 + 흔적. 학습 후반에 불안정 (아래 결과) |
+| `v1.71` | √d 고정 | post | 있음 | QR 없는 공유 주소 투영. 380k 재개 진단 및 처음부터 학습하는 Kaggle 단일 셀 ([설계·실행](docs/v171.md)) |
 
 숫자 이름은 만든 순서가 아니다. v1.7 은 v1.1 보다 먼저 만들었고, v2 는 v1.7 에서 흔적을 뺀 것을 v1.1 다음 실험으로 정의한 것이다.
-세 판의 차이는 `lt/train.py` 의 `PRESETS` 세 플래그가 전부다.
+판의 차이는 `lt/train.py`의 `PRESETS`에 명시한다. v1.71은 `address_projection="linear"`를 추가하며,
+복소 주소의 분할·정규화와 흔적·결합 기억은 유지한다. 이전 판은 기존 QR 투영을 쓴다.
 
 ## 모델
 
@@ -32,9 +34,9 @@ held-out 512 퍼즐. 오차 감소율 = (seg16 오차 − seg128 최고 오차) 
 (B) 경계   h_t ← h_t + W_d[ ½ (W_g h_t) ⊙ (W_u h_t) ]         칸 안에서만 도는 쌍선형 항. 이 모델의 유일한 비선형 혼합
 (I) 주입   h_t ← h_t + s · E(x_t)                              입력 칸 x_t 를 매 블록 다시 넣는다.  s = √d (v1.1/v2/v1.7), 학습 스칼라 (v1)
 (S) 스텝
-    u_t = W_C h_t ∈ C^52 ,   û_t = u_t / ‖u_t‖                  복소 주소. W_C 는 행직교. 크기를 버리고 방향(위상)만 쓴다
+    u_t = W_C h_t ∈ C^52 ,   û_t = u_t / ‖u_t‖                  복소 주소. 기존 판 W_C 는 행직교, v1.71 은 자유 선형 사영
     a_tn   = D(Δ_tn) · Σ_j Re[ û_t,j conj(û_n,j) · e^{i(θ_j·Δ_tn + ψ_j)} ]      읽기 커널: 위상차 + 위치 회전 + 상수 위상 ψ
-    a^β_tn = 같은 식, ψ 대신 β                                    쓰기 창 (v1.7 만 û 대신 흔적 ẑ)
+    a^β_tn = 같은 식, ψ 대신 β                                    쓰기 창 (v1.7·v1.71 은 û 대신 흔적 ẑ)
     v_t = W_sh h_t ,   agree_tn = ⟨v̂_t, v̂_n⟩                     값 사영과 값공간 코사인
     w ← (1−η) w + η · g · a^β ⊙ agree                            결합 기억. 블록·세그먼트를 넘어 이월된다
     a_eff = (1−λ) a + λ w
@@ -43,7 +45,7 @@ held-out 512 퍼즐. 오차 감소율 = (seg16 오차 − seg128 최고 오차) 
 `Δ_tn` 은 두 칸의 격자 위치 차, `D(Δ) = e^{−α‖Δ‖₁}` 는 거리 감쇠, `η·λ·g·α` 는 헤드별 학습 스칼라, `ψ_j·β_j·θ_j` 는 성분별 학습.
 `a` 는 부호가 있다 — 같은 행의 두 칸은 밀고, 서로 정보를 줄 칸은 당긴다. softmax 도 정규화도 없다.
 
-post 순서(v2·v1.7)는 주입 → 스텝(Φ 없이) → 경계 → Φ. 같은 연산 집합에서 위상만 다르다.
+post 순서(v2·v1.7·v1.71)는 주입 → 스텝(Φ 없이) → 경계 → Φ. 같은 연산 집합에서 위상만 다르다.
 
 `w` 가 이 모델의 요점이다. 매 블록 새로 계산되는 순간 결합 `a` 와 달리 `w` 는 `a^β ⊙ agree` 를 시정수 `1/η` (학습 결과 수십 블록)로
 누적한다. 부호가 바뀌는 쓰기는 EMA에서 감쇠되지만, 위상차의 방향 반전만으로 상쇄되는 것은 아니다.
@@ -59,7 +61,7 @@ post 순서(v2·v1.7)는 주입 → 스텝(Φ 없이) → 경계 → Φ. 같은 
 - [실제 가소성 되먹임](docs/plastic_feedback_derivative_v11.md): 활동→쓰기→다음 활동의 국소 미분.
 
 연구용 구현은 `lt/even_plasticity.py`, 학습 진입점은 `lt/train_even.py`다.
-기본 모델은 계속 `lt/train.py`의 v1.1이며, 후보의 본 규모 재학습 우위는 아직 검증하지 않았다.
+후보의 본 규모 재학습 우위는 아직 검증하지 않았다. 현재 `lt/train.py`의 기본 학습 설정은 v1.71이다.
 
 ### 2026-09-26 시간차 쓰기 설계
 
@@ -128,11 +130,11 @@ v2 는 이 질문을 위한 것이다 — v1.7 에서 흔적만 뺀 판이 v1.1 
 ## 재현
 
 ```bash
-pip install torch numpy                      # CUDA GPU 한 장. A4000 에서 약 6 it/s, 160k 스텝에 ~7 시간
+pip install torch numpy
 
-python lt/train.py --preset v1.1             # runs/v1_1/ 에 저장. 10k 스텝마다 마일스톤 + seg128 외삽 (milestones/extrap_step_N.txt)
-python lt/train.py --preset v2               # 미학습 판
-python lt/train.py --preset v1.1 --resume_from runs/v1_1/step_160000.pt
+python lt/train.py                          # 맨 위 CFG 사용; 현재 Kaggle의 step_44919.pt 재개 경로
+python lt/train.py --config run_config.json # JSON 설정으로 직접 학습 프로세스 실행
+python lt/train.py --selftest               # 모델·gradient·저장/재개 CPU 검사
 
 LT_CKPT=checkpoints/v1.1_step160000.npz python lt/extrapolate.py         # 세그먼트별 정확도 · 완답 · churn · 감소율
 LT_CKPT=checkpoints/v1.1_step160000.npz python lt/count_valid_grids.py   # 세그먼트별 C / V / I
@@ -142,7 +144,14 @@ python lt/violation_trajectory.py traj.npz   # I 퍼즐의 위반 수 궤적, �
 python lt/phase_oscillation.py && python lt/phase_oscillation_vs_difficulty.py    # 칸 위상 진동 vs 난이도 (v1)
 ```
 
-`lt/train.py --selftest` 는 GPU 없이 증강 규칙을 원본과 대조한다. 데이터는 `data/prep_dataset.py` 로 다시 만들 수 있다.
+Kaggle에서는 `lt/train.py` 전체를 셀 하나에 붙여넣는다. 기존처럼 `sudoku_lt_1k.npz`를 Input에 연결하고,
+맨 위 `CFG`를 수정한다. 기본은 v1.71·BF16이며 `amp_dtype`에서 `float32` 또는 `auto`도 선택할 수 있다.
+milestone의 전체 세그먼트 표와 요약은 화면과 `lt_v171/train.log`에 출력된다.
+자세한 실행·저장 규칙은 [v1.71 안내](docs/v171.md)를 참고한다. 기존 판의 체크포인트 분석용 모델은 계속 지원한다.
+현재 셀의 `CFG`는 사용자 Kaggle Input 경로로 설정되어 있다. 처음부터 학습하려면
+`resume_from=None`, `require_resume=False`와 새 `out_dir`을 지정한다.
+로컬 실행은 `--config` JSON에 로컬 데이터·출력·재개 경로를 지정한다.
+데이터는 `data/prep_dataset.py`로 다시 만들 수 있다.
 
 새코드3의 스도쿠 학습기는 `python -m lt.train_new3 --config configs/new3_sudoku.json`으로 실행한다.
 기본값은 **1세그먼트 × 8블록**, 배치 128이며 기존 데이터·증강을 유지한다. 설정, 재개 및 외삽 평가는 [학습 안내](docs/new3_training.md)를 참고한다.
