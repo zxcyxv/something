@@ -1,17 +1,16 @@
 # -*- coding: utf-8 -*-
-# LT v1.71 — 기존캐글코드.py 기반 Kaggle 단일 셀 완성본
+# LT v1.8 — 기존캐글코드.py 기반 Kaggle 단일 셀 완성본 (v1.71 은 plastic_select=False 로 그대로 재현)
 # 이 파일 전체를 한 셀에 붙여넣고 실행합니다. 설정은 아래 CFG에서 변경합니다.
 # 데이터: 기존처럼 sudoku_lt_1k.npz를 Kaggle Input으로 연결하거나 data_npz를 지정합니다.
-# 모델: QR 없는 공유 W_C, post MLP, 회전·감쇠하는 주소 이력 Z, 기존 agree와 W 갱신.
-# Kaggle Input의 step_44919.pt에서 h/W/Z·optimizer·EMA까지 재개합니다.
-# 출력은 /kaggle/working/lt_v171에 저장합니다. 이 폴더의 최신 저장에서 재개하려면 resume_from=None으로 설정합니다.
-# 새로운 실험은 resume_from=None, require_resume=False와 새 out_dir을 지정하세요.
+# 모델: v1.71(QR 없는 공유 W_C, post MLP, 주소 흔적 Z, agree·W 갱신) + 선택적 가소성 게이트.
+#   v1.8: 기억 유지 A=exp(-Δ), 쓰기 이득 g, 읽기 보간 λ 를 매 블록 칸 상태 q 에서 생성한다 (docs/v18.md).
+# 기본 CFG는 v1.71 100k 마일스톤에서 v1.8로 변환해 이어 학습합니다 (init_from). 그 파일을 Input으로 연결하세요.
+# 처음부터 학습하려면 init_from=None. 출력 폴더에 체크포인트가 있으면 init_from보다 재개가 우선합니다.
+# 출력은 /kaggle/working/lt_v18 (plastic_select=False 이면 lt_v171) 에 저장합니다.
 # max_steps는 추가 횟수가 아닌 절대 종료 step입니다.
-# 기본: batch128, 16seg x 8blocks, lr1e-4 (초기 warmup2000), EMA0.999, max_hours11.5.
+# 기본: batch128, 16seg x 8blocks, lr1e-4. init_from 재개 시 1e-5에서 1만 스텝 동안 1e-4까지 선형 재가열 후 유지.
 # milestone: 매10000step, 전체 중 고정512문제, seg128까지 평가하고 표를 화면과 train.log에 출력.
-# 기본 정밀도는 BF16. amp_dtype은 bfloat16 / float32 / auto 중 선택할 수 있습니다.
-# auto는 BF16 지원 GPU에서 BF16, 그 밖에서는 FP32. activation_checkpoint는 블록 재계산입니다.
-# 새 학습 beta는 pi/2에서 시작하며 계속 학습됩니다. 기존 초기화: mean=0.0, std=0.5.
+# 기본 정밀도는 BF16. amp_dtype은 bfloat16 / float32 / auto 중 선택할 수 있습니다. 게이트는 항상 FP32로 계산합니다.
 
 import json
 import os
@@ -57,6 +56,9 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'lr': 0.0001,
  'lr_min_ratio': 1.0,
  'lr_warmup_steps': 2000,
+ 'lr_rewarm_start': 100000,
+ 'lr_rewarm_steps': 10000,
+ 'lr_rewarm_from_ratio': 0.1,
  'weight_decay': 1.0,
  'beta1': 0.9,
  'beta2': 0.95,
@@ -71,15 +73,16 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'compile': True,
  'inductor_no_persist': True,
  'out_dir': None,
- 'resume_from': '/kaggle/input/datasets/jrjinwoo/lt-v171-44919/step_44919.pt',
+ 'resume_from': None,
  'require_resume': False,
+ 'init_from': '/kaggle/input/datasets/jrjinwoo/lt-v171-100000/step_100000.pt',
  'keep_last': 2,
  'save_every_steps': 2000,
  'milestone_every': 10000,
  'milestone_extrap_segs': 128,
  'milestone_extrap_n': 512,
  'max_hours': 11.5,
- 'max_steps': None,
+ 'max_steps': 140000,
  'log_every': 250,
  'stop_check_every': 25,
  'dataloader_workers': 1,
@@ -88,15 +91,25 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'address_projection': 'linear',
  'trace_rho_init': 0.5,
  'inj_gate_init': 0.25,
- 'gamma_init': 0.1}
+ 'gamma_init': 0.1,
+ 'plastic_select': True,
+ 'select_g_max': 4.0,
+ 'late_sup_prob': 0.0,
+ 'late_sup_min': 16,
+ 'late_sup_max': 112,
+ 'nograd_every': 0,
+ 'nograd_start': 0,
+ 'nograd_max': 16}
 
 # 독립 실행되는 학습 프로그램 전체
 _TRAINER_SOURCE = r'''# -*- coding: utf-8 -*-
-"""LT v1.71: direct shared complex-address projection + rotating address history Z.
+"""LT v1.8 / v1.71: direct shared complex-address projection + rotating address history Z.
 
 The execution, data, loss, optimizer, checkpoint and launcher harness comes from
 the user's existing working Kaggle cell. The model follows v1.71 in this repository:
 post MLP, QR-free W_C, original normalized address/value kernels, write then read W.
+v1.8 (plastic_select=True) generates the memory keep/write/read gates from the
+per-cell state instead of per-head constants; the write window (beta) is unchanged.
 One step is one segment (8 blocks); h/W/Z detach only at segment boundaries.
 Activation checkpointing only recomputes blocks. No repository imports are needed.
 """
@@ -126,9 +139,14 @@ from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader, IterableDataset
 from torch.utils.checkpoint import checkpoint
 
-MODEL_ID = "lt-v171-address-trace-linear-v1"
+MODEL_ID = "lt-v171-address-trace-linear-v1"          # v1.71 (plastic_select=False)
+MODEL_ID_V18 = "lt-v18-selective-plasticity-v1"      # v1.8  (plastic_select=True)
 IGNORE_LABEL_ID = -100
 _STOP_REQUESTED = False
+
+
+def model_id_of(cfg):
+    return MODEL_ID_V18 if cfg.get("plastic_select") else MODEL_ID
 
 # DEFAULT_CFG is also copied to the top of the one-cell notebook.
 DEFAULT_CFG = {'data_npz': None,
@@ -167,6 +185,9 @@ DEFAULT_CFG = {'data_npz': None,
  'lr': 0.0001,
  'lr_min_ratio': 1.0,
  'lr_warmup_steps': 2000,
+ 'lr_rewarm_start': None,
+ 'lr_rewarm_steps': 10000,
+ 'lr_rewarm_from_ratio': 0.1,
  'weight_decay': 1.0,
  'beta1': 0.9,
  'beta2': 0.95,
@@ -183,6 +204,7 @@ DEFAULT_CFG = {'data_npz': None,
  'out_dir': None,
  'resume_from': None,
  'require_resume': False,
+ 'init_from': None,
  'keep_last': 2,
  'save_every_steps': 2000,
  'milestone_every': 10000,
@@ -198,14 +220,23 @@ DEFAULT_CFG = {'data_npz': None,
  'address_projection': 'linear',
  'trace_rho_init': 0.5,
  'inj_gate_init': 0.25,
- 'gamma_init': 0.1}
+ 'gamma_init': 0.1,
+ 'plastic_select': True,
+ 'select_g_max': 4.0,
+ 'late_sup_prob': 0.0,
+ 'late_sup_min': 16,
+ 'late_sup_max': 112,
+ 'nograd_every': 0,
+ 'nograd_start': 0,
+ 'nograd_max': 16}
 
-PRESETS = {                       # v1.71 은 v1.7 의 주소 사영에서 QR 만 제거한다
-    "v1":    dict(legacy_gauge=True,  block_order="pre",  use_trace=False, address_projection="qr"),      # 9/1 원본
-    "v1.1":  dict(legacy_gauge=False, block_order="pre",  use_trace=False, address_projection="qr"),      # √d 고정 게이지. 학습·측정 완료
-    "v2":    dict(legacy_gauge=False, block_order="post", use_trace=False, address_projection="qr"),      # v1.1 + post 순서. 아직 학습 안 함
-    "v1.7":  dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="qr"),      # v2 + 주소 흔적 z. 학습 후반 불안정
-    "v1.71": dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="linear"),  # v1.7 + 자유 선형 W_C. 380k 변환 후 재개 진단
+PRESETS = {                       # v1.71 은 v1.7 의 주소 사영에서 QR 만 제거한다. v1.8 은 v1.71 + 선택적 가소성 게이트
+    "v1":    dict(legacy_gauge=True,  block_order="pre",  use_trace=False, address_projection="qr",     plastic_select=False),  # 9/1 원본
+    "v1.1":  dict(legacy_gauge=False, block_order="pre",  use_trace=False, address_projection="qr",     plastic_select=False),  # √d 고정 게이지. 학습·측정 완료
+    "v2":    dict(legacy_gauge=False, block_order="post", use_trace=False, address_projection="qr",     plastic_select=False),  # v1.1 + post 순서. 아직 학습 안 함
+    "v1.7":  dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="qr",     plastic_select=False),  # v2 + 주소 흔적 z. 학습 후반 불안정
+    "v1.71": dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="linear", plastic_select=False),  # v1.7 + 자유 선형 W_C. 204k Kaggle 학습
+    "v1.8":  dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="linear", plastic_select=True),   # v1.71 + η·g·λ 를 칸 상태에서 생성
 }
 
 # 1. Initialization / sparse puzzle embedding ---------------------------------
@@ -294,7 +325,9 @@ class LTConfig:
       v2   = legacy_gauge=False, block_order="post", use_trace=False   (미학습)
       v1.7 = legacy_gauge=False, block_order="post", use_trace=True
       v1.71 = v1.7 + address_projection="linear". 공유 W_C 와 복소 주소·정규화·흔적은 동일하다.
-      address_projection 키가 없는 기존 설정은 "qr" 로 읽는다.
+      v1.8 = v1.71 + plastic_select=True. 쓰기 창(β)·흔적·agree 는 그대로, 헤드별 상수 η·g·λ 대신
+             유지 A=exp(−Δ)·쓰기 이득 g·읽기 보간 λ 를 매 블록 칸 상태 q 에서 생성한다.
+      address_projection 키가 없는 기존 설정은 "qr", plastic_select 키가 없으면 False 로 읽는다.
     """
     batch_size: int
     seq_len: int
@@ -331,6 +364,9 @@ class LTConfig:
     block_order: str = "pre"    # pre: 경계 → 주입 → 스텝(Φ 포함) | post: 주입 → 스텝 → 경계 → Φ
     use_trace: bool = False     # 쓰기 창의 주소를 흔적 z ← μ⊙z + √(1−ρ²)⊙u 로 (μ_j = ρ_j e^{iω_j})
     trace_rho_init: float = 0.5
+    plastic_select: bool = False    # v1.8: η·g·λ 를 칸 상태에서 생성 (쓰기 쌍은 대칭 결합)
+    select_g_max: float = 4.0       # 생성된 쓰기 이득의 상한 → w 는 g_max·max|G| 로 유계
+    nograd_blocks: int = 0          # 세그먼트 앞에서 gradient 없이 돌리는 블록 수 (하네스가 스텝마다 정한다)
 
     def __post_init__(self):
         if not math.isfinite(self.beta_init_mean) or not math.isfinite(self.beta_init_std) or self.beta_init_std < 0:
@@ -339,6 +375,13 @@ class LTConfig:
             raise ValueError("amp_dtype must be auto, bfloat16, or float32")
         if self.address_projection not in ("qr", "linear"):
             raise ValueError(f"address_projection must be 'qr' or 'linear', got {self.address_projection!r}")
+        if self.plastic_select:
+            if not self.stdp:
+                raise ValueError("plastic_select requires stdp=True")
+            if self.stdp_gain_fixed >= 0 or self.stdp_lam_fixed >= 0:
+                raise ValueError("plastic_select generates g and λ; stdp_gain_fixed/stdp_lam_fixed must stay -1")
+            if not 0 < self.stdp_gain_init < self.select_g_max:
+                raise ValueError("stdp_gain_init must lie in (0, select_g_max)")
 
     @classmethod
     def from_dict(cls, d: dict) -> "LTConfig":
@@ -383,9 +426,17 @@ class LTLayer(nn.Module):
             self.mu_omega = nn.Parameter((torch.rand(H, p) * 2 - 1) * (math.pi / 2))
         if config.stdp:
             lg = lambda x: math.log(x / (1 - x))
-            self.eta_raw = nn.Parameter(torch.full((H, 1, 1), lg(config.stdp_eta_init)))
-            self.lam_raw = nn.Parameter(torch.full((H, 1, 1), lg(config.stdp_lam_init)))
-            self.gain_raw = nn.Parameter(torch.full((H, 1, 1), inv_softplus(config.stdp_gain_init)))
+            if config.plastic_select:
+                # v1.8: 게이트 로짓 = sel_w·q + bias.  sel_w=0 이면 헤드별 상수 게이트이고,
+                # 그 값은 v1.71 의 η·g·λ 와 같다 (A = exp(−Δ) = 1−η).
+                self.sel_w = nn.Parameter(torch.zeros(3, H, d))            # [Δ, g, λ] × 헤드 × 입력
+                self.dt_bias = nn.Parameter(torch.full((H,), inv_softplus(-math.log1p(-config.stdp_eta_init))))
+                self.gsel_bias = nn.Parameter(torch.full((H,), lg(config.stdp_gain_init / config.select_g_max)))
+                self.lsel_bias = nn.Parameter(torch.full((H,), lg(config.stdp_lam_init)))
+            else:
+                self.eta_raw = nn.Parameter(torch.full((H, 1, 1), lg(config.stdp_eta_init)))
+                self.lam_raw = nn.Parameter(torch.full((H, 1, 1), lg(config.stdp_lam_init)))
+                self.gain_raw = nn.Parameter(torch.full((H, 1, 1), inv_softplus(config.stdp_gain_init)))
             self.beta = nn.Parameter(torch.zeros(H, p))       # 쓰기 창의 위상 (ψ 와 별개)
             with torch.no_grad():
                 # Consume the same random draws in every mode: changing beta
@@ -563,20 +614,42 @@ class LT_Inner(nn.Module):
             vv = v / (v.norm(dim=-1, keepdim=True) + self.config.eps)
             agree = torch.einsum('bthc,bnhc->bhtn', vv, vv)
             G = win * agree
-            gain = F.softplus(L.gain_raw) if self.config.stdp_gain_fixed < 0 else float(self.config.stdp_gain_fixed)
+            if self.config.plastic_select:
+                keep, write, gain, lam = self.select_gates(L, h)
+            else:
+                gain = F.softplus(L.gain_raw) if self.config.stdp_gain_fixed < 0 else float(self.config.stdp_gain_fixed)
+                eta = torch.sigmoid(L.eta_raw)
+                keep, write = 1 - eta, eta
+                lam = torch.sigmoid(L.lam_raw) if self.config.stdp_lam_fixed < 0 else torch.full_like(L.lam_raw, float(self.config.stdp_lam_fixed))
             tgt = gain * G
-            eta = torch.sigmoid(L.eta_raw)
-            lam = torch.sigmoid(L.lam_raw) if self.config.stdp_lam_fixed < 0 else torch.full_like(L.lam_raw, float(self.config.stdp_lam_fixed))
             if w is None:
                 w = tgt
             else:
                 w = torch.where(fresh.view(-1, 1, 1, 1), tgt, w) if fresh is not None else w
-                w = (1 - eta) * w + eta * tgt
+                w = keep * w + write * tgt
             a = (1 - lam) * a + lam * w
         o = torch.einsum('bhtn,bnhc->bthc', a, v)
         f = torch.einsum('bthc,hcd->btd', o, L.w_sh)
         hout = self.phi(h + f) if apply_phi else (h + f)
         return hout, w, ztr_new
+
+    def select_gates(self, L, h):
+        """v1.8 선택적 가소성. h 는 스텝 입력(주입 후 q) [B,T,d].
+
+        Δ_t = softplus(s^Δ_t),  A_tn = exp(−(Δ_t+Δ_n)/2)        기억 유지 (쌍 대칭, ZOH 이산화)
+        g_tn = g_max·σ((s^g_t+s^g_n)/2)                            쓰기 이득 (쌍 대칭, 상한)
+        λ_t = σ(s^λ_t)                                              읽는 칸 t 의 기억 보간
+        w ← A⊙w + (1−A)⊙g⊙G,  a_eff = (1−λ_t)a + λ_t w.  1−A 는 expm1 로 계산해 긴 기억에서도 정밀하다.
+        반환: keep=A, write=1−A, gain [B,H,T,T]; lam [B,H,T,1]. 전부 FP32 (bf16 에서는 1−A 가 뭉개진다).
+        """
+        with torch.autocast(device_type=h.device.type, enabled=False):
+            s = torch.einsum('btd,khd->kbht', h.float(), L.sel_w.float())          # [3,B,H,T]
+            dt = F.softplus(s[0] + L.dt_bias.float()[:, None])
+            dpair = 0.5 * (dt[..., :, None] + dt[..., None, :])
+            gl = s[1] + L.gsel_bias.float()[:, None]
+            gain = self.config.select_g_max * torch.sigmoid(0.5 * (gl[..., :, None] + gl[..., None, :]))
+            lam = torch.sigmoid(s[2] + L.lsel_bias.float()[:, None])[..., None]
+            return torch.exp(-dpair), -torch.expm1(-dpair), gain, lam
 
     def boundary(self, L, h):
         g, u = L.b_gate_up(h).chunk(2, dim=-1)
@@ -602,6 +675,13 @@ class LT_Inner(nn.Module):
         kcbs = [self.kernel(L, L.beta) if self.stdp else None for L in self.layers]
         w = carry.coupling if self.stdp else None; fresh = carry.fresh if self.stdp else None
         ztr = carry.trace if self.use_trace else None
+        if self.config.nograd_blocks:
+            # TRM 식: 세그먼트 앞부분은 gradient 없이 상태만 진행하고, 뒤의 blocks_per_seg 블록만 역전파한다.
+            with torch.no_grad():
+                for _ in range(self.config.nograd_blocks):
+                    for li, L in enumerate(self.layers):
+                        h, w, ztr = self.block(L, h, inj, ABs[li], kcs[li], kcbs[li], w, fresh, ztr)
+                        fresh = None
         for _ in range(self.config.blocks_per_seg):
             for li, L in enumerate(self.layers):
                 AB, kc, kcb = ABs[li], kcs[li], kcbs[li]
@@ -742,6 +822,19 @@ def create_optimizers(base,cfg,world_size):
         lr=0,betas=(cfg["beta1"],cfg["beta2"])))
     lrs.append(cfg["lr"])
     return opts,lrs
+
+
+def lr_at(step,base_lr,cfg,planned_steps):
+    """기존 스케줄 (warmup 후 전체 계획 스텝에 걸친 cosine, lr_min_ratio=1 이면 상수)에 재가열을 곱한다:
+    lr_rewarm_start 부터 lr_rewarm_steps 동안 lr_rewarm_from_ratio 배 → 1 배로 선형, 이후 1 배.
+    init_from 으로 새 optimizer 를 만들어 이어 학습할 때 쓴다. lr_rewarm_start=None 이면 기존과 같다."""
+    lr = cosine_schedule_with_warmup_lr_lambda(step,base_lr=base_lr,num_warmup_steps=cfg["lr_warmup_steps"],
+                                               num_training_steps=planned_steps,min_ratio=cfg["lr_min_ratio"])
+    start = cfg.get("lr_rewarm_start")
+    if start is None or step<start:
+        return lr
+    r0,t = cfg["lr_rewarm_from_ratio"],min(1.0,(step-start)/max(1,cfg["lr_rewarm_steps"]))
+    return lr*(r0+(1-r0)*t)
 
 
 def cosine_schedule_with_warmup_lr_lambda(current_step,*,base_lr,num_warmup_steps,
@@ -1018,7 +1111,7 @@ def save_training_checkpoint(out_dir,ts,base,optimizers,ema,cfg,rank,ws,device,k
             raw = _cpu_tree(base.state_dict())
             with _EMASwap(base,ema):
                 ema_sd = _cpu_tree(base.state_dict())
-            ck = dict(model_id=MODEL_ID,step=ts.step,iter_id=ts.iter_id,batch_in_iter=ts.batch_in_iter,
+            ck = dict(model_id=model_id_of(cfg),step=ts.step,iter_id=ts.iter_id,batch_in_iter=ts.batch_in_iter,
                       world_size=ws,model_state_dict=ema_sd,raw_model_state_dict=raw,
                       ema_shadow=_cpu_tree(ema.shadow) if ema else None,
                       optimizer_states=_cpu_tree([o.state_dict() for o in optimizers]),
@@ -1066,20 +1159,41 @@ def _restore_carry(rank_states,rank,ws,gbs,device):
 
 _RESUME_KEYS = tuple(f.name for f in fields(LTConfig) if f.name not in
                      ("batch_size","amp","amp_dtype","activation_checkpoint",
-                      "beta_init_mean","beta_init_std")) + (
+                      "beta_init_mean","beta_init_std","nograd_blocks")) + (
     "global_batch_size","epochs","eval_interval","num_aug","seed","grad_accum_steps",
     "lr","lr_min_ratio","lr_warmup_steps","weight_decay","beta1","beta2","puzzle_emb_lr",
-    "puzzle_emb_weight_decay","q_weight","ema","ema_rate","data_fingerprint")
+    "puzzle_emb_weight_decay","q_weight","ema","ema_rate","data_fingerprint",
+    "lr_rewarm_start","lr_rewarm_steps","lr_rewarm_from_ratio","late_sup_prob","late_sup_min","late_sup_max",
+    "nograd_every","nograd_start","nograd_max")
+# 이 키들이 생기기 전의 체크포인트(v1.71 Kaggle 런 등)는 아래 값으로 학습된 것이다.
+_LEGACY_DEFAULTS = dict(plastic_select=False,select_g_max=4.0,lr_rewarm_start=None,lr_rewarm_steps=0,
+                        lr_rewarm_from_ratio=1.0,late_sup_prob=0.0,late_sup_min=16,late_sup_max=112,
+                        nograd_every=0,nograd_start=0,nograd_max=16)
+
+
+def _effective_recipe(cfg):
+    """재개 비교용: 꺼진 옵션의 하위 값(예: 재가열 없음일 때 lr_rewarm_steps)은 학습에 영향이 없으므로 지운다."""
+    r = {k:cfg.get(k,_LEGACY_DEFAULTS.get(k)) for k in _RESUME_KEYS}
+    if r["lr_rewarm_start"] is None:
+        r["lr_rewarm_steps"] = r["lr_rewarm_from_ratio"] = None
+    if not r["late_sup_prob"]:
+        r["late_sup_min"] = r["late_sup_max"] = None
+    if not r["plastic_select"]:
+        r["select_g_max"] = None
+    if not r["nograd_every"]:
+        r["nograd_start"] = r["nograd_max"] = None
+    return r
 
 
 def load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device):
     # Only load checkpoints you trust: weights_only=False is needed for RNG/optimizer objects.
     ck = torch.load(path,map_location="cpu",weights_only=False)
-    if ck.get("model_id") != MODEL_ID:
-        raise ValueError("Expected a Kaggle v1.71 checkpoint. Start a new output directory for "
-                         "v1.71 training from scratch; other architectures are not auto-converted.")
+    if ck.get("model_id") != model_id_of(cfg):
+        raise ValueError(f"Checkpoint model_id={ck.get('model_id')!r} but this run is {model_id_of(cfg)!r}. "
+                         "Resume needs the same architecture; use init_from to start v1.8 from v1.71 weights.")
     old = ck["cfg"]
-    changed = {k:(old.get(k),cfg.get(k)) for k in _RESUME_KEYS if old.get(k)!=cfg.get(k)}
+    was,now = _effective_recipe(old),_effective_recipe(cfg)
+    changed = {k:(was[k],now[k]) for k in _RESUME_KEYS if was[k]!=now[k]}
     if changed:
         raise ValueError(f"Resume config/data mismatch (start a new out_dir for a new experiment): {changed}")
     # Initialization is not reapplied on resume. Preserve the actual experiment's
@@ -1109,6 +1223,66 @@ def load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device):
         print(f"[LT] resharded saved h/w/z/data: {ck['world_size']} -> {ws} ranks; "
               "bitwise equality across GPU layouts is not promised.",flush=True)
     return ts
+
+
+# 6b. Warm start: weights (raw + EMA) from another run, fresh optimizer ----------
+# 같은 데이터 흐름을 이어가려면 구조·데이터 규약이 같아야 한다. 가소성 파라미터화만 달라도 된다.
+_INIT_KEYS = ("vocab_size","puzzle_emb_ndim","hidden_size","num_heads","loops","grid","blocks_per_seg",
+              "num_layers","mlp_expansion","legacy_gauge","dist_decay","eps","forward_dtype","address_projection",
+              "psi_zero","stdp","stdp_gain_fixed","stdp_lam_fixed","block_order","use_trace",
+              "global_batch_size","epochs","eval_interval","num_aug","seed","data_fingerprint")
+
+
+def convert_plastic_state(sd,g_max):
+    """v1.71 의 헤드별 η·g·λ (eta_raw, gain_raw, lam_raw) → v1.8 게이트. sel_w=0 이므로 함수가 같다:
+    A = exp(−softplus(dt_bias)) = 1−η,  g_max·σ(gsel_bias) = g,  σ(lsel_bias) = λ.  나머지 텐서(β 포함)는 그대로."""
+    out = {}
+    for name,value in sd.items():
+        leaf = name.rsplit(".",1)[-1]
+        if leaf in ("gain_raw","lam_raw"):
+            continue
+        if leaf!="eta_raw":
+            out[name] = value
+            continue
+        pre = name[:-len("eta_raw")]
+        eta = torch.sigmoid(value.double()).flatten()
+        gain = F.softplus(sd[pre+"gain_raw"].double()).flatten()
+        if not bool((gain<g_max).all()):
+            raise ValueError(f"{pre}gain {gain.max().item():.4f} >= select_g_max {g_max}; raise select_g_max.")
+        dt = -torch.log1p(-eta)
+        out[pre+"dt_bias"] = (dt+torch.log(-torch.expm1(-dt))).to(value.dtype)
+        out[pre+"gsel_bias"] = torch.logit(gain/g_max).to(value.dtype)
+        out[pre+"lsel_bias"] = sd[pre+"lam_raw"].flatten().clone()
+        out[pre+"sel_w"] = torch.zeros(3,eta.numel(),sd[pre+"w_sh"].shape[-1],dtype=value.dtype)
+    return out
+
+
+def init_from_checkpoint(path,base,ema,cfg,device):
+    """raw·EMA 가중치만 가져오고 optimizer 는 새로 만든다. step 과 데이터 커서는 원본을 이어받는다
+    (원본 런의 같은 구간과 같은 배치를 본다). carry 는 새로 시작한다."""
+    ck = torch.load(path,map_location="cpu",weights_only=False)
+    src = ck.get("model_id")
+    if src not in (MODEL_ID,MODEL_ID_V18):
+        raise ValueError(f"init_from expects a v1.71 or v1.8 checkpoint, got model_id={src!r}")
+    if src==MODEL_ID_V18 and not cfg.get("plastic_select"):
+        raise ValueError("v1.8 -> v1.71 conversion is not defined.")
+    old = ck["cfg"]
+    changed = {k:(old.get(k),cfg.get(k)) for k in _INIT_KEYS if old.get(k)!=cfg.get(k)}
+    if changed:
+        raise ValueError(f"init_from architecture/data protocol mismatch: {changed}")
+    convert = ((lambda sd: convert_plastic_state(sd,cfg["select_g_max"]))
+               if cfg.get("plastic_select") and src==MODEL_ID else (lambda sd: sd))
+    base.load_state_dict(convert(ck["raw_model_state_dict"]),strict=True,assign=False)
+    if ema is not None:
+        shadow = ck.get("ema_shadow")
+        if shadow is None:
+            raise ValueError("init_from checkpoint has no EMA shadow; set ema=False or use another checkpoint.")
+        shadow = convert(shadow)
+        if set(shadow)!=set(ema.shadow):
+            raise ValueError(f"EMA keys differ: {sorted(set(shadow)^set(ema.shadow))[:6]}")
+        ema.shadow = {n:v.to(device=device,dtype=ema.shadow[n].dtype).clone() for n,v in shadow.items()}
+    cfg.update(init_from_model_id=src,init_from_step=int(ck["step"]))
+    return TrainState(step=int(ck["step"]),iter_id=int(ck["iter_id"]),batch_in_iter=int(ck["batch_in_iter"]))
 
 
 # 7. Evaluation / segment extrapolation --------------------------------------
@@ -1150,7 +1324,8 @@ def evaluate(base,eval_in,eval_lb,cfg,rank,ws,device,step,ema,deadline=float("in
         return None
     d = dict(zip(_METRIC_KEYS,totals.cpu().tolist()))
     n = int(d["count"])
-    print(f"[EVAL] step {step} acc {d['accuracy']/max(n,1):.4f} "
+    print(f"[EVAL] step {step} blocks/seg {getattr(base.model.config,'nograd_blocks',0)}+{cfg['blocks_per_seg']} "
+          f"acc {d['accuracy']/max(n,1):.4f} "
           f"exact {int(d['exact_accuracy'])}/{n}"+(" [partial: time/stop]" if interrupted else ""),flush=True)
     return {k:v/max(n,1) if k!="count" else v for k,v in d.items()}
 
@@ -1223,7 +1398,8 @@ def extrapolate(base,eval_in,eval_lb,cfg,rank,ws,device,step,ema,segs,out_txt,de
     best_acc = max(comparable,key=lambda row:row["acc"]) if comparable else None
     lines = [f"# step={step} weights={weights} segs={segs} global_n={len(eval_in)} "
              f"elapsed={elapsed:.1f}s partial={interrupted}",
-             f"# {MODEL_ID}; per segment {cfg['blocks_per_seg']} blocks; train segments={loops0}",
+             f"# {model_id_of(cfg)}; per segment {getattr(lt.config,'nograd_blocks',0)}+{cfg['blocks_per_seg']} blocks "
+             f"(no-grad+grad); train segments={loops0}",
              "# seg acc exact n exact_percent churn"]
     for row in rows:
         lines.append(f"{row['segment']:4d} {row['acc']:.6f} {row['exact']:6d} {row['n']:6d} "
@@ -1247,8 +1423,9 @@ def extrapolate(base,eval_in,eval_lb,cfg,rank,ws,device,step,ema,segs,out_txt,de
                      f"percentage_points={best_exact['exact_percent']-train_row['exact_percent']:+.4f}")
     result = dict(acc=aa.tolist(),exact=ee.tolist(),churn=cc.tolist(),count=nn.tolist(),
                   step=int(step),weights=weights,segs=int(segs),target_n=len(eval_in),n=comparison_n,
-                  partial=interrupted,elapsed_seconds=elapsed,model_id=MODEL_ID,
-                  blocks_per_segment=int(cfg["blocks_per_seg"]),train_segment=int(loops0),
+                  partial=interrupted,elapsed_seconds=elapsed,model_id=model_id_of(cfg),
+                  blocks_per_segment=int(cfg["blocks_per_seg"]),nograd_blocks=int(getattr(lt.config,'nograd_blocks',0)),
+                  train_segment=int(loops0),
                   train=train_row,best_acc=best_acc,best_exact=best_exact,final=final_row,
                   last_measured=rows[-1] if rows else None,best_comparison_n=comparison_n,segments=rows)
     # The complete table is printed as well as persisted, so notebook logs suffice.
@@ -1310,6 +1487,8 @@ def _check_finite_gradients(base,loss,device,ws):
 def train_batch(model,base,ts,batch,cfg,optimizers,lrs,total_steps,rank,world_size,device):
     planned_steps,ws = total_steps,world_size
     ts.in_step = True
+    # 평가·외삽은 마지막 학습 스텝의 깊이를 그대로 쓴다 (config 는 다음 train_batch 에서 다시 정해진다).
+    base.model.config.nograd_blocks = nograd_at(ts.step,cfg)
     batch = {k:v.to(device,non_blocking=True) for k,v in batch.items()}
     if ts.carry is None:
         ts.carry = base.initial_carry(batch)
@@ -1321,14 +1500,15 @@ def train_batch(model,base,ts,batch,cfg,optimizers,lrs,total_steps,rank,world_si
     _check_finite_gradients(base,loss,device,ws)
     lr = 0.0
     for opt,base_lr in zip(optimizers,lrs):
-        lr = cosine_schedule_with_warmup_lr_lambda(ts.step,base_lr=base_lr,
-             num_warmup_steps=cfg["lr_warmup_steps"],num_training_steps=planned_steps,
-             min_ratio=cfg["lr_min_ratio"])
+        lr = lr_at(ts.step,base_lr,cfg,planned_steps)
         for group in opt.param_groups:
             group["lr"] = lr
         opt.step()
         opt.zero_grad(set_to_none=True)
     ts.carry,ts.step = nc,ts.step+1
+    extra = late_supervision_extra(cfg,ts.step,nc)
+    if extra:
+        ts.carry = run_unsupervised_segments(base,nc,extra)
     ts.in_step = False
     vals = torch.stack([metrics[k].float() for k in _METRIC_KEYS])
     if ws>1:
@@ -1342,11 +1522,49 @@ def train_batch(model,base,ts,batch,cfg,optimizers,lrs,total_steps,rank,world_si
     return result
 
 
+def nograd_at(step,cfg):
+    """세그먼트 앞의 no-grad 블록 수. nograd_start 스텝에 1개로 시작해 nograd_every 스텝마다 1씩 늘고
+    nograd_max 에서 멈춘다. 예: start=100000, every=10000 이면 100k 에 1, 110k 에 2, 130k 에 4."""
+    every,start = int(cfg.get("nograd_every",0) or 0),int(cfg.get("nograd_start",0))
+    if every<=0 or step<start:
+        return 0
+    return min(int(cfg["nograd_max"]),1+(step-start)//every)
+
+
+def late_supervision_extra(cfg,step,carry):
+    """후반 감독: 학습 지평(loops)의 마지막 세그먼트를 막 마친 배치를, 확률 late_sup_prob 로
+    R∈[late_sup_min, late_sup_max] 세그먼트 더 (gradient 없이) 돌린 뒤 한 세그먼트를 더 감독한다.
+    8블록 BPTT 는 그대로이고, 감독받는 상태의 분포만 긴 지평으로 넓힌다. 결정은 (seed, step) 로만
+    정해지므로 모든 rank 에서 같고 재개해도 같다. 반환: 추가로 돌릴 세그먼트 수 (0 이면 없음)."""
+    prob = float(cfg.get("late_sup_prob",0.0))
+    if prob<=0 or not bool(carry.halted.all()) or int(carry.steps.max())!=cfg["loops"]:
+        return 0
+    rng = np.random.Generator(np.random.Philox(key=np.array([cfg["seed"],step],dtype=np.uint64)))
+    if rng.random()>=prob:
+        return 0
+    return int(rng.integers(cfg["late_sup_min"],cfg["late_sup_max"]+1))
+
+
+@torch.no_grad()
+def run_unsupervised_segments(base,carry,extra):
+    """같은 퍼즐을 extra 세그먼트 더 진행한다. 끝나면 halted=False 로 두어 다음 학습 스텝이
+    같은 퍼즐의 seg(loops+extra+1) 을 감독하고, 그 뒤에 새 퍼즐로 넘어간다 (steps ≥ loops)."""
+    lt,training = base.model,base.training
+    base.eval()
+    try:
+        for _ in range(extra):
+            carry = replace(carry,halted=torch.zeros_like(carry.halted))
+            carry,_ = lt(carry,carry.current_data)
+    finally:
+        base.train(training)
+    return replace(carry,halted=torch.zeros_like(carry.halted))
+
+
 def resolve_out_dir(cfg):
     if cfg["out_dir"]:
         return os.path.abspath(os.path.expanduser(str(cfg["out_dir"])))
     root = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.getcwd()
-    return os.path.join(root,"lt_v171")
+    return os.path.join(root,"lt_v18" if cfg.get("plastic_select") else "lt_v171")
 
 
 def init_distributed():
@@ -1396,6 +1614,15 @@ def validate_run_cfg(cfg):
         raise ValueError("max_steps must be nonnegative or None; it is an ABSOLUTE stopping step.")
     if cfg["milestone_every"] and cfg["milestone_extrap_segs"]<1:
         raise ValueError("milestone_extrap_segs must be positive.")
+    if not 0<=cfg["lr_min_ratio"]<=1:
+        raise ValueError("0<=lr_min_ratio<=1 is required.")
+    if cfg.get("lr_rewarm_start") is not None and (cfg["lr_rewarm_start"]<0 or cfg["lr_rewarm_steps"]<=0
+                                                   or not 0<cfg["lr_rewarm_from_ratio"]<=1):
+        raise ValueError("lr_rewarm_start>=0 needs lr_rewarm_steps>0 and 0<lr_rewarm_from_ratio<=1.")
+    if min(cfg.get("nograd_every",0),cfg.get("nograd_start",0),cfg.get("nograd_max",0))<0:
+        raise ValueError("nograd_every, nograd_start, nograd_max must be nonnegative.")
+    if cfg.get("late_sup_prob",0.0)>0 and not (cfg["late_sup_prob"]<=1 and 0<=cfg["late_sup_min"]<=cfg["late_sup_max"]):
+        raise ValueError("late_sup_prob in (0,1] needs 0<=late_sup_min<=late_sup_max.")
 
 
 def _signal_stop(signum,frame):
@@ -1453,14 +1680,19 @@ def main(cfg):
         raise FileNotFoundError(f"Explicit resume_from contains no checkpoint: {search_at}")
     if cfg["require_resume"] and not path:
         raise FileNotFoundError("require_resume=True but no checkpoint exists.")
-    ts = (load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device) if path else TrainState())
+    if path:
+        ts = load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device)
+    elif cfg.get("init_from"):
+        ts = init_from_checkpoint(cfg["init_from"],base,ema,cfg,device)
+    else:
+        ts = TrainState()
     if ts.step != ts.iter_id*steps_per_iter+ts.batch_in_iter:
         raise ValueError("Checkpoint cursor/step inconsistency.")
     if ts.batch_in_iter>=steps_per_iter or ts.iter_id>total_iters:
         raise ValueError("Checkpoint cursor is outside the dataset protocol.")
     if rank==0:
         with open(os.path.join(out_dir,"config.json"),"w",encoding="utf-8") as f:
-            json.dump(dict(cfg,model_id=MODEL_ID),f,ensure_ascii=False,indent=2)
+            json.dump(dict(cfg,model_id=model_id_of(cfg)),f,ensure_ascii=False,indent=2)
     if cfg["compile"] and cfg["inductor_no_persist"]:
         try:
             import torch._inductor.config as ic
@@ -1468,21 +1700,36 @@ def main(cfg):
         except (AttributeError,ImportError) as exc:
             if rank==0:
                 print(f"[LT] optional Inductor setting unavailable: {exc}",flush=True)
+    if cfg["compile"] and cfg.get("nograd_every",0):
+        # no-grad 블록 수가 바뀔 때마다 한 번씩 다시 컴파일한다. 기본 한도(8)를 넘으면 eager 로 떨어지므로 올린다.
+        import torch._dynamo as dynamo      # "import torch._dynamo" 는 main 안에서 torch 를 지역 이름으로 만든다
+        for name in ("cache_size_limit","recompile_limit"):
+            if hasattr(dynamo.config,name):
+                setattr(dynamo.config,name,max(getattr(dynamo.config,name),int(cfg["nograd_max"])+8))
     model = torch.compile(base,dynamic=False) if cfg["compile"] else base
     if rank==0:
-        print(f"[LT] {MODEL_ID} torch={torch.__version__} device={device} ranks={ws} local_bs={lbs}",flush=True)
+        print(f"[LT] {model_id_of(cfg)} torch={torch.__version__} device={device} ranks={ws} local_bs={lbs}",flush=True)
         print(f"[LT] params={sum(p.numel() for p in base.parameters()):,} amp={cfg['amp_dtype']} "
               f"activation_checkpoint={cfg['activation_checkpoint']} compile={cfg['compile']}",flush=True)
         print(f"[LT] beta initialization: mean={cfg['beta_init_mean']:.8f} rad, "
               f"std={cfg['beta_init_std']:.8f}; "
-              + ("resumed learned beta from checkpoint" if path else "fresh, learnable beta"),flush=True)
+              + ("resumed learned beta from checkpoint" if path else
+                 "learned beta from init_from" if cfg.get("init_from") else "fresh, learnable beta"),flush=True)
         print(f"[LT] data={cfg['data_npz']} train={len(tr_x)} test={len(te_x)}",flush=True)
         print(f"[LT] planned steps={planned_steps}; actual steps={actual_steps}; "
               f"1 step={cfg['blocks_per_seg']} blocks; loops={cfg['loops']} segments",flush=True)
-        print(f"[LT] v1.71: projection={cfg['address_projection']} "
+        print(f"[LT] {'v1.8' if cfg.get('plastic_select') else 'v1.71'}: projection={cfg['address_projection']} "
               f"order={cfg['block_order']} address_trace={cfg['use_trace']} "
-              f"rho_init={cfg['trace_rho_init']}",flush=True)
-        print(f"[LT] {'RESUME '+str(path) if path else 'NEW RUN'} step={ts.step} "
+              f"rho_init={cfg['trace_rho_init']} plastic_select={cfg.get('plastic_select')} "
+              f"g_max={cfg.get('select_g_max')}",flush=True)
+        print(f"[LT] lr={cfg['lr']} min_ratio={cfg['lr_min_ratio']} rewarm_start={cfg.get('lr_rewarm_start')} "
+              f"rewarm_steps={cfg.get('lr_rewarm_steps')} rewarm_from_ratio={cfg.get('lr_rewarm_from_ratio')} "
+              f"late_sup_prob={cfg.get('late_sup_prob',0.0)} nograd_every={cfg.get('nograd_every',0)} "
+              f"nograd_start={cfg.get('nograd_start',0)} nograd_max={cfg.get('nograd_max',16)} "
+              f"late_sup_extra=[{cfg.get('late_sup_min')},{cfg.get('late_sup_max')}]",flush=True)
+        how = ("RESUME "+str(path) if path else
+               f"INIT_FROM {cfg['init_from']} ({cfg.get('init_from_model_id')})" if cfg.get("init_from") else "NEW RUN")
+        print(f"[LT] {how} step={ts.step} "
               f"next_iter={ts.iter_id} consumed_batches={ts.batch_in_iter} out={out_dir}",flush=True)
         if device.type=="cpu":
             print("[LT] CPU execution: suitable for self-tests, not a full d=832 training run.",flush=True)
@@ -1573,7 +1820,7 @@ def main(cfg):
 
 # 9. CPU self-tests (no real dataset and no claims about training accuracy) -----
 def selftest():
-    """CPU-only checks of v1.71 equations, recurrent training, and exact resume."""
+    """CPU-only checks of v1.71/v1.8 equations, recurrent training, and exact resume."""
     import tempfile
     from unittest import mock
     device = torch.device("cpu")
@@ -1587,7 +1834,8 @@ def selftest():
                    blocks_per_seg=3, loops=3, amp=False, amp_dtype="float32",
                    activation_checkpoint=False, compile=False, epochs=4, eval_interval=2,
                    lr_warmup_steps=0, lr=1e-3, puzzle_emb_lr=1e-3, ema_rate=0.9,
-                   num_aug=10, run_selftests=False, dataloader_workers=0)
+                   num_aug=10, run_selftests=False, dataloader_workers=0,
+                   plastic_select=False, lr_rewarm_start=None, lr_min_ratio=1.0, late_sup_prob=0.0)
         with mock.patch.object(torch.linalg, "qr", side_effect=AssertionError("v1.71 called QR")):
             base = ACTLossHead(LT(cfg), q_weight=cfg["q_weight"])
             inner, L = base.model.inner, base.model.inner.layers[0]
@@ -1713,6 +1961,8 @@ def selftest():
             for name, value in ts.carry.current_data.items():
                 assert torch.equal(value, rs.carry.current_data[name]), name
         checks.append("resume reproduces next weights/EMA/h/W/Z and Torch/NumPy/Python RNG")
+        _selftest_v18(cfg, full, checks, device)
+        _selftest_nograd(cfg, full, checks)
         for item in checks: print("[selftest] PASS "+item, flush=True)
         print(f"[selftest] {len(checks)}/{len(checks)} groups passed (CPU, synthetic inputs).", flush=True)
         return checks
@@ -1720,6 +1970,114 @@ def selftest():
         _restore_rng(rng0, device)
         torch.set_num_threads(old_threads)
 
+
+
+def _selftest_v18(cfg, full, checks, device):
+    """v1.8: 0 게이트 = v1.71, 쓰기 게이트 대칭, 후반 감독·가소성 lr 그룹·감쇠 스케줄의 정확한 재개."""
+    import tempfile
+    torch.manual_seed(5)
+    old = ACTLossHead(LT(cfg), q_weight=cfg["q_weight"])
+    with torch.no_grad():
+        for n, p in old.named_parameters():
+            if n.endswith(("eta_raw", "lam_raw", "gain_raw")):
+                p.add_(torch.randn_like(p) * 0.5)
+            if n.endswith("b_down.weight"):
+                p.normal_(0, 0.03)
+    c18 = dict(cfg, plastic_select=True)
+    new = ACTLossHead(LT(c18), q_weight=cfg["q_weight"])
+    new.load_state_dict(convert_plastic_state(old.state_dict(), c18["select_g_max"]), strict=True)
+    L = new.model.inner.layers[0]
+    assert hasattr(L, "beta") and hasattr(L, "sel_w") and not hasattr(L, "eta_raw")
+    torch.testing.assert_close(L.beta, old.model.inner.layers[0].beta, rtol=0, atol=0)
+    batch = full[0][1]
+    with torch.no_grad():
+        ca, cb = old.model.initial_carry(batch), new.model.initial_carry(batch)
+        for _ in range(2):
+            ca, oa = old.model(ca, batch); cb, ob = new.model(cb, batch)
+            for name in ("current_hidden", "coupling", "trace"):
+                torch.testing.assert_close(getattr(cb, name), getattr(ca, name), rtol=1e-4, atol=2e-5)
+            torch.testing.assert_close(ob["logits"], oa["logits"], rtol=1e-4, atol=2e-5)
+    checks.append("v1.8 with zero gate weights reproduces converted v1.71 (beta kept)")
+    with torch.no_grad():
+        L.sel_w.normal_(0, 0.3); L.beta.zero_()
+        inner = new.model.inner
+        keep, write, gain, lam = inner.select_gates(L, torch.randn(2, 81, cfg["hidden_size"]))
+        assert bool(((keep > 0) & (keep < 1)).all()) and torch.allclose(keep + write, torch.ones_like(keep))
+        assert bool((gain < c18["select_g_max"]).all()) and lam.shape[-1] == 1 and lam.std() > 0
+        for x in (keep, gain):
+            torch.testing.assert_close(x, x.transpose(-1, -2), rtol=0, atol=0)
+        c, _ = new.model(new.model.initial_carry(batch), batch)
+        w = c.coupling
+        torch.testing.assert_close(w, w.transpose(-1, -2), rtol=1e-5, atol=1e-6)
+    new.zero_grad(set_to_none=True)
+    _, loss, _, _, _ = new(carry=new.initial_carry(batch), batch=batch, return_keys=set())
+    loss.backward()
+    for suffix in ("sel_w", "dt_bias", "gsel_bias", "lsel_bias", "beta"):
+        g = getattr(L, suffix).grad
+        assert g is not None and torch.isfinite(g).all() and g.norm() > 0, suffix
+    checks.append("v1.8 write gates symmetric (beta=0 keeps W symmetric); read gate per cell; gate gradients")
+    rc = dict(c18, loops=3, late_sup_prob=1.0, late_sup_min=2, late_sup_max=2,
+              lr_rewarm_start=1, lr_rewarm_steps=4, lr_rewarm_from_ratio=0.1)
+    torch.manual_seed(92)
+    model = ACTLossHead(LT(rc), q_weight=rc["q_weight"])
+    opts, lrs = create_optimizers(model, rc, 1)
+    assert lr_at(0, 1.0, rc, 99) == 1.0 and abs(lr_at(1, 1.0, rc, 99) - 0.1) < 1e-12
+    assert abs(lr_at(3, 1.0, rc, 99) - 0.55) < 1e-12 and lr_at(5, 1.0, rc, 99) == lr_at(50, 1.0, rc, 99) == 1.0
+    ema = EMAHelper(rc["ema_rate"]); ema.register(model)
+    ts = TrainState()
+    def update(net, state, optimizers, rates, shadow, data):
+        train_batch(net, net, state, data, rc, optimizers, rates, 16, 0, 1, device)
+        shadow.update(net); state.batch_in_iter += 1
+    for j in range(3): update(model, ts, opts, lrs, ema, full[j][1])
+    assert ts.carry.steps.tolist() == [5, 5] and not bool(ts.carry.halted.any())      # 3 supervised + 2 extra
+    with tempfile.TemporaryDirectory() as directory:
+        path = save_training_checkpoint(directory, ts, model, opts, ema, rc, 0, 1, device)
+        update(model, ts, opts, lrs, ema, full[3][1])
+        assert ts.carry.steps.tolist() == [6, 6] and bool(ts.carry.halted.all())     # supervised seg 6
+        resumed = ACTLossHead(LT(rc), q_weight=rc["q_weight"])
+        ro, rl = create_optimizers(resumed, rc, 1)
+        rema = EMAHelper(rc["ema_rate"]); rema.register(resumed)
+        rs = load_training_checkpoint(path, resumed, ro, rema, rc, 0, 1, device)
+        update(resumed, rs, ro, rl, rema, full[3][1])
+        for name, value in model.state_dict().items(): assert torch.equal(value, resumed.state_dict()[name]), name
+        for name in ("current_hidden", "coupling", "trace", "steps", "halted"):
+            assert torch.equal(getattr(ts.carry, name), getattr(rs.carry, name)), name
+    checks.append("v1.8 late supervision and lr rewarm schedule; exact resume")
+
+
+def _selftest_nograd(cfg, full, checks):
+    """no-grad 선행 블록: 값은 더 긴 unroll 과 같고, gradient 는 선행 상태를 detach 한 뒤 역전파한 것과 같다."""
+    torch.manual_seed(7)
+    c = dict(cfg, plastic_select=True, blocks_per_seg=2)
+    m = ACTLossHead(LT(c), q_weight=c["q_weight"])
+    inner, lt = m.model.inner, m.model
+    with torch.no_grad():
+        inner.layers[0].sel_w.normal_(0, 0.1)
+        inner.layers[0].b_down.weight.normal_(0, 0.03)
+    batch = full[0][1]
+    def run(nograd, blocks, carry=None, grad=True):
+        inner.config.nograd_blocks, inner.config.blocks_per_seg = nograd, blocks
+        with torch.set_grad_enabled(grad):
+            return lt(lt.initial_carry(batch) if carry is None else carry, batch)
+    with torch.no_grad():
+        ca, oa = run(3, 2); cb, ob = run(0, 5)
+    for name in ("current_hidden", "coupling", "trace"):
+        torch.testing.assert_close(getattr(ca, name), getattr(cb, name), rtol=0, atol=0)
+    torch.testing.assert_close(oa["logits"], ob["logits"], rtol=0, atol=0)
+    probe = torch.randn_like(oa["logits"])
+    def grads(fn):
+        m.zero_grad(set_to_none=True); lt.puzzle_emb.local_weights.grad = None
+        (fn()["logits"] * probe).sum().backward()
+        out = {n: p.grad.clone() for n, p in m.named_parameters() if p.grad is not None}
+        out["puzzle_emb"] = lt.puzzle_emb.local_weights.grad.clone()
+        return out
+    g1 = grads(lambda: run(3, 2)[1])
+    g2 = grads(lambda: run(0, 2, carry=run(0, 3, grad=False)[0])[1])
+    assert set(g1) == set(g2)
+    for name in g1:
+        torch.testing.assert_close(g1[name], g2[name], rtol=2e-5, atol=3e-6, msg=name)
+    inner.config.nograd_blocks, inner.config.blocks_per_seg = 0, cfg["blocks_per_seg"]
+    checks.append("no-grad pre-blocks: same values as a longer unroll; gradients equal a detached prefix")
 
 
 # Compatibility APIs for existing local weight-conversion/probe utilities.
@@ -1816,7 +2174,7 @@ def load_checkpoint(path: str, base: nn.Module, optimizers, device, load_optimiz
     return ck
 
 def _cli():
-    ap = argparse.ArgumentParser(description="Self-contained LT v1.71 trainer")
+    ap = argparse.ArgumentParser(description="Self-contained LT v1.8 / v1.71 trainer")
     ap.add_argument("--config",help="JSON overrides for DEFAULT_CFG")
     ap.add_argument("--data")
     ap.add_argument("--out_dir")
@@ -1855,11 +2213,12 @@ if __name__=="__main__":
 def launch_lt_one_cell():
     """새 프로세스에서 동기 실행. 노트북의 CUDA 상태와 argparse 인자를 상속하지 않습니다."""
     work_root = Path("/kaggle/working") if Path("/kaggle/working").is_dir() else Path.cwd()
-    runtime = Path(tempfile.mkdtemp(prefix="_lt_v171_", dir=str(work_root)))
-    trainer_path = runtime / "train_v171.py"
+    tag = "v18" if CFG.get("plastic_select") else "v171"
+    runtime = Path(tempfile.mkdtemp(prefix=f"_lt_{tag}_", dir=str(work_root)))
+    trainer_path = runtime / f"train_{tag}.py"
     config_path = runtime / "config.json"
     cfg = dict(CFG)
-    log_dir = Path(cfg["out_dir"]).expanduser().resolve() if cfg["out_dir"] else work_root / "lt_v171"
+    log_dir = Path(cfg["out_dir"]).expanduser().resolve() if cfg["out_dir"] else work_root / f"lt_{tag}"
     log_dir.mkdir(parents=True, exist_ok=True)
     cfg["out_dir"] = str(log_dir)
     log_path = log_dir / "train.log"
@@ -1893,7 +2252,7 @@ def launch_lt_one_cell():
     proc = subprocess.Popen(cmd, stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                             text=True, bufsize=1, env=env, start_new_session=(os.name == "posix"))
     log_file = log_path.open("a", encoding="utf-8", buffering=1)
-    log_file.write("\n[Kaggle] launch v1.71: " + str(trainer_path) + "\n")
+    log_file.write(f"\n[Kaggle] launch {tag}: " + str(trainer_path) + "\n")
     print(f"[Kaggle] 훈련 로그: {log_path}", flush=True)
     try:
         for line in proc.stdout:
