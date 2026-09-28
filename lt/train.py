@@ -4,11 +4,11 @@
 # 데이터: 기존처럼 sudoku_lt_1k.npz를 Kaggle Input으로 연결하거나 data_npz를 지정합니다.
 # 모델: v1.71(QR 없는 공유 W_C, post MLP, 주소 흔적 Z, agree·W 갱신) + 선택적 가소성 게이트.
 #   v1.8: 기억 유지 A=exp(-Δ), 쓰기 이득 g, 읽기 보간 λ 를 매 블록 칸 상태 q 에서 생성한다 (docs/v18.md).
-# 기본 CFG는 v1.71 100k 마일스톤에서 v1.8로 변환해 이어 학습합니다 (init_from). 그 파일을 Input으로 연결하세요.
-# 처음부터 학습하려면 init_from=None. 출력 폴더에 체크포인트가 있으면 init_from보다 재개가 우선합니다.
-# 출력은 /kaggle/working/lt_v18 (plastic_select=False 이면 lt_v171) 에 저장합니다.
+# 기본 CFG는 v1.71(plastic_select=False)을 처음부터 학습한다. 세그먼트마다 앞 8블록은 no-grad, 뒤 8블록만 역전파(nograd_fixed=8).
+# v1.8로 바꾸려면 plastic_select=True. v1.71 체크포인트에서 이어가려면 init_from에 경로를 지정한다.
+# 출력은 /kaggle/working/lt_v171_ng8 에 저장합니다. 같은 폴더에 체크포인트가 있으면 거기서 재개합니다.
 # max_steps는 추가 횟수가 아닌 절대 종료 step입니다.
-# 기본: batch128, 16seg x 8blocks, lr1e-4. init_from 재개 시 1e-5에서 1만 스텝 동안 1e-4까지 선형 재가열 후 유지.
+# 기본: batch128, 16seg x (8 no-grad + 8 grad) blocks, lr1e-4 고정 (warmup 2000).
 # milestone: 매10000step, 전체 중 고정512문제, seg128까지 평가하고 표를 화면과 train.log에 출력.
 # 기본 정밀도는 BF16. amp_dtype은 bfloat16 / float32 / auto 중 선택할 수 있습니다. 게이트는 항상 FP32로 계산합니다.
 
@@ -56,7 +56,7 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'lr': 0.0001,
  'lr_min_ratio': 1.0,
  'lr_warmup_steps': 2000,
- 'lr_rewarm_start': 100000,
+ 'lr_rewarm_start': None,
  'lr_rewarm_steps': 10000,
  'lr_rewarm_from_ratio': 0.1,
  'weight_decay': 1.0,
@@ -72,17 +72,17 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'eval_interval': 250,
  'compile': True,
  'inductor_no_persist': True,
- 'out_dir': None,
+ 'out_dir': '/kaggle/working/lt_v171_ng8',
  'resume_from': None,
  'require_resume': False,
- 'init_from': '/kaggle/input/datasets/jrjinwoo/lt-v171-100000/step_100000.pt',
+ 'init_from': None,
  'keep_last': 2,
  'save_every_steps': 2000,
  'milestone_every': 10000,
  'milestone_extrap_segs': 128,
  'milestone_extrap_n': 512,
  'max_hours': 11.5,
- 'max_steps': 140000,
+ 'max_steps': None,
  'log_every': 250,
  'stop_check_every': 25,
  'dataloader_workers': 1,
@@ -92,11 +92,12 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'trace_rho_init': 0.5,
  'inj_gate_init': 0.25,
  'gamma_init': 0.1,
- 'plastic_select': True,
+ 'plastic_select': False,
  'select_g_max': 4.0,
  'late_sup_prob': 0.0,
  'late_sup_min': 16,
  'late_sup_max': 112,
+ 'nograd_fixed': 8,
  'nograd_every': 0,
  'nograd_start': 0,
  'nograd_max': 16}
@@ -226,6 +227,7 @@ DEFAULT_CFG = {'data_npz': None,
  'late_sup_prob': 0.0,
  'late_sup_min': 16,
  'late_sup_max': 112,
+ 'nograd_fixed': 0,
  'nograd_every': 0,
  'nograd_start': 0,
  'nograd_max': 16}
@@ -1164,11 +1166,11 @@ _RESUME_KEYS = tuple(f.name for f in fields(LTConfig) if f.name not in
     "lr","lr_min_ratio","lr_warmup_steps","weight_decay","beta1","beta2","puzzle_emb_lr",
     "puzzle_emb_weight_decay","q_weight","ema","ema_rate","data_fingerprint",
     "lr_rewarm_start","lr_rewarm_steps","lr_rewarm_from_ratio","late_sup_prob","late_sup_min","late_sup_max",
-    "nograd_every","nograd_start","nograd_max")
+    "nograd_fixed","nograd_every","nograd_start","nograd_max")
 # 이 키들이 생기기 전의 체크포인트(v1.71 Kaggle 런 등)는 아래 값으로 학습된 것이다.
 _LEGACY_DEFAULTS = dict(plastic_select=False,select_g_max=4.0,lr_rewarm_start=None,lr_rewarm_steps=0,
                         lr_rewarm_from_ratio=1.0,late_sup_prob=0.0,late_sup_min=16,late_sup_max=112,
-                        nograd_every=0,nograd_start=0,nograd_max=16)
+                        nograd_fixed=0,nograd_every=0,nograd_start=0,nograd_max=16)
 
 
 def _effective_recipe(cfg):
@@ -1525,6 +1527,8 @@ def train_batch(model,base,ts,batch,cfg,optimizers,lrs,total_steps,rank,world_si
 def nograd_at(step,cfg):
     """세그먼트 앞의 no-grad 블록 수. nograd_start 스텝에 1개로 시작해 nograd_every 스텝마다 1씩 늘고
     nograd_max 에서 멈춘다. 예: start=100000, every=10000 이면 100k 에 1, 110k 에 2, 130k 에 4."""
+    if int(cfg.get("nograd_fixed",0) or 0)>0:
+        return int(cfg["nograd_fixed"])                 # 스케줄 없이 매 세그먼트 같은 개수
     every,start = int(cfg.get("nograd_every",0) or 0),int(cfg.get("nograd_start",0))
     if every<=0 or step<start:
         return 0
@@ -1619,7 +1623,7 @@ def validate_run_cfg(cfg):
     if cfg.get("lr_rewarm_start") is not None and (cfg["lr_rewarm_start"]<0 or cfg["lr_rewarm_steps"]<=0
                                                    or not 0<cfg["lr_rewarm_from_ratio"]<=1):
         raise ValueError("lr_rewarm_start>=0 needs lr_rewarm_steps>0 and 0<lr_rewarm_from_ratio<=1.")
-    if min(cfg.get("nograd_every",0),cfg.get("nograd_start",0),cfg.get("nograd_max",0))<0:
+    if min(cfg.get("nograd_fixed",0),cfg.get("nograd_every",0),cfg.get("nograd_start",0),cfg.get("nograd_max",0))<0:
         raise ValueError("nograd_every, nograd_start, nograd_max must be nonnegative.")
     if cfg.get("late_sup_prob",0.0)>0 and not (cfg["late_sup_prob"]<=1 and 0<=cfg["late_sup_min"]<=cfg["late_sup_max"]):
         raise ValueError("late_sup_prob in (0,1] needs 0<=late_sup_min<=late_sup_max.")
@@ -1700,7 +1704,7 @@ def main(cfg):
         except (AttributeError,ImportError) as exc:
             if rank==0:
                 print(f"[LT] optional Inductor setting unavailable: {exc}",flush=True)
-    if cfg["compile"] and cfg.get("nograd_every",0):
+    if cfg["compile"] and cfg.get("nograd_every",0) and not cfg.get("nograd_fixed",0):
         # no-grad 블록 수가 바뀔 때마다 한 번씩 다시 컴파일한다. 기본 한도(8)를 넘으면 eager 로 떨어지므로 올린다.
         import torch._dynamo as dynamo      # "import torch._dynamo" 는 main 안에서 torch 를 지역 이름으로 만든다
         for name in ("cache_size_limit","recompile_limit"):
@@ -1724,7 +1728,8 @@ def main(cfg):
               f"g_max={cfg.get('select_g_max')}",flush=True)
         print(f"[LT] lr={cfg['lr']} min_ratio={cfg['lr_min_ratio']} rewarm_start={cfg.get('lr_rewarm_start')} "
               f"rewarm_steps={cfg.get('lr_rewarm_steps')} rewarm_from_ratio={cfg.get('lr_rewarm_from_ratio')} "
-              f"late_sup_prob={cfg.get('late_sup_prob',0.0)} nograd_every={cfg.get('nograd_every',0)} "
+              f"late_sup_prob={cfg.get('late_sup_prob',0.0)} nograd_fixed={cfg.get('nograd_fixed',0)} "
+              f"nograd_every={cfg.get('nograd_every',0)} "
               f"nograd_start={cfg.get('nograd_start',0)} nograd_max={cfg.get('nograd_max',16)} "
               f"late_sup_extra=[{cfg.get('late_sup_min')},{cfg.get('late_sup_max')}]",flush=True)
         how = ("RESUME "+str(path) if path else

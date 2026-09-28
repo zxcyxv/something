@@ -57,7 +57,8 @@ class V18Test(unittest.TestCase):
     def test_presets_keep_old_models_unselective(self):
         for name, preset in t.PRESETS.items():
             self.assertEqual(preset["plastic_select"], name == "v1.8")
-        self.assertTrue(t.CFG["plastic_select"] and t.DEFAULT_CFG["plastic_select"])
+        self.assertTrue(t.DEFAULT_CFG["plastic_select"])          # Kaggle CFG 는 실행마다 바꾸는 설정이라 검사하지 않는다
+        self.assertEqual(set(t.CFG) - {"data_npz"}, set(t.DEFAULT_CFG) - {"data_npz"})
 
     def test_config_rejects_fixed_gain_or_lambda_with_selection(self):
         for key in ("stdp_gain_fixed", "stdp_lam_fixed"):
@@ -132,6 +133,8 @@ class V18Test(unittest.TestCase):
         self.assertEqual([t.nograd_at(s, cfg) for s in (0, 99999, 100000, 109999, 110000, 139999, 140000, 10**6)],
                          [0, 0, 1, 1, 2, 4, 5, 16])
         self.assertEqual(t.nograd_at(10**6, small_config(nograd_every=0)), 0)
+        fixed = small_config(nograd_fixed=8, nograd_every=10000, nograd_start=100000)
+        self.assertEqual([t.nograd_at(s, fixed) for s in (0, 5, 10**6)], [8, 8, 8])
 
     def test_nograd_resume_across_depth_change_is_exact(self):
         cfg = small_config(nograd_every=2, nograd_start=1, nograd_max=3)
