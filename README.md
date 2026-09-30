@@ -26,6 +26,20 @@ held-out 512 퍼즐. 오차 감소율 = (seg16 오차 − seg128 최고 오차) 
 판의 차이는 `lt/train.py`의 `PRESETS`에 명시한다. v1.71은 `address_projection="linear"`를 추가하며,
 복소 주소의 분할·정규화와 흔적·결합 기억은 유지한다. 이전 판은 기존 QR 투영을 쓴다.
 
+Q/K를 분리하고 과거×과거 항을 차감하는 **v1.8, d=512 후보 구현**은
+[lt/train_v18.py](lt/train_v18.py)에 있다. Q/K는 각각 독립 복소 선형 사영과 시간흔적을 갖고,
+흔적의 `rho, omega`는 공유한다. K에만 시간흔적을 두는 설계와의 선택은 아직 미확정이다.
+읽기·쓰기는 같은 psi 커널을 쓰며 Attn_Beta는 제거했다.
+쓰기에서 `rho_j^2 * C_j(previous)`를 차감할 때 두 항에 현재 Q/K 흔적의 정규화 분모를 동일하게 적용한다.
+기존 v1.8의 상태별 유지·쓰기·읽기 게이트는 유지한다. 8헤드, 헤드당 복소 32성분이고 처음부터 학습한다.
+Kaggle에서는 파일 전체를 한 셀에 붙여넣고, 로컬에서는 다음처럼 실행한다.
+
+```bash
+python lt/train_v18.py --data data/sudoku_lt_1k.npz --out_dir runs/v18_qk_delta512
+python lt/train_v18.py --selftest
+python -m unittest lt.test_v18_delta
+```
+
 ## 모델
 
 칸 `t = 1..81`, 상태 `h_t ∈ R^832`, 헤드 8개, 헤드마다 복소 주소 성분 `j = 1..52`. 모든 블록이 같은 가중치를 쓴다.
