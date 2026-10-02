@@ -1,16 +1,23 @@
 # -*- coding: utf-8 -*-
-# LT v1.8 — 기존캐글코드.py 기반 Kaggle 단일 셀 완성본 (v1.71 은 plastic_select=False 로 그대로 재현)
+# LT KV-STDP — 기존 스도쿠 하네스의 Kaggle 단일 셀 (v1.71/v1.8 경로도 유지)
 # 이 파일 전체를 한 셀에 붙여넣고 실행합니다. 설정은 아래 CFG에서 변경합니다.
 # 데이터: 기존처럼 sudoku_lt_1k.npz를 Kaggle Input으로 연결하거나 data_npz를 지정합니다.
-# 모델: v1.71(QR 없는 공유 W_C, post MLP, 주소 흔적 Z, agree·W 갱신) + 선택적 가소성 게이트.
-#   v1.8: 기억 유지 A=exp(-Δ), 쓰기 이득 g, 읽기 보간 λ 를 매 블록 칸 상태 q 에서 생성한다 (docs/v18.md).
-# 기본 CFG는 v1.71(plastic_select=False)을 처음부터 학습한다. 세그먼트마다 앞 8블록은 no-grad, 뒤 8블록만 역전파(nograd_fixed=8).
-# v1.8로 바꾸려면 plastic_select=True. v1.71 체크포인트에서 이어가려면 init_from에 경로를 지정한다.
-# 출력은 /kaggle/working/lt_v171_ng8 에 저장합니다. 같은 폴더에 체크포인트가 있으면 거기서 재개합니다.
+# 기본 CFG는 KV-STDP를 처음부터 학습한다. 입력 재주입 → 기억 쓰기·읽기 → 쌍선형 FFN → 고정 Φ.
+#   G = mean_tokens(V e_Kᵀ − e_V Kᵀ), M ← M + G. Q/K/e_K에 학습형 실수 2D RoPE를 적용한다.
+#   각 헤드·feature 쌍의 회전각은 θ행·행좌표 + θ열·열좌표. θ 초기화는 v1.7과 같은 U[-π/2,π/2].
+#   헤드·RoPE 쌍별 λ를 학습하며 K/V 흔적을 공유 계수로 누수적분한다. 기억 유지·쓰기 계수는 둘 다 1.
+#   kv_memory_update='ema'이면 M ← rho*M + (1-rho)*G. 고정 rho는 kv_memory_rho로 지정한다.
+#   kv_memory_update='leaky'이면 기억만 감쇠하고 쓰기 강도는 유지한다: M ← rho*M + G.
+#   기본 Q/K/e_K 정규화는 끈다. K/V 흔적과 외적 차감은 원시 활동으로 계산한다.
+#   qkv_no_decay=False: Q/K/V와 출력 사영, FFN에 weight_decay를 적용한다.
+# 세그먼트마다 앞 8블록은 no-grad, 뒤 8블록만 역전파(nograd_fixed=8).
+# 기존 모델: memory_type='address', plastic_select=False(v1.71)/True(v1.8).
+# 현재 KV 외적만 누적하는 비교: memory_type='kv_hebbian', stdp=False, use_trace=False.
+# 출력은 /kaggle/working/lt_kv_stdp_ng8 에 저장합니다. 같은 모델의 체크포인트에서 재개합니다.
 # max_steps는 추가 횟수가 아닌 절대 종료 step입니다.
 # 기본: batch128, 16seg x (8 no-grad + 8 grad) blocks, lr1e-4 고정 (warmup 2000).
 # milestone: 매10000step, 전체 중 고정512문제, seg128까지 평가하고 표를 화면과 train.log에 출력.
-# 기본 정밀도는 BF16. amp_dtype은 bfloat16 / float32 / auto 중 선택할 수 있습니다. 게이트는 항상 FP32로 계산합니다.
+# 기본 사영 정밀도는 BF16. 정규화·흔적·기억·쓰기 차감·읽기는 FP32로 계산합니다.
 
 import json
 import os
@@ -36,6 +43,18 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'eps': 0.0001,
  'psi_zero': False,
  'puzzle_emb_ndim': 832,
+ 'memory_type': 'kv_stdp',
+ 'trace_decay_init': 0.1,
+ 'trace_decay_mode': 'pair',
+ 'kv_write_reduction': 'mean',
+ 'kv_memory_update': 'additive',
+ 'kv_memory_rho': 0.95,
+ 'kv_trace_activity_detach': False,
+ 'kv_qk_rmsnorm': False,
+ 'kv_qk_l2norm': False,
+ 'kv_projection_fp32': False,
+ 'rope_type': 'learned_2d',
+ 'rope_base': 10000.0,
  'legacy_gauge': False,
  'block_order': 'post',
  'use_trace': True,
@@ -60,6 +79,7 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'lr_rewarm_steps': 10000,
  'lr_rewarm_from_ratio': 0.1,
  'weight_decay': 1.0,
+ 'qkv_no_decay': False,
  'beta1': 0.9,
  'beta2': 0.95,
  'puzzle_emb_lr': 0.0001,
@@ -72,9 +92,10 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
  'eval_interval': 250,
  'compile': True,
  'inductor_no_persist': True,
- 'out_dir': '/kaggle/working/lt_v171_ng8',
+ 'out_dir': '/kaggle/working/lt_kv_stdp_ng8',
  'resume_from': None,
  'require_resume': False,
+ 'allow_trace_activity_fork': False,
  'init_from': None,
  'keep_last': 2,
  'save_every_steps': 2000,
@@ -104,14 +125,16 @@ CFG = {'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.np
 
 # 독립 실행되는 학습 프로그램 전체
 _TRAINER_SOURCE = r'''# -*- coding: utf-8 -*-
-"""LT v1.8 / v1.71: direct shared complex-address projection + rotating address history Z.
+"""LT Sudoku trainer: KV-STDP fast weights and the existing v1.8 / v1.71 models.
 
 The execution, data, loss, optimizer, checkpoint and launcher harness comes from
 the user's existing working Kaggle cell. The model follows v1.71 in this repository:
 post MLP, QR-free W_C, original normalized address/value kernels, write then read W.
 v1.8 (plastic_select=True) generates the memory keep/write/read gates from the
 per-cell state instead of per-head constants; the write window (beta) is unchanged.
-One step is one segment (8 blocks); h/W/Z detach only at segment boundaries.
+KV-STDP uses past-only K/V eligibility traces, real feature-pair RoPE, additive
+or EMA channel memory and an affine-free hidden post-norm. One step is one segment;
+hidden, memory and traces detach only at segment boundaries.
 Activation checkpointing only recomputes blocks. No repository imports are needed.
 """
 import argparse
@@ -142,12 +165,26 @@ from torch.utils.checkpoint import checkpoint
 
 MODEL_ID = "lt-v171-address-trace-linear-v1"          # v1.71 (plastic_select=False)
 MODEL_ID_V18 = "lt-v18-selective-plasticity-v1"      # v1.8  (plastic_select=True)
+MODEL_ID_KV_STDP = "lt-kv-stdp-fast-weight-v1"
+MODEL_ID_KV_HEBBIAN = "lt-kv-hebbian-fast-weight-v1"
 IGNORE_LABEL_ID = -100
 _STOP_REQUESTED = False
 
 
 def model_id_of(cfg):
+    if cfg.get("memory_type", "address") == "kv_hebbian":
+        return MODEL_ID_KV_HEBBIAN
+    if cfg.get("memory_type", "address") == "kv_stdp":
+        return MODEL_ID_KV_STDP
     return MODEL_ID_V18 if cfg.get("plastic_select") else MODEL_ID
+
+
+def model_tag_of(cfg):
+    if cfg.get("memory_type", "address") == "kv_hebbian":
+        return "kv_hebbian"
+    if cfg.get("memory_type", "address") == "kv_stdp":
+        return "kv_stdp"
+    return "v18" if cfg.get("plastic_select") else "v171"
 
 # DEFAULT_CFG is also copied to the top of the one-cell notebook.
 DEFAULT_CFG = {'data_npz': None,
@@ -166,6 +203,18 @@ DEFAULT_CFG = {'data_npz': None,
  'eps': 0.0001,
  'psi_zero': False,
  'puzzle_emb_ndim': 832,
+ 'memory_type': 'address',
+ 'trace_decay_init': 0.1,
+ 'trace_decay_mode': 'head',
+ 'kv_write_reduction': 'mean',
+ 'kv_memory_update': 'additive',
+ 'kv_memory_rho': 0.95,
+ 'kv_trace_activity_detach': False,
+ 'kv_qk_rmsnorm': False,
+ 'kv_qk_l2norm': False,
+ 'kv_projection_fp32': False,
+ 'rope_type': 'learned_2d',
+ 'rope_base': 10000.0,
  'legacy_gauge': False,
  'block_order': 'post',
  'use_trace': True,
@@ -190,6 +239,7 @@ DEFAULT_CFG = {'data_npz': None,
  'lr_rewarm_steps': 10000,
  'lr_rewarm_from_ratio': 0.1,
  'weight_decay': 1.0,
+ 'qkv_no_decay': False,
  'beta1': 0.9,
  'beta2': 0.95,
  'puzzle_emb_lr': 0.0001,
@@ -205,6 +255,7 @@ DEFAULT_CFG = {'data_npz': None,
  'out_dir': None,
  'resume_from': None,
  'require_resume': False,
+ 'allow_trace_activity_fork': False,
  'init_from': None,
  'keep_last': 2,
  'save_every_steps': 2000,
@@ -240,6 +291,19 @@ PRESETS = {                       # v1.71 은 v1.7 의 주소 사영에서 QR �
     "v1.71": dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="linear", plastic_select=False),  # v1.7 + 자유 선형 W_C. 204k Kaggle 학습
     "v1.8":  dict(legacy_gauge=False, block_order="post", use_trace=True,  address_projection="linear", plastic_select=True),   # v1.71 + η·g·λ 를 칸 상태에서 생성
 }
+for _preset in PRESETS.values():
+    _preset["memory_type"] = "address"
+PRESETS["kv_stdp"] = dict(legacy_gauge=False, block_order="post", use_trace=True,
+                          address_projection="linear", plastic_select=False,
+                          memory_type="kv_stdp", stdp=True, rope_type="learned_2d",
+                          trace_decay_mode="pair",
+                          kv_write_reduction="mean",
+                          kv_memory_update="additive", kv_memory_rho=0.95,
+                          kv_trace_activity_detach=False,
+                          qkv_no_decay=False, kv_qk_rmsnorm=False, kv_qk_l2norm=False,
+                          kv_projection_fp32=False)
+PRESETS["kv_hebbian"] = dict(PRESETS["kv_stdp"], memory_type="kv_hebbian",
+                              stdp=False, use_trace=False, kv_trace_activity_detach=False)
 
 # 1. Initialization / sparse puzzle embedding ---------------------------------
 def trunc_normal_init_(tensor, std=1.0, lower=-2.0, upper=2.0):
@@ -314,9 +378,11 @@ class LTCarry:
     steps: Optional[torch.Tensor] = None
     halted: Optional[torch.Tensor] = None
     current_data: Optional[Dict[str, torch.Tensor]] = None
-    coupling: Optional[torch.Tensor] = None       # STDP 결합 기억 w [B,H,T,T]
+    coupling: Optional[torch.Tensor] = None       # 주소 기억 [B,H,T,T] / KV 기억 [B,H,Dv,Dk]
     fresh: Optional[torch.Tensor] = None          # [B] bool — 이 퍼즐의 w·z 가 아직 초기화 전
     trace: Optional[torch.Tensor] = None          # 주소 흔적 z [B,T,H,p,2] (use_trace 일 때만)
+    key_trace: Optional[torch.Tensor] = None      # KV-STDP: 과거 K 활동 [B,H,T,Dk]
+    value_trace: Optional[torch.Tensor] = None    # KV-STDP: 과거 V 활동 [B,H,T,Dv]
 
 
 @dataclass
@@ -343,6 +409,18 @@ class LTConfig:
     blocks_per_seg: int = 8     # 세그먼트당 블록 수 (× num_layers)
     num_layers: int = 1         # 가중치 벌 수. 블록 k → layers[k % num_layers]
     mlp_expansion: float = 4.0
+    memory_type: str = "address"   # 기존 칸×칸 기억 / 채널×채널 KV-STDP Fast Weight
+    trace_decay_init: float = 0.1  # KV-STDP: 이전 흔적 10%, 현재 활동 90%로 시작 (K/V 공유)
+    trace_decay_mode: str = "head"  # head: 헤드별 / pair: 헤드·RoPE 쌍별 (두 채널, K/V 공유)
+    kv_write_reduction: str = "mean"  # mean: 칸 합을 T로 나눔 / sum: 나누지 않음. 키 없는 과거 cfg는 mean.
+    kv_memory_update: str = "additive"  # additive: M+G / ema: rho*M+(1-rho)*G / leaky: rho*M+G.
+    kv_memory_rho: float = 0.95  # EMA/leaky 기억 유지율. 고정값이며 K/V 흔적 lambda와 별개.
+    kv_trace_activity_detach: bool = False  # EMA에 들어가는 K/V 원천만 detach. 현재 쓰기와 lambda 미분은 유지.
+    kv_qk_rmsnorm: bool = False    # Q 읽기 / (e_K+iK) 쓰기 사본의 affine 없는 RMS. 과거 cfg는 비정규화.
+    kv_qk_l2norm: bool = False     # Q/K/eK 각각 norm+eps로 단위화. raw K/V 흔적은 그대로 이월.
+    kv_projection_fp32: bool = False  # K/V 사영도 AMP 제외. 키 없는 과거 cfg는 기존 AMP 사영.
+    rope_type: str = "learned_2d"  # KV-STDP: 헤드별 θ행·행 + θ열·열. axial_2d는 기존 체크포인트 호환.
+    rope_base: float = 10000.0     # axial_2d에서만 사용
     alpha_init: float = 0.1
     legacy_gauge: bool = False  # True: 주입 계수·γ 를 학습 스칼라로 (9/1 원본). False: √d 고정, γ=1/d, 임베딩 init 1/√d
     inj_gate_init: float = 0.25
@@ -371,6 +449,44 @@ class LTConfig:
     nograd_blocks: int = 0          # 세그먼트 앞에서 gradient 없이 돌리는 블록 수 (하네스가 스텝마다 정한다)
 
     def __post_init__(self):
+        if self.memory_type not in ("address", "kv_stdp", "kv_hebbian"):
+            raise ValueError("memory_type must be address, kv_stdp or kv_hebbian")
+        if self.memory_type in ("kv_stdp", "kv_hebbian"):
+            if self.memory_type == "kv_stdp" and self.trace_decay_mode not in ("head", "pair"):
+                raise ValueError("trace_decay_mode must be head or pair")
+            if self.kv_write_reduction not in ("mean", "sum"):
+                raise ValueError("kv_write_reduction must be mean or sum")
+            _validate_kv_memory_update(self.kv_memory_update, self.kv_memory_rho)
+            if not isinstance(self.kv_trace_activity_detach,bool):
+                raise ValueError("kv_trace_activity_detach must be a boolean")
+            if not isinstance(self.kv_qk_rmsnorm,bool):
+                raise ValueError("kv_qk_rmsnorm must be a boolean")
+            if not isinstance(self.kv_qk_l2norm,bool):
+                raise ValueError("kv_qk_l2norm must be a boolean")
+            if self.kv_qk_rmsnorm and self.kv_qk_l2norm:
+                raise ValueError("kv_qk_rmsnorm and kv_qk_l2norm are mutually exclusive")
+            if not isinstance(self.kv_projection_fp32,bool):
+                raise ValueError("kv_projection_fp32 must be a boolean")
+            if (self.kv_qk_rmsnorm or self.kv_qk_l2norm) and (not math.isfinite(self.eps) or self.eps<=0):
+                raise ValueError("Q/K normalization requires finite eps>0")
+            if self.legacy_gauge or self.block_order != "post" or self.plastic_select:
+                raise ValueError("KV memory requires fixed injection/post-norm, block_order='post', plastic_select=False")
+            if self.memory_type == "kv_stdp" and (not self.stdp or not self.use_trace):
+                raise ValueError("kv_stdp requires stdp=True and use_trace=True")
+            if self.memory_type == "kv_hebbian" and (self.stdp or self.use_trace or
+                    self.kv_trace_activity_detach or self.kv_qk_rmsnorm or self.kv_qk_l2norm):
+                raise ValueError("kv_hebbian requires stdp=False, use_trace=False and no Q/K normalization or trace activity detach")
+            if self.memory_type == "kv_stdp" and not 0 < self.trace_decay_init < 1:
+                raise ValueError("trace_decay_init must lie in (0, 1)")
+            if self.rope_type not in ("learned_2d", "axial_2d"):
+                raise ValueError("rope_type must be learned_2d or axial_2d")
+            if self.rope_type == "axial_2d" and (not math.isfinite(self.rope_base) or self.rope_base <= 1):
+                raise ValueError("rope_base must be finite and greater than 1")
+            divisor = 4 if self.rope_type == "axial_2d" else 2
+            if self.num_heads < 1 or self.hidden_size % self.num_heads or (self.hidden_size // self.num_heads) % divisor:
+                raise ValueError(f"KV memory needs hidden_size / num_heads divisible by {divisor} for {self.rope_type}")
+            if not 0 <= self.puzzle_emb_ndim <= self.hidden_size:
+                raise ValueError("puzzle_emb_ndim must lie between 0 and hidden_size")
         if not math.isfinite(self.beta_init_mean) or not math.isfinite(self.beta_init_std) or self.beta_init_std < 0:
             raise ValueError("beta_init_mean/std must be finite and beta_init_std must be nonnegative")
         if self.amp_dtype not in ("auto", "bfloat16", "float32"):
@@ -389,6 +505,8 @@ class LTConfig:
     def from_dict(cls, d: dict) -> "LTConfig":
         known = {f.name for f in fields(cls)}
         dd = {k: v for k, v in d.items() if k in known}
+        if d.get("memory_type") == "kv_stdp" and "rope_type" not in d:
+            dd["rope_type"] = "axial_2d"                  # 옵션 도입 전 KV 체크포인트의 고정 RoPE
         if "use_trace" not in d and "trace_rho_init" in d:     # v1.6/v1.7 체크포인트 cfg 호환 (use_trace 키가 없던 시절)
             dd["use_trace"] = True
         return cls(**dd)
@@ -564,7 +682,9 @@ class LT_Inner(nn.Module):
             except TypeError:
                 enabled = torch.cuda.get_device_capability(device)[0] >= 8
         if enabled:
-            with torch.autocast("cuda", dtype=torch.bfloat16):
+            # no-grad 앞부분에서 캐시된 BF16 가중치가 뒤의 grad/checkpoint 구간에
+            # 재사용되면 일부 사영의 그래프가 빠진다. KV 경로는 캐시 없이 캐스팅한다.
+            with torch.autocast("cuda", dtype=torch.bfloat16, cache_enabled=self.config.memory_type == "address"):
                 nc, logits = self._forward(carry, batch)
             return replace(nc, current_hidden=nc.current_hidden.float()), logits.float()
         return self._forward(carry, batch)
@@ -697,12 +817,242 @@ class LT_Inner(nn.Module):
                        trace=(ztr.detach() if ztr is not None else None), fresh=None), self.w_cls(h)
 
 
+class KVSTDPLayer(nn.Module):
+    """독립 Q/K/V 사영, 헤드별/공간 회전쌍별 흔적 λ·공간 θ, 기존 쌍선형 FFN."""
+    def __init__(self, config):
+        super().__init__()
+        d, H = config.hidden_size, config.num_heads
+        self.q_proj = nn.Linear(d, d, bias=False)
+        self.k_proj = nn.Linear(d, d, bias=False)
+        self.v_proj = nn.Linear(d, d, bias=False)
+        self.out_proj = nn.Linear(d, d, bias=False)
+        self.head_dim = d // H
+        if config.memory_type == "kv_stdp":
+            logit = math.log(config.trace_decay_init / (1 - config.trace_decay_init))
+            self.trace_decay_mode = config.trace_decay_mode
+            lam_shape = (H, self.head_dim // 2) if self.trace_decay_mode == "pair" else (H,)
+            self.trace_lam_raw = nn.Parameter(torch.full(lam_shape, logit))
+        inter = int(config.mlp_expansion * d * 2 / 3 + 255) // 256 * 256
+        self.b_gate_up = nn.Linear(d, 2 * inter, bias=False)
+        self.b_down = nn.Linear(inter, d, bias=False)
+        with torch.no_grad():
+            self.b_down.weight.zero_()
+        if config.rope_type == "learned_2d":
+            # 다른 가중치와 초기 hidden의 난수 draw를 유지하도록 Inner 마지막에 초기화한다.
+            self.theta = nn.Parameter(torch.zeros(H, d // H // 2, 2))
+
+    @property
+    def trace_decay(self):
+        return torch.sigmoid(self.trace_lam_raw)
+
+    @property
+    def trace_decay_channels(self):
+        lam = self.trace_decay
+        if self.trace_decay_mode == "pair":
+            return lam.repeat_interleave(2, dim=-1)
+        return lam[:, None].expand(-1, self.head_dim)
+
+
+class KVSTDPInner(LT_Inner):
+    """재귀축 STDP를 채널 외적 Fast Weight로 구현한다.
+
+    k=e_K+iK, v=e_V+iV → Im(v kᴴ)=V e_Kᵀ−e_V Kᵀ.
+    쓰기는 현재 활동이 들어오기 전 흔적으로 계산한다. 그 뒤 흔적을 갱신한다.
+    RoPE는 K와 e_K의 feature 쌍에 동일하게 적용하며 과거/현재 복소축은 섞지 않는다.
+    입력/출력, sparse embedding, BF16 문맥, 고정 Φ, 쌍선형 경계는 기존 하네스를 공유한다.
+    """
+    def __init__(self, config):
+        nn.Module.__init__(self)
+        self.config = config
+        self.memory_decay = config.kv_memory_rho if config.kv_memory_update in ("ema", "leaky") else 1.0
+        self.write_scale = 1.0 - self.memory_decay if config.kv_memory_update == "ema" else 1.0
+        self.forward_dtype = getattr(torch, config.forward_dtype)
+        T, g, d, H = config.seq_len, config.grid, config.hidden_size, config.num_heads
+        if T != g * g or config.num_layers < 1 or config.blocks_per_seg < 1:
+            raise ValueError("KV memory requires seq_len=grid**2 and positive layer/block counts")
+        self.d, self.H, self.dh = d, H, d // H
+        self.stdp = self.use_trace = config.memory_type == "kv_stdp"
+        self.gamma, self.embed_scale = 1.0 / d, math.sqrt(d)
+        self.embed = nn.Embedding(config.vocab_size, d)
+        with torch.no_grad():
+            trunc_normal_init_(self.embed.weight, std=1.0 / self.embed_scale)
+        self.w_cls = nn.Linear(d, config.vocab_size)
+        self.layers = nn.ModuleList([KVSTDPLayer(config) for _ in range(config.num_layers)])
+        if config.num_layers > 1:
+            sd0 = self.layers[0].state_dict()
+            for layer in self.layers[1:]:
+                layer.load_state_dict({k: v.clone() for k, v in sd0.items()})
+        self.puzzle_emb_ndim = config.puzzle_emb_ndim
+        if self.puzzle_emb_ndim > 0:
+            self.puzzle_emb = CastedSparseEmbedding(config.num_puzzle_identifiers, self.puzzle_emb_ndim,
+                    batch_size=config.batch_size, init_std=0, cast_to=self.forward_dtype)
+        # 기존 하네스와 같은 초기 hidden. 입력과 독립적인 상태로 첫 재귀를 시작한다.
+        self.init_hidden = nn.Buffer(trunc_normal_init_(
+            torch.empty(d, dtype=self.forward_dtype), std=1.0), persistent=True)
+        positions = torch.stack((torch.arange(T) // g, torch.arange(T) % g), dim=-1)
+        rope_dtype = torch.float64 if self.forward_dtype == torch.float64 else torch.float32
+        self.register_buffer("pos_u", positions[:, 0].to(rope_dtype), persistent=False)
+        self.register_buffer("pos_w", positions[:, 1].to(rope_dtype), persistent=False)
+        if config.rope_type == "learned_2d":
+            with torch.no_grad():
+                self.layers[0].theta.uniform_(-math.pi / 2, math.pi / 2)
+                for layer in self.layers[1:]:
+                    layer.theta.copy_(self.layers[0].theta)
+        else:
+            per_axis = self.dh // 2
+            inv_freq = config.rope_base ** (-torch.arange(0, per_axis, 2, dtype=rope_dtype) / per_axis)
+            angles = (positions.to(rope_dtype)[..., None] * inv_freq).flatten(-2)
+            self.register_buffer("rope_cos", angles.cos()[None, None], persistent=False)
+            self.register_buffer("rope_sin", angles.sin()[None, None], persistent=False)
+
+    def rope_tables(self, L):
+        if self.config.rope_type == "learned_2d":
+            angles = L.theta[..., 0, None] * self.pos_u + L.theta[..., 1, None] * self.pos_w
+            angles = angles.transpose(-1, -2)[None]         # [1,H,T,Dk/2]
+            return angles.cos(), angles.sin()
+        return self.rope_cos, self.rope_sin
+
+    def apply_rope(self, x, L=None, tables=None):
+        """실수 feature 쌍에 공간 회전. 과거/현재를 나타내는 복소축에는 작용하지 않는다."""
+        cos, sin = self.rope_tables(self.layers[0] if L is None else L) if tables is None else tables
+        pairs = x.reshape(*x.shape[:-1], self.dh // 2, 2)
+        x0, x1 = pairs.unbind(-1)
+        return torch.stack((x0 * cos - x1 * sin, x0 * sin + x1 * cos), -1).reshape_as(x)
+
+    def memory_qk_views(self, q, k, e_k):
+        """FP32/64 사용 사본만 정규화. raw K/V 흔적은 그대로 보존한다.
+
+        L2: v1.7과 같은 x/(||x||₂+eps), Q/K/eK에 각각 독립 분모.
+        기존 RMS 실험: Q는 자체 RMS, K/eK는 복소 K 전체 실수 성분의 RMS 공유.
+        학습 배율/bias는 없다. vector_norm은 zero trace에서도 finite backward를 유지한다.
+        """
+        if self.config.kv_qk_l2norm:
+            return tuple(x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True)
+                              + self.config.eps) for x in (q, k, e_k))
+        if not self.config.kv_qk_rmsnorm:
+            return q, k, e_k
+        q_inv = torch.rsqrt(q.square().mean(-1,keepdim=True)+self.config.eps)
+        k_inv = torch.rsqrt(0.5*(k.square().mean(-1,keepdim=True)
+                                +e_k.square().mean(-1,keepdim=True))+self.config.eps)
+        return q*q_inv, k*k_inv, e_k*k_inv
+
+    def update_memory(self, memory, write):
+        """기억 갱신만 선택한다. 흔적, 쓰기 대상과 읽기 순서는 유지한다."""
+        if self.config.kv_memory_update == "ema":
+            return self.memory_decay * memory + self.write_scale * write
+        if self.config.kv_memory_update == "leaky":
+            return self.memory_decay * memory + write
+        return memory + write
+
+    def memory_step(self, L, q, k, v, memory=None, e_k=None, e_v=None, fresh=None):
+        """누적 기억과 과거 흔적을 읽고 쓴다. 상태/차감/읽기에는 AMP를 적용하지 않는다."""
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            q, k, v = (x.to(dtype) for x in (q, k, v))
+            e_k = torch.zeros_like(k) if e_k is None else e_k.to(dtype)
+            e_v = torch.zeros_like(v) if e_v is None else e_v.to(dtype)
+            if memory is None:
+                memory = v.new_zeros(v.shape[0], self.H, v.shape[-1], k.shape[-1])
+            else:
+                memory = memory.to(dtype)
+            if fresh is not None:
+                mask = fresh.view(-1, 1, 1, 1)
+                memory = torch.where(mask, torch.zeros_like(memory), memory)
+                e_k = torch.where(mask, torch.zeros_like(e_k), e_k)
+                e_v = torch.where(mask, torch.zeros_like(e_v), e_v)
+            tables = self.rope_tables(L)
+            q_read, k_write, past_k_write = self.memory_qk_views(q,k,e_k)
+            qr, kr, past_k = (self.apply_rope(x, L, tables) for x in (q_read,k_write,past_k_write))
+            # 두 실수 외적의 차 = Im[(e_V+iV)(RoPE(eK_write)+iRoPE(K_write))ᴴ].
+            # L2는 K/eK를 각각 단위화, 기존 RMS는 공통 분모. V/eV와 기억은 원시 값이다.
+            # 비슷한 활동의 차감이 BF16에서 사라지지 않도록 FP32로 계산한다.
+            write = v.transpose(-1, -2) @ past_k - e_v.transpose(-1, -2) @ kr
+            if self.config.kv_write_reduction == "mean":
+                write = write / k.shape[-2]
+            memory = self.update_memory(memory, write)
+            read = qr @ memory.transpose(-1, -2)  # 같은 블록에서 갱신된 기억을 읽는다.
+            lam = L.trace_decay_channels.to(dtype)[None, :, None, :]
+            # 원천 활동만 미분에서 상수 취급한다. 흔적 자체/계수는 미분 가능하며,
+            # 현재 블록의 signed write/read에는 원래 K/V 그래프를 사용한다.
+            trace_k = k.detach() if self.config.kv_trace_activity_detach else k
+            trace_v = v.detach() if self.config.kv_trace_activity_detach else v
+            e_k = lam * e_k + (1 - lam) * trace_k
+            e_v = lam * e_v + (1 - lam) * trace_v
+        return read, memory, e_k, e_v
+
+    def block(self, L, h, inj, memory, e_k, e_v, fresh):
+        h = h + self.embed_scale * inj
+        B, T, _ = h.shape
+        def heads(x):
+            return x.reshape(B, T, self.H, self.dh).transpose(1, 2)
+        q = heads(L.q_proj(h))
+        if self.config.kv_projection_fp32:
+            # 외적 차감 전에 사영에서 반올림된 활동은 나중에 float()해도 복구되지 않는다.
+            # K/V만 처음부터 FP32로 계산한다. FP64 검산 경로는 그대로 유지한다.
+            with torch.autocast(device_type=h.device.type, enabled=False):
+                projection_h = h if h.dtype == torch.float64 else h.float()
+                k, v = heads(L.k_proj(projection_h)), heads(L.v_proj(projection_h))
+        else:
+            k, v = heads(L.k_proj(h)), heads(L.v_proj(h))
+        read, memory, e_k, e_v = self.memory_step(L, q, k, v, memory, e_k, e_v, fresh)
+        read = read.transpose(1, 2).reshape(B, T, self.d).to(h.dtype)
+        h = h + L.out_proj(read)
+        h = self.phi(self.boundary(L, h))
+        return h, memory, e_k, e_v
+
+    def _forward(self, carry, batch):
+        h, inj = carry.current_hidden, self.injection(batch)
+        memory, e_k, e_v = carry.coupling, carry.key_trace, carry.value_trace
+        fresh = carry.fresh
+        if self.config.nograd_blocks:
+            with torch.no_grad():
+                for _ in range(self.config.nograd_blocks):
+                    for L in self.layers:
+                        h, memory, e_k, e_v = self.block(L, h, inj, memory, e_k, e_v, fresh)
+                        fresh = None
+        for _ in range(self.config.blocks_per_seg):
+            for L in self.layers:
+                if self.config.activation_checkpoint and self.training and torch.is_grad_enabled():
+                    h, memory, e_k, e_v = checkpoint(self.block, L, h, inj, memory, e_k, e_v, fresh,
+                                                    use_reentrant=False, preserve_rng_state=False)
+                else:
+                    h, memory, e_k, e_v = self.block(L, h, inj, memory, e_k, e_v, fresh)
+                fresh = None
+        return replace(carry, current_hidden=h.detach(), coupling=memory.detach(), trace=None,
+                       key_trace=(e_k.detach() if e_k is not None else None),
+                       value_trace=(e_v.detach() if e_v is not None else None), fresh=None), self.w_cls(h)
+
+
+class KVHebbianInner(KVSTDPInner):
+    """현재 K/V 외적만 재귀 블록마다 누적한다. Eligibility 흔적과 차감항은 없다."""
+    def memory_step(self, L, q, k, v, memory=None, e_k=None, e_v=None, fresh=None):
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            q, k, v = (x.to(dtype) for x in (q, k, v))
+            if memory is None:
+                memory = v.new_zeros(v.shape[0], self.H, v.shape[-1], k.shape[-1])
+            else:
+                memory = memory.to(dtype)
+            if fresh is not None:
+                mask = fresh.view(-1, 1, 1, 1)
+                memory = torch.where(mask, torch.zeros_like(memory), memory)
+            tables = self.rope_tables(L)
+            qr, kr = (self.apply_rope(x, L, tables) for x in (q, k))
+            write = v.transpose(-1, -2) @ kr
+            if self.config.kv_write_reduction == "mean":
+                write = write / k.shape[-2]
+            memory = self.update_memory(memory, write)
+            read = qr @ memory.transpose(-1, -2)
+        return read, memory, None, None
+
+
 class LT(nn.Module):
     """URM 하네스 인터페이스. ACT 없음 (halted = steps ≥ loops). q 로짓은 상수."""
     def __init__(self, config_dict: dict):
         super().__init__()
         self.config = LTConfig.from_dict(config_dict)
-        self.inner = LT_Inner(self.config)
+        inner_type = {"kv_stdp": KVSTDPInner, "kv_hebbian": KVHebbianInner}.get(self.config.memory_type, LT_Inner)
+        self.inner = inner_type(self.config)
 
     @property
     def puzzle_emb(self):
@@ -726,8 +1076,7 @@ class LT(nn.Module):
         outputs = {"logits": logits, "q_halt_logits": q, "q_continue_logits": q}
         with torch.no_grad():
             steps = steps + 1; halted = steps >= self.config.loops
-        return LTCarry(current_hidden=inner.current_hidden, steps=steps, halted=halted, current_data=data,
-                       coupling=inner.coupling, trace=inner.trace), outputs
+        return replace(inner, steps=steps, halted=halted, current_data=data), outputs
 
 
 
@@ -807,8 +1156,9 @@ NO_DECAY_KEYS = ("psi","theta","alpha_raw","gamma_raw","inj_gate","st_gain",
                  "gain_raw","eta_raw","lam_raw","beta","mu")
 
 
-def _is_no_decay(name,p):
-    return p.ndim<=1 or name.endswith(".b") or any(k in name for k in NO_DECAY_KEYS)
+def _is_no_decay(name,p,qkv_no_decay=False):
+    return (p.ndim<=1 or name.endswith(".b") or any(k in name for k in NO_DECAY_KEYS)
+            or (qkv_no_decay and name.endswith((".q_proj.weight", ".k_proj.weight", ".v_proj.weight"))))
 
 
 def create_optimizers(base,cfg,world_size):
@@ -818,9 +1168,10 @@ def create_optimizers(base,cfg,world_size):
                     weight_decay=cfg["puzzle_emb_weight_decay"]))
         lrs.append(cfg["puzzle_emb_lr"])
     named = [(n,p) for n,p in base.named_parameters() if p.requires_grad]
+    qkv_no_decay = cfg.get("qkv_no_decay",False)
     opts.append(AdamATan2([
-        {"params":[p for n,p in named if _is_no_decay(n,p)],"weight_decay":0.0},
-        {"params":[p for n,p in named if not _is_no_decay(n,p)],"weight_decay":cfg["weight_decay"]}],
+        {"params":[p for n,p in named if _is_no_decay(n,p,qkv_no_decay)],"weight_decay":0.0},
+        {"params":[p for n,p in named if not _is_no_decay(n,p,qkv_no_decay)],"weight_decay":cfg["weight_decay"]}],
         lr=0,betas=(cfg["beta1"],cfg["beta2"])))
     lrs.append(cfg["lr"])
     return opts,lrs
@@ -1163,14 +1514,20 @@ _RESUME_KEYS = tuple(f.name for f in fields(LTConfig) if f.name not in
                      ("batch_size","amp","amp_dtype","activation_checkpoint",
                       "beta_init_mean","beta_init_std","nograd_blocks")) + (
     "global_batch_size","epochs","eval_interval","num_aug","seed","grad_accum_steps",
-    "lr","lr_min_ratio","lr_warmup_steps","weight_decay","beta1","beta2","puzzle_emb_lr",
+    "lr","lr_min_ratio","lr_warmup_steps","weight_decay","qkv_no_decay","beta1","beta2","puzzle_emb_lr",
     "puzzle_emb_weight_decay","q_weight","ema","ema_rate","data_fingerprint",
     "lr_rewarm_start","lr_rewarm_steps","lr_rewarm_from_ratio","late_sup_prob","late_sup_min","late_sup_max",
     "nograd_fixed","nograd_every","nograd_start","nograd_max")
 # 이 키들이 생기기 전의 체크포인트(v1.71 Kaggle 런 등)는 아래 값으로 학습된 것이다.
 _LEGACY_DEFAULTS = dict(plastic_select=False,select_g_max=4.0,lr_rewarm_start=None,lr_rewarm_steps=0,
                         lr_rewarm_from_ratio=1.0,late_sup_prob=0.0,late_sup_min=16,late_sup_max=112,
-                        nograd_fixed=0,nograd_every=0,nograd_start=0,nograd_max=16)
+                        nograd_fixed=0,nograd_every=0,nograd_start=0,nograd_max=16,
+                        memory_type="address",trace_decay_init=0.9,trace_decay_mode="head",
+                        rope_type="axial_2d",rope_base=10000.0,
+                        kv_write_reduction="mean",
+                        kv_memory_update="additive",kv_memory_rho=0.95,
+                        kv_trace_activity_detach=False,
+                        qkv_no_decay=False,kv_qk_rmsnorm=False,kv_qk_l2norm=False,kv_projection_fp32=False)
 
 
 def _effective_recipe(cfg):
@@ -1184,6 +1541,30 @@ def _effective_recipe(cfg):
         r["select_g_max"] = None
     if not r["nograd_every"]:
         r["nograd_start"] = r["nograd_max"] = None
+    if r["memory_type"] == "address":
+        r["trace_decay_init"] = r["rope_type"] = r["rope_base"] = None
+        r["trace_decay_mode"] = None
+        r["kv_write_reduction"] = None
+        r["kv_memory_update"] = r["kv_memory_rho"] = None
+        r["kv_trace_activity_detach"] = None
+        r["qkv_no_decay"] = None
+        r["kv_qk_rmsnorm"] = None
+        r["kv_qk_l2norm"] = None
+        r["kv_projection_fp32"] = None
+    else:
+        if r["kv_memory_update"] == "additive":
+            r["kv_memory_rho"] = None
+        if r["memory_type"] == "kv_hebbian":
+            r["trace_decay_init"] = r["trace_decay_mode"] = r["kv_trace_activity_detach"] = None
+        if r["rope_type"] == "learned_2d":
+            r["rope_base"] = None
+        # KV-STDP에서는 기존 주소 커널·읽기 보간·가소성 계수를 사용하지 않는다.
+        if not (r["kv_qk_rmsnorm"] or r["kv_qk_l2norm"]):
+            r["eps"] = None
+        for key in ("alpha_init", "dist_decay", "inj_gate_init", "gamma_init",
+                    "address_projection", "psi_zero", "stdp_eta_init", "stdp_gain_init",
+                    "stdp_lam_init", "stdp_gain_fixed", "stdp_lam_fixed", "trace_rho_init"):
+            r[key] = None
     return r
 
 
@@ -1196,6 +1577,12 @@ def load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device):
     old = ck["cfg"]
     was,now = _effective_recipe(old),_effective_recipe(cfg)
     changed = {k:(was[k],now[k]) for k in _RESUME_KEYS if was[k]!=now[k]}
+    trace_activity_fork = (cfg.get("allow_trace_activity_fork",False)
+                           and changed.get("kv_trace_activity_detach") == (False,True))
+    if trace_activity_fork:
+        # Explicit controlled branch: restore all training state and change this
+        # backward policy only. Every other recipe difference still fails below.
+        changed.pop("kv_trace_activity_detach")
     if changed:
         raise ValueError(f"Resume config/data mismatch (start a new out_dir for a new experiment): {changed}")
     # Initialization is not reapplied on resume. Preserve the actual experiment's
@@ -1224,6 +1611,10 @@ def load_training_checkpoint(path,base,optimizers,ema,cfg,rank,ws,device):
     elif rank==0:
         print(f"[LT] resharded saved h/w/z/data: {ck['world_size']} -> {ws} ranks; "
               "bitwise equality across GPU layouts is not promised.",flush=True)
+    if trace_activity_fork and rank==0:
+        print(f"[LT] TRACE_ACTIVITY_GRADIENT_FORK step={ts.step}: False -> True; "
+              "raw weights/optimizer/EMA/carry/RNG/data cursor restored; "
+              "only K/V activity sources in eligibility EMA are detached",flush=True)
     return ts
 
 
@@ -1264,6 +1655,8 @@ def init_from_checkpoint(path,base,ema,cfg,device):
     (원본 런의 같은 구간과 같은 배치를 본다). carry 는 새로 시작한다."""
     ck = torch.load(path,map_location="cpu",weights_only=False)
     src = ck.get("model_id")
+    if cfg.get("memory_type", "address") in ("kv_stdp", "kv_hebbian") or src in (MODEL_ID_KV_STDP, MODEL_ID_KV_HEBBIAN):
+        raise ValueError("KV-STDP starts fresh or resumes its own checkpoint; init_from conversion is not defined.")
     if src not in (MODEL_ID,MODEL_ID_V18):
         raise ValueError(f"init_from expects a v1.71 or v1.8 checkpoint, got model_id={src!r}")
     if src==MODEL_ID_V18 and not cfg.get("plastic_select"):
@@ -1568,7 +1961,7 @@ def resolve_out_dir(cfg):
     if cfg["out_dir"]:
         return os.path.abspath(os.path.expanduser(str(cfg["out_dir"])))
     root = "/kaggle/working" if os.path.isdir("/kaggle/working") else os.getcwd()
-    return os.path.join(root,"lt_v18" if cfg.get("plastic_select") else "lt_v171")
+    return os.path.join(root, "lt_" + model_tag_of(cfg))
 
 
 def init_distributed():
@@ -1602,7 +1995,36 @@ def _resolve_precision(cfg,device):
     cfg["amp_dtype"] = "bfloat16" if cfg["amp"] and supported and requested!="float32" else "float32"
 
 
+def _validate_kv_memory_update(update, rho):
+    if update not in ("additive", "ema", "leaky"):
+        raise ValueError("kv_memory_update must be additive, ema or leaky.")
+    if (isinstance(rho, bool) or not isinstance(rho, (int, float))
+            or not math.isfinite(rho) or not 0 <= rho < 1):
+        raise ValueError("kv_memory_rho must be a finite number in [0, 1).")
+
+
 def validate_run_cfg(cfg):
+    _validate_kv_memory_update(cfg.get("kv_memory_update","additive"),cfg.get("kv_memory_rho",0.95))
+    if not isinstance(cfg.get("kv_trace_activity_detach",False),bool):
+        raise ValueError("kv_trace_activity_detach must be a boolean.")
+    if not isinstance(cfg.get("allow_trace_activity_fork",False),bool):
+        raise ValueError("allow_trace_activity_fork must be a boolean.")
+    if cfg.get("allow_trace_activity_fork",False) and not (
+            cfg.get("memory_type") == "kv_stdp" and cfg.get("kv_trace_activity_detach",False)
+            and cfg.get("require_resume",False) and cfg.get("resume_from")):
+        raise ValueError("allow_trace_activity_fork requires KV-STDP activity detach and an explicit required resume.")
+    if cfg.get("kv_write_reduction","mean") not in ("mean","sum"):
+        raise ValueError("kv_write_reduction must be mean or sum.")
+    if not isinstance(cfg.get("qkv_no_decay",False),bool):
+        raise ValueError("qkv_no_decay must be a boolean.")
+    if not isinstance(cfg.get("kv_qk_rmsnorm",False),bool):
+        raise ValueError("kv_qk_rmsnorm must be a boolean.")
+    if not isinstance(cfg.get("kv_qk_l2norm",False),bool):
+        raise ValueError("kv_qk_l2norm must be a boolean.")
+    if cfg.get("kv_qk_rmsnorm",False) and cfg.get("kv_qk_l2norm",False):
+        raise ValueError("kv_qk_rmsnorm and kv_qk_l2norm are mutually exclusive.")
+    if not isinstance(cfg.get("kv_projection_fp32",False),bool):
+        raise ValueError("kv_projection_fp32 must be a boolean.")
     if cfg["grad_accum_steps"]!=1:
         raise ValueError("grad_accum_steps must be 1: one segment equals one optimizer step. "
                          "The supplied train.py did not actually implement gradient accumulation.")
@@ -1612,8 +2034,8 @@ def validate_run_cfg(cfg):
         raise ValueError("epochs must be a positive multiple of eval_interval (in EPOCHS, not steps).")
     if min(cfg["global_batch_size"],cfg["test_size"],cfg["log_every"],cfg["stop_check_every"])<=0:
         raise ValueError("Batch, test_size, log_every, and stop_check_every must be positive.")
-    if cfg["num_aug"]<0 or cfg["max_hours"]<=0:
-        raise ValueError("num_aug>=0 and max_hours>0 are required.")
+    if cfg["num_aug"]<0 or (cfg["max_hours"] is not None and cfg["max_hours"]<=0):
+        raise ValueError("num_aug>=0 and max_hours>0 or None are required.")
     if cfg["max_steps"] is not None and cfg["max_steps"]<0:
         raise ValueError("max_steps must be nonnegative or None; it is an ABSOLUTE stopping step.")
     if cfg["milestone_every"] and cfg["milestone_extrap_segs"]<1:
@@ -1640,7 +2062,7 @@ def main(cfg):
     cfg = dict(cfg)
     validate_run_cfg(cfg)
     start = time.monotonic()
-    deadline = start+cfg["max_hours"]*3600
+    deadline = float("inf") if cfg["max_hours"] is None else start+cfg["max_hours"]*3600
     # Self-tests run before CUDA initialization or distributed collectives.
     if cfg["run_selftests"] and int(os.environ.get("RANK","0"))==0:
         selftest()
@@ -1715,17 +2137,63 @@ def main(cfg):
         print(f"[LT] {model_id_of(cfg)} torch={torch.__version__} device={device} ranks={ws} local_bs={lbs}",flush=True)
         print(f"[LT] params={sum(p.numel() for p in base.parameters()):,} amp={cfg['amp_dtype']} "
               f"activation_checkpoint={cfg['activation_checkpoint']} compile={cfg['compile']}",flush=True)
-        print(f"[LT] beta initialization: mean={cfg['beta_init_mean']:.8f} rad, "
-              f"std={cfg['beta_init_std']:.8f}; "
-              + ("resumed learned beta from checkpoint" if path else
-                 "learned beta from init_from" if cfg.get("init_from") else "fresh, learnable beta"),flush=True)
+        if cfg.get("memory_type", "address") == "address":
+            print(f"[LT] beta initialization: mean={cfg['beta_init_mean']:.8f} rad, "
+                  f"std={cfg['beta_init_std']:.8f}; "
+                  + ("resumed learned beta from checkpoint" if path else
+                     "learned beta from init_from" if cfg.get("init_from") else "fresh, learnable beta"),flush=True)
         print(f"[LT] data={cfg['data_npz']} train={len(tr_x)} test={len(te_x)}",flush=True)
         print(f"[LT] planned steps={planned_steps}; actual steps={actual_steps}; "
               f"1 step={cfg['blocks_per_seg']} blocks; loops={cfg['loops']} segments",flush=True)
-        print(f"[LT] {'v1.8' if cfg.get('plastic_select') else 'v1.71'}: projection={cfg['address_projection']} "
-              f"order={cfg['block_order']} address_trace={cfg['use_trace']} "
-              f"rho_init={cfg['trace_rho_init']} plastic_select={cfg.get('plastic_select')} "
-              f"g_max={cfg.get('select_g_max')}",flush=True)
+        if cfg.get("memory_type", "address") == "kv_stdp":
+            rope_description = ("learned real joint 2D RoPE theta=[head,pair,row/col] "
+                                "init=U[-pi/2,pi/2]" if cfg["rope_type"] == "learned_2d" else
+                                f"fixed real axial 2D RoPE base={cfg['rope_base']}")
+            print(f"[LT] KV-STDP: heads={cfg['num_heads']} head_dim={cfg['hidden_size']//cfg['num_heads']} "
+                  f"trace_lambda_init={cfg['trace_decay_init']} "
+                  f"(learned {cfg.get('trace_decay_mode','head')}, shared K/V; "
+                  f"lambda_shape={tuple(base.model.inner.layers[0].trace_lam_raw.shape)}); "
+                  f"memory_update={base.model.config.kv_memory_update} "
+                  f"memory_decay={base.model.inner.memory_decay:g} write_scale={base.model.inner.write_scale:g} "
+                  f"token_reduction={cfg.get('kv_write_reduction','mean')}; {rope_description}; "
+                  "inject -> memory -> bilinear FFN -> fixed Phi; FP32 memory/traces",flush=True)
+            kv_precision = "FP32 (autocast disabled)" if cfg.get("kv_projection_fp32",False) else "AMP"
+            print(f"[LT] KV-STDP projection precision: K/V={kv_precision}; "
+                  "Q/out_proj/FFN follow configured AMP",flush=True)
+            print(f"[LT] KV-STDP trace activity detach={cfg.get('kv_trace_activity_detach',False)}; "
+                  "eligibility values unchanged; lambda explicit gradient retained; current signed write/read unchanged",flush=True)
+            qkv_decay = 0.0 if cfg.get("qkv_no_decay",False) else cfg["weight_decay"]
+            print(f"[LT] KV-STDP optimizer: Q/K/V weight_decay={qkv_decay:g}; "
+                  f"out_proj/FFN weight_decay={cfg['weight_decay']:g}; lambda/theta weight_decay=0",flush=True)
+            if cfg.get("kv_qk_l2norm",False):
+                print(f"[LT] KV-STDP L2: Q/K/eK normalized independently per token/head; "
+                      f"denominator=norm(x)+eps, eps={cfg['eps']:g}; no learned gain/bias; "
+                      "raw K/V eligibility traces; raw V/eV and memory",flush=True)
+            elif cfg.get("kv_qk_rmsnorm",False):
+                print(f"[LT] KV-STDP RMS: Q read normalized per token/head; "
+                      f"past/current K write share sqrt(mean([eK,K]^2)+eps), eps={cfg['eps']:g}; "
+                      "no learned gain/bias; raw K/V traces; raw V and memory",flush=True)
+        elif cfg.get("memory_type") == "kv_hebbian":
+            rope_description = ("learned real joint 2D RoPE theta=[head,pair,row/col] "
+                                "init=U[-pi/2,pi/2]" if cfg["rope_type"] == "learned_2d" else
+                                f"fixed real axial 2D RoPE base={cfg['rope_base']}")
+            print(f"[LT] KV-HEBBIAN: heads={cfg['num_heads']} head_dim={cfg['hidden_size']//cfg['num_heads']} "
+                  f"memory_update={base.model.config.kv_memory_update} "
+                  f"memory_decay={base.model.inner.memory_decay:g} write_scale={base.model.inner.write_scale:g} "
+                  f"token_reduction={cfg.get('kv_write_reduction','mean')}; "
+                  "write=V.T @ RoPE(K); read=RoPE(Q) @ M.T; no K/V traces, lambda or subtraction; "
+                  f"{rope_description}; inject -> memory -> bilinear FFN -> fixed Phi; FP32 memory",flush=True)
+            kv_precision = "FP32 (autocast disabled)" if cfg.get("kv_projection_fp32",False) else "AMP"
+            qkv_decay = 0.0 if cfg.get("qkv_no_decay",False) else cfg["weight_decay"]
+            print(f"[LT] KV-HEBBIAN: no Q/K normalization; K/V={kv_precision}; "
+                  "Q/out_proj/FFN follow configured AMP; autocast cache disabled",flush=True)
+            print(f"[LT] KV-HEBBIAN optimizer: Q/K/V weight_decay={qkv_decay:g}; "
+                  f"out_proj/FFN weight_decay={cfg['weight_decay']:g}; theta weight_decay=0",flush=True)
+        else:
+            print(f"[LT] {'v1.8' if cfg.get('plastic_select') else 'v1.71'}: projection={cfg['address_projection']} "
+                  f"order={cfg['block_order']} address_trace={cfg['use_trace']} "
+                  f"rho_init={cfg['trace_rho_init']} plastic_select={cfg.get('plastic_select')} "
+                  f"g_max={cfg.get('select_g_max')}",flush=True)
         print(f"[LT] lr={cfg['lr']} min_ratio={cfg['lr_min_ratio']} rewarm_start={cfg.get('lr_rewarm_start')} "
               f"rewarm_steps={cfg.get('lr_rewarm_steps')} rewarm_from_ratio={cfg.get('lr_rewarm_from_ratio')} "
               f"late_sup_prob={cfg.get('late_sup_prob',0.0)} nograd_fixed={cfg.get('nograd_fixed',0)} "
@@ -1968,6 +2436,7 @@ def selftest():
         checks.append("resume reproduces next weights/EMA/h/W/Z and Torch/NumPy/Python RNG")
         _selftest_v18(cfg, full, checks, device)
         _selftest_nograd(cfg, full, checks)
+        _selftest_kv_stdp(cfg, full, checks, device)
         for item in checks: print("[selftest] PASS "+item, flush=True)
         print(f"[selftest] {len(checks)}/{len(checks)} groups passed (CPU, synthetic inputs).", flush=True)
         return checks
@@ -1975,6 +2444,78 @@ def selftest():
         _restore_rng(rng0, device)
         torch.set_num_threads(old_threads)
 
+
+
+def _selftest_kv_stdp(cfg, full, checks, device):
+    """단일 셀에서도 새 기억의 복소 항등식·상태 이월·실제 학습 재개를 검산한다."""
+    import tempfile
+    cfg = dict(cfg, **PRESETS["kv_stdp"])
+    torch.manual_seed(117)
+    base = ACTLossHead(LT(cfg), q_weight=cfg["q_weight"])
+    inner, L = base.model.inner, base.model.inner.layers[0]
+    shape = (2, cfg["num_heads"], cfg["seq_len"], cfg["hidden_size"] // cfg["num_heads"])
+    q, k, v, e_k, e_v = (torch.randn(shape) for _ in range(5))
+    memory = torch.randn(2, cfg["num_heads"], shape[-1], shape[-1])
+    with torch.no_grad():
+        q_read, k_write, past_k_write = q, k, e_k
+        if cfg.get("kv_qk_l2norm",False):
+            q_read, k_write, past_k_write = (
+                x / (x.norm(dim=-1,keepdim=True)+cfg["eps"]) for x in (q,k,e_k))
+        elif cfg.get("kv_qk_rmsnorm",False):
+            q_read = q / torch.sqrt(q.square().mean(-1,keepdim=True)+cfg["eps"])
+            key_scale = torch.sqrt(torch.cat((e_k,k),dim=-1).square().mean(-1,keepdim=True)+cfg["eps"])
+            k_write, past_k_write = k/key_scale, e_k/key_scale
+        ck = torch.complex(inner.apply_rope(past_k_write), inner.apply_rope(k_write))
+        cv = torch.complex(e_v, v)
+        expected_write = (cv.transpose(-1, -2) @ ck.conj()).imag
+        if cfg.get("kv_write_reduction","mean") == "mean":
+            expected_write = expected_write / shape[-2]
+        expected = memory + expected_write
+        read, actual, kn, vn = inner.memory_step(L, q, k, v, memory, e_k, e_v)
+        torch.testing.assert_close(actual, expected, rtol=2e-5, atol=2e-6)
+        torch.testing.assert_close(read, inner.apply_rope(q_read) @ expected.transpose(-1, -2), rtol=2e-5, atol=2e-6)
+        lam = (L.trace_decay.repeat_interleave(2,dim=-1)[None,:,None,:]
+               if cfg.get("trace_decay_mode","head")=="pair" else L.trace_decay.view(1,-1,1,1))
+        torch.testing.assert_close(kn, lam * e_k + (1 - lam) * k)
+        torch.testing.assert_close(vn, lam * e_v + (1 - lam) * v)
+    checks.append("KV-STDP: real outer-product difference matches complex imaginary write; past-only traces")
+    batch = full[0][1]
+    _, loss, _, _, _ = base(carry=base.initial_carry(batch), batch=batch, return_keys=set())
+    loss.backward()
+    assert L.trace_lam_raw.grad is not None and L.trace_lam_raw.grad.norm() > 0
+    assert L.theta.grad is not None and L.theta.grad.norm() > 0
+    assert _is_no_decay("inner.layers.0.theta", L.theta)
+    for name, param in base.named_parameters():
+        if param.grad is not None:
+            assert torch.isfinite(param.grad).all(), name
+    opts, lrs = create_optimizers(base, cfg, 1)
+    ema = EMAHelper(cfg["ema_rate"]); ema.register(base)
+    ts = TrainState()
+    def update(model, state, optimizers, rates, shadow, data):
+        train_batch(model, model, state, data, cfg, optimizers, rates, 16, 0, 1, device)
+        shadow.update(model); state.batch_in_iter += 1
+    for j in range(2):
+        update(base, ts, opts, lrs, ema, full[j][1])
+    for name in ("current_hidden", "coupling", "key_trace", "value_trace"):
+        assert not getattr(ts.carry, name).requires_grad
+        assert torch.isfinite(getattr(ts.carry, name)).all()
+    assert ts.carry.trace is None
+    assert ts.carry.current_hidden.norm(dim=-1).max() <= math.sqrt(cfg["hidden_size"]) + 1e-5
+    with tempfile.TemporaryDirectory() as directory:
+        path = save_training_checkpoint(directory, ts, base, opts, ema, cfg, 0, 1, device)
+        update(base, ts, opts, lrs, ema, full[2][1])
+        resumed = ACTLossHead(LT(cfg), q_weight=cfg["q_weight"])
+        ro, rl = create_optimizers(resumed, cfg, 1)
+        rema = EMAHelper(cfg["ema_rate"]); rema.register(resumed)
+        rs = load_training_checkpoint(path, resumed, ro, rema, cfg, 0, 1, device)
+        update(resumed, rs, ro, rl, rema, full[2][1])
+        for name, value in base.state_dict().items():
+            assert torch.equal(value, resumed.state_dict()[name]), name
+        for name, value in ema.shadow.items():
+            assert torch.equal(value, rema.shadow[name]), name
+        for name in ("current_hidden", "coupling", "key_trace", "value_trace", "steps", "halted"):
+            assert torch.equal(getattr(ts.carry, name), getattr(rs.carry, name)), name
+    checks.append("KV-STDP: finite lambda/theta gradients; h/M/K/V boundary detach; exact optimizer/EMA/carry resume")
 
 
 def _selftest_v18(cfg, full, checks, device):
@@ -2147,6 +2688,45 @@ def load_checkpoint(path: str, base: nn.Module, optimizers, device, load_optimiz
     ck = torch.load(path, map_location=device, weights_only=False)
     sd = ck.get("raw_model_state_dict") or ck["model_state_dict"]
     sd = strip_prefix(sd)
+    saved_memory = (ck.get("cfg") or {}).get("memory_type", "address")
+    model_memory = getattr(base, "model", base).config.memory_type
+    if saved_memory != model_memory:
+        raise ValueError(f"Checkpoint memory_type={saved_memory!r} does not match model memory_type={model_memory!r}.")
+    if model_memory in ("kv_stdp", "kv_hebbian"):
+        saved_update = (ck.get("cfg") or {}).get("kv_memory_update","additive")
+        model_cfg = getattr(base,"model",base).config
+        if saved_update != model_cfg.kv_memory_update:
+            raise ValueError(f"Checkpoint kv_memory_update={saved_update!r} does not match model kv_memory_update={model_cfg.kv_memory_update!r}.")
+        if saved_update in ("ema", "leaky"):
+            saved_rho = (ck.get("cfg") or {}).get("kv_memory_rho",0.95)
+            if saved_rho != model_cfg.kv_memory_rho:
+                raise ValueError(f"Checkpoint kv_memory_rho={saved_rho!r} does not match model kv_memory_rho={model_cfg.kv_memory_rho!r}.")
+        if model_memory == "kv_stdp":
+            saved_activity_detach = (ck.get("cfg") or {}).get("kv_trace_activity_detach",False)
+            model_activity_detach = getattr(base,"model",base).config.kv_trace_activity_detach
+            if saved_activity_detach != model_activity_detach:
+                raise ValueError(f"Checkpoint kv_trace_activity_detach={saved_activity_detach!r} does not match model kv_trace_activity_detach={model_activity_detach!r}.")
+        saved_reduction = (ck.get("cfg") or {}).get("kv_write_reduction","mean")
+        model_reduction = getattr(base,"model",base).config.kv_write_reduction
+        if saved_reduction != model_reduction:
+            raise ValueError(f"Checkpoint kv_write_reduction={saved_reduction!r} does not match model kv_write_reduction={model_reduction!r}.")
+        if model_memory == "kv_stdp":
+            saved_mode = (ck.get("cfg") or {}).get("trace_decay_mode","head")
+            model_mode = getattr(base,"model",base).config.trace_decay_mode
+            if saved_mode != model_mode:
+                raise ValueError(f"Checkpoint trace_decay_mode={saved_mode!r} does not match model trace_decay_mode={model_mode!r}.")
+        saved_norm = (ck.get("cfg") or {}).get("kv_qk_rmsnorm",False)
+        model_norm = getattr(base,"model",base).config.kv_qk_rmsnorm
+        if saved_norm != model_norm:
+            raise ValueError(f"Checkpoint kv_qk_rmsnorm={saved_norm!r} does not match model kv_qk_rmsnorm={model_norm!r}.")
+        saved_l2 = (ck.get("cfg") or {}).get("kv_qk_l2norm",False)
+        model_l2 = getattr(base,"model",base).config.kv_qk_l2norm
+        if saved_l2 != model_l2:
+            raise ValueError(f"Checkpoint kv_qk_l2norm={saved_l2!r} does not match model kv_qk_l2norm={model_l2!r}.")
+        saved_fp32 = (ck.get("cfg") or {}).get("kv_projection_fp32",False)
+        model_fp32 = getattr(base,"model",base).config.kv_projection_fp32
+        if saved_fp32 != model_fp32:
+            raise ValueError(f"Checkpoint kv_projection_fp32={saved_fp32!r} does not match model kv_projection_fp32={model_fp32!r}.")
     saved_projection = (ck.get("cfg") or {}).get("address_projection", "qr")
     model_projection = getattr(base, "model", base).config.address_projection
     conversion_hint = (
@@ -2179,8 +2759,9 @@ def load_checkpoint(path: str, base: nn.Module, optimizers, device, load_optimiz
     return ck
 
 def _cli():
-    ap = argparse.ArgumentParser(description="Self-contained LT v1.8 / v1.71 trainer")
+    ap = argparse.ArgumentParser(description="Self-contained LT KV-STDP / v1.8 / v1.71 trainer")
     ap.add_argument("--config",help="JSON overrides for DEFAULT_CFG")
+    ap.add_argument("--preset", choices=PRESETS, help="Select kv_stdp or an existing architecture before JSON overrides")
     ap.add_argument("--data")
     ap.add_argument("--out_dir")
     ap.add_argument("--resume_from")
@@ -2193,6 +2774,8 @@ def _cli():
         selftest()
         return
     cfg = dict(DEFAULT_CFG)
+    if a.preset:
+        cfg.update(PRESETS[a.preset])
     if a.config:
         with open(a.config,encoding="utf-8") as f:
             overrides = json.load(f)
@@ -2218,7 +2801,7 @@ if __name__=="__main__":
 def launch_lt_one_cell():
     """새 프로세스에서 동기 실행. 노트북의 CUDA 상태와 argparse 인자를 상속하지 않습니다."""
     work_root = Path("/kaggle/working") if Path("/kaggle/working").is_dir() else Path.cwd()
-    tag = "v18" if CFG.get("plastic_select") else "v171"
+    tag = CFG["memory_type"] if CFG.get("memory_type") in ("kv_stdp", "kv_hebbian") else ("v18" if CFG.get("plastic_select") else "v171")
     runtime = Path(tempfile.mkdtemp(prefix=f"_lt_{tag}_", dir=str(work_root)))
     trainer_path = runtime / f"train_{tag}.py"
     config_path = runtime / "config.json"
