@@ -1,0 +1,18 @@
+{
+  "commit": "70a8dbae82a135251b83c91a53a8f14bd411946d",
+  "trainer_sha256": "65221608b193b1c86893bc1bfe973a6c400fe960d2fefed74905aedcb9c71e2f",
+  "torch": "2.8.0+cu128",
+  "gpu": "NVIDIA RTX 4000 Ada Generation",
+  "variant": "read_gain_quarter",
+  "protocol": "original CFG; same data/seed/batch/depth/optimizer; explicit model control only",
+  "selftest_note": "Original selftest fails bitwise resume equality for q_proj on CPU (max difference 7.45e-9, both finite); not altered.",
+  "only_equation_change": "read = 0.25 * RoPE(Q) @ (M_old + G).T",
+  "write_equation": "Original G = (V.T @ RoPE(eK_old) - eV_old.T @ RoPE(K)) / T; M_new = M_old + G.",
+  "read_gain": 0.25,
+  "recurrent_memory": true,
+  "eligibility_traces": true,
+  "interpolation": false,
+  "rationale": "Frozen-checkpoint gain interventions reduced two-block oscillation in both phases. Training checks whether that observation transfers; it is not a presumed fix.",
+  "parameter_note": "No new parameters; original initialization, raw-key traces, optimizer/data/depth retained.",
+  "primary_criterion": "Training loss/accuracy, not frozen-probe or EMA test accuracy."
+}

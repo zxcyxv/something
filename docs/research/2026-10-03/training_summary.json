@@ -1,0 +1,827 @@
+{
+  "protocol": "Terminal training rows only; endpoint-256 < step <= endpoint; proportions, not percentages. No EMA/test rows.",
+  "runs": {
+    "baseline": {
+      "operator": "M; supplementary 8 no-grad + 8 grad blocks",
+      "last_optimizer_step": 4500,
+      "last_terminal_step": 4496,
+      "last_terminal": {
+        "step": 4496,
+        "elapsed": 1441.2846714570187,
+        "seconds": 0.25818328000605106,
+        "segment": 16,
+        "accuracy": 0.7401620149612427,
+        "count": 1.0,
+        "exact_accuracy": 0.0,
+        "lm_loss": 0.888615608215332,
+        "q_halt_accuracy": 1.0,
+        "q_halt_loss": 0.006715297698974609,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.3981550186872482,
+          "accuracy": 0.46886453963816166,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.2777976840734482,
+          "accuracy": 0.48690683767199516,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 1.2444757521152496,
+          "accuracy": 0.49894508346915245,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 1.1101238802075386,
+          "accuracy": 0.6354709342122078,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 0.99872887134552,
+          "accuracy": 0.7121732756495476,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2992,
+          "samples": 16,
+          "loss": 0.9528560601174831,
+          "accuracy": 0.7225839346647263,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 4000,
+          "samples": 16,
+          "loss": 0.9348633959889412,
+          "accuracy": 0.7146508768200874,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 4496,
+          "samples": 16,
+          "loss": 0.8955213725566864,
+          "accuracy": 0.7341097891330719,
+          "exact": 0.0
+        }
+      ],
+      "latest_window": {
+        "endpoint": 4496,
+        "samples": 16,
+        "loss": 0.8955213725566864,
+        "accuracy": 0.7341097891330719,
+        "exact": 0.0
+      }
+    },
+    "baseline_ng0": {
+      "operator": "M = M_previous + G",
+      "last_optimizer_step": 6000,
+      "last_terminal_step": 6000,
+      "last_terminal": {
+        "step": 6000,
+        "elapsed": 1461.189512437908,
+        "seconds": 0.20243360195308924,
+        "segment": 16,
+        "accuracy": 0.6051311492919922,
+        "count": 1.0,
+        "exact_accuracy": 0.0,
+        "lm_loss": 0.8731765747070312,
+        "q_halt_accuracy": 1.0,
+        "q_halt_loss": 0.006715297698974609,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.4135392159223557,
+          "accuracy": 0.46301722899079323,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.2100655362010002,
+          "accuracy": 0.5115318968892097,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 1.0848816856741905,
+          "accuracy": 0.5573399029672146,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 0.9820745475590229,
+          "accuracy": 0.6016529276967049,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 1.0560259073972702,
+          "accuracy": 0.5494611002504826,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2992,
+          "samples": 16,
+          "loss": 1.04130257666111,
+          "accuracy": 0.5484363064169884,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 4000,
+          "samples": 16,
+          "loss": 0.953942384570837,
+          "accuracy": 0.5790051184594631,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 5008,
+          "samples": 16,
+          "loss": 0.8593958951532841,
+          "accuracy": 0.6123288050293922,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 6000,
+          "samples": 16,
+          "loss": 0.8431598953902721,
+          "accuracy": 0.618423268198967,
+          "exact": 0.0
+        }
+      ],
+      "latest_window": {
+        "endpoint": 6000,
+        "samples": 16,
+        "loss": 0.8431598953902721,
+        "accuracy": 0.618423268198967,
+        "exact": 0.0
+      }
+    },
+    "v17_no_address_norm": {
+      "operator": "v1.7, raw Q/K addresses, mixed current/persistent read",
+      "last_optimizer_step": 6000,
+      "last_terminal_step": 6000,
+      "last_terminal": {
+        "step": 6000,
+        "segment": 16,
+        "seconds": 0.16205424699001014,
+        "elapsed": 1263.9772102539428,
+        "accuracy": 0.8269676566123962,
+        "count": 1.0,
+        "exact_accuracy": 0.046875,
+        "lm_loss": 0.4981335699558258,
+        "q_halt_accuracy": 0.953125,
+        "q_halt_loss": 0.2410902976989746,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 0.9560002498328686,
+          "accuracy": 0.6687765270471573,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 0.648837398737669,
+          "accuracy": 0.7902139015495777,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 0.4098108038306236,
+          "accuracy": 0.8786711879074574,
+          "exact": 0.0263671875
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 0.3527871537953615,
+          "accuracy": 0.9004509449005127,
+          "exact": 0.05908203125
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 0.3737239334732294,
+          "accuracy": 0.891758318990469,
+          "exact": 0.072265625
+        },
+        {
+          "endpoint": 2992,
+          "samples": 16,
+          "loss": 0.47737410850822926,
+          "accuracy": 0.8428397737443447,
+          "exact": 0.033203125
+        },
+        {
+          "endpoint": 4000,
+          "samples": 16,
+          "loss": 0.4655076526105404,
+          "accuracy": 0.8450882695615292,
+          "exact": 0.0458984375
+        },
+        {
+          "endpoint": 5008,
+          "samples": 16,
+          "loss": 0.46562772803008556,
+          "accuracy": 0.8438103012740612,
+          "exact": 0.0615234375
+        },
+        {
+          "endpoint": 6000,
+          "samples": 16,
+          "loss": 0.488796453922987,
+          "accuracy": 0.8323025330901146,
+          "exact": 0.06396484375
+        }
+      ],
+      "latest_window": {
+        "endpoint": 6000,
+        "samples": 16,
+        "loss": 0.488796453922987,
+        "accuracy": 0.8323025330901146,
+        "exact": 0.06396484375
+      }
+    },
+    "v17_no_norm_memory_read": {
+      "operator": "v1.7, raw Q/K addresses, W-only read",
+      "last_optimizer_step": 2385,
+      "last_terminal_step": 2384,
+      "last_terminal": {
+        "step": 2384,
+        "segment": 16,
+        "seconds": 0.1473513909149915,
+        "elapsed": 537.4350531629752,
+        "accuracy": 0.5746527910232544,
+        "count": 1.0,
+        "exact_accuracy": 0.0,
+        "lm_loss": 0.9796066284179688,
+        "q_halt_accuracy": 1.0,
+        "q_halt_loss": 0.006715297698974609,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.2855185344815254,
+          "accuracy": 0.4951774775981903,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.1546740680932999,
+          "accuracy": 0.5269941166043282,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 1.0603629425168037,
+          "accuracy": 0.5552119463682175,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 1.0171944312751293,
+          "accuracy": 0.5663580410182476,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2384,
+          "samples": 16,
+          "loss": 0.985396321862936,
+          "accuracy": 0.5761477835476398,
+          "exact": 0.0
+        }
+      ],
+      "latest_window": {
+        "endpoint": 2384,
+        "samples": 16,
+        "loss": 0.985396321862936,
+        "accuracy": 0.5761477835476398,
+        "exact": 0.0
+      }
+    },
+    "kv_interpolated_read_ng0": {
+      "operator": "(1-alpha) B + alpha M; NOT G/M interpolation",
+      "last_optimizer_step": 2875,
+      "last_terminal_step": 2864,
+      "last_terminal": {
+        "step": 2864,
+        "elapsed": 870.7595818799455,
+        "seconds": 0.24503773404285312,
+        "segment": 16,
+        "accuracy": 0.9168596267700195,
+        "count": 1.0,
+        "exact_accuracy": 0.046875,
+        "lm_loss": 0.39472848176956177,
+        "q_halt_accuracy": 0.953125,
+        "q_halt_loss": 0.2410902976989746,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.335593231022358,
+          "accuracy": 0.48156589083373547,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.1212045103311539,
+          "accuracy": 0.5492199696600437,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 0.8603151924908161,
+          "accuracy": 0.6815260946750641,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 0.5988968759775162,
+          "accuracy": 0.815960206091404,
+          "exact": 0.0068359375
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 0.49219426326453686,
+          "accuracy": 0.8596040904521942,
+          "exact": 0.0263671875
+        },
+        {
+          "endpoint": 2864,
+          "samples": 16,
+          "loss": 0.45570882223546505,
+          "accuracy": 0.885000754147768,
+          "exact": 0.041015625
+        }
+      ],
+      "latest_window": {
+        "endpoint": 2864,
+        "samples": 16,
+        "loss": 0.45570882223546505,
+        "accuracy": 0.885000754147768,
+        "exact": 0.041015625
+      }
+    },
+    "kv_current_only_ng0": {
+      "operator": "B = mean(V_current K_current.T)",
+      "last_optimizer_step": 6000,
+      "last_terminal_step": 6000,
+      "last_terminal": {
+        "step": 6000,
+        "elapsed": 1251.610930358991,
+        "seconds": 0.1719928600359708,
+        "segment": 16,
+        "accuracy": 0.9129050970077515,
+        "count": 1.0,
+        "exact_accuracy": 0.2265625,
+        "lm_loss": 0.3703951835632324,
+        "q_halt_accuracy": 0.7734375,
+        "q_halt_loss": 1.1395277976989746,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.3340446576476097,
+          "accuracy": 0.48307292722165585,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.0771534964442253,
+          "accuracy": 0.5712950937449932,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 0.6167552843689919,
+          "accuracy": 0.8079065680503845,
+          "exact": 0.00537109375
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 0.40804003179073334,
+          "accuracy": 0.906014934182167,
+          "exact": 0.060546875
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 0.3319005686789751,
+          "accuracy": 0.9401765242218971,
+          "exact": 0.1953125
+        },
+        {
+          "endpoint": 2992,
+          "samples": 16,
+          "loss": 0.32060004211962223,
+          "accuracy": 0.9424250349402428,
+          "exact": 0.24365234375
+        },
+        {
+          "endpoint": 4000,
+          "samples": 16,
+          "loss": 0.31833261623978615,
+          "accuracy": 0.9386453703045845,
+          "exact": 0.27587890625
+        },
+        {
+          "endpoint": 5008,
+          "samples": 16,
+          "loss": 0.3309795968234539,
+          "accuracy": 0.9281925484538078,
+          "exact": 0.29345703125
+        },
+        {
+          "endpoint": 6000,
+          "samples": 16,
+          "loss": 0.3340312363579869,
+          "accuracy": 0.927493266761303,
+          "exact": 0.30859375
+        }
+      ],
+      "latest_window": {
+        "endpoint": 6000,
+        "samples": 16,
+        "loss": 0.3340312363579869,
+        "accuracy": 0.927493266761303,
+        "exact": 0.30859375
+      }
+    },
+    "kv_complex_current_only_ng0": {
+      "operator": "G = mean(V_current eK_past.T - eV_past K_current.T)",
+      "last_optimizer_step": 6000,
+      "last_terminal_step": 6000,
+      "last_terminal": {
+        "step": 6000,
+        "elapsed": 1476.378401180962,
+        "seconds": 0.2061052790377289,
+        "segment": 16,
+        "accuracy": 0.8131752014160156,
+        "count": 1.0,
+        "exact_accuracy": 0.109375,
+        "lm_loss": 0.4941093623638153,
+        "q_halt_accuracy": 0.890625,
+        "q_halt_loss": 0.5535902976989746,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.5691626444458961,
+          "accuracy": 0.3923430275171995,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.3541864305734634,
+          "accuracy": 0.4735002014786005,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 1.1722211837768555,
+          "accuracy": 0.511194322258234,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 0.8701186887919903,
+          "accuracy": 0.6375626884400845,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 0.7340843491256237,
+          "accuracy": 0.7013045027852058,
+          "exact": 0.005859375
+        },
+        {
+          "endpoint": 2992,
+          "samples": 16,
+          "loss": 0.7027031816542149,
+          "accuracy": 0.7273582369089127,
+          "exact": 0.009765625
+        },
+        {
+          "endpoint": 4000,
+          "samples": 16,
+          "loss": 0.583067812025547,
+          "accuracy": 0.7840772308409214,
+          "exact": 0.01904296875
+        },
+        {
+          "endpoint": 5008,
+          "samples": 16,
+          "loss": 0.6025468409061432,
+          "accuracy": 0.7710021436214447,
+          "exact": 0.03564453125
+        },
+        {
+          "endpoint": 6000,
+          "samples": 16,
+          "loss": 0.5711215399205685,
+          "accuracy": 0.7832212336361408,
+          "exact": 0.0703125
+        }
+      ],
+      "latest_window": {
+        "endpoint": 6000,
+        "samples": 16,
+        "loss": 0.5711215399205685,
+        "accuracy": 0.7832212336361408,
+        "exact": 0.0703125
+      }
+    },
+    "kv_current_plus_stdp_ng0": {
+      "operator": "B + G; no persistent M read",
+      "last_optimizer_step": 3000,
+      "last_terminal_step": 2992,
+      "last_terminal": {
+        "step": 2992,
+        "elapsed": 814.9454828097951,
+        "seconds": 0.2185839789453894,
+        "segment": 16,
+        "accuracy": 0.9060571193695068,
+        "count": 1.0,
+        "exact_accuracy": 0.0625,
+        "lm_loss": 0.420555055141449,
+        "q_halt_accuracy": 0.9375,
+        "q_halt_loss": 0.3192152976989746,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.3365207836031914,
+          "accuracy": 0.4809932131320238,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.1008149161934853,
+          "accuracy": 0.5575930774211884,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 0.719973985105753,
+          "accuracy": 0.7427782751619816,
+          "exact": 0.0009765625
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 0.5044314675033092,
+          "accuracy": 0.8510682284832001,
+          "exact": 0.0224609375
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 0.40452506951987743,
+          "accuracy": 0.8992633745074272,
+          "exact": 0.08544921875
+        },
+        {
+          "endpoint": 2992,
+          "samples": 16,
+          "loss": 0.3997239116579294,
+          "accuracy": 0.905773788690567,
+          "exact": 0.1181640625
+        }
+      ],
+      "latest_window": {
+        "endpoint": 2992,
+        "samples": 16,
+        "loss": 0.3997239116579294,
+        "accuracy": 0.905773788690567,
+        "exact": 0.1181640625
+      }
+    },
+    "kv_historical_key_trace_ng0": {
+      "operator": "M, with event-time rotated key eligibility",
+      "last_optimizer_step": 6000,
+      "last_terminal_step": 6000,
+      "last_terminal": {
+        "step": 6000,
+        "elapsed": 2235.471726702992,
+        "seconds": 0.1992341959849,
+        "segment": 16,
+        "accuracy": 0.6333912014961243,
+        "count": 1.0,
+        "exact_accuracy": 0.0,
+        "lm_loss": 0.8100467324256897,
+        "q_halt_accuracy": 1.0,
+        "q_halt_loss": 0.006715297698974609,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.4140554144978523,
+          "accuracy": 0.46305941976606846,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.2089457213878632,
+          "accuracy": 0.5126651786267757,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 1.0759640783071518,
+          "accuracy": 0.5593834482133389,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 1.0164946503937244,
+          "accuracy": 0.5828752033412457,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 1.0533402860164642,
+          "accuracy": 0.5491657219827175,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2992,
+          "samples": 16,
+          "loss": 1.0274938568472862,
+          "accuracy": 0.5540063343942165,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 4000,
+          "samples": 16,
+          "loss": 0.9160177707672119,
+          "accuracy": 0.5989643558859825,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 5008,
+          "samples": 16,
+          "loss": 0.8414236046373844,
+          "accuracy": 0.6248854659497738,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 6000,
+          "samples": 16,
+          "loss": 0.7997855879366398,
+          "accuracy": 0.639937799423933,
+          "exact": 0.0
+        }
+      ],
+      "latest_window": {
+        "endpoint": 6000,
+        "samples": 16,
+        "loss": 0.7997855879366398,
+        "accuracy": 0.639937799423933,
+        "exact": 0.0
+      }
+    },
+    "kv_read_gain_quarter_ng0": {
+      "operator": "0.25 M read",
+      "last_optimizer_step": 3000,
+      "last_terminal_step": 2992,
+      "last_terminal": {
+        "step": 2992,
+        "elapsed": 1514.8893516070675,
+        "seconds": 0.24158706795424223,
+        "segment": 16,
+        "accuracy": 0.5831403732299805,
+        "count": 1.0,
+        "exact_accuracy": 0.0,
+        "lm_loss": 1.0006932020187378,
+        "q_halt_accuracy": 1.0,
+        "q_halt_loss": 0.006715297698974609,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "checkpoints": [
+        {
+          "endpoint": 512,
+          "samples": 16,
+          "loss": 1.4115786701440811,
+          "accuracy": 0.46445795707404613,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1008,
+          "samples": 16,
+          "loss": 1.300232082605362,
+          "accuracy": 0.47793089784681797,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 1504,
+          "samples": 16,
+          "loss": 1.270412415266037,
+          "accuracy": 0.48497782833874226,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2000,
+          "samples": 16,
+          "loss": 1.1009951159358025,
+          "accuracy": 0.5476707182824612,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2496,
+          "samples": 16,
+          "loss": 1.0049993842840195,
+          "accuracy": 0.5964084193110466,
+          "exact": 0.0
+        },
+        {
+          "endpoint": 2992,
+          "samples": 16,
+          "loss": 1.0439739227294922,
+          "accuracy": 0.5680218040943146,
+          "exact": 0.0
+        }
+      ],
+      "latest_window": {
+        "endpoint": 2992,
+        "samples": 16,
+        "loss": 1.0439739227294922,
+        "accuracy": 0.5680218040943146,
+        "exact": 0.0
+      }
+    }
+  }
+}

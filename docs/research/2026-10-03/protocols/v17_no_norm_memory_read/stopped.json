@@ -1,0 +1,9 @@
+{
+  "original_requested_steps": 6000,
+  "user_revised_target": 2000,
+  "actual_step": 2385,
+  "reason": "User requested early comparison near 2000 and switch to interpolated KV if clearly worse.",
+  "mixed_terminal_accuracy": 0.9004509449005127,
+  "memory_only_terminal_accuracy": 0.5663580410182476,
+  "difference_pp": -33.40929038822651
+}

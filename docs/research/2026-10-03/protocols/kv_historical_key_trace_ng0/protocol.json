@@ -1,0 +1,19 @@
+{
+  "commit": "70a8dbae82a135251b83c91a53a8f14bd411946d",
+  "trainer_sha256": "65221608b193b1c86893bc1bfe973a6c400fe960d2fefed74905aedcb9c71e2f",
+  "torch": "2.8.0+cu128",
+  "gpu": "NVIDIA RTX 4000 Ada Generation",
+  "variant": "historical_key_trace",
+  "protocol": "original CFG; same data/seed/batch/depth/optimizer; explicit model control only",
+  "selftest_note": "Original selftest fails bitwise resume equality for q_proj on CPU (max difference 7.45e-9, both finite); not altered.",
+  "key_trace_coordinates": "Event-time RoPE(K), not raw K; incompatible with original raw-key carry.",
+  "write_equation": "G = (V.T @ eK_rotated_previous - eV_previous.T @ RoPE(K)) / T",
+  "key_trace_equation": "eK_rotated_new = lambda*eK_rotated_previous + (1-lambda)*RoPE_theta_now(K_now)",
+  "read_equation": "RoPE(Q) @ (M_old + G).T",
+  "recurrent_memory": true,
+  "eligibility_traces": true,
+  "interpolation": false,
+  "comparison": "Original baseline_ng0; same initialization, data, optimizer, depth, temporal window and additive M.",
+  "distinction": "Same fixed-theta forward operator, but preserves event-time key coordinates across optimizer updates and detaches their past theta dependence at segment boundaries.",
+  "primary_criterion": "Training loss/accuracy and whether sustained deterioration returns; EMA test performance is secondary."
+}

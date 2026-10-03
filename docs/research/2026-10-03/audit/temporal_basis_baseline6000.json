@@ -1,0 +1,46 @@
+{
+  "synthetic": {
+    "actual_row": [
+      1.3777276545059664e-17,
+      0.2250000008925339
+    ],
+    "historical_key_row": [
+      0.2250000008925339,
+      0.0
+    ],
+    "difference": {
+      "max_abs": 0.2250000008925339,
+      "relative_l2": 1.4142135623730951,
+      "cosine": 6.123233995736766e-17
+    },
+    "interpretation": "Different only when theta changes between paired events; not a fixed-weight algebra error."
+  },
+  "checkpoint": {
+    "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+    "step": 6000,
+    "batch": 4,
+    "theta_update_absmax": 8.351631549885496e-05,
+    "theta_update_rms": 4.414371505845338e-05,
+    "rotated_trace": {
+      "max_abs": 0.014325618743896484,
+      "relative_l2": 0.0003545646291197016,
+      "cosine": 0.9999999371419619
+    },
+    "write": {
+      "max_abs": 0.003046482801437378,
+      "relative_l2": 0.000453365529180616,
+      "cosine": 0.9999998972973535
+    },
+    "read": {
+      "max_abs": 0.02026844024658203,
+      "relative_l2": 0.0002380396201538573,
+      "cosine": 0.999999971711367
+    },
+    "limitation": "One actual optimizer theta update, applied to the saved raw trace; not a replay of every historical theta or a training intervention.",
+    "constant_activity_startup": {
+      "heterogeneous_memory_over_current_kv": 0.002756779547780752,
+      "shared_memory_over_current_kv": 1.9729332052520476e-06,
+      "explanation": "Per-channel time constants define L_ij(d), not one common odd L(d)."
+    }
+  }
+}

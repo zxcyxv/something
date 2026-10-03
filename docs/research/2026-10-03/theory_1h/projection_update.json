@@ -1,0 +1,91 @@
+{
+  "scope": "one actual final optimizer K/V update, fixed hidden/input and fixed current RoPE",
+  "caveat": "The final saved segment is terminal, so forced continuation is diagnostic, not an event that occurred after that checkpoint in training. No earlier optimizer history is reconstructed.",
+  "runs": {
+    "original": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+      "projection_relative_changes": {
+        "k_proj": 0.0022474222350865602,
+        "v_proj": 0.002011640230193734
+      },
+      "constant_hidden_optimizer_event": {
+        "eight_writes_rms": [
+          0.00250582058309199,
+          0.0002524408734176963,
+          2.544132276997522e-05,
+          2.5650110373189483e-06,
+          2.58706645979452e-07,
+          2.6103216337371302e-08,
+          2.6348013219196196e-09,
+          2.6605319851683953e-10
+        ],
+        "integrated_memory_rms": 0.0027865217070235137,
+        "integrated_memory_over_current_KV_norm": 0.007672525318227101,
+        "read_from_integrated_event_rms": 0.03557759590134443,
+        "formula_max_abs_error": 1.3796255804443547e-14
+      },
+      "saved_state_forced_continuation": {
+        "new_write_rms": 0.34990804891121285,
+        "old_projection_write_rms": 0.3499790683457894,
+        "update_induced_write_rms": 0.003451022847441357,
+        "update_induced_over_new_write_norm": 0.009862656369808267,
+        "update_induced_read_rms": 0.04363194127952497,
+        "formula_max_abs_error": 8.447669647138056e-15
+      }
+    },
+    "complex_current_only": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/kv_complex_current_only_ng0/step_6000.pt",
+      "projection_relative_changes": {
+        "k_proj": 0.0031561495270580053,
+        "v_proj": 0.0027845785953104496
+      },
+      "constant_hidden_optimizer_event": {
+        "eight_writes_rms": [
+          0.0018031110366916723,
+          0.0001822816973829622,
+          1.8438512719878898e-05,
+          1.8662798694230088e-06,
+          1.8901757068642902e-07,
+          1.9156193699958022e-08,
+          1.9426998010376826e-09,
+          1.971515083944707e-10
+        ],
+        "integrated_memory_rms": 0.002005869708675089,
+        "integrated_memory_over_current_KV_norm": 0.012885061770993527,
+        "read_from_integrated_event_rms": 0.02113539415441682,
+        "formula_max_abs_error": 5.773593408919808e-15
+      },
+      "saved_state_forced_continuation": {
+        "new_write_rms": 0.07832733130131517,
+        "old_projection_write_rms": 0.07825556643179293,
+        "update_induced_write_rms": 0.001795797685387362,
+        "update_induced_over_new_write_norm": 0.022926833527356614,
+        "update_induced_read_rms": 0.020004096171726795,
+        "formula_max_abs_error": 2.476317761956892e-15
+      }
+    },
+    "current_only": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/kv_current_only_ng0/step_6000.pt",
+      "projection_relative_changes": {
+        "k_proj": 0.0030197883024811745,
+        "v_proj": 0.0028127492405474186
+      },
+      "constant_hidden_optimizer_event": {
+        "eight_writes_rms": [
+          0.0011505824108105796,
+          0.0001150582427955594,
+          1.1505824451005993e-05,
+          1.1505824622455908e-06,
+          1.1505824793922762e-07,
+          1.1505824965408866e-08,
+          1.1505825136241678e-09,
+          1.150582528245363e-10
+        ],
+        "integrated_memory_rms": 0.0012784248902330618,
+        "integrated_memory_over_current_KV_norm": 0.014094801361728474,
+        "read_from_integrated_event_rms": 0.02135970270745844,
+        "formula_max_abs_error": 6.132247487578013e-15
+      }
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "kv_historical_key_trace_ng0": {
+    "actual_steps": 6000,
+    "contiguous_training_steps": true,
+    "finite_losses_weights_and_states": true,
+    "eligibility_traces_present": true,
+    "only_final_checkpoint": [
+      "step_6000.pt"
+    ],
+    "completed": {
+      "requested_steps": 6000,
+      "actual_step": 6000,
+      "elapsed": 2265.5943059849087
+    }
+  },
+  "kv_read_gain_quarter_ng0": {
+    "actual_steps": 3000,
+    "contiguous_training_steps": true,
+    "finite_losses_weights_and_states": true,
+    "eligibility_traces_present": true,
+    "only_final_checkpoint": [
+      "step_3000.pt"
+    ],
+    "completed": {
+      "requested_steps": 3000,
+      "actual_step": 3000,
+      "elapsed": 1586.580922150053
+    }
+  }
+}

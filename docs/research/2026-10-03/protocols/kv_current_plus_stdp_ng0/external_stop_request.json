@@ -1,0 +1,14 @@
+{
+  "target_step": 3000,
+  "original_target_steps": 6000,
+  "signal_after_step": 2990,
+  "stop_check_every": 25,
+  "pid": 35687,
+  "state": "completed",
+  "requested_utc": "2026-10-03T07:01:36.600668+00:00",
+  "reason": "User shortened this experiment to 3000 steps; preserve the uninterrupted training process.",
+  "observed_step": 2990,
+  "signal_utc": "2026-10-03T07:06:30.406188+00:00",
+  "actual_step": 3000,
+  "verified_utc": "2026-10-03T07:06:33.895487+00:00"
+}

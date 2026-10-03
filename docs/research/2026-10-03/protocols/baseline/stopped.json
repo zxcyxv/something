@@ -1,0 +1,7 @@
+{
+  "requested_steps": 6000,
+  "elapsed": 1443.1520075099543,
+  "actual_step": 4500,
+  "status": "stopped",
+  "reason": "User corrected protocol: remove 8 no-grad prefix blocks and compare v1.7 at matching steps"
+}

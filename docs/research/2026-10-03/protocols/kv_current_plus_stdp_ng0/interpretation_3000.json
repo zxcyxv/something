@@ -1,0 +1,15 @@
+{
+  "user_target_steps": 3000,
+  "actual_stop": 3000,
+  "role": "Diagnostic control; adding current KV is not derived from the adopted balanced temporal STDP rule.",
+  "B": "V_current.T @ RoPE(K_current) / T",
+  "G": "(V_current.T @ RoPE(e_K_previous) - e_V_previous.T @ RoPE(K_current)) / T",
+  "trained_operator": "B + G, coefficients 1 and 1, no recurrent matrix accumulation",
+  "interpretation": "This experiment tests whether retaining same-time association recovers training performance. It does not validate B + G as a theoretical consequence of the STDP rule.",
+  "remaining_question": "Why does reading G alone train worse than reading current B alone?",
+  "hypotheses_not_yet_established": [
+    "Subtraction can cancel common persistent associations as both traces approach current activities. Quantify forward signal and gradient cancellation independently.",
+    "The temporal-difference read may favor changes over persistent state; its interaction with the existing recurrent update needs separate analysis."
+  ],
+  "cleanup": "Intermediate checkpoints removed after process exit; only step_3000.pt retained."
+}

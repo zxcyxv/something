@@ -1,0 +1,11 @@
+{
+  "variant": "v17_without_address_norm_memory_read",
+  "original_trainer_sha256": "b92260b15d59401de0bc70f102052340d460e5825a99669d6f1b9d581ed02a31",
+  "trainer_sha256": "6581c5ee9b4a9ae8f6c727ea814f76d08a05148813038a0dc561e17d16e1aae0",
+  "torch": "2.8.0+cu128",
+  "gpu": "NVIDIA RTX 4000 Ada Generation",
+  "changed_equation": "identity _unit(x,y) for instantaneous/trace QK addresses",
+  "read_equation": "a_eff = w",
+  "preserved": "value cosine agree, QR, Phi, trace, W update, token sum, initialization, optimizer and data stream",
+  "checkpoint_note": "Original checkpoint plus separate full carry and RNG sidecar for diagnosis."
+}

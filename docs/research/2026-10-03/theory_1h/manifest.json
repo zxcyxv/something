@@ -1,0 +1,40 @@
+{
+  "objective": "추가 1시간: KV-STDP 쓰기·읽기·재귀의 이론적 대응 연구",
+  "started_at_utc": "2026-10-03T10:23:37Z",
+  "target_end_utc": "2026-10-03T11:23:37Z",
+  "status": "in_progress",
+  "constraints": [
+    "채널=뉴런, 재귀블록=시간, 토큰=공유시냅스의 표본",
+    "수치 안정성 튜닝보다 수식과 구현의 대응이 우선",
+    "현재 KV 추가, Query 흔적, 학습 재실행은 도출 없이 하지 않음",
+    "기존 trainer와 체크포인트 보존",
+    "추가 에이전트 사용 안 함"
+  ],
+  "questions": [
+    "일반 pair-STDP와 선택한 균형 창, 복소수 표현은 어디까지 동일한가?",
+    "동시활동과 순서정보에 대한 쓰기 연산의 nullspace는 무엇인가?",
+    "공통 선형 h 사영과 현재 Query 읽기가 강제하는 제약은 무엇인가?",
+    "현재 모델에서 검증 가능한 도출/구현 불일치가 있는가?"
+  ],
+  "new_training_runs": [],
+  "artifacts": [
+    "runs/kv_collapse_20261003/theory_1h/algebra.json",
+    "runs/kv_collapse_20261003/theory_1h/temporal_content128.json",
+    "runs/kv_collapse_20261003/theory_1h/frozen_episodes.json",
+    "runs/kv_collapse_20261003/theory_1h/projection_update.json",
+    "runs/kv_collapse_20261003/theory_1h/online_episode.json",
+    "runs/kv_collapse_20261003/theory_1h/shared_window_frozen.json"
+  ],
+  "last_updated_at_utc": "2026-10-03T11:29:16.145225+00:00",
+  "completed_work": [
+    "Independent algebra/counterexamples: time-operator, pure real Query retrieval, two-phase capacity, filtered path integral, periodic-state constraint, per-channel cycle drift, truncated-boundary derivative, actual first two initialized blocks",
+    "Captured fixed-weight trajectories: same four puzzles across accumulated M, G-only, current KV models; exact static-input/path decomposition",
+    "All 128 identical saved training puzzles replayed at fixed final raw weights; G-only 81.33% saved carry -> 90.10% fixed replay, exact 10.94% -> 53.91%",
+    "One isolated original-harness 16-update episode per model: within-episode updates improved this already-seen batch; generic optimizer-interference causal hypothesis not supported by this control",
+    "Actual final K/V AdamATan2 update inverted; derived projection-change event verified against closed form",
+    "Common-head-window frozen intervention, preserving head mean decay, to examine the specific heterogeneous-window effect"
+  ],
+  "diagnostic_optimizer_steps_per_model": 16,
+  "publication_requested": true,
+  "publication_note": "GitHub archive is being prepared; research continues after publication."
+}

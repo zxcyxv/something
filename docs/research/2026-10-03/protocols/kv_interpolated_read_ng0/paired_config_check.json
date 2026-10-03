@@ -1,0 +1,14 @@
+{
+  "model_id": [
+    "lt-kv-stdp-fast-weight-v1",
+    "lt-kv-stdp-fast-weight-v1:research-interpolated_read"
+  ],
+  "research_variant": [
+    "original",
+    "interpolated_read"
+  ],
+  "out_dir": [
+    "/workspace/something/runs/kv_collapse_20261003/baseline_ng0",
+    "/workspace/something/runs/kv_collapse_20261003/kv_interpolated_read_ng0"
+  ]
+}

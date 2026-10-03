@@ -1,0 +1,230 @@
+{
+  "objective": "1시간동안 자유연구",
+  "goal_created_at_utc": "2026-10-03T08:46:10Z",
+  "goal_time_used_at_resume_seconds": 1094,
+  "resumed_at_utc": "2026-10-03T09:04:36Z",
+  "target_remaining_seconds_at_resume": 2506,
+  "previous_goal_turn_classification": "progress: independent pair-STDP and runtime audit produced new evidence and motivated a historical-key coordinate control",
+  "constraints": [
+    "STDP validity is not assumed false",
+    "channels are neurons, recurrent blocks are time",
+    "0 no-grad + 8 grad blocks, original initialization/data for paired training",
+    "no current-KV additions or interpolation in the new control",
+    "only final checkpoint retention"
+  ],
+  "new_training_run": "kv_historical_key_trace_ng0",
+  "new_training_steps": 6000,
+  "new_training_session": 49877,
+  "status": "completed",
+  "runs": [
+    {
+      "directory": "kv_historical_key_trace_ng0",
+      "steps": 6000,
+      "session_id": 49877
+    },
+    {
+      "directory": "kv_read_gain_quarter_ng0",
+      "steps": 3000,
+      "session_id": 44739
+    }
+  ],
+  "hypotheses": {
+    "historical_key": "Preserve event-time rotated key coordinates; tests the forward coordinate discrepancy and truncation-boundary theta gradient change.",
+    "read_gain": "Preserve all original STDP writes/traces/M; lower only read gain to test strength of coupled feedback."
+  },
+  "finished_at_utc": "2026-10-03T09:47:20.970302+00:00",
+  "completion_evidence": {
+    "kv_historical_key_trace_ng0": {
+      "actual_steps": 6000,
+      "contiguous_training_steps": true,
+      "finite_losses_weights_and_states": true,
+      "eligibility_traces_present": true,
+      "only_final_checkpoint": [
+        "step_6000.pt"
+      ],
+      "completed": {
+        "requested_steps": 6000,
+        "actual_step": 6000,
+        "elapsed": 2265.5943059849087
+      }
+    },
+    "kv_read_gain_quarter_ng0": {
+      "actual_steps": 3000,
+      "contiguous_training_steps": true,
+      "finite_losses_weights_and_states": true,
+      "eligibility_traces_present": true,
+      "only_final_checkpoint": [
+        "step_3000.pt"
+      ],
+      "completed": {
+        "requested_steps": 3000,
+        "actual_step": 3000,
+        "elapsed": 1586.580922150053
+      }
+    }
+  },
+  "training_results": {
+    "kv_historical_key_trace_ng0": {
+      "last_terminal_step": 6000,
+      "checkpoints": [
+        {
+          "step": 512,
+          "samples": 16,
+          "loss": 1.4140554144978523,
+          "accuracy": 0.46305941976606846,
+          "exact": 0.0
+        },
+        {
+          "step": 1008,
+          "samples": 16,
+          "loss": 1.2089457213878632,
+          "accuracy": 0.5126651786267757,
+          "exact": 0.0
+        },
+        {
+          "step": 1504,
+          "samples": 16,
+          "loss": 1.0759640783071518,
+          "accuracy": 0.5593834482133389,
+          "exact": 0.0
+        },
+        {
+          "step": 2000,
+          "samples": 16,
+          "loss": 1.0164946503937244,
+          "accuracy": 0.5828752033412457,
+          "exact": 0.0
+        },
+        {
+          "step": 2496,
+          "samples": 16,
+          "loss": 1.0533402860164642,
+          "accuracy": 0.5491657219827175,
+          "exact": 0.0
+        },
+        {
+          "step": 2992,
+          "samples": 16,
+          "loss": 1.0274938568472862,
+          "accuracy": 0.5540063343942165,
+          "exact": 0.0
+        },
+        {
+          "step": 4000,
+          "samples": 16,
+          "loss": 0.9160177707672119,
+          "accuracy": 0.5989643558859825,
+          "exact": 0.0
+        },
+        {
+          "step": 5008,
+          "samples": 16,
+          "loss": 0.8414236046373844,
+          "accuracy": 0.6248854659497738,
+          "exact": 0.0
+        },
+        {
+          "step": 6000,
+          "samples": 16,
+          "loss": 0.7997855879366398,
+          "accuracy": 0.639937799423933,
+          "exact": 0.0
+        }
+      ],
+      "best_window": {
+        "step": 5856,
+        "samples": 16,
+        "loss": 0.800295565277338,
+        "accuracy": 0.6410710886120796,
+        "exact": 0.0
+      },
+      "latest_window": {
+        "step": 6000,
+        "samples": 16,
+        "loss": 0.7997855879366398,
+        "accuracy": 0.639937799423933,
+        "exact": 0.0
+      },
+      "latest_minus_best_accuracy": -0.0011332891881465912,
+      "baseline_same_endpoint": {
+        "step": 6000,
+        "samples": 16,
+        "loss": 0.8431598953902721,
+        "accuracy": 0.618423268198967,
+        "exact": 0.0
+      }
+    },
+    "kv_read_gain_quarter_ng0": {
+      "last_terminal_step": 2992,
+      "checkpoints": [
+        {
+          "step": 512,
+          "samples": 16,
+          "loss": 1.4115786701440811,
+          "accuracy": 0.46445795707404613,
+          "exact": 0.0
+        },
+        {
+          "step": 1008,
+          "samples": 16,
+          "loss": 1.300232082605362,
+          "accuracy": 0.47793089784681797,
+          "exact": 0.0
+        },
+        {
+          "step": 1504,
+          "samples": 16,
+          "loss": 1.270412415266037,
+          "accuracy": 0.48497782833874226,
+          "exact": 0.0
+        },
+        {
+          "step": 2000,
+          "samples": 16,
+          "loss": 1.1009951159358025,
+          "accuracy": 0.5476707182824612,
+          "exact": 0.0
+        },
+        {
+          "step": 2496,
+          "samples": 16,
+          "loss": 1.0049993842840195,
+          "accuracy": 0.5964084193110466,
+          "exact": 0.0
+        },
+        {
+          "step": 2992,
+          "samples": 16,
+          "loss": 1.0439739227294922,
+          "accuracy": 0.5680218040943146,
+          "exact": 0.0
+        }
+      ],
+      "best_window": {
+        "step": 2384,
+        "samples": 16,
+        "loss": 0.9968286082148552,
+        "accuracy": 0.598976407200098,
+        "exact": 0.0
+      },
+      "latest_window": {
+        "step": 2992,
+        "samples": 16,
+        "loss": 1.0439739227294922,
+        "accuracy": 0.5680218040943146,
+        "exact": 0.0
+      },
+      "latest_minus_best_accuracy": -0.030954603105783463,
+      "baseline_same_endpoint": {
+        "step": 2992,
+        "samples": 16,
+        "loss": 1.04130257666111,
+        "accuracy": 0.5484363064169884,
+        "exact": 0.0
+      }
+    }
+  },
+  "cause_of_training_decline": "not_established",
+  "methodological_correction": "User challenged the weak prioritization: distinguish an identified derivation/implementation mismatch from generic stability tuning. A frozen cycle or gradient difference alone does not justify a claimed implementation fix.",
+  "optional_probe_failure": "Quarter-read final frozen probe failed in short-window reporting; no result used. Aggregation bug fixed on existing records; no new model rerun."
+}

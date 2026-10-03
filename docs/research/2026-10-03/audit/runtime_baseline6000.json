@@ -1,0 +1,425 @@
+{
+  "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+  "step": 6000,
+  "batch": 4,
+  "state": "saved carry, forced continuation, frozen parameters",
+  "torch": "2.8.0+cu128",
+  "gpu": "NVIDIA RTX 4000 Ada Generation",
+  "tf32": false,
+  "float32_matmul_precision": "highest",
+  "modes": {
+    "fp32_eager": {
+      "loss": 0.8434430615670783,
+      "seconds": 0.39674775395542383,
+      "absent_gradients": [],
+      "nonfinite_gradients": [],
+      "zero_gradients": []
+    },
+    "bf16_eager": {
+      "loss": 0.843287939332402,
+      "seconds": 0.20661450689658523,
+      "absent_gradients": [],
+      "nonfinite_gradients": [],
+      "zero_gradients": [],
+      "reference": "fp32_eager",
+      "logits": {
+        "max_abs": 0.3701629638671875,
+        "relative_l2": 0.0029370386851711424,
+        "cosine": 0.9999956895005837
+      },
+      "state": {
+        "current_hidden": {
+          "max_abs": 0.01602625846862793,
+          "relative_l2": 0.00271378587966999,
+          "cosine": 0.9999963176822283
+        },
+        "coupling": {
+          "max_abs": 0.023098811507225037,
+          "relative_l2": 0.0024652092439502895,
+          "cosine": 0.9999969613675628
+        },
+        "key_trace": {
+          "max_abs": 0.05435657501220703,
+          "relative_l2": 0.0018398220306228244,
+          "cosine": 0.9999983087399661
+        },
+        "value_trace": {
+          "max_abs": 0.03415966033935547,
+          "relative_l2": 0.0019651035078249975,
+          "cosine": 0.9999980702310031
+        }
+      },
+      "gradients": {
+        "model.inner.embed.weight": {
+          "max_abs": 0.000287102535367012,
+          "relative_l2": 0.010204997080537688,
+          "cosine": 0.9999483450768295
+        },
+        "model.inner.w_cls.weight": {
+          "max_abs": 3.414838283788413e-05,
+          "relative_l2": 0.010072436883128064,
+          "cosine": 0.9999492717264561
+        },
+        "model.inner.w_cls.bias": {
+          "max_abs": 1.3580895029008389e-05,
+          "relative_l2": 0.0067844761130472515,
+          "cosine": 0.9999807551262604
+        },
+        "model.inner.layers.0.trace_lam_raw": {
+          "max_abs": 3.371294587850571e-05,
+          "relative_l2": 0.007370854283840369,
+          "cosine": 0.9999770116075866
+        },
+        "model.inner.layers.0.theta": {
+          "max_abs": 0.000661700963973999,
+          "relative_l2": 0.007830985907203474,
+          "cosine": 0.9999721555288479
+        },
+        "model.inner.layers.0.q_proj.weight": {
+          "max_abs": 0.00015537813305854797,
+          "relative_l2": 0.010415857290827854,
+          "cosine": 0.999945777938448
+        },
+        "model.inner.layers.0.k_proj.weight": {
+          "max_abs": 6.455974653363228e-05,
+          "relative_l2": 0.011483301596339686,
+          "cosine": 0.9999341282210173
+        },
+        "model.inner.layers.0.v_proj.weight": {
+          "max_abs": 7.627523154951632e-05,
+          "relative_l2": 0.011473643035150865,
+          "cosine": 0.9999342127458379
+        },
+        "model.inner.layers.0.out_proj.weight": {
+          "max_abs": 5.500303814187646e-05,
+          "relative_l2": 0.010886855078575076,
+          "cosine": 0.9999407630439574
+        },
+        "model.inner.layers.0.b_gate_up.weight": {
+          "max_abs": 1.7573300283402205e-05,
+          "relative_l2": 0.011144900457131185,
+          "cosine": 0.9999378982352222
+        },
+        "model.inner.layers.0.b_down.weight": {
+          "max_abs": 5.097012035548687e-05,
+          "relative_l2": 0.01128582293257415,
+          "cosine": 0.9999363132820172
+        }
+      },
+      "all_gradients": {
+        "max_abs": 0.000661700963973999,
+        "relative_l2": 0.01069332053715838,
+        "cosine": 0.9999428418357004
+      }
+    },
+    "bf16_checkpoint": {
+      "loss": 0.843287939332402,
+      "seconds": 0.8558819929603487,
+      "absent_gradients": [],
+      "nonfinite_gradients": [],
+      "zero_gradients": [],
+      "reference": "bf16_eager",
+      "logits": {
+        "max_abs": 0.0,
+        "relative_l2": 0.0,
+        "cosine": 1.0
+      },
+      "state": {
+        "current_hidden": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999574
+        },
+        "coupling": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999472
+        },
+        "key_trace": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999536
+        },
+        "value_trace": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999419
+        }
+      },
+      "gradients": {
+        "model.inner.embed.weight": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 0.999999999999993
+        },
+        "model.inner.w_cls.weight": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.0
+        },
+        "model.inner.w_cls.bias": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 0.9999999999999999
+        },
+        "model.inner.layers.0.trace_lam_raw": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.0000000000000009
+        },
+        "model.inner.layers.0.theta": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.0000000000000004
+        },
+        "model.inner.layers.0.q_proj.weight": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.0000000000000717
+        },
+        "model.inner.layers.0.k_proj.weight": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.0000000000000857
+        },
+        "model.inner.layers.0.v_proj.weight": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.000000000000091
+        },
+        "model.inner.layers.0.out_proj.weight": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.0000000000000475
+        },
+        "model.inner.layers.0.b_gate_up.weight": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.0000000000007603
+        },
+        "model.inner.layers.0.b_down.weight": {
+          "max_abs": 0.0,
+          "relative_l2": 0.0,
+          "cosine": 1.0000000000002027
+        }
+      },
+      "all_gradients": {
+        "max_abs": 0.0,
+        "relative_l2": 0.0,
+        "cosine": 1.0000000000064704
+      }
+    },
+    "bf16_compiled_checkpoint": {
+      "loss": 0.8436252366288559,
+      "seconds": 44.75150566594675,
+      "absent_gradients": [],
+      "nonfinite_gradients": [],
+      "zero_gradients": [],
+      "reference": "bf16_eager",
+      "logits": {
+        "max_abs": 0.5887451171875,
+        "relative_l2": 0.003236600165665691,
+        "cosine": 0.9999947624910108
+      },
+      "state": {
+        "current_hidden": {
+          "max_abs": 0.02308344841003418,
+          "relative_l2": 0.003309265548326047,
+          "cosine": 0.9999945243803374
+        },
+        "coupling": {
+          "max_abs": 0.01692947931587696,
+          "relative_l2": 0.0024513955204174226,
+          "cosine": 0.9999969953428703
+        },
+        "key_trace": {
+          "max_abs": 0.06243705749511719,
+          "relative_l2": 0.0019186206216819715,
+          "cosine": 0.9999981594548606
+        },
+        "value_trace": {
+          "max_abs": 0.058959007263183594,
+          "relative_l2": 0.0021520455990523303,
+          "cosine": 0.9999976843791196
+        }
+      },
+      "gradients": {
+        "model.inner.embed.weight": {
+          "max_abs": 0.0003276597708463669,
+          "relative_l2": 0.010486408727713052,
+          "cosine": 0.9999452168941163
+        },
+        "model.inner.w_cls.weight": {
+          "max_abs": 3.814697265625e-05,
+          "relative_l2": 0.010697033507641316,
+          "cosine": 0.9999433734328266
+        },
+        "model.inner.w_cls.bias": {
+          "max_abs": 1.4116521924734116e-05,
+          "relative_l2": 0.007237720423957705,
+          "cosine": 0.999977477441
+        },
+        "model.inner.layers.0.trace_lam_raw": {
+          "max_abs": 2.153380773961544e-05,
+          "relative_l2": 0.00688853674372143,
+          "cosine": 0.999977860106238
+        },
+        "model.inner.layers.0.theta": {
+          "max_abs": 0.00036907102912664413,
+          "relative_l2": 0.008426003677403239,
+          "cosine": 0.9999658013821442
+        },
+        "model.inner.layers.0.q_proj.weight": {
+          "max_abs": 0.0001475811004638672,
+          "relative_l2": 0.010227882308087827,
+          "cosine": 0.9999481016013333
+        },
+        "model.inner.layers.0.k_proj.weight": {
+          "max_abs": 6.80685043334961e-05,
+          "relative_l2": 0.011139841694988209,
+          "cosine": 0.9999388024697088
+        },
+        "model.inner.layers.0.v_proj.weight": {
+          "max_abs": 6.973743438720703e-05,
+          "relative_l2": 0.011139204059715163,
+          "cosine": 0.9999383233164684
+        },
+        "model.inner.layers.0.out_proj.weight": {
+          "max_abs": 4.285573959350586e-05,
+          "relative_l2": 0.010845028797548659,
+          "cosine": 0.9999413225503002
+        },
+        "model.inner.layers.0.b_gate_up.weight": {
+          "max_abs": 1.8946826457977295e-05,
+          "relative_l2": 0.011223018051658273,
+          "cosine": 0.9999373080314964
+        },
+        "model.inner.layers.0.b_down.weight": {
+          "max_abs": 3.72081995010376e-05,
+          "relative_l2": 0.011084269602794492,
+          "cosine": 0.999938693963062
+        }
+      },
+      "all_gradients": {
+        "max_abs": 0.00036907102912664413,
+        "relative_l2": 0.010585779681876413,
+        "cosine": 0.9999442066674534
+      }
+    }
+  },
+  "same_input_subtraction": [
+    {
+      "block": 1,
+      "fp32_subtraction": {
+        "max_abs": 0.0002746556694717128,
+        "relative_l2": 3.1862871492199847e-07,
+        "cosine": 0.9999999999999493
+      },
+      "difference_over_current": 0.9464200735092163,
+      "cancellation_ratio": 0.35571417212486267,
+      "delta_norm": 204.4653778076172,
+      "memory_norm": 354.5811462402344
+    },
+    {
+      "block": 2,
+      "fp32_subtraction": {
+        "max_abs": 0.00035899480207035595,
+        "relative_l2": 3.404660317304007e-07,
+        "cosine": 0.999999999999942
+      },
+      "difference_over_current": 0.44032928347587585,
+      "cancellation_ratio": 0.3344135284423828,
+      "delta_norm": 203.52650451660156,
+      "memory_norm": 301.54119873046875
+    },
+    {
+      "block": 3,
+      "fp32_subtraction": {
+        "max_abs": 0.0002334343186589649,
+        "relative_l2": 3.184038492230976e-07,
+        "cosine": 0.9999999999999494
+      },
+      "difference_over_current": 0.9433380961418152,
+      "cancellation_ratio": 0.3537018299102783,
+      "delta_norm": 202.81503295898438,
+      "memory_norm": 354.4709777832031
+    },
+    {
+      "block": 4,
+      "fp32_subtraction": {
+        "max_abs": 0.0002598203479919903,
+        "relative_l2": 3.395878402338861e-07,
+        "cosine": 0.9999999999999422
+      },
+      "difference_over_current": 0.439249724149704,
+      "cancellation_ratio": 0.3331136405467987,
+      "delta_norm": 202.38047790527344,
+      "memory_norm": 301.6344909667969
+    },
+    {
+      "block": 5,
+      "fp32_subtraction": {
+        "max_abs": 0.0002794450159626649,
+        "relative_l2": 3.236763498298942e-07,
+        "cosine": 0.9999999999999478
+      },
+      "difference_over_current": 0.9401984214782715,
+      "cancellation_ratio": 0.3531118929386139,
+      "delta_norm": 202.2430419921875,
+      "memory_norm": 354.4608459472656
+    },
+    {
+      "block": 6,
+      "fp32_subtraction": {
+        "max_abs": 0.00025077508635718004,
+        "relative_l2": 3.40117151276113e-07,
+        "cosine": 0.999999999999942
+      },
+      "difference_over_current": 0.43918758630752563,
+      "cancellation_ratio": 0.3328987658023834,
+      "delta_norm": 202.2156219482422,
+      "memory_norm": 301.6796875
+    },
+    {
+      "block": 7,
+      "fp32_subtraction": {
+        "max_abs": 0.00019849251941650436,
+        "relative_l2": 3.204111253936926e-07,
+        "cosine": 0.9999999999999486
+      },
+      "difference_over_current": 0.9402256608009338,
+      "cancellation_ratio": 0.35308152437210083,
+      "delta_norm": 202.1199188232422,
+      "memory_norm": 354.4533386230469
+    },
+    {
+      "block": 8,
+      "fp32_subtraction": {
+        "max_abs": 0.0002672788411359761,
+        "relative_l2": 3.4247744948001796e-07,
+        "cosine": 0.9999999999999414
+      },
+      "difference_over_current": 0.43935588002204895,
+      "cancellation_ratio": 0.33295488357543945,
+      "delta_norm": 202.09912109375,
+      "memory_norm": 301.7277526855469
+    }
+  ],
+  "trace_decay": {
+    "min": 0.09587343782186508,
+    "max": 0.10479079931974411,
+    "mean": 0.10067956894636154,
+    "per_head_std": [
+      0.0012943121837452054,
+      0.0016593113541603088,
+      0.0013497588224709034,
+      0.0013303484302014112,
+      0.0011291916016489267,
+      0.0017581928987056017,
+      0.0014214209513738751,
+      0.0015203345101326704
+    ],
+    "effective_one_block_tau_min": 0.426488995552063,
+    "effective_one_block_tau_max": 0.44330382347106934
+  }
+}

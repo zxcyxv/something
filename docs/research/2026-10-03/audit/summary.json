@@ -1,0 +1,48 @@
+{
+  "scope": "Implementation audit of original recurrent KV pair-STDP, using channels as neurons, token as independent write sample, recurrent block as time.",
+  "production_model_changed": false,
+  "training_started": false,
+  "algebra": "Verified against independent full ordered-time-pair sums at every prefix, with gradients, heterogeneous decays, spatial rotation and token reduction.",
+  "harness": "Verified mixed-lane reset, input retention, carry continuity, boundary detach and activation-checkpoint gradient parity.",
+  "runtime": {
+    "checkpoint_step": 6000,
+    "batch": 4,
+    "blocks": 8,
+    "tf32": false,
+    "missing_or_nonfinite_gradients": false,
+    "checkpoint_gradient_relative_l2": 0.0,
+    "compile_gradient_relative_l2": 0.010585779681876413,
+    "compile_gradient_cosine": 0.9999442066674534,
+    "bf16_vs_fp32_gradient_relative_l2": 0.01069332053715838,
+    "fp32_subtraction_relative_l2_max": 3.4247744948001796e-07,
+    "G_over_B_same_input_norm_range": [
+      0.43918758630752563,
+      0.9464200735092163
+    ],
+    "limitation": "Frozen checkpoint spot check; does not prove equivalence of separate 6000-step training trajectories."
+  },
+  "mismatches_with_simplified_derivation": [
+    {
+      "item": "Heterogeneous timing kernel",
+      "detail": "Positive lag uses pre-channel lambda_j; negative lag uses post-channel lambda_i. Exact L_ij(d), not one shared odd L(d). This is a valid generalized STDP rule, not a demonstrated coding error.",
+      "constant_activity_boundary_M_over_B": 0.002756779547780752
+    },
+    {
+      "item": "Historical RoPE basis",
+      "detail": "Raw key trace is rotated using current theta. If historical rotated K_s is the presynaptic event definition, changing theta across optimizer steps retroactively changes old keys at write time. At fixed theta the two conventions are identical.",
+      "observed_one_update_write_relative_l2": 0.000453365529180616,
+      "observed_one_update_read_relative_l2": 0.0002380396201538573,
+      "possible_correction": "If historical rotated activity is intended, store EMA of RoPE_theta_at_event(K) and use that trace directly. Requires an explicit trace-coordinate/checkpoint compatibility change.",
+      "causal_status": "Not established as cause of collapse; measured local effect is small."
+    }
+  ],
+  "remaining_training_issue": "Earlier frozen probes show an approximately two-block cycle of coupled hidden/memory dynamics. This is an observation, not a proof that STDP is invalid or that the cycle causes the accuracy decline.",
+  "conclusion": "No confirmed sign, axis, trace-order, accumulation, reset or missing-gradient bug explaining collapse. One parameter-update coordinate convention and one scalar-kernel simplification require explicit specification. Cause remains unconfirmed.",
+  "validation": {
+    "new_reference_tests": 8,
+    "existing_variant_tests": 16,
+    "total_passed": 24,
+    "trainer_sha256": "65221608b193b1c86893bc1bfe973a6c400fe960d2fefed74905aedcb9c71e2f",
+    "baseline_snapshot_identical": true
+  }
+}

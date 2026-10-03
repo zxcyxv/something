@@ -1,0 +1,15 @@
+{
+  "user_target_steps": 3000,
+  "actual_step": 3000,
+  "training_steps_contiguous": true,
+  "raw_weights_finite": true,
+  "eligibility_traces_present": true,
+  "final_terminal_step": 2992,
+  "final_terminal": {
+    "lm_loss": 0.420555055141449,
+    "accuracy": 0.9060571193695068,
+    "exact_accuracy": 0.0625
+  },
+  "checkpoint": "step_3000.pt",
+  "verified_utc": "2026-10-03T07:06:33.895487+00:00"
+}

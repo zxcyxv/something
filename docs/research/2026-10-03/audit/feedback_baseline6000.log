@@ -1,0 +1,19 @@
+127 original {'accuracy': 0.486015, 'hidden_one_step_rms': 1.228037, 'hidden_two_step_rms': 0.004014, 'prediction_one_step_flip': 0.524209}
+127 freeze_memory {'accuracy': 0.415027, 'hidden_one_step_rms': 0.424025, 'hidden_two_step_rms': 0.091062, 'prediction_one_step_flip': 0.084684}
+127 read_previous {'accuracy': 0.489873, 'hidden_one_step_rms': 0.596597, 'hidden_two_step_rms': 0.100617, 'prediction_one_step_flip': 0.191454}
+127 freeze_traces {'accuracy': 0.121817, 'hidden_one_step_rms': 0.235035, 'hidden_two_step_rms': 0.158974, 'prediction_one_step_flip': 0.058738}
+127 mute_read {'accuracy': 0.371914, 'hidden_one_step_rms': 0.000546, 'hidden_two_step_rms': 0.000631, 'prediction_one_step_flip': 0.0}
+127 read_gain_0.75 {'accuracy': 0.519772, 'hidden_one_step_rms': 1.109949, 'hidden_two_step_rms': 0.003821, 'prediction_one_step_flip': 0.398245}
+127 read_gain_0.5 {'accuracy': 0.54485, 'hidden_one_step_rms': 0.791115, 'hidden_two_step_rms': 0.00313, 'prediction_one_step_flip': 0.200424}
+127 read_gain_0.25 {'accuracy': 0.54919, 'hidden_one_step_rms': 0.00198, 'hidden_two_step_rms': 0.002541, 'prediction_one_step_flip': 0.000289}
+127 pre_ffn_phi {'accuracy': 0.524113, 'hidden_one_step_rms': 0.045855, 'hidden_two_step_rms': 0.002603, 'prediction_one_step_flip': 0.012635}
+128 original {'accuracy': 0.486208, 'hidden_one_step_rms': 1.227994, 'hidden_two_step_rms': 0.004017, 'prediction_one_step_flip': 0.524306}
+128 freeze_memory {'accuracy': 0.530671, 'hidden_one_step_rms': 0.33024, 'hidden_two_step_rms': 0.003699, 'prediction_one_step_flip': 0.056713}
+128 read_previous {'accuracy': 0.457658, 'hidden_one_step_rms': 0.628579, 'hidden_two_step_rms': 0.116492, 'prediction_one_step_flip': 0.208816}
+128 freeze_traces {'accuracy': 0.127797, 'hidden_one_step_rms': 0.584732, 'hidden_two_step_rms': 0.3905, 'prediction_one_step_flip': 0.304784}
+128 mute_read {'accuracy': 0.371914, 'hidden_one_step_rms': 0.000549, 'hidden_two_step_rms': 0.000635, 'prediction_one_step_flip': 0.0}
+128 read_gain_0.75 {'accuracy': 0.519194, 'hidden_one_step_rms': 1.109785, 'hidden_two_step_rms': 0.003717, 'prediction_one_step_flip': 0.398052}
+128 read_gain_0.5 {'accuracy': 0.546779, 'hidden_one_step_rms': 0.788842, 'hidden_two_step_rms': 0.003121, 'prediction_one_step_flip': 0.199556}
+128 read_gain_0.25 {'accuracy': 0.556038, 'hidden_one_step_rms': 0.001826, 'hidden_two_step_rms': 0.002189, 'prediction_one_step_flip': 0.000193}
+128 pre_ffn_phi {'accuracy': 0.530093, 'hidden_one_step_rms': 0.042324, 'hidden_two_step_rms': 0.002615, 'prediction_one_step_flip': 0.012539}
+saved runs/kv_collapse_20261003/audit/feedback_baseline6000.json

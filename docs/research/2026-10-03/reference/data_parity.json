@@ -1,0 +1,20 @@
+{
+  "npz_sha256": "b209d23895b87a64942a5e525af7a0c826a41cfff45cbe13b90041aaeaf52a3e",
+  "checks": [
+    {
+      "iteration": 0,
+      "batches": 32,
+      "sha256": "82a86a9ec2bf4d05391654ee4bc6bf2b9f8650835dde88b2e4682d259bb50819"
+    },
+    {
+      "iteration": 1,
+      "batches": 4,
+      "sha256": "56f3ff39ea15588976a0be03ce63d310b964b70df29c904598b890e15d018578"
+    },
+    {
+      "iteration": 3,
+      "batches": 4,
+      "sha256": "03e77d26cc11b64e05b4791c9ea9248a76d193d6d78e71c1a2c89037e8208bf2"
+    }
+  ]
+}

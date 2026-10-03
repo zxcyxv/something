@@ -1,0 +1,434 @@
+{
+  "utc": "2026-10-03T06:59:50.180879+00:00",
+  "reason": "User requested deletion of intermediate experiment checkpoints while active training continues uninterrupted.",
+  "excluded_active_run": "kv_current_plus_stdp_ng0",
+  "kept": [
+    {
+      "path": "baseline/step_4500.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline_ng0/step_6000.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_6000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_current_only_ng0/step_6000.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_interpolated_read_ng0/step_2875.pt",
+      "bytes": 318738327
+    },
+    {
+      "path": "v17_no_address_norm/step_6000.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_6000.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_norm_memory_read/step_2385.pt",
+      "bytes": 143164285
+    },
+    {
+      "path": "v17_no_norm_memory_read/carry_2385.pt",
+      "bytes": 95980549
+    }
+  ],
+  "delete": [
+    {
+      "path": "baseline/step_500.pt",
+      "bytes": 318736641
+    },
+    {
+      "path": "baseline/step_1000.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline/step_1500.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline/step_1953.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline/step_2000.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline/step_2500.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline/step_3000.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline/step_3500.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline/step_3906.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline/step_4000.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline_ng0/step_500.pt",
+      "bytes": 318736641
+    },
+    {
+      "path": "baseline_ng0/step_1000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "baseline_ng0/step_1500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "baseline_ng0/step_1953.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline_ng0/step_2000.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline_ng0/step_2500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "baseline_ng0/step_3000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "baseline_ng0/step_3500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "baseline_ng0/step_3906.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline_ng0/step_4000.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "baseline_ng0/step_4500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "baseline_ng0/step_5000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "baseline_ng0/step_5500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "baseline_ng0/step_5859.pt",
+      "bytes": 318736717
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_500.pt",
+      "bytes": 318736705
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_1000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_1500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_1953.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_2000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_2500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_3000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_3500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_3906.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_4000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_4500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_5000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_5500.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_complex_current_only_ng0/step_5859.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "kv_current_only_ng0/step_500.pt",
+      "bytes": 249722813
+    },
+    {
+      "path": "kv_current_only_ng0/step_1000.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_1500.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_1953.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_2000.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_2500.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_3000.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_3500.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_3906.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_4000.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_4500.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_5000.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_5500.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_current_only_ng0/step_5859.pt",
+      "bytes": 249722885
+    },
+    {
+      "path": "kv_interpolated_read_ng0/step_500.pt",
+      "bytes": 318738246
+    },
+    {
+      "path": "kv_interpolated_read_ng0/step_1000.pt",
+      "bytes": 318738327
+    },
+    {
+      "path": "kv_interpolated_read_ng0/step_1500.pt",
+      "bytes": 318738327
+    },
+    {
+      "path": "kv_interpolated_read_ng0/step_1953.pt",
+      "bytes": 318738327
+    },
+    {
+      "path": "kv_interpolated_read_ng0/step_2000.pt",
+      "bytes": 318738327
+    },
+    {
+      "path": "kv_interpolated_read_ng0/step_2500.pt",
+      "bytes": 318738327
+    },
+    {
+      "path": "v17_no_address_norm/step_500.pt",
+      "bytes": 143168621
+    },
+    {
+      "path": "v17_no_address_norm/carry_500.pt",
+      "bytes": 95980533
+    },
+    {
+      "path": "v17_no_address_norm/step_1000.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_1000.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_1500.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_1500.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_1953.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_1953.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_2000.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_2000.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_2500.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_2500.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_3000.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_3000.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_3500.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_3500.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_3906.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_3906.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_4000.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_4000.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_4500.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_4500.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_5000.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_5000.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_5500.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_5500.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_address_norm/step_5859.pt",
+      "bytes": 143168713
+    },
+    {
+      "path": "v17_no_address_norm/carry_5859.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_norm_memory_read/step_500.pt",
+      "bytes": 143164197
+    },
+    {
+      "path": "v17_no_norm_memory_read/carry_500.pt",
+      "bytes": 95980533
+    },
+    {
+      "path": "v17_no_norm_memory_read/step_1000.pt",
+      "bytes": 143164285
+    },
+    {
+      "path": "v17_no_norm_memory_read/carry_1000.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_norm_memory_read/step_1500.pt",
+      "bytes": 143164285
+    },
+    {
+      "path": "v17_no_norm_memory_read/carry_1500.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_norm_memory_read/step_1953.pt",
+      "bytes": 143164285
+    },
+    {
+      "path": "v17_no_norm_memory_read/carry_1953.pt",
+      "bytes": 95980549
+    },
+    {
+      "path": "v17_no_norm_memory_read/step_2000.pt",
+      "bytes": 143164285
+    },
+    {
+      "path": "v17_no_norm_memory_read/carry_2000.pt",
+      "bytes": 95980549
+    }
+  ],
+  "status": "completed",
+  "free_before_bytes": 3412779008,
+  "deleted_files": 96,
+  "deleted_bytes": 22064360251,
+  "free_after_bytes": 25477300224
+}

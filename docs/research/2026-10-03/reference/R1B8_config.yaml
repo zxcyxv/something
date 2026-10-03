@@ -1,0 +1,48 @@
+arch:
+  name: lt.lt@LT
+  loss:
+    name: losses@ACTLossHead
+    loss_type: stablemax_cross_entropy
+  loops: 16
+  R: 1
+  seg_steps: 0
+  hidden_size: 832
+  num_heads: 8
+  grid: 9
+  puzzle_emb_ndim: 832
+  forward_dtype: float32
+  ckpt: false
+  boundary_mlp: true
+  mlp_expansion: 4.0
+  blocks_per_seg: 8
+  block_inj: true
+  amp: true
+  bilinear: true
+data_path: data/sudoku-extreme-1k-aug-1000
+evaluators: []
+global_batch_size: 128
+epochs: 50000
+lr: 0.0001
+lr_min_ratio: 1.0
+lr_warmup_steps: 2000
+weight_decay: 1.0
+beta1: 0.9
+beta2: 0.95
+target_q_update_every: 4
+puzzle_emb_lr: 0.0001
+puzzle_emb_weight_decay: 1.0
+grad_accum_steps: 1
+project_name: arcagi
+run_name: R1B8_bilin_ok
+checkpoint_path: checkpoints/R1B8_bilin_ok
+load_checkpoint: null
+load_strict: true
+load_optimizer_state: true
+seed: 0
+checkpoint_every_eval: true
+eval_interval: 250
+eval_save_outputs: []
+loop_deltas: []
+ema: true
+ema_rate: 0.999
+use_muon: false

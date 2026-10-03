@@ -1,0 +1,8 @@
+{
+  "requested_steps": 6000,
+  "actual_step": 2875,
+  "elapsed": 874.3279144449625,
+  "reason": "User requested stopping this run and switching to current-only attention without recurrent KV accumulation.",
+  "user_revised_target": "stop now; start independent current-only control",
+  "last_logged_step": 2875
+}

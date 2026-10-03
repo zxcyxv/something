@@ -1,0 +1,18 @@
+{
+  "research_read_mode": [
+    null,
+    "memory"
+  ],
+  "out_dir": [
+    "/workspace/something/runs/kv_collapse_20261003/v17_no_address_norm",
+    "/workspace/something/runs/kv_collapse_20261003/v17_no_norm_memory_read"
+  ],
+  "research_address_norm": [
+    null,
+    false
+  ],
+  "research_variant": [
+    "v17_without_address_norm",
+    "v17_without_address_norm_memory_read"
+  ]
+}

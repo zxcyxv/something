@@ -1,0 +1,205 @@
+{
+  "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+  "puzzles": 128,
+  "precision": "same BF16/FP32",
+  "change": "replace each learned per-pair lambda by its head mean; all other parameters fixed; fresh trajectories",
+  "original_lambda_min": 0.09587343782186508,
+  "original_lambda_max": 0.10479079931974411,
+  "original": [
+    {
+      "segment": 1,
+      "accuracy": 0.5645254850387573,
+      "exact": 0.0,
+      "loss": 0.9831832732684346
+    },
+    {
+      "segment": 2,
+      "accuracy": 0.5646219253540039,
+      "exact": 0.0,
+      "loss": 0.98193982231112
+    },
+    {
+      "segment": 3,
+      "accuracy": 0.5651041269302368,
+      "exact": 0.0,
+      "loss": 0.9826242090365045
+    },
+    {
+      "segment": 4,
+      "accuracy": 0.5646219253540039,
+      "exact": 0.0,
+      "loss": 0.9833481947555741
+    },
+    {
+      "segment": 5,
+      "accuracy": 0.5640431642532349,
+      "exact": 0.0,
+      "loss": 0.9841375305317441
+    },
+    {
+      "segment": 6,
+      "accuracy": 0.5641396641731262,
+      "exact": 0.0,
+      "loss": 0.9850161280811918
+    },
+    {
+      "segment": 7,
+      "accuracy": 0.5631751418113708,
+      "exact": 0.0,
+      "loss": 0.9858698349150785
+    },
+    {
+      "segment": 8,
+      "accuracy": 0.5632715821266174,
+      "exact": 0.0,
+      "loss": 0.9868475309065623
+    },
+    {
+      "segment": 9,
+      "accuracy": 0.5631752014160156,
+      "exact": 0.0,
+      "loss": 0.987870788596528
+    },
+    {
+      "segment": 10,
+      "accuracy": 0.5625,
+      "exact": 0.0,
+      "loss": 0.9889313259949939
+    },
+    {
+      "segment": 11,
+      "accuracy": 0.5628857612609863,
+      "exact": 0.0,
+      "loss": 0.989983023331517
+    },
+    {
+      "segment": 12,
+      "accuracy": 0.563560962677002,
+      "exact": 0.0,
+      "loss": 0.9911349660568547
+    },
+    {
+      "segment": 13,
+      "accuracy": 0.5631751418113708,
+      "exact": 0.0,
+      "loss": 0.9923286487893161
+    },
+    {
+      "segment": 14,
+      "accuracy": 0.5643326044082642,
+      "exact": 0.0,
+      "loss": 0.9936077967444845
+    },
+    {
+      "segment": 15,
+      "accuracy": 0.5648148059844971,
+      "exact": 0.0,
+      "loss": 0.994976550661296
+    },
+    {
+      "segment": 16,
+      "accuracy": 0.56529700756073,
+      "exact": 0.0,
+      "loss": 0.9963628188096298
+    }
+  ],
+  "shared_window": [
+    {
+      "segment": 1,
+      "accuracy": 0.5646219253540039,
+      "exact": 0.0,
+      "loss": 0.982916461819641
+    },
+    {
+      "segment": 2,
+      "accuracy": 0.5652005672454834,
+      "exact": 0.0,
+      "loss": 0.9809498595299946
+    },
+    {
+      "segment": 3,
+      "accuracy": 0.5652971267700195,
+      "exact": 0.0,
+      "loss": 0.980876762877464
+    },
+    {
+      "segment": 4,
+      "accuracy": 0.5652970671653748,
+      "exact": 0.0,
+      "loss": 0.9808580272424818
+    },
+    {
+      "segment": 5,
+      "accuracy": 0.5652971267700195,
+      "exact": 0.0,
+      "loss": 0.9808702930177129
+    },
+    {
+      "segment": 6,
+      "accuracy": 0.5652006268501282,
+      "exact": 0.0,
+      "loss": 0.9809104293568979
+    },
+    {
+      "segment": 7,
+      "accuracy": 0.565875768661499,
+      "exact": 0.0,
+      "loss": 0.9809268601279977
+    },
+    {
+      "segment": 8,
+      "accuracy": 0.5656828284263611,
+      "exact": 0.0,
+      "loss": 0.9808548850124651
+    },
+    {
+      "segment": 9,
+      "accuracy": 0.5657793283462524,
+      "exact": 0.0,
+      "loss": 0.9808578035430726
+    },
+    {
+      "segment": 10,
+      "accuracy": 0.565875768661499,
+      "exact": 0.0,
+      "loss": 0.9808638594902118
+    },
+    {
+      "segment": 11,
+      "accuracy": 0.5652005672454834,
+      "exact": 0.0,
+      "loss": 0.9808184514291949
+    },
+    {
+      "segment": 12,
+      "accuracy": 0.5657793283462524,
+      "exact": 0.0,
+      "loss": 0.9808193893853805
+    },
+    {
+      "segment": 13,
+      "accuracy": 0.5657793283462524,
+      "exact": 0.0,
+      "loss": 0.9807825959322101
+    },
+    {
+      "segment": 14,
+      "accuracy": 0.5653935074806213,
+      "exact": 0.0,
+      "loss": 0.9807827132047553
+    },
+    {
+      "segment": 15,
+      "accuracy": 0.5652970671653748,
+      "exact": 0.0,
+      "loss": 0.9807566547299753
+    },
+    {
+      "segment": 16,
+      "accuracy": 0.5654900074005127,
+      "exact": 0.0,
+      "loss": 0.9807615452120726
+    }
+  ],
+  "caveat": "A frozen intervention, not retraining. It checks whether enforcing a common odd temporal window suffices to restore computation at this checkpoint."
+}

@@ -1,0 +1,17 @@
+{
+  "commit": "70a8dbae82a135251b83c91a53a8f14bd411946d",
+  "trainer_sha256": "65221608b193b1c86893bc1bfe973a6c400fe960d2fefed74905aedcb9c71e2f",
+  "torch": "2.8.0+cu128",
+  "gpu": "NVIDIA RTX 4000 Ada Generation",
+  "variant": "current_only",
+  "protocol": "original CFG; same data/seed/batch/depth/optimizer; explicit model control only",
+  "selftest_note": "Original selftest fails bitwise resume equality for q_proj on CPU (max difference 7.45e-9, both finite); not altered.",
+  "read_equation": "RoPE(Q_r) @ (V_r.T @ RoPE(K_r) / T).T",
+  "recurrent_memory": false,
+  "eligibility_traces": false,
+  "interpolation": false,
+  "current_read_coefficient": 1.0,
+  "carry_matrix": "Current KV product for interface compatibility/diagnostics; never read by subsequent blocks.",
+  "parameter_note": "Original initialization retained, including unused trace coefficients; no read gates.",
+  "primary_criterion": "Training loss/accuracy and whether sustained deterioration returns; EMA test performance is secondary."
+}

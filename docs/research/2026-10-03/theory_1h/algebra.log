@@ -1,0 +1,160 @@
+{
+  "scope": "Algebraic identities and explicit counterexamples; no training conclusions.",
+  "checks": {
+    "temporal_operator": {
+      "V_T_A_K_error": 1.7763568394002505e-15,
+      "trace_vs_pair_error": 1.7763568394002505e-15,
+      "A_skew_error": 0.0,
+      "finite_window_A_times_constant_norm": 1.4821002722321872,
+      "note": "A is skew in time indices. V.T @ A @ K is not generally skew in channel indices. A @ 1 is a finite-window boundary term, not identically zero."
+    },
+    "complex_extension": {
+      "full_temporal_operator_error": 1.831026719408895e-15,
+      "imaginary_STDP_error": 1.7763568394002505e-15,
+      "full_Gram_min_eigenvalue": 0.23525107729872186,
+      "B_plus_iG_without_E_min_eigenvalue": -0.2759702190882042,
+      "formula": "sum C = V.T @ [P.T@P+I+i*(P-P.T)] @ K; sum G = V.T @ (P-P.T) @ K",
+      "note": "P is the strict-past trace filter. Imaginary selection gives STDP exactly. Dropping E changes full complex Hebbian accumulation; the self-associative Gram example can lose positive semidefiniteness. PSD is not required or guaranteed for the actual independent-K/V signed model."
+    },
+    "path_dependence": {
+      "same_first_and_last": true,
+      "same_sum_current_KV": true,
+      "clockwise_memory": [
+        [
+          0.0,
+          -4.0
+        ],
+        [
+          4.0,
+          0.0
+        ]
+      ],
+      "counterclockwise_memory": [
+        [
+          0.0,
+          4.0
+        ],
+        [
+          -4.0,
+          0.0
+        ]
+      ],
+      "reversal_error": 0.0,
+      "note": "At lambda=0 these are nearest-neighbour writes. Order, not just final state or occupancy, determines the memory."
+    },
+    "association_capacity": {
+      "timed_memory_error": 0.0,
+      "real_query_retrieval_error": 0.0,
+      "same_time_constant_activity_memory_norm": 0.0,
+      "note": "Q can be a real cue with no trace. Pure STDP can store KV; synchronous stationary activation and separated pre/post events are different encodings."
+    },
+    "G_as_associative_read": {
+      "extended_attention_error": 7.993605777301127e-15,
+      "formula": "keys=[past_K; current_K], values=[current_V; -past_V], read=Q @ keys.T @ values",
+      "note": "This uses real Q with the standard associative read. The temporal association list, rather than the matrix-read algebra, changes from current KV."
+    },
+    "two_phase_G_only_lookup": {
+      "both_phases_lookup_error": 1.8041124150158794e-16,
+      "cycle_sum_write_norm": 1.9329521701561158e-16,
+      "note": "Constructive capacity example, not the learned network trajectory. Alternate K-only and V-only activity; alternate Q sign. G changes sign while its Q read stays fixed. This disproves an impossibility argument based solely on zero cycle-average writing."
+    },
+    "projection_counterexample": {
+      "latent_skew_error": 0.0,
+      "projected_memory": [
+        [
+          1.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0
+        ]
+      ],
+      "projected_has_nonzero_diagonal": true,
+      "projected_factorization_error": 0.0,
+      "note": "Even with K and V both linear in the same h, the channel M need not be skew. Inferring imaginary eigenvalues for the actual model from STDP alone is invalid."
+    },
+    "multihead_capacity_construction": {
+      "arbitrary_head_memory_error": 0.0,
+      "latent_skew_error": 0.0,
+      "finite_activity_history_write_error": 2.220446049250313e-16,
+      "note": "For at least three heads, cyclic block-selection K/V projections can represent arbitrary independent head matrices through a shared skew hidden-history matrix. The actual H=8 model is not subject to a general per-head skew/capacity obstruction. This is an operator capacity construction, not a proof that the learned recurrence reaches the required histories."
+    },
+    "period_two": {
+      "heterogeneous_mean_formula_error": 7.771561172376096e-16,
+      "heterogeneous_alternating_formula_error": 1.7763568394002505e-15,
+      "heterogeneous_mean_norm": 0.3543966808463977,
+      "shared_decay_cycle_mean_norm": 7.397004104368293e-16,
+      "shared_decay_instantaneous_write_norm": 11.261624123890645,
+      "note": "Common decay cancels cycle-average writing but not the alternating write. Heterogeneous decays can produce secular accumulation on an exactly periodic prescribed trajectory."
+    },
+    "static_input_boundary": {
+      "endpoint_identity_error": 1.9984014443252818e-15,
+      "endpoint_coefficient_sum": -4.163336342344337e-17,
+      "formula": "D_R(x)=sum_{r=1..R}(lambda**(R-r)-lambda**(r-1))*x_r; M(k+a,v+b)-M(k,v)=D_R(v)*a.T-b*D_R(k).T",
+      "note": "Requires common fixed decay, zero initial traces and fixed input offset. It is not a claim that static task information cannot be encoded in changing hidden activity."
+    },
+    "filtered_path_integral": {
+      "adjacent_filtered_path_error": 4.440892098500626e-16,
+      "endpoint_minus_key_motion_error": 2.6645352591003757e-15,
+      "formula": "G_r=(eV_r*eK_{r-1}.T-eV_{r-1}*eK_r.T)/(1-lambda); M_R=(eV_R*eK_R.T-sum_r[(eV_r+eV_{r-1})*(eK_r-eK_{r-1}).T])/(1-lambda)",
+      "note": "Zero initial traces, fixed common decay. The second term is a path-dependent correction from key motion; M is not generally a rescaled current or filtered KV product."
+    },
+    "periodic_full_state_condition": {
+      "examples": {
+        "period_two": {
+          "net_write_norm": 1.5700924586837752e-16,
+          "instantaneous_write_norm": 1.8181818181818181,
+          "trace_periodicity_error": 1.1102230246251565e-16
+        },
+        "period_three": {
+          "net_write_norm": 2.293319290334749,
+          "instantaneous_write_norm": 1.7188093719224247,
+          "trace_periodicity_error": 0.0
+        }
+      },
+      "condition": "M_{r+P}=M_r requires sum_{s=r+1..r+P} G_s=0. Otherwise an exactly repeated prescribed activity cycle causes secular memory drift.",
+      "note": "Necessary condition, not a theorem that dynamics is attracted to period two. The original per-channel decay can give nonzero mean writing even for period two."
+    },
+    "fixed_address_increment_read": {
+      "value_increment_read_error": 2.220446049250313e-16,
+      "note": "For lambda=0 and unchanged K, G with a current real Q retrieves the change in V. This fits a residual update interpretation and does not require a Query trace."
+    },
+    "harmonic_mean": {
+      "formula_error": 2.220446049250313e-16,
+      "formula": "mean G_ij=0.5*Re[V_i*conj(K_j)*(conj(H_j)-H_i)], H_j=(1-lambda_j)*exp(-iw)/(1-lambda_j*exp(-iw))"
+    },
+    "symbolic_filter": {
+      "imaginary_filter_identity": true,
+      "odd_window_DTFT": "-2i*(1-lambda)*sin(w)/(1-2*lambda*cos(w)+lambda**2)",
+      "null_frequencies": [
+        "0 (constant activity)",
+        "pi (period-2 activity)"
+      ],
+      "note": "Zero spectral weight concerns long-run accumulated association at that frequency, not zero instantaneous G on every period-2 block."
+    },
+    "detached_trace_boundary": {
+      "full_forward_memory_norm": 3.574849180676073e-14,
+      "cut_forward_memory_norm": 6.951095629092365e-15,
+      "full_gradient_of_probe": [
+        4.9960036108132044e-15,
+        7.771561172376096e-16
+      ],
+      "cut_gradient_of_probe": [
+        -1.4284776999999993,
+        1.4284777000000008
+      ],
+      "cut_gradient_formula_error": 8.881784197001252e-16,
+      "projection_jump_write_formula_error": 3.497202527569243e-15,
+      "formula": "At incoming traces c0*k0,c0*v0 and constant within-segment k=a*k0,v=b*v0: DeltaM=c0*(1-lambda**B)/(1-lambda)*(b-a)*v0*k0.T.",
+      "note": "This is a derivative of the fixed-incoming-state continuation objective, not an autograd bug. An optimizer-induced change is itself a temporal event seen by STDP, although a frozen-parameter evaluation has no such event."
+    },
+    "initialized_production_block": {
+      "first_block_memory_norm": 0.0,
+      "second_block_formula_error": 6.38378239159465e-15,
+      "zero_reference_memory_after_12_blocks_norm": 4.0295371660104544e-13,
+      "formula": "G2=(1-lambda)*mean_p[(WV*I_p)*(R_p*WK*h0).T-(WV*h0)*(R_p*WK*I_p).T]",
+      "note": "Uses zero b_down at initialization and radial Phi. Actual h0 is nonzero, so this is not a dead-network bug. First cross-token communication is driven by the transition from the common initial reference toward the input."
+    }
+  }
+}

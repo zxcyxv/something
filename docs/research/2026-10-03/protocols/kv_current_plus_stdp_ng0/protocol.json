@@ -1,0 +1,23 @@
+{
+  "commit": "70a8dbae82a135251b83c91a53a8f14bd411946d",
+  "trainer_sha256": "65221608b193b1c86893bc1bfe973a6c400fe960d2fefed74905aedcb9c71e2f",
+  "torch": "2.8.0+cu128",
+  "gpu": "NVIDIA RTX 4000 Ada Generation",
+  "variant": "current_plus_stdp",
+  "protocol": "original CFG; same data/seed/batch/depth/optimizer; explicit model control only",
+  "selftest_note": "Original selftest fails bitwise resume equality for q_proj on CPU (max difference 7.45e-9, both finite); not altered.",
+  "current_term": "B = V.T @ RoPE(K) / T",
+  "difference_term": "G = (V.T @ RoPE(e_K_previous) - e_V_previous.T @ RoPE(K)) / T",
+  "read_equation": "RoPE(Q) @ (B + G).T",
+  "term_coefficients": {
+    "current": 1.0,
+    "difference": 1.0
+  },
+  "recurrent_memory": false,
+  "eligibility_traces": true,
+  "interpolation": false,
+  "past_past_term": false,
+  "carry_matrix": "Current B + G only; ignored by subsequent matrix updates. Original K/V eligibility traces remain.",
+  "checkpoint_note": "Checkpoint interval 1000 steps; keep_last=8. These retention settings only control disk usage; all per-step training metrics remain recorded.",
+  "primary_criterion": "Training loss/accuracy and whether sustained deterioration returns; EMA test performance is secondary."
+}

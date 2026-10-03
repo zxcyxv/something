@@ -1,0 +1,145 @@
+{
+  "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+  "device": "cpu",
+  "precision": "fp32",
+  "batch": 2,
+  "cases": {
+    "fresh": {
+      "original_loss": 0.9204542550895978,
+      "historical_loss": 0.9204542578274406,
+      "logits": {
+        "max_abs": 2.6702880859375e-05,
+        "relative_l2": 2.2767599340167627e-07,
+        "cosine": 0.9999999999999755
+      },
+      "gradients": {
+        "model.inner.embed.weight": {
+          "max_abs": 9.685754776000977e-08,
+          "relative_l2": 1.257893612138029e-06,
+          "cosine": 0.9999999999993209
+        },
+        "model.inner.w_cls.weight": {
+          "max_abs": 1.0244548320770264e-08,
+          "relative_l2": 9.706995841220556e-07,
+          "cosine": 0.9999999999996305
+        },
+        "model.inner.w_cls.bias": {
+          "max_abs": 2.3865140974521637e-09,
+          "relative_l2": 6.906059511071394e-07,
+          "cosine": 0.9999999999997692
+        },
+        "model.inner.layers.0.trace_lam_raw": {
+          "max_abs": 3.725290298461914e-09,
+          "relative_l2": 1.1345941080937427e-06,
+          "cosine": 0.9999999999994874
+        },
+        "model.inner.layers.0.theta": {
+          "max_abs": 1.0803341865539551e-07,
+          "relative_l2": 1.0518852302621614e-06,
+          "cosine": 0.9999999999994762
+        },
+        "model.inner.layers.0.q_proj.weight": {
+          "max_abs": 4.819594323635101e-08,
+          "relative_l2": 1.171976279682692e-06,
+          "cosine": 0.9999999999992777
+        },
+        "model.inner.layers.0.k_proj.weight": {
+          "max_abs": 2.8870999813079834e-08,
+          "relative_l2": 1.0727343118779867e-06,
+          "cosine": 0.9999999999993553
+        },
+        "model.inner.layers.0.v_proj.weight": {
+          "max_abs": 2.2351741790771484e-08,
+          "relative_l2": 1.2928413050896393e-06,
+          "cosine": 0.9999999999991138
+        },
+        "model.inner.layers.0.out_proj.weight": {
+          "max_abs": 1.1845258995890617e-08,
+          "relative_l2": 1.166693804808381e-06,
+          "cosine": 0.9999999999992549
+        },
+        "model.inner.layers.0.b_gate_up.weight": {
+          "max_abs": 5.587935447692871e-09,
+          "relative_l2": 1.1712810094630612e-06,
+          "cosine": 0.999999999999123
+        },
+        "model.inner.layers.0.b_down.weight": {
+          "max_abs": 1.4901161193847656e-08,
+          "relative_l2": 1.1460794062327612e-06,
+          "cosine": 0.9999999999992356
+        }
+      }
+    },
+    "detached_carry": {
+      "original_loss": 0.8485016402864148,
+      "historical_loss": 0.8485016293563215,
+      "logits": {
+        "max_abs": 2.288818359375e-05,
+        "relative_l2": 2.0832830965345873e-07,
+        "cosine": 0.9999999999999796
+      },
+      "gradients": {
+        "model.inner.embed.weight": {
+          "max_abs": 5.133915692567825e-08,
+          "relative_l2": 1.3779110394225217e-06,
+          "cosine": 0.9999999999990563
+        },
+        "model.inner.w_cls.weight": {
+          "max_abs": 6.51925802230835e-09,
+          "relative_l2": 1.2225113162846642e-06,
+          "cosine": 0.999999999999268
+        },
+        "model.inner.w_cls.bias": {
+          "max_abs": 1.1641532182693481e-09,
+          "relative_l2": 7.271671444576974e-07,
+          "cosine": 0.9999999999997695
+        },
+        "model.inner.layers.0.trace_lam_raw": {
+          "max_abs": 1.3969838619232178e-09,
+          "relative_l2": 6.834415772363574e-07,
+          "cosine": 0.9999999999997906
+        },
+        "model.inner.layers.0.theta": {
+          "max_abs": 0.043838873505592346,
+          "relative_l2": 0.5224291252649536,
+          "cosine": 0.9034986772537613
+        },
+        "model.inner.layers.0.q_proj.weight": {
+          "max_abs": 2.468004822731018e-08,
+          "relative_l2": 1.0946519301678127e-06,
+          "cosine": 0.9999999999993308
+        },
+        "model.inner.layers.0.k_proj.weight": {
+          "max_abs": 5.122274160385132e-09,
+          "relative_l2": 1.3766172288422928e-06,
+          "cosine": 0.9999999999989686
+        },
+        "model.inner.layers.0.v_proj.weight": {
+          "max_abs": 1.1874362826347351e-08,
+          "relative_l2": 1.455624548090809e-06,
+          "cosine": 0.9999999999988852
+        },
+        "model.inner.layers.0.out_proj.weight": {
+          "max_abs": 7.916241884231567e-09,
+          "relative_l2": 1.2340831633438303e-06,
+          "cosine": 0.9999999999991588
+        },
+        "model.inner.layers.0.b_gate_up.weight": {
+          "max_abs": 3.3760443329811096e-09,
+          "relative_l2": 1.1368416475454156e-06,
+          "cosine": 0.9999999999991305
+        },
+        "model.inner.layers.0.b_down.weight": {
+          "max_abs": 6.05359673500061e-09,
+          "relative_l2": 1.1557213420060268e-06,
+          "cosine": 0.9999999999991949
+        }
+      },
+      "gradient_difference_vs_boundary_chain_rule": {
+        "max_abs": 1.30385160446167e-07,
+        "relative_l2": 1.9479346433699717e-06,
+        "cosine": 0.9999999999981173
+      }
+    }
+  }
+}

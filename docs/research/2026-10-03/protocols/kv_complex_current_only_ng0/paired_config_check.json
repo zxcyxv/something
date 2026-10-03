@@ -1,0 +1,14 @@
+{
+  "model_id": {
+    "baseline": "lt-kv-stdp-fast-weight-v1",
+    "complex_current_only": "lt-kv-stdp-fast-weight-v1:research-complex_current_only"
+  },
+  "out_dir": {
+    "baseline": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0",
+    "complex_current_only": "/workspace/something/runs/kv_collapse_20261003/kv_complex_current_only_ng0"
+  },
+  "research_variant": {
+    "baseline": "original",
+    "complex_current_only": "complex_current_only"
+  }
+}

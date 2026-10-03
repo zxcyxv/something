@@ -1,0 +1,12 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/something/lt/probe_kv_feedback.py", line 134, in <module>
+    main()
+  File "/workspace/something/lt/probe_kv_feedback.py", line 117, in main
+    tail = {key: sum(row[key] for row in rows[-16:])/min(16, len(rows)) for key in keys}
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/something/lt/probe_kv_feedback.py", line 117, in <genexpr>
+    tail = {key: sum(row[key] for row in rows[-16:])/min(16, len(rows)) for key in keys}
+                     ~~~^^^^^
+KeyError: 'hidden_two_step_rms'

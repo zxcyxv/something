@@ -1,0 +1,7 @@
+{
+  "status": "failed_before_result_write",
+  "reason": "Short-window report included first row, where two-step change is undefined. Aggregation helper corrected and checked on existing records.",
+  "training_affected": false,
+  "rerun": false,
+  "results_used": false
+}

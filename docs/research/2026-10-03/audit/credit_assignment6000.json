@@ -1,0 +1,555 @@
+{
+  "blocks": 128,
+  "batch": 1,
+  "device": "cpu",
+  "precision": "fp32",
+  "final_loss_only": true,
+  "caveat": "Actual training supervises every segment and updates weights; this isolates final-loss credit paths at frozen weights, not their total optimizer effect.",
+  "runs": {
+    "original": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+      "modes": {
+        "full": {
+          "loss": 0.9103381446996627,
+          "seconds": 9.847836137050763,
+          "accuracy": 0.5679012537002563,
+          "gradient_norm": 3.295382022857666,
+          "norms": {
+            "inner.embed.weight": 1.0872747898101807,
+            "inner.w_cls.weight": 0.17438006401062012,
+            "inner.w_cls.bias": 0.00750506529584527,
+            "inner.layers.0.trace_lam_raw": 0.2601606547832489,
+            "inner.layers.0.theta": 0.5013853907585144,
+            "inner.layers.0.q_proj.weight": 1.8088974952697754,
+            "inner.layers.0.k_proj.weight": 1.0888632535934448,
+            "inner.layers.0.v_proj.weight": 1.3476588726043701,
+            "inner.layers.0.out_proj.weight": 1.1301404237747192,
+            "inner.layers.0.b_gate_up.weight": 0.7418707609176636,
+            "inner.layers.0.b_down.weight": 1.1219192743301392
+          }
+        },
+        "cut_all_every8": {
+          "loss": 0.9103381446996627,
+          "seconds": 2.676888608140871,
+          "accuracy": 0.5679012537002563,
+          "gradient_norm": 2.556105613708496,
+          "norms": {
+            "inner.embed.weight": 0.7487368583679199,
+            "inner.w_cls.weight": 0.17438006401062012,
+            "inner.w_cls.bias": 0.00750506529584527,
+            "inner.layers.0.trace_lam_raw": 0.015099290758371353,
+            "inner.layers.0.theta": 0.687987208366394,
+            "inner.layers.0.q_proj.weight": 1.4979161024093628,
+            "inner.layers.0.k_proj.weight": 0.4905494749546051,
+            "inner.layers.0.v_proj.weight": 1.060470461845398,
+            "inner.layers.0.out_proj.weight": 0.9540303945541382,
+            "inner.layers.0.b_gate_up.weight": 0.5888535380363464,
+            "inner.layers.0.b_down.weight": 0.7870151400566101
+          },
+          "logits_vs_full": {
+            "max_abs": 0.0,
+            "relative_l2": 0.0,
+            "cosine": 1.0
+          },
+          "gradient_vs_full": {
+            "max_abs": 0.30007196217775345,
+            "relative_l2": 0.8426528241726804,
+            "cosine": 0.574677872610942
+          },
+          "parameter_gradients_vs_full": {
+            "inner.embed.weight": {
+              "max_abs": 0.08882106654345989,
+              "relative_l2": 0.8206297742061053,
+              "cosine": 0.5814293761833997
+            },
+            "inner.w_cls.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999987
+            },
+            "inner.w_cls.bias": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 1.0
+            },
+            "inner.layers.0.trace_lam_raw": {
+              "max_abs": 0.0888120997697115,
+              "relative_l2": 0.9434085966975693,
+              "cosine": 0.9764982735713235
+            },
+            "inner.layers.0.theta": {
+              "max_abs": 0.30007196217775345,
+              "relative_l2": 1.0786984721922748,
+              "cosine": 0.6264761649313947
+            },
+            "inner.layers.0.q_proj.weight": {
+              "max_abs": 0.04420953989028931,
+              "relative_l2": 0.6507434235470789,
+              "cosine": 0.7621544603458644
+            },
+            "inner.layers.0.k_proj.weight": {
+              "max_abs": 0.025744854821823537,
+              "relative_l2": 1.037422588578871,
+              "cosine": 0.14063676583791296
+            },
+            "inner.layers.0.v_proj.weight": {
+              "max_abs": 0.01998155750334263,
+              "relative_l2": 1.1692650934663995,
+              "cosine": 0.1601409397137733
+            },
+            "inner.layers.0.out_proj.weight": {
+              "max_abs": 0.01003693234815728,
+              "relative_l2": 0.6105576097575153,
+              "cosine": 0.7935856725841305
+            },
+            "inner.layers.0.b_gate_up.weight": {
+              "max_abs": 0.0033637429296504706,
+              "relative_l2": 0.6432041695711388,
+              "cosine": 0.7661906608226532
+            },
+            "inner.layers.0.b_down.weight": {
+              "max_abs": 0.019488074292894453,
+              "relative_l2": 0.7650013257708926,
+              "cosine": 0.6463820535662484
+            }
+          }
+        },
+        "cut_hidden_every8": {
+          "loss": 0.9103381446996627,
+          "seconds": 8.567268074955791,
+          "accuracy": 0.5679012537002563,
+          "gradient_norm": 3.308159589767456,
+          "norms": {
+            "inner.embed.weight": 1.098752498626709,
+            "inner.w_cls.weight": 0.17438006401062012,
+            "inner.w_cls.bias": 0.00750506529584527,
+            "inner.layers.0.trace_lam_raw": 0.2608247399330139,
+            "inner.layers.0.theta": 0.5034963488578796,
+            "inner.layers.0.q_proj.weight": 1.8118537664413452,
+            "inner.layers.0.k_proj.weight": 1.096677303314209,
+            "inner.layers.0.v_proj.weight": 1.3528177738189697,
+            "inner.layers.0.out_proj.weight": 1.1335132122039795,
+            "inner.layers.0.b_gate_up.weight": 0.7432335615158081,
+            "inner.layers.0.b_down.weight": 1.1243271827697754
+          },
+          "logits_vs_full": {
+            "max_abs": 0.0,
+            "relative_l2": 0.0,
+            "cosine": 1.0
+          },
+          "gradient_vs_full": {
+            "max_abs": 0.005039110779762268,
+            "relative_l2": 0.037092447614093554,
+            "cosine": 0.9993221581728617
+          },
+          "parameter_gradients_vs_full": {
+            "inner.embed.weight": {
+              "max_abs": 0.005039110779762268,
+              "relative_l2": 0.0411913469050602,
+              "cosine": 0.9992156354282471
+            },
+            "inner.w_cls.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999987
+            },
+            "inner.w_cls.bias": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 1.0
+            },
+            "inner.layers.0.trace_lam_raw": {
+              "max_abs": 0.0026788972318172455,
+              "relative_l2": 0.026885115818883174,
+              "cosine": 0.9996427651033548
+            },
+            "inner.layers.0.theta": {
+              "max_abs": 0.0033352822065353394,
+              "relative_l2": 0.023170332150713388,
+              "cosine": 0.9997415194865262
+            },
+            "inner.layers.0.q_proj.weight": {
+              "max_abs": 0.0029659271240234375,
+              "relative_l2": 0.036642047135196545,
+              "cosine": 0.9993311084125849
+            },
+            "inner.layers.0.k_proj.weight": {
+              "max_abs": 0.0019319616258144379,
+              "relative_l2": 0.039018240137861517,
+              "cosine": 0.999269765672691
+            },
+            "inner.layers.0.v_proj.weight": {
+              "max_abs": 0.0003947550430893898,
+              "relative_l2": 0.030501106459307918,
+              "cosine": 0.9995439108495578
+            },
+            "inner.layers.0.out_proj.weight": {
+              "max_abs": 0.0005758233019150794,
+              "relative_l2": 0.038808235554780794,
+              "cosine": 0.9992536469910065
+            },
+            "inner.layers.0.b_gate_up.weight": {
+              "max_abs": 0.00016530416905879974,
+              "relative_l2": 0.0396306065514725,
+              "cosine": 0.9992178337229178
+            },
+            "inner.layers.0.b_down.weight": {
+              "max_abs": 0.00045595550909638405,
+              "relative_l2": 0.041039680593060374,
+              "cosine": 0.9991619670664271
+            }
+          }
+        },
+        "cut_memory_every8": {
+          "loss": 0.9103381446996627,
+          "seconds": 8.923691375181079,
+          "accuracy": 0.5679012537002563,
+          "gradient_norm": 2.5541603565216064,
+          "norms": {
+            "inner.embed.weight": 0.7491956353187561,
+            "inner.w_cls.weight": 0.17438006401062012,
+            "inner.w_cls.bias": 0.00750506529584527,
+            "inner.layers.0.trace_lam_raw": 0.01506243646144867,
+            "inner.layers.0.theta": 0.6829891204833984,
+            "inner.layers.0.q_proj.weight": 1.4974446296691895,
+            "inner.layers.0.k_proj.weight": 0.49050015211105347,
+            "inner.layers.0.v_proj.weight": 1.0601917505264282,
+            "inner.layers.0.out_proj.weight": 0.9530720710754395,
+            "inner.layers.0.b_gate_up.weight": 0.5889801979064941,
+            "inner.layers.0.b_down.weight": 0.7869582176208496
+          },
+          "logits_vs_full": {
+            "max_abs": 0.0,
+            "relative_l2": 0.0,
+            "cosine": 1.0
+          },
+          "gradient_vs_full": {
+            "max_abs": 0.29441655427217484,
+            "relative_l2": 0.8418904807964633,
+            "cosine": 0.5753536507953458
+          },
+          "parameter_gradients_vs_full": {
+            "inner.embed.weight": {
+              "max_abs": 0.0887957289814949,
+              "relative_l2": 0.8214700107265277,
+              "cosine": 0.5804939617264577
+            },
+            "inner.w_cls.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999987
+            },
+            "inner.w_cls.bias": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 1.0
+            },
+            "inner.layers.0.trace_lam_raw": {
+              "max_abs": 0.08883426245301962,
+              "relative_l2": 0.9435920325439833,
+              "cosine": 0.9757564286167066
+            },
+            "inner.layers.0.theta": {
+              "max_abs": 0.29441655427217484,
+              "relative_l2": 1.0685982764103772,
+              "cosine": 0.629016356136088
+            },
+            "inner.layers.0.q_proj.weight": {
+              "max_abs": 0.042777664959430695,
+              "relative_l2": 0.6489627394693347,
+              "cosine": 0.7635316928949553
+            },
+            "inner.layers.0.k_proj.weight": {
+              "max_abs": 0.025800305607845075,
+              "relative_l2": 1.03739140347357,
+              "cosine": 0.14067725154405056
+            },
+            "inner.layers.0.v_proj.weight": {
+              "max_abs": 0.019978941418230534,
+              "relative_l2": 1.1691462569326825,
+              "cosine": 0.16015458115220194
+            },
+            "inner.layers.0.out_proj.weight": {
+              "max_abs": 0.009922480152454227,
+              "relative_l2": 0.6098829236606559,
+              "cosine": 0.7940234122620002
+            },
+            "inner.layers.0.b_gate_up.weight": {
+              "max_abs": 0.0033658421016298234,
+              "relative_l2": 0.6428336621099497,
+              "cosine": 0.7664966045651157
+            },
+            "inner.layers.0.b_down.weight": {
+              "max_abs": 0.019501978007610887,
+              "relative_l2": 0.7646264568913167,
+              "cosine": 0.6467868254158697
+            }
+          }
+        }
+      }
+    },
+    "current_only": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/kv_current_only_ng0/step_6000.pt",
+      "modes": {
+        "full": {
+          "loss": 0.2606450013946491,
+          "seconds": 8.643598588882014,
+          "accuracy": 0.9876543283462524,
+          "gradient_norm": 55.94051742553711,
+          "norms": {
+            "inner.embed.weight": 33.98955154418945,
+            "inner.w_cls.weight": 0.297062486410141,
+            "inner.w_cls.bias": 0.01695718802511692,
+            "inner.layers.0.theta": 4.930838584899902,
+            "inner.layers.0.q_proj.weight": 19.175607681274414,
+            "inner.layers.0.k_proj.weight": 21.37032699584961,
+            "inner.layers.0.v_proj.weight": 20.877729415893555,
+            "inner.layers.0.out_proj.weight": 17.048093795776367,
+            "inner.layers.0.b_gate_up.weight": 12.560375213623047,
+            "inner.layers.0.b_down.weight": 15.853937149047852
+          }
+        },
+        "cut_all_every8": {
+          "loss": 0.2606450013946491,
+          "seconds": 2.6037042029201984,
+          "accuracy": 0.9876543283462524,
+          "gradient_norm": 5.024094104766846,
+          "norms": {
+            "inner.embed.weight": 2.614889144897461,
+            "inner.w_cls.weight": 0.297062486410141,
+            "inner.w_cls.bias": 0.01695718802511692,
+            "inner.layers.0.theta": 1.0053291320800781,
+            "inner.layers.0.q_proj.weight": 1.9645869731903076,
+            "inner.layers.0.k_proj.weight": 1.7659924030303955,
+            "inner.layers.0.v_proj.weight": 1.966628909111023,
+            "inner.layers.0.out_proj.weight": 1.6016556024551392,
+            "inner.layers.0.b_gate_up.weight": 1.307969093322754,
+            "inner.layers.0.b_down.weight": 1.502108097076416
+          },
+          "logits_vs_full": {
+            "max_abs": 0.0,
+            "relative_l2": 0.0,
+            "cosine": 1.0
+          },
+          "gradient_vs_full": {
+            "max_abs": 3.413314715027809,
+            "relative_l2": 0.9967934928179677,
+            "cosine": 0.08054931138761766
+          },
+          "parameter_gradients_vs_full": {
+            "inner.embed.weight": {
+              "max_abs": 3.413314715027809,
+              "relative_l2": 1.0113515882999073,
+              "cosine": -0.10992467840188988
+            },
+            "inner.w_cls.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999993
+            },
+            "inner.w_cls.bias": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 1.0000000000000002
+            },
+            "inner.layers.0.theta": {
+              "max_abs": 2.74574613571167,
+              "relative_l2": 1.0870815037607602,
+              "cosine": -0.34376234226285274
+            },
+            "inner.layers.0.q_proj.weight": {
+              "max_abs": 1.4280845820903778,
+              "relative_l2": 0.9801642222790298,
+              "cosine": 0.24291705770596775
+            },
+            "inner.layers.0.k_proj.weight": {
+              "max_abs": 1.9169944822788239,
+              "relative_l2": 0.9900248084101458,
+              "cosine": 0.1614278271208691
+            },
+            "inner.layers.0.v_proj.weight": {
+              "max_abs": 0.43852754804538563,
+              "relative_l2": 0.9949301686576763,
+              "cosine": 0.1007836389416109
+            },
+            "inner.layers.0.out_proj.weight": {
+              "max_abs": 0.34262705594301224,
+              "relative_l2": 0.9811030579660037,
+              "cosine": 0.246214019505479
+            },
+            "inner.layers.0.b_gate_up.weight": {
+              "max_abs": 0.12329092063009739,
+              "relative_l2": 0.9682905392903284,
+              "cosine": 0.35174628903520877
+            },
+            "inner.layers.0.b_down.weight": {
+              "max_abs": 0.22491774521768093,
+              "relative_l2": 0.9956884504668291,
+              "cosine": 0.09278132049438156
+            }
+          }
+        },
+        "cut_hidden_every8": {
+          "loss": 0.2606450013946491,
+          "seconds": 2.687603927915916,
+          "accuracy": 0.9876543283462524,
+          "gradient_norm": 5.024094104766846,
+          "norms": {
+            "inner.embed.weight": 2.614889144897461,
+            "inner.w_cls.weight": 0.297062486410141,
+            "inner.w_cls.bias": 0.01695718802511692,
+            "inner.layers.0.theta": 1.0053291320800781,
+            "inner.layers.0.q_proj.weight": 1.9645869731903076,
+            "inner.layers.0.k_proj.weight": 1.7659924030303955,
+            "inner.layers.0.v_proj.weight": 1.966628909111023,
+            "inner.layers.0.out_proj.weight": 1.6016556024551392,
+            "inner.layers.0.b_gate_up.weight": 1.307969093322754,
+            "inner.layers.0.b_down.weight": 1.502108097076416
+          },
+          "logits_vs_full": {
+            "max_abs": 0.0,
+            "relative_l2": 0.0,
+            "cosine": 1.0
+          },
+          "gradient_vs_full": {
+            "max_abs": 3.413314715027809,
+            "relative_l2": 0.9967934928179677,
+            "cosine": 0.08054931138761766
+          },
+          "parameter_gradients_vs_full": {
+            "inner.embed.weight": {
+              "max_abs": 3.413314715027809,
+              "relative_l2": 1.0113515882999073,
+              "cosine": -0.10992467840188988
+            },
+            "inner.w_cls.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999993
+            },
+            "inner.w_cls.bias": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 1.0000000000000002
+            },
+            "inner.layers.0.theta": {
+              "max_abs": 2.74574613571167,
+              "relative_l2": 1.0870815037607602,
+              "cosine": -0.34376234226285274
+            },
+            "inner.layers.0.q_proj.weight": {
+              "max_abs": 1.4280845820903778,
+              "relative_l2": 0.9801642222790298,
+              "cosine": 0.24291705770596775
+            },
+            "inner.layers.0.k_proj.weight": {
+              "max_abs": 1.9169944822788239,
+              "relative_l2": 0.9900248084101458,
+              "cosine": 0.1614278271208691
+            },
+            "inner.layers.0.v_proj.weight": {
+              "max_abs": 0.43852754804538563,
+              "relative_l2": 0.9949301686576763,
+              "cosine": 0.1007836389416109
+            },
+            "inner.layers.0.out_proj.weight": {
+              "max_abs": 0.34262705594301224,
+              "relative_l2": 0.9811030579660037,
+              "cosine": 0.246214019505479
+            },
+            "inner.layers.0.b_gate_up.weight": {
+              "max_abs": 0.12329092063009739,
+              "relative_l2": 0.9682905392903284,
+              "cosine": 0.35174628903520877
+            },
+            "inner.layers.0.b_down.weight": {
+              "max_abs": 0.22491774521768093,
+              "relative_l2": 0.9956884504668291,
+              "cosine": 0.09278132049438156
+            }
+          }
+        },
+        "cut_memory_every8": {
+          "loss": 0.2606450013946491,
+          "seconds": 8.346200314816087,
+          "accuracy": 0.9876543283462524,
+          "gradient_norm": 55.94051742553711,
+          "norms": {
+            "inner.embed.weight": 33.98955154418945,
+            "inner.w_cls.weight": 0.297062486410141,
+            "inner.w_cls.bias": 0.01695718802511692,
+            "inner.layers.0.theta": 4.930838584899902,
+            "inner.layers.0.q_proj.weight": 19.175607681274414,
+            "inner.layers.0.k_proj.weight": 21.37032699584961,
+            "inner.layers.0.v_proj.weight": 20.877729415893555,
+            "inner.layers.0.out_proj.weight": 17.048093795776367,
+            "inner.layers.0.b_gate_up.weight": 12.560375213623047,
+            "inner.layers.0.b_down.weight": 15.853937149047852
+          },
+          "logits_vs_full": {
+            "max_abs": 0.0,
+            "relative_l2": 0.0,
+            "cosine": 1.0
+          },
+          "gradient_vs_full": {
+            "max_abs": 0.0,
+            "relative_l2": 0.0,
+            "cosine": 0.99999999999982
+          },
+          "parameter_gradients_vs_full": {
+            "inner.embed.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999959
+            },
+            "inner.w_cls.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999993
+            },
+            "inner.w_cls.bias": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 1.0000000000000002
+            },
+            "inner.layers.0.theta": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999998
+            },
+            "inner.layers.0.q_proj.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999495
+            },
+            "inner.layers.0.k_proj.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999344
+            },
+            "inner.layers.0.v_proj.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999999161
+            },
+            "inner.layers.0.out_proj.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.999999999999934
+            },
+            "inner.layers.0.b_gate_up.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999998131
+            },
+            "inner.layers.0.b_down.weight": {
+              "max_abs": 0.0,
+              "relative_l2": 0.0,
+              "cosine": 0.9999999999998834
+            }
+          }
+        }
+      }
+    }
+  }
+}

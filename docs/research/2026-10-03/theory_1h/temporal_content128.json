@@ -1,0 +1,2917 @@
+{
+  "method": "frozen original trajectories, same puzzles, fresh states; alternate writes replay the same captured activities",
+  "precision": "FP32 trajectory, FP64 algebra replay",
+  "blocks": 128,
+  "batch": 4,
+  "tail": 32,
+  "caveat": "Operator-content measurements do not identify the cause of training reversal and give no accuracy for a changed model.",
+  "runs": {
+    "original": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+      "step": 6000,
+      "seconds": 2.21637408901006,
+      "lambda_min": 0.09587343782186508,
+      "lambda_max": 0.10479079931974411,
+      "trajectory_at_supervised_blocks": {
+        "accuracy": 0.5833333283662796,
+        "loss": 0.907061628007495,
+        "hidden_one_step_rms": 1.2222139433693808,
+        "hidden_two_step_rms": 0.0016374155341530256
+      },
+      "key_tail": {
+        "mean_rms": 2.3503571808472463,
+        "alternating_rms": 0.9160956133794088,
+        "residual_rms": 0.009005522945324595,
+        "period_two_fraction_of_centered_energy": 0.9999033739334028
+      },
+      "value_tail": {
+        "mean_rms": 1.2639305086216104,
+        "alternating_rms": 0.5603225309251391,
+        "residual_rms": 0.0055811866265336515,
+        "period_two_fraction_of_centered_energy": 0.9999007949383496
+      },
+      "operator_replay": {
+        "tail_current_KV_rms": 0.64041778035512,
+        "tail_STDP_write_rms": 0.3442765546528239,
+        "final_heterogeneous_vs_common_memory": {
+          "relative_l2": 0.11744276955465478,
+          "cosine": 0.9930917264095976
+        },
+        "final_memory_difference_rms": 0.0571784739146725,
+        "actual_memory_vs_replayed_M": {
+          "relative_l2": 4.520756877415288e-06,
+          "cosine": 0.9999999999897828
+        },
+        "note": "Actual M equivalence is only expected for accumulated-STDP variants. On B-only or G-only trajectories this is a counterfactual operator calculation."
+      },
+      "period_two_prediction": {
+        "observed_cycle_average_write_rms": 0.0005085533614587338,
+        "predicted_heterogeneous_cycle_average_write_rms": 0.000464140274141485,
+        "mean_prediction_vs_observed": {
+          "relative_l2": 0.4343743686707372,
+          "cosine": 0.9008104705995739
+        },
+        "predicted_alternating_write_rms": 0.3442046335166449,
+        "alternating_prediction_vs_observed": {
+          "relative_l2": 0.0005236909157422163,
+          "cosine": 0.9999998783682126
+        },
+        "shared_window_observed_cycle_average_write_rms": 0.00022089766234169154,
+        "note": "Formula is exact for a prescribed exact period-2 orbit with equilibrated traces. Residual temporal drift is visible in the prediction error."
+      },
+      "common_window_static_input_decomposition": {
+        "max_endpoint_identity_error": 7.835398996292042e-14,
+        "final_M_rms": 0.4868624448443643,
+        "final_dynamic_history_M_rms": 0.4789610090175238,
+        "final_static_input_boundary_M_rms": 0.26098065029167933,
+        "final_boundary_vs_total_M": {
+          "relative_l2": 0.983770701744378,
+          "cosine": 0.29805325013281175
+        },
+        "tail_total_read_rms": 7.114529518937054,
+        "tail_dynamic_history_read_rms": 6.785898549109944,
+        "tail_static_input_boundary_read_rms": 3.870645284304183,
+        "tail_boundary_vs_total_read": {
+          "relative_l2": 0.9538084747624732,
+          "cosine": 0.3549664784620308
+        },
+        "note": "The components can interfere; their norms are not additive fractions. Common-window replay does not change the trajectory."
+      },
+      "rows": [
+        {
+          "block": 1,
+          "accuracy": 0.07407407462596893,
+          "loss": 2.7199831651066604,
+          "hidden_one_step_rms": 0.8544553871785535
+        },
+        {
+          "block": 2,
+          "accuracy": 0.12345679104328156,
+          "loss": 3.1290166478667816,
+          "hidden_one_step_rms": 0.9370833618224622,
+          "hidden_two_step_rms": 1.2580689605976956
+        },
+        {
+          "block": 3,
+          "accuracy": 0.1975308656692505,
+          "loss": 2.5129249805448555,
+          "hidden_one_step_rms": 0.8682180641446035,
+          "hidden_two_step_rms": 1.169802359101479
+        },
+        {
+          "block": 4,
+          "accuracy": 0.5123456716537476,
+          "loss": 1.2879807801090413,
+          "hidden_one_step_rms": 1.0024211078901788,
+          "hidden_two_step_rms": 1.2708055896678683
+        },
+        {
+          "block": 5,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.590817264473479,
+          "hidden_one_step_rms": 0.9388353947501791,
+          "hidden_two_step_rms": 0.7605105475785099
+        },
+        {
+          "block": 6,
+          "accuracy": 0.5648148059844971,
+          "loss": 0.9272635394294257,
+          "hidden_one_step_rms": 1.09830380599883,
+          "hidden_two_step_rms": 0.6483653764255448
+        },
+        {
+          "block": 7,
+          "accuracy": 0.4475308656692505,
+          "loss": 1.6291943952686074,
+          "hidden_one_step_rms": 1.1698013803001523,
+          "hidden_two_step_rms": 0.3464234593432373
+        },
+        {
+          "block": 8,
+          "accuracy": 0.5771604776382446,
+          "loss": 0.9118202220550818,
+          "hidden_one_step_rms": 1.2105935433977446,
+          "hidden_two_step_rms": 0.22410128391102227
+        },
+        {
+          "block": 9,
+          "accuracy": 0.4135802388191223,
+          "loss": 1.7074048694973805,
+          "hidden_one_step_rms": 1.2238318488089577,
+          "hidden_two_step_rms": 0.12945737829126894
+        },
+        {
+          "block": 10,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9074223744494248,
+          "hidden_one_step_rms": 1.2218979139934267,
+          "hidden_two_step_rms": 0.08554740634419095
+        },
+        {
+          "block": 11,
+          "accuracy": 0.42901235818862915,
+          "loss": 1.6826369513992043,
+          "hidden_one_step_rms": 1.2187406294466372,
+          "hidden_two_step_rms": 0.052475708711611814
+        },
+        {
+          "block": 12,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9066749542411281,
+          "hidden_one_step_rms": 1.219603503090065,
+          "hidden_two_step_rms": 0.03906110570143425
+        },
+        {
+          "block": 13,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6897449368618667,
+          "hidden_one_step_rms": 1.2203018987964438,
+          "hidden_two_step_rms": 0.02656533623677199
+        },
+        {
+          "block": 14,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9071786575910314,
+          "hidden_one_step_rms": 1.2198828058164362,
+          "hidden_two_step_rms": 0.021702871217335346
+        },
+        {
+          "block": 15,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6855981674384355,
+          "hidden_one_step_rms": 1.2193513262650901,
+          "hidden_two_step_rms": 0.016262095154658155
+        },
+        {
+          "block": 16,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9067951114553638,
+          "hidden_one_step_rms": 1.2198308332463794,
+          "hidden_two_step_rms": 0.014101952945066838
+        },
+        {
+          "block": 17,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6867758561015418,
+          "hidden_one_step_rms": 1.2200486105834383,
+          "hidden_two_step_rms": 0.010403083232302365
+        },
+        {
+          "block": 18,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9069536084569335,
+          "hidden_one_step_rms": 1.2202284727161683,
+          "hidden_two_step_rms": 0.009678639839741626
+        },
+        {
+          "block": 19,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6860309709162513,
+          "hidden_one_step_rms": 1.2200803560047029,
+          "hidden_two_step_rms": 0.00659780704984517
+        },
+        {
+          "block": 20,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9068205691190108,
+          "hidden_one_step_rms": 1.2201716955275215,
+          "hidden_two_step_rms": 0.006520223687367482
+        },
+        {
+          "block": 21,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.685213807652174,
+          "hidden_one_step_rms": 1.2201141237188662,
+          "hidden_two_step_rms": 0.004345674631558326
+        },
+        {
+          "block": 22,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9068399535091244,
+          "hidden_one_step_rms": 1.2204032159733396,
+          "hidden_two_step_rms": 0.004556798105666374
+        },
+        {
+          "block": 23,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6852139739873004,
+          "hidden_one_step_rms": 1.220363326166044,
+          "hidden_two_step_rms": 0.003242079264221211
+        },
+        {
+          "block": 24,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9067873371092348,
+          "hidden_one_step_rms": 1.220461678819514,
+          "hidden_two_step_rms": 0.0033267736621482454
+        },
+        {
+          "block": 25,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6843359734027552,
+          "hidden_one_step_rms": 1.220369602170788,
+          "hidden_two_step_rms": 0.002795314595098939
+        },
+        {
+          "block": 26,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9067450653655713,
+          "hidden_one_step_rms": 1.220587375530006,
+          "hidden_two_step_rms": 0.002868490404445091
+        },
+        {
+          "block": 27,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6841599439539754,
+          "hidden_one_step_rms": 1.2205366817144552,
+          "hidden_two_step_rms": 0.002446399793368394
+        },
+        {
+          "block": 28,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.906727825267565,
+          "hidden_one_step_rms": 1.2207034818913773,
+          "hidden_two_step_rms": 0.002477924063907442
+        },
+        {
+          "block": 29,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6836420690260554,
+          "hidden_one_step_rms": 1.2206315013458844,
+          "hidden_two_step_rms": 0.002020996015820518
+        },
+        {
+          "block": 30,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9066799685008661,
+          "hidden_one_step_rms": 1.220786875198808,
+          "hidden_two_step_rms": 0.002234426717684204
+        },
+        {
+          "block": 31,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6832549979394102,
+          "hidden_one_step_rms": 1.2207134206726082,
+          "hidden_two_step_rms": 0.001775834871719933
+        },
+        {
+          "block": 32,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9066579509226494,
+          "hidden_one_step_rms": 1.2209078008173235,
+          "hidden_two_step_rms": 0.0019655635397554288
+        },
+        {
+          "block": 33,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6829784182636542,
+          "hidden_one_step_rms": 1.2208468298171344,
+          "hidden_two_step_rms": 0.0015853911546035515
+        },
+        {
+          "block": 34,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9066265705786499,
+          "hidden_one_step_rms": 1.2209890722585859,
+          "hidden_two_step_rms": 0.001837273912462803
+        },
+        {
+          "block": 35,
+          "accuracy": 0.4413580298423767,
+          "loss": 1.6825655349852129,
+          "hidden_one_step_rms": 1.2209090783766816,
+          "hidden_two_step_rms": 0.001561121523670721
+        },
+        {
+          "block": 36,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9065927125340848,
+          "hidden_one_step_rms": 1.2210913283835962,
+          "hidden_two_step_rms": 0.0017642661977586632
+        },
+        {
+          "block": 37,
+          "accuracy": 0.4413580298423767,
+          "loss": 1.6823427861042144,
+          "hidden_one_step_rms": 1.2210264794015189,
+          "hidden_two_step_rms": 0.0015439987456491902
+        },
+        {
+          "block": 38,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9065736340708895,
+          "hidden_one_step_rms": 1.221179082933097,
+          "hidden_two_step_rms": 0.001739333863753324
+        },
+        {
+          "block": 39,
+          "accuracy": 0.4413580298423767,
+          "loss": 1.6820201938106805,
+          "hidden_one_step_rms": 1.2211023618503762,
+          "hidden_two_step_rms": 0.001518076292917252
+        },
+        {
+          "block": 40,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9065375991647742,
+          "hidden_one_step_rms": 1.2212643635457394,
+          "hidden_two_step_rms": 0.0017236375489791342
+        },
+        {
+          "block": 41,
+          "accuracy": 0.4413580298423767,
+          "loss": 1.6817858540650796,
+          "hidden_one_step_rms": 1.2211918319858357,
+          "hidden_two_step_rms": 0.0015161125761059433
+        },
+        {
+          "block": 42,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9065214021188485,
+          "hidden_one_step_rms": 1.2213516592274307,
+          "hidden_two_step_rms": 0.001706965820013254
+        },
+        {
+          "block": 43,
+          "accuracy": 0.4413580298423767,
+          "loss": 1.6815560446580327,
+          "hidden_one_step_rms": 1.2212775843250698,
+          "hidden_two_step_rms": 0.0014904970994475777
+        },
+        {
+          "block": 44,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9064913544448814,
+          "hidden_one_step_rms": 1.221428324339645,
+          "hidden_two_step_rms": 0.0016945038037768138
+        },
+        {
+          "block": 45,
+          "accuracy": 0.4413580298423767,
+          "loss": 1.6813309591977372,
+          "hidden_one_step_rms": 1.2213512060589757,
+          "hidden_two_step_rms": 0.0014960337284297188
+        },
+        {
+          "block": 46,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9064743006404185,
+          "hidden_one_step_rms": 1.2215082731344842,
+          "hidden_two_step_rms": 0.0016878467948952859
+        },
+        {
+          "block": 47,
+          "accuracy": 0.4413580298423767,
+          "loss": 1.6811531573574332,
+          "hidden_one_step_rms": 1.2214331889751775,
+          "hidden_two_step_rms": 0.001491150124208239
+        },
+        {
+          "block": 48,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.906452799226689,
+          "hidden_one_step_rms": 1.2215807196452477,
+          "hidden_two_step_rms": 0.0016815900867495222
+        },
+        {
+          "block": 49,
+          "accuracy": 0.4382716119289398,
+          "loss": 1.6809630781934515,
+          "hidden_one_step_rms": 1.2215020816880404,
+          "hidden_two_step_rms": 0.0014921177748676354
+        },
+        {
+          "block": 50,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9064359230912818,
+          "hidden_one_step_rms": 1.2216516169507214,
+          "hidden_two_step_rms": 0.0016810093322911855
+        },
+        {
+          "block": 51,
+          "accuracy": 0.4382716119289398,
+          "loss": 1.680808531099286,
+          "hidden_one_step_rms": 1.2215737126573678,
+          "hidden_two_step_rms": 0.0014952414447292322
+        },
+        {
+          "block": 52,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9064208601331968,
+          "hidden_one_step_rms": 1.2217196633173246,
+          "hidden_two_step_rms": 0.001677070613318308
+        },
+        {
+          "block": 53,
+          "accuracy": 0.4382716119289398,
+          "loss": 1.6806571604357408,
+          "hidden_one_step_rms": 1.2216402103237258,
+          "hidden_two_step_rms": 0.0014924462534033477
+        },
+        {
+          "block": 54,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9064064506514953,
+          "hidden_one_step_rms": 1.221782935594733,
+          "hidden_two_step_rms": 0.001675926412417332
+        },
+        {
+          "block": 55,
+          "accuracy": 0.4382716119289398,
+          "loss": 1.6805200470827595,
+          "hidden_one_step_rms": 1.2217023795354327,
+          "hidden_two_step_rms": 0.0014963618963447993
+        },
+        {
+          "block": 56,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9063954455874164,
+          "hidden_one_step_rms": 1.221844889916976,
+          "hidden_two_step_rms": 0.0016734384718698398
+        },
+        {
+          "block": 57,
+          "accuracy": 0.4382716119289398,
+          "loss": 1.6804151321676013,
+          "hidden_one_step_rms": 1.2217640308097162,
+          "hidden_two_step_rms": 0.0014954699629044067
+        },
+        {
+          "block": 58,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9063851550854909,
+          "hidden_one_step_rms": 1.2219019982768724,
+          "hidden_two_step_rms": 0.0016715415403022918
+        },
+        {
+          "block": 59,
+          "accuracy": 0.4382716119289398,
+          "loss": 1.6803350041742449,
+          "hidden_one_step_rms": 1.2218195231412157,
+          "hidden_two_step_rms": 0.0014976323394631525
+        },
+        {
+          "block": 60,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9063773449062007,
+          "hidden_one_step_rms": 1.2219570301972829,
+          "hidden_two_step_rms": 0.0016701939202521212
+        },
+        {
+          "block": 61,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6802896574490893,
+          "hidden_one_step_rms": 1.2218742369488103,
+          "hidden_two_step_rms": 0.001499071895871123
+        },
+        {
+          "block": 62,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9063714497571812,
+          "hidden_one_step_rms": 1.2220083811731928,
+          "hidden_two_step_rms": 0.001668250365228219
+        },
+        {
+          "block": 63,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6802666303709382,
+          "hidden_one_step_rms": 1.2219243177586194,
+          "hidden_two_step_rms": 0.0014997796140993514
+        },
+        {
+          "block": 64,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9063668625747958,
+          "hidden_one_step_rms": 1.2220565604745053,
+          "hidden_two_step_rms": 0.0016670436978775789
+        },
+        {
+          "block": 65,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.680269924292104,
+          "hidden_one_step_rms": 1.2219717685321325,
+          "hidden_two_step_rms": 0.0015019470542611702
+        },
+        {
+          "block": 66,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9063648688705981,
+          "hidden_one_step_rms": 1.222101925678252,
+          "hidden_two_step_rms": 0.0016653776910088747
+        },
+        {
+          "block": 67,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6802953204345767,
+          "hidden_one_step_rms": 1.2220162809300148,
+          "hidden_two_step_rms": 0.0015026024784859271
+        },
+        {
+          "block": 68,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9063641679470139,
+          "hidden_one_step_rms": 1.2221437116994023,
+          "hidden_two_step_rms": 0.0016639630315487012
+        },
+        {
+          "block": 69,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6803400290233783,
+          "hidden_one_step_rms": 1.2220570478953838,
+          "hidden_two_step_rms": 0.0015044456553557535
+        },
+        {
+          "block": 70,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9063660853642368,
+          "hidden_one_step_rms": 1.2221827529756677,
+          "hidden_two_step_rms": 0.0016625885757856522
+        },
+        {
+          "block": 71,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6804047329087917,
+          "hidden_one_step_rms": 1.222095382836168,
+          "hidden_two_step_rms": 0.0015056576579876553
+        },
+        {
+          "block": 72,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9063694949085527,
+          "hidden_one_step_rms": 1.2222184141329098,
+          "hidden_two_step_rms": 0.0016610966495316853
+        },
+        {
+          "block": 73,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6804861196086673,
+          "hidden_one_step_rms": 1.2221300514359865,
+          "hidden_two_step_rms": 0.0015070114661284019
+        },
+        {
+          "block": 74,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9063750449509833,
+          "hidden_one_step_rms": 1.2222510806919198,
+          "hidden_two_step_rms": 0.0016598350610626158
+        },
+        {
+          "block": 75,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.680585353003633,
+          "hidden_one_step_rms": 1.2221619371988932,
+          "hidden_two_step_rms": 0.0015085727016736572
+        },
+        {
+          "block": 76,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9063825909438705,
+          "hidden_one_step_rms": 1.2222806689200363,
+          "hidden_two_step_rms": 0.0016584328189460276
+        },
+        {
+          "block": 77,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6807005430316024,
+          "hidden_one_step_rms": 1.2221906586503584,
+          "hidden_two_step_rms": 0.0015097403478387275
+        },
+        {
+          "block": 78,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9063922119091153,
+          "hidden_one_step_rms": 1.2223070992781588,
+          "hidden_two_step_rms": 0.0016571561511030282
+        },
+        {
+          "block": 79,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6808316165101262,
+          "hidden_one_step_rms": 1.2222162247733408,
+          "hidden_two_step_rms": 0.001511337048157578
+        },
+        {
+          "block": 80,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9064042413561806,
+          "hidden_one_step_rms": 1.2223305416829608,
+          "hidden_two_step_rms": 0.0016558826921159572
+        },
+        {
+          "block": 81,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6809780992590941,
+          "hidden_one_step_rms": 1.2222388643639839,
+          "hidden_two_step_rms": 0.0015125984759844736
+        },
+        {
+          "block": 82,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9064184580688027,
+          "hidden_one_step_rms": 1.222350853333671,
+          "hidden_two_step_rms": 0.0016546120224893868
+        },
+        {
+          "block": 83,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.68113917945133,
+          "hidden_one_step_rms": 1.2222583175855568,
+          "hidden_two_step_rms": 0.0015140409594615787
+        },
+        {
+          "block": 84,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9064349030092084,
+          "hidden_one_step_rms": 1.2223681829896549,
+          "hidden_two_step_rms": 0.0016534077332068873
+        },
+        {
+          "block": 85,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6813146202205802,
+          "hidden_one_step_rms": 1.2222748578438305,
+          "hidden_two_step_rms": 0.001515453576158398
+        },
+        {
+          "block": 86,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9064535200574535,
+          "hidden_one_step_rms": 1.222382450109432,
+          "hidden_two_step_rms": 0.0016521923125936981
+        },
+        {
+          "block": 87,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6815028915031316,
+          "hidden_one_step_rms": 1.2222882948749931,
+          "hidden_two_step_rms": 0.0015167838374523699
+        },
+        {
+          "block": 88,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9064743183269808,
+          "hidden_one_step_rms": 1.2223937058335608,
+          "hidden_two_step_rms": 0.0016510190855358142
+        },
+        {
+          "block": 89,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.681703654764948,
+          "hidden_one_step_rms": 1.2222987419842177,
+          "hidden_two_step_rms": 0.0015182144185988636
+        },
+        {
+          "block": 90,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.906497521467396,
+          "hidden_one_step_rms": 1.2224019701654854,
+          "hidden_two_step_rms": 0.001649861640195562
+        },
+        {
+          "block": 91,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6819164579559582,
+          "hidden_one_step_rms": 1.2223062217918397,
+          "hidden_two_step_rms": 0.0015195488272057645
+        },
+        {
+          "block": 92,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9065232181899264,
+          "hidden_one_step_rms": 1.222407226652818,
+          "hidden_two_step_rms": 0.0016487312358598215
+        },
+        {
+          "block": 93,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6821407391667949,
+          "hidden_one_step_rms": 1.2223106716004966,
+          "hidden_two_step_rms": 0.0015209526247766342
+        },
+        {
+          "block": 94,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9065514755131506,
+          "hidden_one_step_rms": 1.2224095148663834,
+          "hidden_two_step_rms": 0.0016476351460611945
+        },
+        {
+          "block": 95,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6823757604844323,
+          "hidden_one_step_rms": 1.2223121843047542,
+          "hidden_two_step_rms": 0.001522319863564327
+        },
+        {
+          "block": 96,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.90658222925185,
+          "hidden_one_step_rms": 1.222408821514485,
+          "hidden_two_step_rms": 0.0016465842199067183
+        },
+        {
+          "block": 97,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.682621127776529,
+          "hidden_one_step_rms": 1.2223107187648246,
+          "hidden_two_step_rms": 0.0015236695910524837
+        },
+        {
+          "block": 98,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9066156068326344,
+          "hidden_one_step_rms": 1.2224052040093494,
+          "hidden_two_step_rms": 0.0016455260624516181
+        },
+        {
+          "block": 99,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.682876454866767,
+          "hidden_one_step_rms": 1.222306326134781,
+          "hidden_two_step_rms": 0.0015250344685342775
+        },
+        {
+          "block": 100,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.906651487892163,
+          "hidden_one_step_rms": 1.2223986299304257,
+          "hidden_two_step_rms": 0.0016444887936526973
+        },
+        {
+          "block": 101,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6831415663896407,
+          "hidden_one_step_rms": 1.2222989899349868,
+          "hidden_two_step_rms": 0.0015263967159360764
+        },
+        {
+          "block": 102,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9066899973239458,
+          "hidden_one_step_rms": 1.222389123451886,
+          "hidden_two_step_rms": 0.0016435154644294542
+        },
+        {
+          "block": 103,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6834158754937139,
+          "hidden_one_step_rms": 1.222288736038064,
+          "hidden_two_step_rms": 0.00152772961908989
+        },
+        {
+          "block": 104,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9067310346809303,
+          "hidden_one_step_rms": 1.2223767395038392,
+          "hidden_two_step_rms": 0.0016425111405728968
+        },
+        {
+          "block": 105,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6836983381447879,
+          "hidden_one_step_rms": 1.2222756115096893,
+          "hidden_two_step_rms": 0.0015290562221434855
+        },
+        {
+          "block": 106,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.9067746116388046,
+          "hidden_one_step_rms": 1.2223614373182785,
+          "hidden_two_step_rms": 0.0016415973344697425
+        },
+        {
+          "block": 107,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.683988785686386,
+          "hidden_one_step_rms": 1.222259560937955,
+          "hidden_two_step_rms": 0.0015303919862774908
+        },
+        {
+          "block": 108,
+          "accuracy": 0.5802469253540039,
+          "loss": 0.906820720417682,
+          "hidden_one_step_rms": 1.2223432652128756,
+          "hidden_two_step_rms": 0.0016406433234135587
+        },
+        {
+          "block": 109,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.6842865693786893,
+          "hidden_one_step_rms": 1.2222406575115203,
+          "hidden_two_step_rms": 0.0015317105551386392
+        },
+        {
+          "block": 110,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9068694603210877,
+          "hidden_one_step_rms": 1.2223222129059874,
+          "hidden_two_step_rms": 0.001639746156150994
+        },
+        {
+          "block": 111,
+          "accuracy": 0.43209877610206604,
+          "loss": 1.684591693406878,
+          "hidden_one_step_rms": 1.2222189092433888,
+          "hidden_two_step_rms": 0.0015329961869260166
+        },
+        {
+          "block": 112,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9069209672616453,
+          "hidden_one_step_rms": 1.2222983340675724,
+          "hidden_two_step_rms": 0.001638851275217539
+        },
+        {
+          "block": 113,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6849033851268165,
+          "hidden_one_step_rms": 1.2221942923478428,
+          "hidden_two_step_rms": 0.0015343200121896456
+        },
+        {
+          "block": 114,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.906975296625735,
+          "hidden_one_step_rms": 1.2222715909275963,
+          "hidden_two_step_rms": 0.0016380147332601068
+        },
+        {
+          "block": 115,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.685221565194946,
+          "hidden_one_step_rms": 1.2221668448529484,
+          "hidden_two_step_rms": 0.0015356198808089971
+        },
+        {
+          "block": 116,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.9070325058178826,
+          "hidden_one_step_rms": 1.2222420261481406,
+          "hidden_two_step_rms": 0.0016371950216540418
+        },
+        {
+          "block": 117,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6855462022192231,
+          "hidden_one_step_rms": 1.2221365846692334,
+          "hidden_two_step_rms": 0.0015368857080040362
+        },
+        {
+          "block": 118,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.907092578153477,
+          "hidden_one_step_rms": 1.2222096556115591,
+          "hidden_two_step_rms": 0.0016363758045399234
+        },
+        {
+          "block": 119,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6858772878905925,
+          "hidden_one_step_rms": 1.2221035301203587,
+          "hidden_two_step_rms": 0.0015381657930046912
+        },
+        {
+          "block": 120,
+          "accuracy": 0.5833333134651184,
+          "loss": 0.907155511881159,
+          "hidden_one_step_rms": 1.2221744951626479,
+          "hidden_two_step_rms": 0.0016356077412925409
+        },
+        {
+          "block": 121,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6862154401071536,
+          "hidden_one_step_rms": 1.2220676781125113,
+          "hidden_two_step_rms": 0.001539409338882492
+        },
+        {
+          "block": 122,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9072216761093405,
+          "hidden_one_step_rms": 1.2221365533640196,
+          "hidden_two_step_rms": 0.0016348254706725098
+        },
+        {
+          "block": 123,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6865633006130998,
+          "hidden_one_step_rms": 1.2220290854074947,
+          "hidden_two_step_rms": 0.0015406642602987471
+        },
+        {
+          "block": 124,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9072909939742595,
+          "hidden_one_step_rms": 1.2220958597385,
+          "hidden_two_step_rms": 0.00163410051642957
+        },
+        {
+          "block": 125,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6869204668522888,
+          "hidden_one_step_rms": 1.221987702230241,
+          "hidden_two_step_rms": 0.0015419135344525846
+        },
+        {
+          "block": 126,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9073634561662511,
+          "hidden_one_step_rms": 1.2220523793317442,
+          "hidden_two_step_rms": 0.0016333889872081483
+        },
+        {
+          "block": 127,
+          "accuracy": 0.43518519401550293,
+          "loss": 1.6872868246580126,
+          "hidden_one_step_rms": 1.2219435743867837,
+          "hidden_two_step_rms": 0.001543139151691959
+        },
+        {
+          "block": 128,
+          "accuracy": 0.5864197611808777,
+          "loss": 0.9074389982062457,
+          "hidden_one_step_rms": 1.2220062047434643,
+          "hidden_two_step_rms": 0.0016326919795291255
+        }
+      ]
+    },
+    "complex_current_only": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/kv_complex_current_only_ng0/step_6000.pt",
+      "step": 6000,
+      "seconds": 1.450904960045591,
+      "lambda_min": 0.0950980857014656,
+      "lambda_max": 0.10834810137748718,
+      "trajectory_at_supervised_blocks": {
+        "accuracy": 0.9328703582286835,
+        "loss": 0.23373654128866878,
+        "hidden_one_step_rms": 0.5102730929903365,
+        "hidden_two_step_rms": 0.5607168257000559
+      },
+      "key_tail": {
+        "mean_rms": 1.110014585470766,
+        "alternating_rms": 0.03133641244742265,
+        "residual_rms": 0.402957689714831,
+        "period_two_fraction_of_centered_energy": 0.0060111995436596954
+      },
+      "value_tail": {
+        "mean_rms": 0.8946507545406908,
+        "alternating_rms": 0.02417216718600176,
+        "residual_rms": 0.2171930981299763,
+        "period_two_fraction_of_centered_energy": 0.012234688279346817
+      },
+      "operator_replay": {
+        "tail_current_KV_rms": 0.1601115568242994,
+        "tail_STDP_write_rms": 0.0804108273451616,
+        "final_heterogeneous_vs_common_memory": {
+          "relative_l2": 0.002552209808021391,
+          "cosine": 0.9999967580249006
+        },
+        "final_memory_difference_rms": 0.003499424888137074,
+        "actual_memory_vs_replayed_M": {
+          "relative_l2": 0.9908439329732259,
+          "cosine": 0.1831374471277179
+        },
+        "note": "Actual M equivalence is only expected for accumulated-STDP variants. On B-only or G-only trajectories this is a counterfactual operator calculation."
+      },
+      "period_two_prediction": {
+        "observed_cycle_average_write_rms": 0.011034849287443124,
+        "predicted_heterogeneous_cycle_average_write_rms": 5.731767878692557e-07,
+        "mean_prediction_vs_observed": {
+          "relative_l2": 0.9999989521443325,
+          "cosine": 0.020199368935672715
+        },
+        "predicted_alternating_write_rms": 0.008218810881846521,
+        "alternating_prediction_vs_observed": {
+          "relative_l2": 0.2772935692656951,
+          "cosine": 0.9610660279645532
+        },
+        "shared_window_observed_cycle_average_write_rms": 0.011033179809986748,
+        "note": "Formula is exact for a prescribed exact period-2 orbit with equilibrated traces. Residual temporal drift is visible in the prediction error."
+      },
+      "common_window_static_input_decomposition": {
+        "max_endpoint_identity_error": 2.942091015256665e-14,
+        "final_M_rms": 1.3711352715355383,
+        "final_dynamic_history_M_rms": 1.369431963756742,
+        "final_static_input_boundary_M_rms": 0.11679237111595053,
+        "final_boundary_vs_total_M": {
+          "relative_l2": 0.9987577390691083,
+          "cosine": 0.057164668891938136
+        },
+        "tail_total_read_rms": 15.614151211524595,
+        "tail_dynamic_history_read_rms": 15.608658860444018,
+        "tail_static_input_boundary_read_rms": 1.2397582478869422,
+        "tail_boundary_vs_total_read": {
+          "relative_l2": 0.9996482452996533,
+          "cosine": 0.044129228348243725
+        },
+        "note": "The components can interfere; their norms are not additive fractions. Common-window replay does not change the trajectory."
+      },
+      "rows": [
+        {
+          "block": 1,
+          "accuracy": 0.37962964177131653,
+          "loss": 1.6480650147789113,
+          "hidden_one_step_rms": 0.8732957682862693
+        },
+        {
+          "block": 2,
+          "accuracy": 0.354938268661499,
+          "loss": 1.8069292530110628,
+          "hidden_one_step_rms": 0.730365705519294,
+          "hidden_two_step_rms": 1.2539867494886574
+        },
+        {
+          "block": 3,
+          "accuracy": 0.45987653732299805,
+          "loss": 1.493567069896802,
+          "hidden_one_step_rms": 0.545883976073084,
+          "hidden_two_step_rms": 0.8674365822720047
+        },
+        {
+          "block": 4,
+          "accuracy": 0.540123462677002,
+          "loss": 1.1209342626107364,
+          "hidden_one_step_rms": 0.6367547038109718,
+          "hidden_two_step_rms": 0.7887649863590054
+        },
+        {
+          "block": 5,
+          "accuracy": 0.5740740895271301,
+          "loss": 0.9227995378324657,
+          "hidden_one_step_rms": 0.647336651734579,
+          "hidden_two_step_rms": 0.8465287806987125
+        },
+        {
+          "block": 6,
+          "accuracy": 0.604938268661499,
+          "loss": 0.8618981970641676,
+          "hidden_one_step_rms": 0.5830253346296962,
+          "hidden_two_step_rms": 0.7462184171532493
+        },
+        {
+          "block": 7,
+          "accuracy": 0.6172839403152466,
+          "loss": 0.8267630018037385,
+          "hidden_one_step_rms": 0.5325206084642192,
+          "hidden_two_step_rms": 0.6652004023327782
+        },
+        {
+          "block": 8,
+          "accuracy": 0.6697530746459961,
+          "loss": 0.8052044241089711,
+          "hidden_one_step_rms": 0.4794404248747287,
+          "hidden_two_step_rms": 0.6115594302259463
+        },
+        {
+          "block": 9,
+          "accuracy": 0.6759259104728699,
+          "loss": 0.7916186883862654,
+          "hidden_one_step_rms": 0.4421073947794107,
+          "hidden_two_step_rms": 0.5570168572461716
+        },
+        {
+          "block": 10,
+          "accuracy": 0.6759259104728699,
+          "loss": 0.7842929200542605,
+          "hidden_one_step_rms": 0.45689530716019905,
+          "hidden_two_step_rms": 0.5337191016719679
+        },
+        {
+          "block": 11,
+          "accuracy": 0.6851851940155029,
+          "loss": 0.7851331132145739,
+          "hidden_one_step_rms": 0.5167415489838184,
+          "hidden_two_step_rms": 0.5858620350944794
+        },
+        {
+          "block": 12,
+          "accuracy": 0.6913580298423767,
+          "loss": 0.7618778985614878,
+          "hidden_one_step_rms": 0.56572142970136,
+          "hidden_two_step_rms": 0.630119819683757
+        },
+        {
+          "block": 13,
+          "accuracy": 0.694444477558136,
+          "loss": 0.7157396417913167,
+          "hidden_one_step_rms": 0.5664508329982381,
+          "hidden_two_step_rms": 0.6598897526335519
+        },
+        {
+          "block": 14,
+          "accuracy": 0.7129629850387573,
+          "loss": 0.6801991547626063,
+          "hidden_one_step_rms": 0.5539485456247047,
+          "hidden_two_step_rms": 0.645186228620521
+        },
+        {
+          "block": 15,
+          "accuracy": 0.7191358208656311,
+          "loss": 0.65795911344226,
+          "hidden_one_step_rms": 0.527181184031406,
+          "hidden_two_step_rms": 0.6197296354602072
+        },
+        {
+          "block": 16,
+          "accuracy": 0.7530864477157593,
+          "loss": 0.6359633495654524,
+          "hidden_one_step_rms": 0.5011151080529876,
+          "hidden_two_step_rms": 0.5878876075003704
+        },
+        {
+          "block": 17,
+          "accuracy": 0.7716049551963806,
+          "loss": 0.6093522071389676,
+          "hidden_one_step_rms": 0.48135943239790785,
+          "hidden_two_step_rms": 0.5693192692525672
+        },
+        {
+          "block": 18,
+          "accuracy": 0.7808641791343689,
+          "loss": 0.580918524169113,
+          "hidden_one_step_rms": 0.4761956928544308,
+          "hidden_two_step_rms": 0.5525688107005694
+        },
+        {
+          "block": 19,
+          "accuracy": 0.7839506268501282,
+          "loss": 0.5703887806394038,
+          "hidden_one_step_rms": 0.4958670059640996,
+          "hidden_two_step_rms": 0.5693637809580049
+        },
+        {
+          "block": 20,
+          "accuracy": 0.8055555820465088,
+          "loss": 0.5505713161727884,
+          "hidden_one_step_rms": 0.5079521466746235,
+          "hidden_two_step_rms": 0.5707819438322677
+        },
+        {
+          "block": 21,
+          "accuracy": 0.8055555820465088,
+          "loss": 0.5137523769412515,
+          "hidden_one_step_rms": 0.5166479762780046,
+          "hidden_two_step_rms": 0.5871640656262413
+        },
+        {
+          "block": 22,
+          "accuracy": 0.8117284178733826,
+          "loss": 0.4981177693792284,
+          "hidden_one_step_rms": 0.5305496204118249,
+          "hidden_two_step_rms": 0.59769674155971
+        },
+        {
+          "block": 23,
+          "accuracy": 0.8209876418113708,
+          "loss": 0.49134388904356596,
+          "hidden_one_step_rms": 0.5291364016088618,
+          "hidden_two_step_rms": 0.5959562939004851
+        },
+        {
+          "block": 24,
+          "accuracy": 0.8240740895271301,
+          "loss": 0.47413968791847555,
+          "hidden_one_step_rms": 0.5103031536966693,
+          "hidden_two_step_rms": 0.5811631411503312
+        },
+        {
+          "block": 25,
+          "accuracy": 0.8364197611808777,
+          "loss": 0.4393908904304204,
+          "hidden_one_step_rms": 0.5010047542607441,
+          "hidden_two_step_rms": 0.5766487824886204
+        },
+        {
+          "block": 26,
+          "accuracy": 0.8364197611808777,
+          "loss": 0.42941786249358105,
+          "hidden_one_step_rms": 0.4914911717157629,
+          "hidden_two_step_rms": 0.5628783641247211
+        },
+        {
+          "block": 27,
+          "accuracy": 0.8456790447235107,
+          "loss": 0.4209677978231548,
+          "hidden_one_step_rms": 0.5003872894001773,
+          "hidden_two_step_rms": 0.5677456412074067
+        },
+        {
+          "block": 28,
+          "accuracy": 0.8395061492919922,
+          "loss": 0.40146716206952315,
+          "hidden_one_step_rms": 0.49245210507495374,
+          "hidden_two_step_rms": 0.5583192716631215
+        },
+        {
+          "block": 29,
+          "accuracy": 0.8487654328346252,
+          "loss": 0.37813266020301484,
+          "hidden_one_step_rms": 0.49925534822936934,
+          "hidden_two_step_rms": 0.5674532305604998
+        },
+        {
+          "block": 30,
+          "accuracy": 0.8765432238578796,
+          "loss": 0.3646583948804886,
+          "hidden_one_step_rms": 0.5158258968895055,
+          "hidden_two_step_rms": 0.5761258051994188
+        },
+        {
+          "block": 31,
+          "accuracy": 0.895061731338501,
+          "loss": 0.3621333093869663,
+          "hidden_one_step_rms": 0.5215406842542338,
+          "hidden_two_step_rms": 0.577541710720287
+        },
+        {
+          "block": 32,
+          "accuracy": 0.8888888955116272,
+          "loss": 0.35781039580361856,
+          "hidden_one_step_rms": 0.505947881713662,
+          "hidden_two_step_rms": 0.5736267065920923
+        },
+        {
+          "block": 33,
+          "accuracy": 0.9012345671653748,
+          "loss": 0.3299832373660359,
+          "hidden_one_step_rms": 0.5043685296150683,
+          "hidden_two_step_rms": 0.5749362133012644
+        },
+        {
+          "block": 34,
+          "accuracy": 0.904321014881134,
+          "loss": 0.32739021945337166,
+          "hidden_one_step_rms": 0.4958284738596373,
+          "hidden_two_step_rms": 0.5635161720323707
+        },
+        {
+          "block": 35,
+          "accuracy": 0.8981481790542603,
+          "loss": 0.32735173174250043,
+          "hidden_one_step_rms": 0.49884104840219,
+          "hidden_two_step_rms": 0.5607492846471476
+        },
+        {
+          "block": 36,
+          "accuracy": 0.9012345671653748,
+          "loss": 0.3183460921516448,
+          "hidden_one_step_rms": 0.4839744330159645,
+          "hidden_two_step_rms": 0.5548459523527218
+        },
+        {
+          "block": 37,
+          "accuracy": 0.9104938507080078,
+          "loss": 0.292054622873894,
+          "hidden_one_step_rms": 0.4925380622961428,
+          "hidden_two_step_rms": 0.556087141041414
+        },
+        {
+          "block": 38,
+          "accuracy": 0.9228395223617554,
+          "loss": 0.2850069752354396,
+          "hidden_one_step_rms": 0.5101115478382692,
+          "hidden_two_step_rms": 0.5631984846988565
+        },
+        {
+          "block": 39,
+          "accuracy": 0.9197530746459961,
+          "loss": 0.2840793024768741,
+          "hidden_one_step_rms": 0.5199149743029311,
+          "hidden_two_step_rms": 0.5695595571144236
+        },
+        {
+          "block": 40,
+          "accuracy": 0.904321014881134,
+          "loss": 0.283221077705914,
+          "hidden_one_step_rms": 0.5076804625077853,
+          "hidden_two_step_rms": 0.5777229314127006
+        },
+        {
+          "block": 41,
+          "accuracy": 0.9135802388191223,
+          "loss": 0.26929789354129907,
+          "hidden_one_step_rms": 0.5109464257446168,
+          "hidden_two_step_rms": 0.5776865825970288
+        },
+        {
+          "block": 42,
+          "accuracy": 0.9074074029922485,
+          "loss": 0.26873458287074153,
+          "hidden_one_step_rms": 0.5019480839908167,
+          "hidden_two_step_rms": 0.5702776492086531
+        },
+        {
+          "block": 43,
+          "accuracy": 0.9104938507080078,
+          "loss": 0.2767761583047214,
+          "hidden_one_step_rms": 0.5005403594014309,
+          "hidden_two_step_rms": 0.5634481337920709
+        },
+        {
+          "block": 44,
+          "accuracy": 0.904321014881134,
+          "loss": 0.2693096210091949,
+          "hidden_one_step_rms": 0.48336903078591326,
+          "hidden_two_step_rms": 0.5600999814893146
+        },
+        {
+          "block": 45,
+          "accuracy": 0.9074074029922485,
+          "loss": 0.25555412890370904,
+          "hidden_one_step_rms": 0.49143884673640814,
+          "hidden_two_step_rms": 0.553599582079531
+        },
+        {
+          "block": 46,
+          "accuracy": 0.904321014881134,
+          "loss": 0.2527804779295532,
+          "hidden_one_step_rms": 0.5068248879487202,
+          "hidden_two_step_rms": 0.5606150464700461
+        },
+        {
+          "block": 47,
+          "accuracy": 0.9166666865348816,
+          "loss": 0.25689495356857317,
+          "hidden_one_step_rms": 0.5153543770121328,
+          "hidden_two_step_rms": 0.5665327021260799
+        },
+        {
+          "block": 48,
+          "accuracy": 0.9197530746459961,
+          "loss": 0.2636632619732464,
+          "hidden_one_step_rms": 0.5060896475976284,
+          "hidden_two_step_rms": 0.5768743274419761
+        },
+        {
+          "block": 49,
+          "accuracy": 0.9104938507080078,
+          "loss": 0.25552724757317113,
+          "hidden_one_step_rms": 0.5132046572054016,
+          "hidden_two_step_rms": 0.5770254087812186
+        },
+        {
+          "block": 50,
+          "accuracy": 0.9197530746459961,
+          "loss": 0.25749596611556574,
+          "hidden_one_step_rms": 0.5032091326692807,
+          "hidden_two_step_rms": 0.5708289230201338
+        },
+        {
+          "block": 51,
+          "accuracy": 0.904321014881134,
+          "loss": 0.26324587439862807,
+          "hidden_one_step_rms": 0.4991808103424907,
+          "hidden_two_step_rms": 0.55990333085939
+        },
+        {
+          "block": 52,
+          "accuracy": 0.904321014881134,
+          "loss": 0.2613538892728442,
+          "hidden_one_step_rms": 0.4836071233011252,
+          "hidden_two_step_rms": 0.5622421466984104
+        },
+        {
+          "block": 53,
+          "accuracy": 0.9104938507080078,
+          "loss": 0.24677983643029722,
+          "hidden_one_step_rms": 0.49632865626277645,
+          "hidden_two_step_rms": 0.5531720739308955
+        },
+        {
+          "block": 54,
+          "accuracy": 0.9135802388191223,
+          "loss": 0.24529060592310073,
+          "hidden_one_step_rms": 0.5064115938770261,
+          "hidden_two_step_rms": 0.559541568578569
+        },
+        {
+          "block": 55,
+          "accuracy": 0.9228395223617554,
+          "loss": 0.24832937848739936,
+          "hidden_one_step_rms": 0.5110187892050583,
+          "hidden_two_step_rms": 0.562446130094262
+        },
+        {
+          "block": 56,
+          "accuracy": 0.9197530746459961,
+          "loss": 0.25466797364177923,
+          "hidden_one_step_rms": 0.5037073407133366,
+          "hidden_two_step_rms": 0.5765434430521751
+        },
+        {
+          "block": 57,
+          "accuracy": 0.9135802388191223,
+          "loss": 0.2531053522938118,
+          "hidden_one_step_rms": 0.5103755794678007,
+          "hidden_two_step_rms": 0.569115439765214
+        },
+        {
+          "block": 58,
+          "accuracy": 0.9135802388191223,
+          "loss": 0.2541053722590265,
+          "hidden_one_step_rms": 0.5046096344457187,
+          "hidden_two_step_rms": 0.5679942876422777
+        },
+        {
+          "block": 59,
+          "accuracy": 0.9166666865348816,
+          "loss": 0.2643219251990956,
+          "hidden_one_step_rms": 0.4980182066389819,
+          "hidden_two_step_rms": 0.5576941949047751
+        },
+        {
+          "block": 60,
+          "accuracy": 0.9197530746459961,
+          "loss": 0.2645201555581602,
+          "hidden_one_step_rms": 0.48680257228717067,
+          "hidden_two_step_rms": 0.5640028106813239
+        },
+        {
+          "block": 61,
+          "accuracy": 0.9259259104728699,
+          "loss": 0.2533632490733993,
+          "hidden_one_step_rms": 0.49832944745716146,
+          "hidden_two_step_rms": 0.5518885540170109
+        },
+        {
+          "block": 62,
+          "accuracy": 0.9228395223617554,
+          "loss": 0.25481510938330965,
+          "hidden_one_step_rms": 0.5062768831506697,
+          "hidden_two_step_rms": 0.5581385089699239
+        },
+        {
+          "block": 63,
+          "accuracy": 0.9290123581886292,
+          "loss": 0.2632854028414361,
+          "hidden_one_step_rms": 0.5097359237836339,
+          "hidden_two_step_rms": 0.5622527030297554
+        },
+        {
+          "block": 64,
+          "accuracy": 0.9259259104728699,
+          "loss": 0.2630737492273444,
+          "hidden_one_step_rms": 0.5043750217666577,
+          "hidden_two_step_rms": 0.5749698867864917
+        },
+        {
+          "block": 65,
+          "accuracy": 0.9228395223617554,
+          "loss": 0.25728064532425565,
+          "hidden_one_step_rms": 0.5087421750020769,
+          "hidden_two_step_rms": 0.5662285225446486
+        },
+        {
+          "block": 66,
+          "accuracy": 0.9259259104728699,
+          "loss": 0.2506024095007253,
+          "hidden_one_step_rms": 0.5026761582233563,
+          "hidden_two_step_rms": 0.5665169771177657
+        },
+        {
+          "block": 67,
+          "accuracy": 0.9197530746459961,
+          "loss": 0.25803420886100586,
+          "hidden_one_step_rms": 0.4951146161785469,
+          "hidden_two_step_rms": 0.554269521763345
+        },
+        {
+          "block": 68,
+          "accuracy": 0.9228395223617554,
+          "loss": 0.2598820405237936,
+          "hidden_one_step_rms": 0.49050412282762773,
+          "hidden_two_step_rms": 0.5638389657584643
+        },
+        {
+          "block": 69,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.2494481422217872,
+          "hidden_one_step_rms": 0.5006328174146631,
+          "hidden_two_step_rms": 0.5526066977873411
+        },
+        {
+          "block": 70,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.24753411162246095,
+          "hidden_one_step_rms": 0.5051398602242149,
+          "hidden_two_step_rms": 0.5594096440591559
+        },
+        {
+          "block": 71,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.24747647005855267,
+          "hidden_one_step_rms": 0.5077521499371513,
+          "hidden_two_step_rms": 0.5622205915194376
+        },
+        {
+          "block": 72,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.24549529024279726,
+          "hidden_one_step_rms": 0.506373339089115,
+          "hidden_two_step_rms": 0.5753720259963366
+        },
+        {
+          "block": 73,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.24667199683697041,
+          "hidden_one_step_rms": 0.507031084591067,
+          "hidden_two_step_rms": 0.5644725786282111
+        },
+        {
+          "block": 74,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.24239439681797267,
+          "hidden_one_step_rms": 0.5034268833327298,
+          "hidden_two_step_rms": 0.5660043581527672
+        },
+        {
+          "block": 75,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.24839607228617078,
+          "hidden_one_step_rms": 0.4946087387107008,
+          "hidden_two_step_rms": 0.5553673454548407
+        },
+        {
+          "block": 76,
+          "accuracy": 0.9290123581886292,
+          "loss": 0.25182021962793144,
+          "hidden_one_step_rms": 0.4942518897520256,
+          "hidden_two_step_rms": 0.5645429909498477
+        },
+        {
+          "block": 77,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.24282369995835906,
+          "hidden_one_step_rms": 0.5003417424653699,
+          "hidden_two_step_rms": 0.5507979885884393
+        },
+        {
+          "block": 78,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.23821555189226867,
+          "hidden_one_step_rms": 0.5042515209385129,
+          "hidden_two_step_rms": 0.5591520963640034
+        },
+        {
+          "block": 79,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.2441628806591633,
+          "hidden_one_step_rms": 0.5086383997297783,
+          "hidden_two_step_rms": 0.5644475263875315
+        },
+        {
+          "block": 80,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.2385620405076127,
+          "hidden_one_step_rms": 0.5098019679352472,
+          "hidden_two_step_rms": 0.5748339841200155
+        },
+        {
+          "block": 81,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.23393209662918152,
+          "hidden_one_step_rms": 0.5056801232026082,
+          "hidden_two_step_rms": 0.564523084330733
+        },
+        {
+          "block": 82,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22283278795016023,
+          "hidden_one_step_rms": 0.5017568635825553,
+          "hidden_two_step_rms": 0.5653994582830215
+        },
+        {
+          "block": 83,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22861515643960628,
+          "hidden_one_step_rms": 0.4919024621728737,
+          "hidden_two_step_rms": 0.5523819369437754
+        },
+        {
+          "block": 84,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.23389361857323657,
+          "hidden_one_step_rms": 0.4942409713952861,
+          "hidden_two_step_rms": 0.5613645941985853
+        },
+        {
+          "block": 85,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22790606443688993,
+          "hidden_one_step_rms": 0.4947867516632216,
+          "hidden_two_step_rms": 0.5473800773169004
+        },
+        {
+          "block": 86,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.22250853952562352,
+          "hidden_one_step_rms": 0.4983897511871359,
+          "hidden_two_step_rms": 0.5543191773130222
+        },
+        {
+          "block": 87,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22518610632404357,
+          "hidden_one_step_rms": 0.5058239116212067,
+          "hidden_two_step_rms": 0.5603216727820545
+        },
+        {
+          "block": 88,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22646558595090766,
+          "hidden_one_step_rms": 0.5113516124059191,
+          "hidden_two_step_rms": 0.5691099973969047
+        },
+        {
+          "block": 89,
+          "accuracy": 0.9413580298423767,
+          "loss": 0.22555670062708236,
+          "hidden_one_step_rms": 0.5054532067630908,
+          "hidden_two_step_rms": 0.5644443058986581
+        },
+        {
+          "block": 90,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.21930284106433895,
+          "hidden_one_step_rms": 0.5051996863289946,
+          "hidden_two_step_rms": 0.5673787284811268
+        },
+        {
+          "block": 91,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.22497157633540066,
+          "hidden_one_step_rms": 0.49490153066034936,
+          "hidden_two_step_rms": 0.5575061530115231
+        },
+        {
+          "block": 92,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.23296466355258325,
+          "hidden_one_step_rms": 0.49943624345590637,
+          "hidden_two_step_rms": 0.5621641599197941
+        },
+        {
+          "block": 93,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.22715396435172633,
+          "hidden_one_step_rms": 0.493684322208717,
+          "hidden_two_step_rms": 0.5499064133519661
+        },
+        {
+          "block": 94,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.21571962274834708,
+          "hidden_one_step_rms": 0.4965921754677636,
+          "hidden_two_step_rms": 0.5527461387339102
+        },
+        {
+          "block": 95,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.22145012949732648,
+          "hidden_one_step_rms": 0.5060104906737437,
+          "hidden_two_step_rms": 0.5612870804350804
+        },
+        {
+          "block": 96,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.2232420739084792,
+          "hidden_one_step_rms": 0.5118377750621276,
+          "hidden_two_step_rms": 0.5651512402687583
+        },
+        {
+          "block": 97,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22327825099413834,
+          "hidden_one_step_rms": 0.5034636537917313,
+          "hidden_two_step_rms": 0.5651539942891697
+        },
+        {
+          "block": 98,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.21329195399428716,
+          "hidden_one_step_rms": 0.5051494632049383,
+          "hidden_two_step_rms": 0.5669836999353878
+        },
+        {
+          "block": 99,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22085279425358348,
+          "hidden_one_step_rms": 0.49516734311449245,
+          "hidden_two_step_rms": 0.559275807703985
+        },
+        {
+          "block": 100,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.2339378008293395,
+          "hidden_one_step_rms": 0.5010961433809876,
+          "hidden_two_step_rms": 0.5599983087895579
+        },
+        {
+          "block": 101,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.23093245622357927,
+          "hidden_one_step_rms": 0.4925572138579597,
+          "hidden_two_step_rms": 0.5535333842923823
+        },
+        {
+          "block": 102,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.22259749569949516,
+          "hidden_one_step_rms": 0.49682342491838616,
+          "hidden_two_step_rms": 0.5532987897626983
+        },
+        {
+          "block": 103,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22987343820627928,
+          "hidden_one_step_rms": 0.5067625009914672,
+          "hidden_two_step_rms": 0.5628630389927962
+        },
+        {
+          "block": 104,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.2305845084779821,
+          "hidden_one_step_rms": 0.5131515818026389,
+          "hidden_two_step_rms": 0.5636314219645063
+        },
+        {
+          "block": 105,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.23010146243889976,
+          "hidden_one_step_rms": 0.5040157700998795,
+          "hidden_two_step_rms": 0.5693244546500645
+        },
+        {
+          "block": 106,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22164661019756227,
+          "hidden_one_step_rms": 0.5073211969878897,
+          "hidden_two_step_rms": 0.56758139923452
+        },
+        {
+          "block": 107,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22459340835479666,
+          "hidden_one_step_rms": 0.4976694748154616,
+          "hidden_two_step_rms": 0.562277311757874
+        },
+        {
+          "block": 108,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.23595663463171054,
+          "hidden_one_step_rms": 0.5022761785534197,
+          "hidden_two_step_rms": 0.5597058438124086
+        },
+        {
+          "block": 109,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.2337653073568118,
+          "hidden_one_step_rms": 0.49183671494527004,
+          "hidden_two_step_rms": 0.5567336250782332
+        },
+        {
+          "block": 110,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22110429170413312,
+          "hidden_one_step_rms": 0.49556144467337776,
+          "hidden_two_step_rms": 0.55245428084484
+        },
+        {
+          "block": 111,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22759123388469943,
+          "hidden_one_step_rms": 0.5057940942214667,
+          "hidden_two_step_rms": 0.5625994434382146
+        },
+        {
+          "block": 112,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.2298567924484381,
+          "hidden_one_step_rms": 0.5098741032040253,
+          "hidden_two_step_rms": 0.5604245866579322
+        },
+        {
+          "block": 113,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22832592873846186,
+          "hidden_one_step_rms": 0.5002982718741734,
+          "hidden_two_step_rms": 0.567910033600913
+        },
+        {
+          "block": 114,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.220986113528208,
+          "hidden_one_step_rms": 0.5046657066087759,
+          "hidden_two_step_rms": 0.5633591504065272
+        },
+        {
+          "block": 115,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22421508123024053,
+          "hidden_one_step_rms": 0.4968866814019518,
+          "hidden_two_step_rms": 0.5614624185698095
+        },
+        {
+          "block": 116,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.23636884864543808,
+          "hidden_one_step_rms": 0.5007728556116668,
+          "hidden_two_step_rms": 0.5555234544968366
+        },
+        {
+          "block": 117,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.23668878905883073,
+          "hidden_one_step_rms": 0.4905355828461419,
+          "hidden_two_step_rms": 0.5582407432402825
+        },
+        {
+          "block": 118,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.22664916953025754,
+          "hidden_one_step_rms": 0.49624714538459347,
+          "hidden_two_step_rms": 0.552244867769365
+        },
+        {
+          "block": 119,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.2351395524372251,
+          "hidden_one_step_rms": 0.5068173927465227,
+          "hidden_two_step_rms": 0.5614981642762957
+        },
+        {
+          "block": 120,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.23584754741689765,
+          "hidden_one_step_rms": 0.5090583862299904,
+          "hidden_two_step_rms": 0.558956256979455
+        },
+        {
+          "block": 121,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.23332757382671665,
+          "hidden_one_step_rms": 0.5006893795510318,
+          "hidden_two_step_rms": 0.569017486626296
+        },
+        {
+          "block": 122,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22699659199842231,
+          "hidden_one_step_rms": 0.5038642984993612,
+          "hidden_two_step_rms": 0.561456392599691
+        },
+        {
+          "block": 123,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22628838659278325,
+          "hidden_one_step_rms": 0.4982682566056051,
+          "hidden_two_step_rms": 0.5624732828337161
+        },
+        {
+          "block": 124,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.23523009067990042,
+          "hidden_one_step_rms": 0.49963094282950754,
+          "hidden_two_step_rms": 0.553139498081038
+        },
+        {
+          "block": 125,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.23656253495676174,
+          "hidden_one_step_rms": 0.4916651993389932,
+          "hidden_two_step_rms": 0.559894195675816
+        },
+        {
+          "block": 126,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.22768304922718277,
+          "hidden_one_step_rms": 0.4980622090888015,
+          "hidden_two_step_rms": 0.5532340791295194
+        },
+        {
+          "block": 127,
+          "accuracy": 0.9351851940155029,
+          "loss": 0.23556579008645892,
+          "hidden_one_step_rms": 0.5078586855373761,
+          "hidden_two_step_rms": 0.5622543634027064
+        },
+        {
+          "block": 128,
+          "accuracy": 0.9320987462997437,
+          "loss": 0.23865731681135727,
+          "hidden_one_step_rms": 0.5090083007246913,
+          "hidden_two_step_rms": 0.5598550371983302
+        }
+      ]
+    },
+    "current_only": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/kv_current_only_ng0/step_6000.pt",
+      "step": 6000,
+      "seconds": 1.2061377000063658,
+      "lambda_min": 0.10000000149011612,
+      "lambda_max": 0.10000000149011612,
+      "trajectory_at_supervised_blocks": {
+        "accuracy": 0.9768518507480621,
+        "loss": 0.2463512035124522,
+        "hidden_one_step_rms": 0.2210756934873127,
+        "hidden_two_step_rms": 0.3312901731592269
+      },
+      "key_tail": {
+        "mean_rms": 1.0138001774903171,
+        "alternating_rms": 0.01093402964980479,
+        "residual_rms": 0.14782640247739262,
+        "period_two_fraction_of_centered_energy": 0.005441103475086417
+      },
+      "value_tail": {
+        "mean_rms": 0.7524779164585624,
+        "alternating_rms": 0.009480047770190316,
+        "residual_rms": 0.13521013251414032,
+        "period_two_fraction_of_centered_energy": 0.0048918469303596
+      },
+      "operator_replay": {
+        "tail_current_KV_rms": 0.09129822864333764,
+        "tail_STDP_write_rms": 0.02983348661884759,
+        "final_heterogeneous_vs_common_memory": {
+          "relative_l2": 0.0,
+          "cosine": 1.0000000000000002
+        },
+        "final_memory_difference_rms": 0.0,
+        "actual_memory_vs_replayed_M": {
+          "relative_l2": 1.0077857704478572,
+          "cosine": 0.05556064415788626
+        },
+        "note": "Actual M equivalence is only expected for accumulated-STDP variants. On B-only or G-only trajectories this is a counterfactual operator calculation."
+      },
+      "period_two_prediction": {
+        "observed_cycle_average_write_rms": 0.0038035745278907113,
+        "predicted_heterogeneous_cycle_average_write_rms": 4.031304462737814e-21,
+        "mean_prediction_vs_observed": {
+          "relative_l2": 1.0,
+          "cosine": -0.004815753162901055
+        },
+        "predicted_alternating_write_rms": 0.0029136551330902847,
+        "alternating_prediction_vs_observed": {
+          "relative_l2": 0.35219039990509693,
+          "cosine": 0.940657257895987
+        },
+        "shared_window_observed_cycle_average_write_rms": 0.0038035745278907113,
+        "note": "Formula is exact for a prescribed exact period-2 orbit with equilibrated traces. Residual temporal drift is visible in the prediction error."
+      },
+      "common_window_static_input_decomposition": {
+        "max_endpoint_identity_error": 2.8477220581635265e-14,
+        "final_M_rms": 0.46209866858924903,
+        "final_dynamic_history_M_rms": 0.4775880137700467,
+        "final_static_input_boundary_M_rms": 0.09474771260451532,
+        "final_boundary_vs_total_M": {
+          "relative_l2": 1.0335195624520743,
+          "cosine": -0.06370085261624964
+        },
+        "tail_total_read_rms": 6.669871754255606,
+        "tail_dynamic_history_read_rms": 6.640783194368618,
+        "tail_static_input_boundary_read_rms": 1.4112471045366648,
+        "tail_boundary_vs_total_read": {
+          "relative_l2": 0.9956388127150378,
+          "cosine": 0.1263596789639017
+        },
+        "note": "The components can interfere; their norms are not additive fractions. Common-window replay does not change the trajectory."
+      },
+      "rows": [
+        {
+          "block": 1,
+          "accuracy": 0.37345680594444275,
+          "loss": 1.7929686783478482,
+          "hidden_one_step_rms": 1.007735943721723
+        },
+        {
+          "block": 2,
+          "accuracy": 0.4691358208656311,
+          "loss": 1.598033964986394,
+          "hidden_one_step_rms": 0.6751217215996476,
+          "hidden_two_step_rms": 1.27060873008723
+        },
+        {
+          "block": 3,
+          "accuracy": 0.5092592835426331,
+          "loss": 1.4066968886200741,
+          "hidden_one_step_rms": 0.461644468960954,
+          "hidden_two_step_rms": 0.9099673621864375
+        },
+        {
+          "block": 4,
+          "accuracy": 0.5586419701576233,
+          "loss": 1.0365777980258195,
+          "hidden_one_step_rms": 0.34949532731079935,
+          "hidden_two_step_rms": 0.6278519413888319
+        },
+        {
+          "block": 5,
+          "accuracy": 0.5987654328346252,
+          "loss": 0.8835053327183144,
+          "hidden_one_step_rms": 0.26191284568297873,
+          "hidden_two_step_rms": 0.4863221779121045
+        },
+        {
+          "block": 6,
+          "accuracy": 0.6358024477958679,
+          "loss": 0.83705252032766,
+          "hidden_one_step_rms": 0.2677728385037358,
+          "hidden_two_step_rms": 0.4047419873479351
+        },
+        {
+          "block": 7,
+          "accuracy": 0.6635802388191223,
+          "loss": 0.7718754476638565,
+          "hidden_one_step_rms": 0.24260857853670043,
+          "hidden_two_step_rms": 0.37690178793093454
+        },
+        {
+          "block": 8,
+          "accuracy": 0.709876537322998,
+          "loss": 0.7429878494817153,
+          "hidden_one_step_rms": 0.24522833280672976,
+          "hidden_two_step_rms": 0.3930517765412533
+        },
+        {
+          "block": 9,
+          "accuracy": 0.7345678806304932,
+          "loss": 0.6955579729842545,
+          "hidden_one_step_rms": 0.211825428477124,
+          "hidden_two_step_rms": 0.34565723112417174
+        },
+        {
+          "block": 10,
+          "accuracy": 0.7808641791343689,
+          "loss": 0.6377459874277467,
+          "hidden_one_step_rms": 0.24619264789042164,
+          "hidden_two_step_rms": 0.38368444862802004
+        },
+        {
+          "block": 11,
+          "accuracy": 0.8148148059844971,
+          "loss": 0.60553572086482,
+          "hidden_one_step_rms": 0.25493729078593763,
+          "hidden_two_step_rms": 0.37093171719775486
+        },
+        {
+          "block": 12,
+          "accuracy": 0.8487654328346252,
+          "loss": 0.5573766732704729,
+          "hidden_one_step_rms": 0.22891774966013154,
+          "hidden_two_step_rms": 0.3610940885830888
+        },
+        {
+          "block": 13,
+          "accuracy": 0.8641975522041321,
+          "loss": 0.5052810242079817,
+          "hidden_one_step_rms": 0.2011938633250912,
+          "hidden_two_step_rms": 0.33678943255600524
+        },
+        {
+          "block": 14,
+          "accuracy": 0.8888888955116272,
+          "loss": 0.4563324932392114,
+          "hidden_one_step_rms": 0.20176140689233343,
+          "hidden_two_step_rms": 0.32606849924348374
+        },
+        {
+          "block": 15,
+          "accuracy": 0.9074074029922485,
+          "loss": 0.45318942161225284,
+          "hidden_one_step_rms": 0.1937880797891329,
+          "hidden_two_step_rms": 0.304349945478801
+        },
+        {
+          "block": 16,
+          "accuracy": 0.9259259104728699,
+          "loss": 0.4461841594633552,
+          "hidden_one_step_rms": 0.19803339746688664,
+          "hidden_two_step_rms": 0.3127887839281991
+        },
+        {
+          "block": 17,
+          "accuracy": 0.9382716417312622,
+          "loss": 0.3835174364016283,
+          "hidden_one_step_rms": 0.18223208375434088,
+          "hidden_two_step_rms": 0.3044971715964847
+        },
+        {
+          "block": 18,
+          "accuracy": 0.9475308656692505,
+          "loss": 0.3043511708027428,
+          "hidden_one_step_rms": 0.20476431624798866,
+          "hidden_two_step_rms": 0.3223317677740436
+        },
+        {
+          "block": 19,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.29828581407872873,
+          "hidden_one_step_rms": 0.21231998673936395,
+          "hidden_two_step_rms": 0.3210838717509446
+        },
+        {
+          "block": 20,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.31073437769631473,
+          "hidden_one_step_rms": 0.1952868652288764,
+          "hidden_two_step_rms": 0.311812136085986
+        },
+        {
+          "block": 21,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.29048275766344495,
+          "hidden_one_step_rms": 0.1747863853773828,
+          "hidden_two_step_rms": 0.28873554052917405
+        },
+        {
+          "block": 22,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.255858555918023,
+          "hidden_one_step_rms": 0.17712608515927564,
+          "hidden_two_step_rms": 0.28561198996794235
+        },
+        {
+          "block": 23,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.27185320560520765,
+          "hidden_one_step_rms": 0.17307758013369423,
+          "hidden_two_step_rms": 0.276338181496065
+        },
+        {
+          "block": 24,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.2993265816585937,
+          "hidden_one_step_rms": 0.18293268508825603,
+          "hidden_two_step_rms": 0.27551300350757446
+        },
+        {
+          "block": 25,
+          "accuracy": 0.9876543283462524,
+          "loss": 0.27479293107006064,
+          "hidden_one_step_rms": 0.1701943193660918,
+          "hidden_two_step_rms": 0.2747317110257188
+        },
+        {
+          "block": 26,
+          "accuracy": 0.9907407760620117,
+          "loss": 0.21886216667254177,
+          "hidden_one_step_rms": 0.18238007148741656,
+          "hidden_two_step_rms": 0.28669447620254673
+        },
+        {
+          "block": 27,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.2205370979593374,
+          "hidden_one_step_rms": 0.1852898936317032,
+          "hidden_two_step_rms": 0.28952279569134715
+        },
+        {
+          "block": 28,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2605260405430629,
+          "hidden_one_step_rms": 0.1979130169998146,
+          "hidden_two_step_rms": 0.2862417206430249
+        },
+        {
+          "block": 29,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.2649199713292156,
+          "hidden_one_step_rms": 0.17108195952911076,
+          "hidden_two_step_rms": 0.2794952954077112
+        },
+        {
+          "block": 30,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.23612209389075367,
+          "hidden_one_step_rms": 0.16900330806985375,
+          "hidden_two_step_rms": 0.26219258218147984
+        },
+        {
+          "block": 31,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.23088221472900042,
+          "hidden_one_step_rms": 0.17298788518570316,
+          "hidden_two_step_rms": 0.2743188793529247
+        },
+        {
+          "block": 32,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2739454021208274,
+          "hidden_one_step_rms": 0.1890395312155242,
+          "hidden_two_step_rms": 0.25948086660569025
+        },
+        {
+          "block": 33,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.27909634907477504,
+          "hidden_one_step_rms": 0.17350882068376902,
+          "hidden_two_step_rms": 0.2733898756491535
+        },
+        {
+          "block": 34,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.23692383354809426,
+          "hidden_one_step_rms": 0.17590392514999023,
+          "hidden_two_step_rms": 0.2675711288577037
+        },
+        {
+          "block": 35,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.21880656073270788,
+          "hidden_one_step_rms": 0.1897795801789083,
+          "hidden_two_step_rms": 0.2923521924694126
+        },
+        {
+          "block": 36,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.2643126193621358,
+          "hidden_one_step_rms": 0.20949392544900497,
+          "hidden_two_step_rms": 0.28049213684882573
+        },
+        {
+          "block": 37,
+          "accuracy": 0.9722222089767456,
+          "loss": 0.28271456934691985,
+          "hidden_one_step_rms": 0.1948347081466863,
+          "hidden_two_step_rms": 0.2979908409854019
+        },
+        {
+          "block": 38,
+          "accuracy": 0.9876543283462524,
+          "loss": 0.25567743003136767,
+          "hidden_one_step_rms": 0.17824495227934714,
+          "hidden_two_step_rms": 0.27928928494225497
+        },
+        {
+          "block": 39,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.22660140105747506,
+          "hidden_one_step_rms": 0.18950344399261354,
+          "hidden_two_step_rms": 0.28846237377227657
+        },
+        {
+          "block": 40,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2524203226189991,
+          "hidden_one_step_rms": 0.20303109153465643,
+          "hidden_two_step_rms": 0.28583500977506937
+        },
+        {
+          "block": 41,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2836549436525552,
+          "hidden_one_step_rms": 0.20639897450845981,
+          "hidden_two_step_rms": 0.2918028276381009
+        },
+        {
+          "block": 42,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.25675547032705154,
+          "hidden_one_step_rms": 0.1908742937185743,
+          "hidden_two_step_rms": 0.295450347083812
+        },
+        {
+          "block": 43,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.21908293769993495,
+          "hidden_one_step_rms": 0.1943183415781621,
+          "hidden_two_step_rms": 0.29869018024401545
+        },
+        {
+          "block": 44,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.24047908006999255,
+          "hidden_one_step_rms": 0.22071711207138148,
+          "hidden_two_step_rms": 0.3047265505734875
+        },
+        {
+          "block": 45,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.28888873254233904,
+          "hidden_one_step_rms": 0.22393098949195836,
+          "hidden_two_step_rms": 0.313501598208962
+        },
+        {
+          "block": 46,
+          "accuracy": 0.9876543283462524,
+          "loss": 0.28273567783915404,
+          "hidden_one_step_rms": 0.20184776969537488,
+          "hidden_two_step_rms": 0.31016502468841217
+        },
+        {
+          "block": 47,
+          "accuracy": 0.9876543283462524,
+          "loss": 0.24001062437282714,
+          "hidden_one_step_rms": 0.19835883654168945,
+          "hidden_two_step_rms": 0.30800263534922073
+        },
+        {
+          "block": 48,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.23030127507105635,
+          "hidden_one_step_rms": 0.22563948523357052,
+          "hidden_two_step_rms": 0.3095284582981839
+        },
+        {
+          "block": 49,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.26744578969350813,
+          "hidden_one_step_rms": 0.22946153983049444,
+          "hidden_two_step_rms": 0.31206632216241076
+        },
+        {
+          "block": 50,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.27004142485523164,
+          "hidden_one_step_rms": 0.2085109988218357,
+          "hidden_two_step_rms": 0.3110793939642096
+        },
+        {
+          "block": 51,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.24176981525388672,
+          "hidden_one_step_rms": 0.19795439405953238,
+          "hidden_two_step_rms": 0.3107033440278536
+        },
+        {
+          "block": 52,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.23071876165482455,
+          "hidden_one_step_rms": 0.22305513313957243,
+          "hidden_two_step_rms": 0.3033830671773138
+        },
+        {
+          "block": 53,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.2592701674857039,
+          "hidden_one_step_rms": 0.2255382235861014,
+          "hidden_two_step_rms": 0.31953122744760376
+        },
+        {
+          "block": 54,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.2819750696113598,
+          "hidden_one_step_rms": 0.2158665426995223,
+          "hidden_two_step_rms": 0.3077038491566944
+        },
+        {
+          "block": 55,
+          "accuracy": 0.9876543283462524,
+          "loss": 0.25787021092970946,
+          "hidden_one_step_rms": 0.20241917952409966,
+          "hidden_two_step_rms": 0.3161273404541792
+        },
+        {
+          "block": 56,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.23001737704719694,
+          "hidden_one_step_rms": 0.21179814733389932,
+          "hidden_two_step_rms": 0.29870899383876715
+        },
+        {
+          "block": 57,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2367684704784585,
+          "hidden_one_step_rms": 0.21923726616676098,
+          "hidden_two_step_rms": 0.32251095579563216
+        },
+        {
+          "block": 58,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.27253102890401226,
+          "hidden_one_step_rms": 0.2319851870719542,
+          "hidden_two_step_rms": 0.305581705976767
+        },
+        {
+          "block": 59,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.26019032847628065,
+          "hidden_one_step_rms": 0.2123263060633011,
+          "hidden_two_step_rms": 0.3245487918973561
+        },
+        {
+          "block": 60,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.2372310144023229,
+          "hidden_one_step_rms": 0.20990255569706226,
+          "hidden_two_step_rms": 0.30344215177650613
+        },
+        {
+          "block": 61,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.23471717474990264,
+          "hidden_one_step_rms": 0.22927837259585843,
+          "hidden_two_step_rms": 0.3310783881877621
+        },
+        {
+          "block": 62,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.273673095628326,
+          "hidden_one_step_rms": 0.23656266920604957,
+          "hidden_two_step_rms": 0.3164673422413651
+        },
+        {
+          "block": 63,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.27185641745331246,
+          "hidden_one_step_rms": 0.22832652460208727,
+          "hidden_two_step_rms": 0.33265378035301085
+        },
+        {
+          "block": 64,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.24770000241051812,
+          "hidden_one_step_rms": 0.20823431587884889,
+          "hidden_two_step_rms": 0.32140964983100634
+        },
+        {
+          "block": 65,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.2306782821584029,
+          "hidden_one_step_rms": 0.23773485198421104,
+          "hidden_two_step_rms": 0.33295750562912113
+        },
+        {
+          "block": 66,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.2630854612790873,
+          "hidden_one_step_rms": 0.2406997401959068,
+          "hidden_two_step_rms": 0.3341648140428004
+        },
+        {
+          "block": 67,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2650226754893252,
+          "hidden_one_step_rms": 0.23811274070774288,
+          "hidden_two_step_rms": 0.33481721541697884
+        },
+        {
+          "block": 68,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.2576270885261519,
+          "hidden_one_step_rms": 0.2142588405034733,
+          "hidden_two_step_rms": 0.3390541518981261
+        },
+        {
+          "block": 69,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.24267365340494354,
+          "hidden_one_step_rms": 0.2442131133751826,
+          "hidden_two_step_rms": 0.3324783489257349
+        },
+        {
+          "block": 70,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.25682433956586814,
+          "hidden_one_step_rms": 0.24009347826501728,
+          "hidden_two_step_rms": 0.35036621081729225
+        },
+        {
+          "block": 71,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.27921207856756436,
+          "hidden_one_step_rms": 0.2489232850998721,
+          "hidden_two_step_rms": 0.3315244437247481
+        },
+        {
+          "block": 72,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.275684009732572,
+          "hidden_one_step_rms": 0.22112559797576473,
+          "hidden_two_step_rms": 0.35294385893995345
+        },
+        {
+          "block": 73,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.26065999094528874,
+          "hidden_one_step_rms": 0.24304593316452294,
+          "hidden_two_step_rms": 0.32238773481904887
+        },
+        {
+          "block": 74,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.24754268744250665,
+          "hidden_one_step_rms": 0.23838234974925132,
+          "hidden_two_step_rms": 0.35583388931543386
+        },
+        {
+          "block": 75,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2679253480354805,
+          "hidden_one_step_rms": 0.2564560686564612,
+          "hidden_two_step_rms": 0.32813955405452205
+        },
+        {
+          "block": 76,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.2644903482957742,
+          "hidden_one_step_rms": 0.23114238131539083,
+          "hidden_two_step_rms": 0.3549731720068389
+        },
+        {
+          "block": 77,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.25934899217026786,
+          "hidden_one_step_rms": 0.23939835548510538,
+          "hidden_two_step_rms": 0.32442604699793204
+        },
+        {
+          "block": 78,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.24686172529583425,
+          "hidden_one_step_rms": 0.22944226164837622,
+          "hidden_two_step_rms": 0.3484027392019634
+        },
+        {
+          "block": 79,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2665421063552257,
+          "hidden_one_step_rms": 0.24044127973929372,
+          "hidden_two_step_rms": 0.3221628969075768
+        },
+        {
+          "block": 80,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.27809901241687296,
+          "hidden_one_step_rms": 0.23056627679218886,
+          "hidden_two_step_rms": 0.34470632628726955
+        },
+        {
+          "block": 81,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2731706527741349,
+          "hidden_one_step_rms": 0.22549052028977165,
+          "hidden_two_step_rms": 0.3152365255493786
+        },
+        {
+          "block": 82,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.23479174422192753,
+          "hidden_one_step_rms": 0.2240513583753923,
+          "hidden_two_step_rms": 0.3371320221257049
+        },
+        {
+          "block": 83,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.24645108939386096,
+          "hidden_one_step_rms": 0.23236591366260134,
+          "hidden_two_step_rms": 0.3231048603575338
+        },
+        {
+          "block": 84,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.2601688342194695,
+          "hidden_one_step_rms": 0.23862280480342066,
+          "hidden_two_step_rms": 0.3378974925968128
+        },
+        {
+          "block": 85,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2707263629164885,
+          "hidden_one_step_rms": 0.22123014533813723,
+          "hidden_two_step_rms": 0.3245840478532915
+        },
+        {
+          "block": 86,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.24625774487365326,
+          "hidden_one_step_rms": 0.22171017820845973,
+          "hidden_two_step_rms": 0.33361270247140473
+        },
+        {
+          "block": 87,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2503672531378282,
+          "hidden_one_step_rms": 0.23500598757872046,
+          "hidden_two_step_rms": 0.33484713762832546
+        },
+        {
+          "block": 88,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2754247237834368,
+          "hidden_one_step_rms": 0.25623833146708613,
+          "hidden_two_step_rms": 0.33878973736449947
+        },
+        {
+          "block": 89,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.28814245630373925,
+          "hidden_one_step_rms": 0.22200248252126262,
+          "hidden_two_step_rms": 0.3394289580488932
+        },
+        {
+          "block": 90,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2559275597454731,
+          "hidden_one_step_rms": 0.2218252082063672,
+          "hidden_two_step_rms": 0.3288590384277481
+        },
+        {
+          "block": 91,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.23848385228051147,
+          "hidden_one_step_rms": 0.22601643596952817,
+          "hidden_two_step_rms": 0.33396664648345115
+        },
+        {
+          "block": 92,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2553176867668945,
+          "hidden_one_step_rms": 0.24891006256703294,
+          "hidden_two_step_rms": 0.32634804017240315
+        },
+        {
+          "block": 93,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2735174152703866,
+          "hidden_one_step_rms": 0.22330918739262431,
+          "hidden_two_step_rms": 0.33493216505704676
+        },
+        {
+          "block": 94,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.26339861368872153,
+          "hidden_one_step_rms": 0.22362761275726858,
+          "hidden_two_step_rms": 0.3237231612261216
+        },
+        {
+          "block": 95,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.23938723712483892,
+          "hidden_one_step_rms": 0.2202402556556987,
+          "hidden_two_step_rms": 0.335234463399949
+        },
+        {
+          "block": 96,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.24832786421668518,
+          "hidden_one_step_rms": 0.2432643138350851,
+          "hidden_two_step_rms": 0.324423094859804
+        },
+        {
+          "block": 97,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.27248905199296924,
+          "hidden_one_step_rms": 0.22775073174239377,
+          "hidden_two_step_rms": 0.3401633203983815
+        },
+        {
+          "block": 98,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.2746808038675971,
+          "hidden_one_step_rms": 0.2316343640080402,
+          "hidden_two_step_rms": 0.32303093762875495
+        },
+        {
+          "block": 99,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.23610829175681172,
+          "hidden_one_step_rms": 0.21742337986192672,
+          "hidden_two_step_rms": 0.33591304126516724
+        },
+        {
+          "block": 100,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2348107037445234,
+          "hidden_one_step_rms": 0.24079679364230824,
+          "hidden_two_step_rms": 0.3293734768343415
+        },
+        {
+          "block": 101,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.26649273139417684,
+          "hidden_one_step_rms": 0.24423459438343925,
+          "hidden_two_step_rms": 0.3450466422196936
+        },
+        {
+          "block": 102,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.28736439423068305,
+          "hidden_one_step_rms": 0.2441790140475969,
+          "hidden_two_step_rms": 0.3355939764841449
+        },
+        {
+          "block": 103,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2528814432297244,
+          "hidden_one_step_rms": 0.22526036520516615,
+          "hidden_two_step_rms": 0.34933567429058326
+        },
+        {
+          "block": 104,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.24188070413510265,
+          "hidden_one_step_rms": 0.2493047511321799,
+          "hidden_two_step_rms": 0.34423399386285214
+        },
+        {
+          "block": 105,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2719305195616376,
+          "hidden_one_step_rms": 0.2638760962747875,
+          "hidden_two_step_rms": 0.358364921854778
+        },
+        {
+          "block": 106,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2993027383122551,
+          "hidden_one_step_rms": 0.2487814338009194,
+          "hidden_two_step_rms": 0.34469372515289054
+        },
+        {
+          "block": 107,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2636064189703025,
+          "hidden_one_step_rms": 0.22097571572943034,
+          "hidden_two_step_rms": 0.3448884029259721
+        },
+        {
+          "block": 108,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2308362300042184,
+          "hidden_one_step_rms": 0.23190770829117405,
+          "hidden_two_step_rms": 0.32927272975107447
+        },
+        {
+          "block": 109,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.25128975047863505,
+          "hidden_one_step_rms": 0.23871703280786924,
+          "hidden_two_step_rms": 0.33973164079173196
+        },
+        {
+          "block": 110,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.28831046651621217,
+          "hidden_one_step_rms": 0.2386691370125562,
+          "hidden_two_step_rms": 0.3227555230172414
+        },
+        {
+          "block": 111,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.26709275466749915,
+          "hidden_one_step_rms": 0.21278683455890104,
+          "hidden_two_step_rms": 0.3337161135571801
+        },
+        {
+          "block": 112,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.22662441245218723,
+          "hidden_one_step_rms": 0.21627226039766803,
+          "hidden_two_step_rms": 0.3188088289456586
+        },
+        {
+          "block": 113,
+          "accuracy": 0.9753086566925049,
+          "loss": 0.2395974952601012,
+          "hidden_one_step_rms": 0.23663717337608794,
+          "hidden_two_step_rms": 0.3362792533707428
+        },
+        {
+          "block": 114,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.28378197009651407,
+          "hidden_one_step_rms": 0.23741273321270867,
+          "hidden_two_step_rms": 0.32036983705766847
+        },
+        {
+          "block": 115,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.27804093921705997,
+          "hidden_one_step_rms": 0.21026857153878073,
+          "hidden_two_step_rms": 0.328059540348952
+        },
+        {
+          "block": 116,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.23199246565819193,
+          "hidden_one_step_rms": 0.20145524034135798,
+          "hidden_two_step_rms": 0.30825303064012444
+        },
+        {
+          "block": 117,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.22731149170384077,
+          "hidden_one_step_rms": 0.23479745700931462,
+          "hidden_two_step_rms": 0.3306325057120902
+        },
+        {
+          "block": 118,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2778463855743572,
+          "hidden_one_step_rms": 0.24121544063918063,
+          "hidden_two_step_rms": 0.3160846071643912
+        },
+        {
+          "block": 119,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.28455380504671574,
+          "hidden_one_step_rms": 0.22092041627978687,
+          "hidden_two_step_rms": 0.3338531848694372
+        },
+        {
+          "block": 120,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2452208019978213,
+          "hidden_one_step_rms": 0.20799488455521992,
+          "hidden_two_step_rms": 0.32487750474427646
+        },
+        {
+          "block": 121,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.2313911499300802,
+          "hidden_one_step_rms": 0.24680466543598084,
+          "hidden_two_step_rms": 0.3385278986508209
+        },
+        {
+          "block": 122,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.27394534383696684,
+          "hidden_one_step_rms": 0.25060924642052523,
+          "hidden_two_step_rms": 0.3387463168485004
+        },
+        {
+          "block": 123,
+          "accuracy": 0.9845678806304932,
+          "loss": 0.29261574762596676,
+          "hidden_one_step_rms": 0.23172956893936322,
+          "hidden_two_step_rms": 0.33686797397846746
+        },
+        {
+          "block": 124,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2602499966551946,
+          "hidden_one_step_rms": 0.20624427871771955,
+          "hidden_two_step_rms": 0.32852651711117853
+        },
+        {
+          "block": 125,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.22356604173983743,
+          "hidden_one_step_rms": 0.2319025241764664,
+          "hidden_two_step_rms": 0.3193365634658851
+        },
+        {
+          "block": 126,
+          "accuracy": 0.9814814925193787,
+          "loss": 0.2517037608720682,
+          "hidden_one_step_rms": 0.2254338350620586,
+          "hidden_two_step_rms": 0.33257344104710007
+        },
+        {
+          "block": 127,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.29308144388205887,
+          "hidden_one_step_rms": 0.23838935445547918,
+          "hidden_two_step_rms": 0.32072830706672073
+        },
+        {
+          "block": 128,
+          "accuracy": 0.9783950448036194,
+          "loss": 0.27167889546469765,
+          "hidden_one_step_rms": 0.210730877864183,
+          "hidden_two_step_rms": 0.33724036508412036
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,28 @@
+{
+  "baseline_ng0": {
+    "step": 2000,
+    "batch_equal_to_baseline": {
+      "inputs": true,
+      "labels": true,
+      "puzzle_identifiers": true
+    }
+  },
+  "kv_interpolated_read_ng0": {
+    "step": 2000,
+    "batch_equal_to_baseline": {
+      "inputs": true,
+      "labels": true,
+      "puzzle_identifiers": true
+    }
+  },
+  "kv_current_only_ng0": {
+    "step": 2000,
+    "batch_equal_to_baseline": {
+      "inputs": true,
+      "labels": true,
+      "puzzle_identifiers": true
+    },
+    "key_trace_is_none": true,
+    "value_trace_is_none": true
+  }
+}

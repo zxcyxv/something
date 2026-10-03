@@ -1,0 +1,27 @@
+{
+  "run": "/workspace/something/runs/kv_collapse_20261003/kv_current_plus_stdp_ng0",
+  "training_pid": 35687,
+  "status": "completed",
+  "started_utc": "2026-10-03T07:00:19.963975+00:00",
+  "kept": [
+    "/workspace/something/runs/kv_collapse_20261003/kv_current_plus_stdp_ng0/step_3000.pt"
+  ],
+  "delete": [
+    {
+      "path": "/workspace/something/runs/kv_collapse_20261003/kv_current_plus_stdp_ng0/step_1000.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "/workspace/something/runs/kv_collapse_20261003/kv_current_plus_stdp_ng0/step_1953.pt",
+      "bytes": 318736781
+    },
+    {
+      "path": "/workspace/something/runs/kv_collapse_20261003/kv_current_plus_stdp_ng0/step_2000.pt",
+      "bytes": 318736781
+    }
+  ],
+  "deleted_files": 3,
+  "deleted_bytes": 956210343,
+  "free_after_bytes": 25473515520,
+  "finished_utc": "2026-10-03T07:06:39.994551+00:00"
+}

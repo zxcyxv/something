@@ -1,0 +1,2 @@
+fresh logits {'max_abs': 2.6702880859375e-05, 'relative_l2': 2.2767599340167627e-07, 'cosine': 0.9999999999999755} theta_gradient {'max_abs': 1.0803341865539551e-07, 'relative_l2': 1.0518852302621614e-06, 'cosine': 0.9999999999994762}
+detached_carry logits {'max_abs': 2.288818359375e-05, 'relative_l2': 2.0832830965345873e-07, 'cosine': 0.9999999999999796} theta_gradient {'max_abs': 0.043838873505592346, 'relative_l2': 0.5224291252649536, 'cosine': 0.9034986772537613}

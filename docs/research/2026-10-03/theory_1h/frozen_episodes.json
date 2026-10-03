@@ -1,0 +1,352 @@
+{
+  "precision": "BF16 projections / FP32 states, same as original training",
+  "method": "each checkpoint, all saved training puzzles, fresh hidden/M/traces, frozen final raw parameters",
+  "caveat": "Saved carry uses earlier evolving parameters; new classifier is used on both. This is a training/evaluation trajectory difference, not its attribution to any single mechanism.",
+  "runs": {
+    "original": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+      "puzzles": 128,
+      "blocks": 128,
+      "saved_online_carry": {
+        "accuracy": 0.6054205298423767,
+        "exact": 0.0,
+        "loss": 0.8731390550064843
+      },
+      "fresh_frozen_episode": {
+        "accuracy": 0.5651041865348816,
+        "exact": 0.0,
+        "loss": 0.9963311709523597
+      },
+      "prediction_disagreement": 0.2830825746059418,
+      "hidden_difference_rms": 0.35639646649360657,
+      "frozen_segments": [
+        {
+          "segment": 1,
+          "accuracy": 0.5641396641731262,
+          "exact": 0.0,
+          "loss": 0.9831697030779785
+        },
+        {
+          "segment": 2,
+          "accuracy": 0.5645254850387573,
+          "exact": 0.0,
+          "loss": 0.9818871388754162
+        },
+        {
+          "segment": 3,
+          "accuracy": 0.5652006268501282,
+          "exact": 0.0,
+          "loss": 0.9825487467007346
+        },
+        {
+          "segment": 4,
+          "accuracy": 0.5649113059043884,
+          "exact": 0.0,
+          "loss": 0.983328575188144
+        },
+        {
+          "segment": 5,
+          "accuracy": 0.5638502836227417,
+          "exact": 0.0,
+          "loss": 0.9841486414057523
+        },
+        {
+          "segment": 6,
+          "accuracy": 0.5636574029922485,
+          "exact": 0.0,
+          "loss": 0.9849885250697805
+        },
+        {
+          "segment": 7,
+          "accuracy": 0.5628858208656311,
+          "exact": 0.0,
+          "loss": 0.9858609286855529
+        },
+        {
+          "segment": 8,
+          "accuracy": 0.5629822611808777,
+          "exact": 0.0,
+          "loss": 0.9868716486942095
+        },
+        {
+          "segment": 9,
+          "accuracy": 0.5632715821266174,
+          "exact": 0.0,
+          "loss": 0.9878816935631407
+        },
+        {
+          "segment": 10,
+          "accuracy": 0.5630787014961243,
+          "exact": 0.0,
+          "loss": 0.9888630443454054
+        },
+        {
+          "segment": 11,
+          "accuracy": 0.5628857612609863,
+          "exact": 0.0,
+          "loss": 0.9900386275151378
+        },
+        {
+          "segment": 12,
+          "accuracy": 0.5632716417312622,
+          "exact": 0.0,
+          "loss": 0.9910805844918255
+        },
+        {
+          "segment": 13,
+          "accuracy": 0.5630787014961243,
+          "exact": 0.0,
+          "loss": 0.9922876640162133
+        },
+        {
+          "segment": 14,
+          "accuracy": 0.5643326044082642,
+          "exact": 0.0,
+          "loss": 0.9935801938996636
+        },
+        {
+          "segment": 15,
+          "accuracy": 0.5647183656692505,
+          "exact": 0.0,
+          "loss": 0.9949737745823506
+        },
+        {
+          "segment": 16,
+          "accuracy": 0.5651041865348816,
+          "exact": 0.0,
+          "loss": 0.9963311709523597
+        }
+      ]
+    },
+    "complex_current_only": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/kv_complex_current_only_ng0/step_6000.pt",
+      "puzzles": 128,
+      "blocks": 128,
+      "saved_online_carry": {
+        "accuracy": 0.8132716417312622,
+        "exact": 0.109375,
+        "loss": 0.49403506882562576
+      },
+      "fresh_frozen_episode": {
+        "accuracy": 0.9010416269302368,
+        "exact": 0.5390625,
+        "loss": 0.35106643170647156
+      },
+      "prediction_disagreement": 0.1593364179134369,
+      "hidden_difference_rms": 0.5084038972854614,
+      "frozen_segments": [
+        {
+          "segment": 1,
+          "accuracy": 0.6527777910232544,
+          "exact": 0.0,
+          "loss": 0.803760865258522
+        },
+        {
+          "segment": 2,
+          "accuracy": 0.7312885522842407,
+          "exact": 0.0078125,
+          "loss": 0.6470294438278554
+        },
+        {
+          "segment": 3,
+          "accuracy": 0.7965856790542603,
+          "exact": 0.0078125,
+          "loss": 0.5388260545518002
+        },
+        {
+          "segment": 4,
+          "accuracy": 0.8377699851989746,
+          "exact": 0.0703125,
+          "loss": 0.45968408897482615
+        },
+        {
+          "segment": 5,
+          "accuracy": 0.8609182238578796,
+          "exact": 0.1640625,
+          "loss": 0.412768450627364
+        },
+        {
+          "segment": 6,
+          "accuracy": 0.8770254850387573,
+          "exact": 0.234375,
+          "loss": 0.38508604518276174
+        },
+        {
+          "segment": 7,
+          "accuracy": 0.8844521045684814,
+          "exact": 0.3515625,
+          "loss": 0.3694094757501625
+        },
+        {
+          "segment": 8,
+          "accuracy": 0.8913965821266174,
+          "exact": 0.4140625,
+          "loss": 0.36127122673740547
+        },
+        {
+          "segment": 9,
+          "accuracy": 0.8922646641731262,
+          "exact": 0.4453125,
+          "loss": 0.35579905672529066
+        },
+        {
+          "segment": 10,
+          "accuracy": 0.8942901492118835,
+          "exact": 0.484375,
+          "loss": 0.3553124886183996
+        },
+        {
+          "segment": 11,
+          "accuracy": 0.8970871567726135,
+          "exact": 0.4921875,
+          "loss": 0.35599030595271375
+        },
+        {
+          "segment": 12,
+          "accuracy": 0.8967978358268738,
+          "exact": 0.5,
+          "loss": 0.35382977864062065
+        },
+        {
+          "segment": 13,
+          "accuracy": 0.8994019627571106,
+          "exact": 0.515625,
+          "loss": 0.35439425387973283
+        },
+        {
+          "segment": 14,
+          "accuracy": 0.9002700448036194,
+          "exact": 0.5390625,
+          "loss": 0.3529876434127141
+        },
+        {
+          "segment": 15,
+          "accuracy": 0.9002700448036194,
+          "exact": 0.5390625,
+          "loss": 0.3518519681834218
+        },
+        {
+          "segment": 16,
+          "accuracy": 0.9010416269302368,
+          "exact": 0.5390625,
+          "loss": 0.35106643170647156
+        }
+      ]
+    },
+    "current_only": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/kv_current_only_ng0/step_6000.pt",
+      "puzzles": 128,
+      "blocks": 128,
+      "saved_online_carry": {
+        "accuracy": 0.9128085970878601,
+        "exact": 0.2265625,
+        "loss": 0.36996595186342035
+      },
+      "fresh_frozen_episode": {
+        "accuracy": 0.9313271045684814,
+        "exact": 0.2578125,
+        "loss": 0.3526416892873706
+      },
+      "prediction_disagreement": 0.05777391791343689,
+      "hidden_difference_rms": 0.21568506956100464,
+      "frozen_segments": [
+        {
+          "segment": 1,
+          "accuracy": 0.7202932238578796,
+          "exact": 0.0,
+          "loss": 0.7475759292372133
+        },
+        {
+          "segment": 2,
+          "accuracy": 0.8830053806304932,
+          "exact": 0.0546875,
+          "loss": 0.4747066536630048
+        },
+        {
+          "segment": 3,
+          "accuracy": 0.9230324029922485,
+          "exact": 0.1875,
+          "loss": 0.38630443656523183
+        },
+        {
+          "segment": 4,
+          "accuracy": 0.9293016791343689,
+          "exact": 0.2265625,
+          "loss": 0.36378876167199997
+        },
+        {
+          "segment": 5,
+          "accuracy": 0.9293981790542603,
+          "exact": 0.234375,
+          "loss": 0.3514335315555225
+        },
+        {
+          "segment": 6,
+          "accuracy": 0.9308449029922485,
+          "exact": 0.28125,
+          "loss": 0.34454604324035243
+        },
+        {
+          "segment": 7,
+          "accuracy": 0.9314236640930176,
+          "exact": 0.234375,
+          "loss": 0.34322622685527254
+        },
+        {
+          "segment": 8,
+          "accuracy": 0.9310377836227417,
+          "exact": 0.2578125,
+          "loss": 0.34521821602610986
+        },
+        {
+          "segment": 9,
+          "accuracy": 0.930555522441864,
+          "exact": 0.265625,
+          "loss": 0.34917859616658997
+        },
+        {
+          "segment": 10,
+          "accuracy": 0.9322916269302368,
+          "exact": 0.265625,
+          "loss": 0.3511976961493162
+        },
+        {
+          "segment": 11,
+          "accuracy": 0.9315201044082642,
+          "exact": 0.265625,
+          "loss": 0.35015226309032516
+        },
+        {
+          "segment": 12,
+          "accuracy": 0.9295910000801086,
+          "exact": 0.234375,
+          "loss": 0.34762378949648626
+        },
+        {
+          "segment": 13,
+          "accuracy": 0.9293016791343689,
+          "exact": 0.265625,
+          "loss": 0.3456895872721223
+        },
+        {
+          "segment": 14,
+          "accuracy": 0.9291087985038757,
+          "exact": 0.265625,
+          "loss": 0.3466280495968291
+        },
+        {
+          "segment": 15,
+          "accuracy": 0.9310377836227417,
+          "exact": 0.2578125,
+          "loss": 0.35005913318217485
+        },
+        {
+          "segment": 16,
+          "accuracy": 0.9313271045684814,
+          "exact": 0.2578125,
+          "loss": 0.3526416892873706
+        }
+      ]
+    }
+  }
+}
