@@ -155,6 +155,24 @@
       "zero_reference_memory_after_12_blocks_norm": 4.0295371660104544e-13,
       "formula": "G2=(1-lambda)*mean_p[(WV*I_p)*(R_p*WK*h0).T-(WV*h0)*(R_p*WK*I_p).T]",
       "note": "Uses zero b_down at initialization and radial Phi. Actual h0 is nonzero, so this is not a dead-network bug. First cross-token communication is driven by the transition from the common initial reference toward the input."
+    },
+    "accumulated_read_and_query_motion": {
+      "product_difference_error": 3.552713678800501e-15,
+      "sum_order_error": 1.0658141036401503e-14,
+      "constant_query_triangular_weight_error": 4.440892098500626e-15,
+      "nonzero_query_motion_term_norm": 24.823161057958366,
+      "formula": "M_r q_r-M_previous q_previous = G_r q_r+M_previous(q_r-q_previous). Sum_r M_r q_r = Sum_u G_u Sum_{r>=u} q_r.",
+      "note": "The sum of read drives is exact. It is not the final hidden state: input, bilinear FFN and Phi also act. Two integrations are not by themselves an STDP implementation error."
+    },
+    "period_two_read_rectification": {
+      "memory_mean_read_error": 2.220446049250313e-16,
+      "memory_alternating_read_error": 0.0,
+      "current_mean_read_error": 4.440892098500626e-16,
+      "mixed_mean_read_error": 2.220446049250313e-16,
+      "net_write_norm": 0.0,
+      "nonzero_mean_current_read_norm": 5.071234496545621,
+      "formula": "For G_r=s_r D, M_r=C+s_r D/2, q_r=q_mean+s_r q_delta: mean(Mq)=C q_mean+D q_delta/2; mean(Gq)=D q_delta.",
+      "note": "Equilibrated zero-mean period-two writes; C depends on the earlier path. Query oscillations can rectify a zero-mean write into a nonzero mean drive. This is not proof of a useful or harmful cycle."
     }
   }
 }

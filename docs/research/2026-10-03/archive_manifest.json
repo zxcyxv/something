@@ -1,5 +1,5 @@
 {
-  "snapshot_at_utc": "2026-10-03T11:30:25.478750+00:00",
+  "snapshot_at_utc": "2026-10-03T11:42:59.298179+00:00",
   "status": "published evidence snapshot; continued research may follow",
   "baseline_commit": "70a8dbae82a135251b83c91a53a8f14bd411946d",
   "baseline_trainer_sha256": "65221608b193b1c86893bc1bfe973a6c400fe960d2fefed74905aedcb9c71e2f",
@@ -716,18 +716,18 @@
     {
       "source": "runs/kv_collapse_20261003/theory_1h/algebra.json",
       "archive": "theory_1h/algebra.json",
-      "source_bytes": 8376,
-      "source_sha256": "96b72716f816a154bee7f96ff70e20c09a5e1aadf550a3ce8d35e33108432331",
-      "archive_bytes": 8376,
-      "archive_sha256": "96b72716f816a154bee7f96ff70e20c09a5e1aadf550a3ce8d35e33108432331"
+      "source_bytes": 9664,
+      "source_sha256": "02d42b4f102bc6eb91a1bfbd61f0e28055fffe1f6f7557bcf6608345992f0a7c",
+      "archive_bytes": 9664,
+      "archive_sha256": "02d42b4f102bc6eb91a1bfbd61f0e28055fffe1f6f7557bcf6608345992f0a7c"
     },
     {
       "source": "runs/kv_collapse_20261003/theory_1h/algebra.log",
       "archive": "theory_1h/algebra.log",
-      "source_bytes": 8376,
-      "source_sha256": "96b72716f816a154bee7f96ff70e20c09a5e1aadf550a3ce8d35e33108432331",
-      "archive_bytes": 8376,
-      "archive_sha256": "96b72716f816a154bee7f96ff70e20c09a5e1aadf550a3ce8d35e33108432331"
+      "source_bytes": 9664,
+      "source_sha256": "02d42b4f102bc6eb91a1bfbd61f0e28055fffe1f6f7557bcf6608345992f0a7c",
+      "archive_bytes": 9664,
+      "archive_sha256": "02d42b4f102bc6eb91a1bfbd61f0e28055fffe1f6f7557bcf6608345992f0a7c"
     },
     {
       "source": "runs/kv_collapse_20261003/theory_1h/frozen_episodes.json",
@@ -740,10 +740,10 @@
     {
       "source": "runs/kv_collapse_20261003/theory_1h/manifest.json",
       "archive": "theory_1h/manifest.json",
-      "source_bytes": 2635,
-      "source_sha256": "2ce8bbbd35ee5a1004c00b2b9d38cea41ca0d0b67235b9ef3ab71973eb14ccff",
-      "archive_bytes": 2635,
-      "archive_sha256": "2ce8bbbd35ee5a1004c00b2b9d38cea41ca0d0b67235b9ef3ab71973eb14ccff"
+      "source_bytes": 3924,
+      "source_sha256": "ae1e74225ca271019c163b3828876162af3f16b9ebe39c5d98c82493e4b5d4e3",
+      "archive_bytes": 3924,
+      "archive_sha256": "ae1e74225ca271019c163b3828876162af3f16b9ebe39c5d98c82493e4b5d4e3"
     },
     {
       "source": "runs/kv_collapse_20261003/theory_1h/online_episode.json",
@@ -760,6 +760,30 @@
       "source_sha256": "0d9202848c737993894032b9134c9f09b52012e759d5aa227ea0809f66a93014",
       "archive_bytes": 3698,
       "archive_sha256": "0d9202848c737993894032b9134c9f09b52012e759d5aa227ea0809f66a93014"
+    },
+    {
+      "source": "runs/kv_collapse_20261003/theory_1h/read_components.json",
+      "archive": "theory_1h/read_components.json",
+      "source_bytes": 5034,
+      "source_sha256": "05190abe174696908ec652a8267152e5f66bedf5e7dc78599fd71426e6db17e6",
+      "archive_bytes": 5034,
+      "archive_sha256": "05190abe174696908ec652a8267152e5f66bedf5e7dc78599fd71426e6db17e6"
+    },
+    {
+      "source": "runs/kv_collapse_20261003/theory_1h/read_components.log",
+      "archive": "theory_1h/read_components.log",
+      "source_bytes": 3613,
+      "source_sha256": "c45b4a86b6ca9d8aee52c27cc38535a71394683a8a1bc5cda5aec63c96d50990",
+      "archive_bytes": 3613,
+      "archive_sha256": "c45b4a86b6ca9d8aee52c27cc38535a71394683a8a1bc5cda5aec63c96d50990"
+    },
+    {
+      "source": "runs/kv_collapse_20261003/theory_1h/read_components_first_attempt_failed.log",
+      "archive": "theory_1h/read_components_first_attempt_failed.log",
+      "source_bytes": 547,
+      "source_sha256": "dc22590e8723b5dfdd95cd03882590834a715568cc19573b5fe402f6fc303d2f",
+      "archive_bytes": 547,
+      "archive_sha256": "dc22590e8723b5dfdd95cd03882590834a715568cc19573b5fe402f6fc303d2f"
     },
     {
       "source": "runs/kv_collapse_20261003/theory_1h/shared_window_frozen.json",

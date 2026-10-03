@@ -1,0 +1,136 @@
+{
+  "method": "Unchanged fixed-parameter trajectories, FP32; FP64 read decomposition after output projection",
+  "blocks": 128,
+  "tail": 32,
+  "batch": 4,
+  "caveat": "Same saved training puzzles, no optimizer or parameter modification. Contributions on one trajectory are not causal interventions.",
+  "runs": {
+    "original": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/baseline_ng0/step_6000.pt",
+      "production_read_reconstruction_error": 1.1838141909311868e-07,
+      "current_and_past": {
+        "total_rms": 4.279105825039301,
+        "a": {
+          "rms": 3.056316121997147,
+          "energy_relative_to_total": 0.5101413071823866,
+          "signed_projection_on_total": 0.2534236055874982
+        },
+        "b": {
+          "rms": 4.286147923177236,
+          "energy_relative_to_total": 1.00329409600739,
+          "signed_projection_on_total": 0.7465763944125017
+        },
+        "a_b_cosine": -0.3588363596920759,
+        "relative_identity_error": 5.062912918130548e-17,
+        "a_expression": "G_r q_r",
+        "b_expression": "(operator_r-G_r) q_r"
+      },
+      "paired_mean": {
+        "total_rms": 3.4139116732701202,
+        "a": {
+          "rms": 3.389068166498437,
+          "energy_relative_to_total": 0.9854986805016507,
+          "signed_projection_on_total": 0.9763663185728425
+        },
+        "b": {
+          "rms": 0.6179655733845978,
+          "energy_relative_to_total": 0.03276604335596565,
+          "signed_projection_on_total": 0.023633681427157535
+        },
+        "a_b_cosine": -0.05082098644415753,
+        "relative_identity_error": 1.3117866513425907e-15,
+        "a_expression": "operator_mean q_mean",
+        "b_expression": "operator_delta q_delta"
+      },
+      "paired_alternation": {
+        "total_rms": 2.57991351579763,
+        "a": {
+          "rms": 2.1264084182102154,
+          "energy_relative_to_total": 0.6793335608315797,
+          "signed_projection_on_total": 0.6928166729854787
+        },
+        "b": {
+          "rms": 1.3981613090706948,
+          "energy_relative_to_total": 0.29370021486062214,
+          "signed_projection_on_total": 0.3071833270145212
+        },
+        "a_b_cosine": 0.03018536833887218,
+        "relative_identity_error": 1.4999485849264718e-15,
+        "a_expression": "operator_mean q_delta",
+        "b_expression": "operator_delta q_mean"
+      },
+      "read_first_difference": {
+        "total_rms": 5.159253654491798,
+        "a": {
+          "rms": 3.056316121997147,
+          "energy_relative_to_total": 0.3509318482752224,
+          "signed_projection_on_total": 0.30704760759486
+        },
+        "b": {
+          "rms": 4.4286614842971535,
+          "energy_relative_to_total": 0.7368366331003747,
+          "signed_projection_on_total": 0.692952392382396
+        },
+        "a_b_cosine": -0.08630015822790417,
+        "relative_identity_error": 1.3909864689720938e-08,
+        "a_expression": "G_r q_r",
+        "b_expression": "M_previous (q_r-q_previous)"
+      }
+    },
+    "complex_current_only": {
+      "checkpoint": "/workspace/something/runs/kv_collapse_20261003/kv_complex_current_only_ng0/step_6000.pt",
+      "production_read_reconstruction_error": 9.994553824402325e-08,
+      "current_and_past": {
+        "total_rms": 0.9706752071469763,
+        "a": {
+          "rms": 0.9706752071469763,
+          "energy_relative_to_total": 1.0,
+          "signed_projection_on_total": 1.0
+        },
+        "b": {
+          "rms": 0.0,
+          "energy_relative_to_total": 0.0,
+          "signed_projection_on_total": 0.0
+        },
+        "a_b_cosine": 0.0,
+        "relative_identity_error": 0.0,
+        "a_expression": "G_r q_r",
+        "b_expression": "(operator_r-G_r) q_r"
+      },
+      "paired_mean": {
+        "total_rms": 0.6270014405538978,
+        "a": {
+          "rms": 0.49148921689100555,
+          "energy_relative_to_total": 0.6144561717189225,
+          "signed_projection_on_total": 0.6915436353282578
+        },
+        "b": {
+          "rms": 0.3015928425272322,
+          "energy_relative_to_total": 0.23136890106240682,
+          "signed_projection_on_total": 0.30845636467174214
+        },
+        "a_b_cosine": 0.20444938530668008,
+        "relative_identity_error": 1.3441383520140168e-15,
+        "a_expression": "operator_mean q_mean",
+        "b_expression": "operator_delta q_delta"
+      },
+      "paired_alternation": {
+        "total_rms": 0.7409990224778722,
+        "a": {
+          "rms": 0.1643465434285553,
+          "energy_relative_to_total": 0.04919102573082208,
+          "signed_projection_on_total": 0.035032410007689606
+        },
+        "b": {
+          "rms": 0.7332245070325967,
+          "energy_relative_to_total": 0.9791262057154431,
+          "signed_projection_on_total": 0.9649675899923107
+        },
+        "a_b_cosine": -0.06451467567342878,
+        "relative_identity_error": 1.3649147825476948e-15,
+        "a_expression": "operator_mean q_delta",
+        "b_expression": "operator_delta q_mean"
+      }
+    }
+  }
+}

@@ -364,6 +364,54 @@ def main():
         'formula': 'G2=(1-lambda)*mean_p[(WV*I_p)*(R_p*WK*h0).T-(WV*h0)*(R_p*WK*I_p).T]',
         'note': 'Uses zero b_down at initialization and radial Phi. Actual h0 is nonzero, so this is not a dead-network bug. First cross-token communication is driven by the transition from the common initial reference toward the input.'}
 
+    # Reading an accumulated synapse and reading its increment are different
+    # even before the nonlinear neuron update: the Query itself also changes.
+    count, dv, dk = 11, 3, 4
+    increments = torch.randn(count,dv,dk)
+    memories = increments.cumsum(0)
+    queries = torch.randn(count,dk)
+    reads = torch.einsum('tvk,tk->tv',memories,queries)
+    previous_m = torch.cat((torch.zeros_like(memories[:1]),memories[:-1]))
+    previous_q = torch.cat((torch.zeros_like(queries[:1]),queries[:-1]))
+    previous_read = torch.cat((torch.zeros_like(reads[:1]),reads[:-1]))
+    increment_read = torch.einsum('tvk,tk->tv',increments,queries)
+    moving_query = torch.einsum('tvk,tk->tv',previous_m,queries-previous_q)
+    future_queries = queries.flip(0).cumsum(0).flip(0)
+    swapped = torch.einsum('tvk,tk->v',increments,future_queries)
+    fixed_q = torch.randn(dk)
+    fixed_reads = memories@fixed_q
+    multiplicities = torch.arange(count,0,-1)
+    records['accumulated_read_and_query_motion'] = {
+        'product_difference_error': error(reads-previous_read,increment_read+moving_query),
+        'sum_order_error': error(reads.sum(0),swapped),
+        'constant_query_triangular_weight_error': error(fixed_reads.sum(0),
+              (multiplicities[:,None]*(increments@fixed_q)).sum(0)),
+        'nonzero_query_motion_term_norm': float(moving_query.norm()),
+        'formula': 'M_r q_r-M_previous q_previous = G_r q_r+M_previous(q_r-q_previous). Sum_r M_r q_r = Sum_u G_u Sum_{r>=u} q_r.',
+        'note': 'The sum of read drives is exact. It is not the final hidden state: input, bilinear FFN and Phi also act. Two integrations are not by themselves an STDP implementation error.'}
+
+    center, amplitude = torch.randn(dv,dk),torch.randn(dv,dk)
+    query_mean, query_delta = torch.randn(dk),torch.randn(dk)
+    signs = torch.tensor([-1.,1.])
+    cycle_q = query_mean+signs[:,None]*query_delta
+    cycle_m = center+signs[:,None,None]*amplitude/2
+    cycle_g = signs[:,None,None]*amplitude
+    cycle_y = torch.einsum('tvk,tk->tv',cycle_m,cycle_q)
+    cycle_gy = torch.einsum('tvk,tk->tv',cycle_g,cycle_q)
+    alpha = .37
+    mixed = cycle_g+alpha*(center-signs[:,None,None]*amplitude/2)
+    mixed_y = torch.einsum('tvk,tk->tv',mixed,cycle_q)
+    records['period_two_read_rectification'] = {
+        'memory_mean_read_error': error(cycle_y.mean(0),center@query_mean+amplitude@query_delta/2),
+        'memory_alternating_read_error': error((cycle_y[1]-cycle_y[0])/2,
+                                              center@query_delta+amplitude@query_mean/2),
+        'current_mean_read_error': error(cycle_gy.mean(0),amplitude@query_delta),
+        'mixed_mean_read_error': error(mixed_y.mean(0),alpha*(center@query_mean)+(1-alpha/2)*(amplitude@query_delta)),
+        'net_write_norm': float(cycle_g.sum(0).norm()),
+        'nonzero_mean_current_read_norm': float(cycle_gy.mean(0).norm()),
+        'formula': 'For G_r=s_r D, M_r=C+s_r D/2, q_r=q_mean+s_r q_delta: mean(Mq)=C q_mean+D q_delta/2; mean(Gq)=D q_delta.',
+        'note': 'Equilibrated zero-mean period-two writes; C depends on the earlier path. Query oscillations can rectify a zero-mean write into a nonzero mean drive. This is not proof of a useful or harmful cycle.'}
+
     for name, row in records.items():
         for key, val in row.items():
             if key.endswith('_error'):

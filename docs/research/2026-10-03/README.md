@@ -152,9 +152,34 @@ G-only의 online exact는 85.16%로 높아졌다. 따라서 “문제 풀이 중
 56.55%로만 변했고 exact는 둘 다 0이었다. 이것을 해결책이라고 볼 근거는 없다.
 
 부호/축/trace 순서/미분/상태 초기화/activation checkpoint를 독립 계산과
-대조했다. 관련 unit test 30개가 통과했다. 이론 검산은 17개 그룹으로 구성되며,
+대조했다. 관련 unit test 30개가 통과했다. 이론 검산은 19개 그룹으로 구성되며,
 FP64 항등식 오차는 약 1e-14 이하다. 이는 식과 구현의 대응을 확인한 결과다.
 학습 성공이나 붕괴 원인을 검증한 결과로 확대 해석하지 않는다.
+
+## 문서 공개 후 이어서 확인한 읽기의 차이
+
+다음은 누적 M에 대해 정확한 식이다.
+
+```text
+y_r = M_r q_r
+y_r - y_previous = G_r q_r + M_previous (q_r-q_previous)
+```
+
+G-only를 누적 읽기의 변화량으로 볼 때는 Query 변화 항이 추가로 필요하다.
+현재 Query가 움직이는 상황에서 두 읽기는 단순히 배율만 다르지 않다.
+또한 `sum_r M_r q_r = sum_u G_u sum_{r>=u} q_r`이므로, Query가 일정하면
+이른 쓰기는 이후 읽기에 더 많이 재사용된다. 실제 hidden에는 입력·FFN·Phi도
+작용하므로 이 합을 최종 hidden과 같다고 해석해서는 안 된다.
+
+기존 체크포인트의 동일한 4문제를 128블록 실행하고 마지막 32블록을 분해했다.
+원본 M에서 읽기 변화에 대한 signed projection은 현재 G 항 30.70%,
+과거 M과 Query 변화의 결합 항 69.30%였다. 이는
+`dot(component,total)/dot(total,total)`이며, 성능 원인 비중이나 설명분산이 아니다.
+학습이나 경로 개입 없이 계산된 신호의 구성만 확인했다.
+
+상세 도출과 한계는 [연구 노트의 마지막 절](../../kv_collapse_research.md#continued-after-publication-accumulated-reads-and-moving-queries),
+실측은 [read_components.json](theory_1h/read_components.json)에 있다.
+이 결과로 새로운 학습을 시작하거나 STDP의 수정이 필수라고 결론내리지 않았다.
 
 ## 다음에 구분해야 할 질문
 

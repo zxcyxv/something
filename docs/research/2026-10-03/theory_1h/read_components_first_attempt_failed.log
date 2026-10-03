@@ -1,0 +1,9 @@
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/something/lt/probe_kv_read_components.py", line 142, in <module>
+    main()
+  File "/workspace/something/lt/probe_kv_read_components.py", line 113, in main
+    current_and_past=dict(a='G_r q_r',b='(read_operator_r-G_r) q_r',**current_past),
+                     ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+TypeError: dict() got multiple values for keyword argument 'a'

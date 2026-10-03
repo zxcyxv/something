@@ -999,3 +999,82 @@ trace, complex Query, sign reversal, or memory forgetting correction. The
 cause of the original training reversal remains unconfirmed. The evidence
 also requires separating the poorly progressing accumulated-M dynamics from
 the G-only model, which already computes many exact solutions at frozen weights.
+
+## Continued after publication: accumulated reads and moving Queries
+
+The initial evidence archive was published at commit
+`5a24c4428c3841f1cd1fc86413981c5f32f0b5be` using the GitHub app. The user requested
+continued research after publication. The following work derives another
+distinction between G-only and accumulated M without starting a training run.
+
+For additive M, with fixed output projection suppressed from notation:
+
+```text
+y_r = M_r q_r
+y_r - y_(r-1) = G_r q_r + M_(r-1) (q_r - q_(r-1))
+
+sum_{r=1..R} y_r = sum_{u=1..R} G_u sum_{r=u..R} q_r
+```
+
+Thus G-only is the change of the accumulated read only when the Query-motion
+term vanishes. With constant Query, summing the read drives counts a write at
+time u exactly R-u+1 times. This is a statement about the drives. The actual
+final hidden state also includes repeated input, bilinear FFN and Phi, so it
+cannot be identified with that sum. Nor is integrating a plastic synapse and
+then integrating its neural drive by itself a violation of STDP.
+
+An equilibrated zero-mean two-phase write has a particularly clear form:
+
+```text
+s_r = alternating -1, +1
+G_r = s_r D
+M_r = C + s_r D/2
+q_r = q_mean + s_r q_delta
+
+mean(M_r q_r) = C q_mean + D q_delta/2
+mean(G_r q_r) = D q_delta
+
+G_r + alpha M_(r-1) = alpha C + s_r (1-alpha/2) D
+```
+
+C depends on the earlier path. This shows why zero mean writing need not imply
+zero mean read: the Query can alternate with the write. G/M interpolation also
+changes the path-dependent component and the alternating component differently;
+it is not simply a constant gain on M. This idealized cycle formula assumes
+zero net writing and is not exact for heterogeneous-decay drift.
+
+A decomposition that needs no periodicity assumption uses adjacent pairs:
+`operator_mean=(operator_even+operator_odd)/2` and similarly for Query;
+`operator_delta=(operator_even-operator_odd)/2`. Their pair-mean read is exactly
+`operator_mean*q_mean + operator_delta*q_delta`, with an analogous cross-term
+formula for the alternating read.
+
+The unchanged step6000 original and G-only checkpoints were replayed from fresh
+state on the same four saved training puzzles, 128 blocks, FP32; the last32
+blocks were analyzed in FP64 after the actual output projection. For original M:
+
+- In `y_r-y_(r-1)`, current G contributed 30.70% and the Query-motion term
+  69.30% of signed projection onto the total difference. Identity relative
+  error was 1.39e-8, consistent with the actual FP32 memory additions.
+- The pair-mean read had 97.64% signed projection from
+  `operator_mean*q_mean` and 2.36% from `operator_delta*q_delta`.
+- For the full read, `G_r q_r` and `(M_r-G_r) q_r` had cosine -0.359.
+  Partial cancellation is present on this trajectory; it is not proof of harm.
+
+The projection statistic is `dot(component,total)/dot(total,total)`, summed
+over these samples and features. It is not explained variance, performance
+attribution, or a guaranteed nonnegative percentage. Components sum to the
+measured total; their separate energies generally do not sum to total energy.
+This local observation distinguishes the computed quantities, not the cause
+of the earlier training reversal. There was no counterfactual change to the
+trajectory, no new learning run, and no added checkpoint.
+
+The new analysis is `lt/probe_kv_read_components.py`, with results in
+`theory_1h/read_components.json`. The first reporting attempt failed because of
+duplicate dictionary keys; it produced no accepted measurement. The reporting
+code was corrected and the probe completed, then its reconstructed read was
+checked against the production read (relative errors 1.18e-7 and 9.99e-8).
+The failed attempt is retained separately. `lt/analyze_kv_stdp_theory.py` now
+checks19 algebra groups, including the product difference, sum-order, and
+two-phase read identities (errors at approximately1e-14 or less). The original
+training code remains unchanged.
