@@ -1,0 +1,130 @@
+{
+  "checks": {
+    "all_pair_sum_error_tau_0.25": 6.661338147750939e-16,
+    "all_pair_sum_error_tau_1.0": 3.3306690738754696e-16,
+    "all_pair_sum_error_tau_2.0": 4.440892098500626e-16,
+    "all_pair_sum_error_tau_10.0": 9.992007221626409e-16,
+    "fourier_coefficient_error": 4.1887903041992747e-10,
+    "asymmetric_coefficient_error": 9.397972934926033e-09,
+    "feature_vs_pair_kernel_error": 2.220446049250313e-16,
+    "common_carrier_invariance_error": 2.1510571102112408e-16,
+    "role_reversal_error": 0.0,
+    "gaussian_jitter_monte_carlo_max_error": 0.001189790543121072,
+    "filtered_pulse_vs_features_max_error": 0.00011204086559047505,
+    "gradcheck_nonzero_activities": true,
+    "silent_neuron_gradient_finite": true,
+    "one_token_rank_modes_1": 2,
+    "one_token_rank_modes_4": 8,
+    "one_token_rank_modes_8": 16,
+    "one_token_rank_modes_16": 32,
+    "tied_kv_skew_symmetry_error": 0.0,
+    "finite_pulse_convolution_error": 1.9203158146963162e-07,
+    "positive_series_derivative_error": 3.592224573356617e-10,
+    "sinusoidal_activity_exact_stdp_error": 1.8901120384107184e-08,
+    "chord_phase_gradient_error": 6.100553395782526e-11
+  },
+  "selected_metrics": [
+    {
+      "tau": 1.0,
+      "jitter": 0.0,
+      "modes": 1,
+      "rmse": 0.3245108413581123,
+      "max_error_away_from_jump": 0.9350746805452779,
+      "wrong_sign_fraction": 0.0,
+      "peak_phase": 1.5707963267948966,
+      "peak_value": 0.3183098861837907,
+      "small_lag_values": {
+        "0": 0.0,
+        "0.01": 0.0031830458104554673,
+        "0.05": 0.015908863682110027,
+        "0.1": 0.031777963490190825,
+        "0.2": 0.0632384120735858,
+        "0.5": 0.1526058886267064,
+        "1.0": 0.2678485334011638
+      }
+    },
+    {
+      "tau": 1.0,
+      "jitter": 0.0,
+      "modes": 16,
+      "rmse": 0.11052968519854806,
+      "max_error_away_from_jump": 0.4929057739356028,
+      "wrong_sign_fraction": 0.040611326801010664,
+      "peak_phase": 0.1760242954098774,
+      "peak_value": 1.010890832307404,
+      "small_lag_values": {
+        "0": 0.0,
+        "0.01": 0.09523307325261782,
+        "0.05": 0.4577050457139339,
+        "0.1": 0.8090412775585653,
+        "0.2": 0.9943405978311336,
+        "0.5": 0.6259512983068777,
+        "1.0": 0.3929924326631298
+      }
+    },
+    {
+      "tau": 1.0,
+      "jitter": 0.04,
+      "modes": 32,
+      "rmse": 0.014207654480973124,
+      "max_error_away_from_jump": 0.05831977289022172,
+      "wrong_sign_fraction": 0.009120601466691317,
+      "peak_phase": 0.1085291407429092,
+      "peak_value": 0.9502512876063807,
+      "small_lag_values": {
+        "0": 0.0,
+        "0.01": 0.15041036583100603,
+        "0.05": 0.6687718039891648,
+        "0.1": 0.9453774647860846,
+        "0.2": 0.7798181518759777,
+        "0.5": 0.6206609103362636,
+        "1.0": 0.35911323024059116
+      }
+    },
+    {
+      "tau": 1.0,
+      "jitter": 0.04,
+      "modes": 64,
+      "rmse": 0.0005016707403596155,
+      "max_error_away_from_jump": 0.001816492396485958,
+      "wrong_sign_fraction": 0.0,
+      "peak_phase": 0.09721603243225241,
+      "peak_value": 0.8913188848156687,
+      "small_lag_values": {
+        "0": 0.0,
+        "0.01": 0.18588933090466728,
+        "0.05": 0.741530786373122,
+        "0.1": 0.8911324565631931,
+        "0.2": 0.8171292093584425,
+        "0.5": 0.6044895318800287,
+        "1.0": 0.3637688399426191
+      }
+    }
+  ],
+  "consistency": [
+    {
+      "rho": 1.0,
+      "stable": 104.70110454866152,
+      "equal_alternation": 0.0,
+      "unequal_lag_alternation": 19.192436454594603,
+      "unequal_amplitude_alternation": 20.9402209097323,
+      "ratio_equal_to_stable": 0.0
+    },
+    {
+      "rho": 0.99,
+      "stable": 59.20097641183169,
+      "equal_alternation": -0.2974923437780487,
+      "unequal_lag_alternation": 10.577534361423448,
+      "unequal_amplitude_alternation": 11.5427029385883,
+      "ratio_equal_to_stable": 0.005025125628140704
+    },
+    {
+      "rho": 0.95,
+      "stable": 16.336512344410195,
+      "equal_alternation": -0.41888493190795417,
+      "unequal_lag_alternation": 2.6082063004147913,
+      "unequal_amplitude_alternation": 2.848417536974082,
+      "ratio_equal_to_stable": 0.025641025641025668
+    }
+  ]
+}

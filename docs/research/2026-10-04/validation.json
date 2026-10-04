@@ -1,0 +1,29 @@
+{
+  "unit_tests": {
+    "command": "OMP_NUM_THREADS=2 MKL_NUM_THREADS=2 OPENBLAS_NUM_THREADS=1 python -m unittest lt.test_kv_stability lt.test_phase_current lt.test_phase_exp_current lt.test_unit_phase_current lt.test_urm_full_bptt lt.test_v17_aligned lt.test_associative_stdp",
+    "tests": 51,
+    "elapsed_seconds": 2.458,
+    "exit_code": 0,
+    "result": "OK"
+  },
+  "archive": {
+    "preserved_files_checked": 109,
+    "verification": "Decompress gzip logs and compare SHA256 to archive_manifest.json; all matched before cleanup"
+  },
+  "metric_aggregation": {
+    "stored_audit_windows_checked": 12,
+    "absolute_tolerance": 1e-12,
+    "result": "Archived raw logs reproduce every all-segment and terminal-segment loss window in loss_aggregation_audit_20261004.json"
+  },
+  "cuda_operator_checks": {
+    "note": "Completed earlier today on RTX A5000; raw output/gradient checks retained, performance checks not repeated during active training",
+    "evidence": "evidence/unit_phase_gaussian_20261004/cuda_checks.json"
+  },
+  "actual_training": {
+    "variant": "phase_unit_gaussian_current_only",
+    "compiled": true,
+    "fresh_initialization": true,
+    "note": "Optimizer updates and finite nonzero phase-projection/offset gradients observed; active run continues",
+    "evidence": "logs/kv_unit_phase_gaussian_dynamic_20261004/startup_verification.json"
+  }
+}

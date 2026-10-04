@@ -1,0 +1,307 @@
+{
+  "protocol": {
+    "gpu": "NVIDIA RTX A5000",
+    "torch": "2.8.0+cu128",
+    "batch": 8,
+    "heads": 8,
+    "channels_per_head": 104,
+    "dtype": "float32",
+    "tf32": false,
+    "compilation": "torch.compile(default, fullgraph=True)",
+    "phases": "independent per token/channel; [-1.3,1.3] radians; tau=1; no wrapping",
+    "rule": "sign(phiV-phiK) exp(-abs(phiV-phiK)); exact ties zero; no smoothing",
+    "scope": "current G write and all-Q read; includes sort/search/lookup and full backward; excludes QKV/phase projection, RoPE, FFN, norms, optimizer and full-model recurrence",
+    "ordering": "K sort once per observation, V strict prefix/suffix locations, shared integer prefix table",
+    "kernels": "dedicated forward and first-order backward; no saved token-by-channel-pair tensor",
+    "matched_control": "direct_triton_control has identical tiles/loops/backward, direct phase comparisons",
+    "baseline": "fixed_gemm is a fixed-phase cost reference, not an equivalent dynamic model",
+    "memory": "PyTorch allocated peak; extra excludes supplied inputs",
+    "repeats": 5,
+    "rounds": 3,
+    "random_input_limit": "operator equivalence/cost, not learning quality"
+  },
+  "cpu_correctness": {
+    "repeated_exact_ties": {
+      "output_max_abs_error": 2.220446049250313e-16,
+      "gradient_max_abs_errors": {
+        "Q": 2.7755575615628914e-17,
+        "K": 1.1102230246251565e-16,
+        "V": 5.551115123125783e-17,
+        "phiK": 1.1102230246251565e-16,
+        "phiV": 5.551115123125783e-17
+      }
+    },
+    "all_phases_equal": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      }
+    },
+    "near_zero_positive": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "read_value": 0.999999900000005
+    },
+    "near_zero_negative": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "read_value": -0.999999900000005
+    },
+    "queries_different_from_sources": {
+      "output_max_abs_error": 1.1102230246251565e-16,
+      "gradient_max_abs_errors": {
+        "Q": 1.457167719820518e-16,
+        "K": 5.551115123125783e-17,
+        "V": 1.1102230246251565e-16,
+        "phiK": 1.1102230246251565e-16,
+        "phiV": 2.220446049250313e-16
+      }
+    },
+    "phases_shared_across_tokens": {
+      "output_max_abs_error": 4.440892098500626e-16,
+      "gradient_max_abs_errors": {
+        "Q": 6.661338147750939e-16,
+        "K": 8.881784197001252e-16,
+        "V": 8.881784197001252e-16,
+        "phiK": 8.881784197001252e-16,
+        "phiV": 1.3322676295501878e-15
+      }
+    },
+    "random": {
+      "output_max_abs_error": 8.881784197001252e-16,
+      "gradient_max_abs_errors": {
+        "Q": 6.661338147750939e-16,
+        "K": 8.881784197001252e-16,
+        "V": 8.881784197001252e-16,
+        "phiK": 1.7763568394002505e-15,
+        "phiV": 1.3322676295501878e-15
+      }
+    }
+  },
+  "rows": [
+    {
+      "tokens": 81,
+      "implementation": "fixed_gemm",
+      "forward": {
+        "median_ms": 0.1362496018409729,
+        "rounds_ms": [
+          0.15085439682006835,
+          0.13147519826889037,
+          0.1362496018409729
+        ],
+        "base_allocated_mib": 14.3017578125,
+        "peak_allocated_mib": 18.9990234375,
+        "extra_peak_mib": 4.697265625
+      },
+      "forward_backward": {
+        "median_ms": 0.9967424392700195,
+        "rounds_ms": [
+          1.0241536140441894,
+          0.9967424392700195,
+          0.9540672302246094
+        ],
+        "base_allocated_mib": 22.4267578125,
+        "peak_allocated_mib": 38.416015625,
+        "extra_peak_mib": 15.9892578125
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "split_g",
+      "forward": {
+        "median_ms": 0.3014336109161377,
+        "rounds_ms": [
+          0.30310399532318116,
+          0.29821441173553465,
+          0.3014336109161377
+        ],
+        "base_allocated_mib": 27.1171875,
+        "peak_allocated_mib": 31.814453125,
+        "extra_peak_mib": 4.697265625
+      },
+      "forward_backward": {
+        "median_ms": 1.0788031578063966,
+        "rounds_ms": [
+          1.0917632102966308,
+          1.0788031578063966,
+          1.06692476272583
+        ],
+        "base_allocated_mib": 27.1171875,
+        "peak_allocated_mib": 45.6279296875,
+        "extra_peak_mib": 18.5107421875
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "shared_order_triton",
+      "forward": {
+        "median_ms": 0.7948607921600341,
+        "rounds_ms": [
+          0.8007871627807617,
+          0.7948607921600341,
+          0.7945151805877686
+        ],
+        "base_allocated_mib": 27.1171875,
+        "peak_allocated_mib": 44.1650390625,
+        "extra_peak_mib": 17.0478515625
+      },
+      "forward_backward": {
+        "median_ms": 2.647558403015137,
+        "rounds_ms": [
+          2.65797119140625,
+          2.6427711486816405,
+          2.647558403015137
+        ],
+        "base_allocated_mib": 27.1171875,
+        "peak_allocated_mib": 69.470703125,
+        "extra_peak_mib": 42.353515625
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "direct_triton_control",
+      "forward": {
+        "median_ms": 0.4176959991455078,
+        "rounds_ms": [
+          0.4238592147827148,
+          0.416377592086792,
+          0.4176959991455078
+        ],
+        "base_allocated_mib": 27.1171875,
+        "peak_allocated_mib": 37.984375,
+        "extra_peak_mib": 10.8671875
+      },
+      "forward_backward": {
+        "median_ms": 2.4480640411376955,
+        "rounds_ms": [
+          2.4480640411376955,
+          2.4345983505249023,
+          2.4525951385498046
+        ],
+        "base_allocated_mib": 27.1171875,
+        "peak_allocated_mib": 58.5810546875,
+        "extra_peak_mib": 31.4638671875
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "fixed_gemm",
+      "forward": {
+        "median_ms": 0.2595455884933472,
+        "rounds_ms": [
+          0.26883840560913086,
+          0.2590719938278198,
+          0.2595455884933472
+        ],
+        "base_allocated_mib": 84.8115234375,
+        "peak_allocated_mib": 110.7275390625,
+        "extra_peak_mib": 25.916015625
+      },
+      "forward_backward": {
+        "median_ms": 1.2936256408691407,
+        "rounds_ms": [
+          1.328326416015625,
+          1.2936256408691407,
+          1.2926976203918457
+        ],
+        "base_allocated_mib": 84.8115234375,
+        "peak_allocated_mib": 204.775390625,
+        "extra_peak_mib": 119.9638671875
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "split_g",
+      "forward": {
+        "median_ms": 2.898988723754883,
+        "rounds_ms": [
+          2.898988723754883,
+          2.893824005126953,
+          3.294483184814453
+        ],
+        "base_allocated_mib": 130.5078125,
+        "peak_allocated_mib": 156.423828125,
+        "extra_peak_mib": 25.916015625
+      },
+      "forward_backward": {
+        "median_ms": 12.168409729003907,
+        "rounds_ms": [
+          11.621965026855468,
+          12.168409729003907,
+          12.19733123779297
+        ],
+        "base_allocated_mib": 130.5078125,
+        "peak_allocated_mib": 293.1103515625,
+        "extra_peak_mib": 162.6025390625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "shared_order_triton",
+      "forward": {
+        "median_ms": 7.09320297241211,
+        "rounds_ms": [
+          6.556915283203125,
+          7.095449829101563,
+          7.09320297241211
+        ],
+        "base_allocated_mib": 130.5078125,
+        "peak_allocated_mib": 293.8408203125,
+        "extra_peak_mib": 163.3330078125
+      },
+      "forward_backward": {
+        "median_ms": 22.352627563476563,
+        "rounds_ms": [
+          22.146144104003906,
+          22.425209045410156,
+          22.352627563476563
+        ],
+        "base_allocated_mib": 130.5078125,
+        "peak_allocated_mib": 410.740234375,
+        "extra_peak_mib": 280.232421875
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "direct_triton_control",
+      "forward": {
+        "median_ms": 3.4885311126708984,
+        "rounds_ms": [
+          3.488313674926758,
+          3.4885311126708984,
+          3.7304641723632814
+        ],
+        "base_allocated_mib": 130.5078125,
+        "peak_allocated_mib": 224.978515625,
+        "extra_peak_mib": 94.470703125
+      },
+      "forward_backward": {
+        "median_ms": 21.03074493408203,
+        "rounds_ms": [
+          22.330860900878907,
+          21.03074493408203,
+          20.475257873535156
+        ],
+        "base_allocated_mib": 130.5078125,
+        "peak_allocated_mib": 341.8779296875,
+        "extra_peak_mib": 211.3701171875
+      }
+    }
+  ]
+}

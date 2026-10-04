@@ -9,7 +9,8 @@ import torch
 from . import train as t
 from .kv_stability import (ORIGINAL_INNER,BoundedReadInner,PreFFNPhiInner,
                           UnitQKActivityInner,InterpolatedReadInner,CurrentReadInner,
-                          ComplexCurrentReadInner,CurrentPlusSTDPInner,QuarterReadInner)
+                          ComplexCurrentReadInner,CurrentPlusSTDPInner,QuarterReadInner,
+                          URMNormCurrentReadInner)
 
 
 def config():
@@ -19,6 +20,37 @@ def config():
 
 
 class KVStabilityTests(unittest.TestCase):
+    def test_urm_norm_block_matches_two_post_residual_norms(self):
+        inner=URMNormCurrentReadInner(config())
+        layer=inner.layers[0]
+        h=torch.randn(2,9,16,requires_grad=True)
+        inj=torch.randn_like(h)
+        x=h+inner.embed_scale*inj
+        heads=lambda z:z.reshape(2,9,2,8).transpose(1,2)
+        q,k,v=[heads(p(x)) for p in (layer.q_proj,layer.k_proj,layer.v_proj)]
+        qr,kr=[inner.apply_rope(z,layer) for z in (q,k)]
+        read=((qr@kr.transpose(-1,-2))@v)/9
+        u=x+layer.out_proj(read.transpose(1,2).reshape(2,9,16))
+        norm=lambda z:z*torch.rsqrt(z.square().mean(-1,keepdim=True)+1e-5)
+        u=norm(u)
+        gate,value=layer.b_gate_up(u).chunk(2,dim=-1)
+        expected=norm(u+layer.b_down(.5*gate*value))
+        actual,_,ek,ev=inner.block(layer,h,inj,None,None,None,None)
+        torch.testing.assert_close(actual,expected)
+        self.assertIsNone(ek); self.assertIsNone(ev)
+        actual.square().sum().backward()
+        self.assertTrue(h.grad.isfinite().all())
+        self.assertGreater(float(layer.q_proj.weight.grad.norm()),0)
+        z=torch.zeros(2,9,16,requires_grad=True)
+        inner.phi(z).sum().backward()
+        self.assertTrue(z.grad.isfinite().all())
+        for dtype in (torch.float32,torch.bfloat16):
+            z=torch.randn(2,9,16).to(dtype)
+            expected=(z.float()*torch.rsqrt(z.float().square().mean(-1,keepdim=True)+1e-5)).to(dtype)
+            torch.testing.assert_close(inner.phi(z),expected,rtol=0,atol=0)
+        with self.assertRaises(ValueError):
+            URMNormCurrentReadInner(replace(config(),kv_qk_l2norm=True))
+
     def setUp(self):
         torch.set_num_threads(2)
         torch.manual_seed(29)
@@ -211,6 +243,49 @@ class KVStabilityTests(unittest.TestCase):
         for projection in [layer.q_proj,layer.k_proj,layer.v_proj,layer.out_proj]:
             self.assertTrue(projection.weight.grad.isfinite().all())
             self.assertGreater(float(projection.weight.grad.norm()),0)
+
+    def test_current_l2_read_matches_v17_address_norm_and_token_attention(self):
+        cfg=config();cfg.kv_qk_l2norm=True
+        torch.manual_seed(7);inner=CurrentReadInner(cfg).double()
+        torch.manual_seed(7);raw=CurrentReadInner(config()).double()
+        for name,value in raw.state_dict().items():
+            torch.testing.assert_close(inner.state_dict()[name],value,rtol=0,atol=0)
+        q,k,v=[torch.randn(2,2,9,8,dtype=torch.float64,requires_grad=True) for _ in range(3)]
+        # v1.7 represents a complex address by two real halves and uses one norm
+        # across both halves, equivalent to the full real head-vector L2 norm.
+        def v17_unit(x):
+            real,imag=x.chunk(2,dim=-1)
+            denom=(real.square()+imag.square()).sum(-1,keepdim=True).sqrt()+cfg.eps
+            return torch.cat((real/denom,imag/denom),dim=-1)
+        qr,kr=[inner.apply_rope(v17_unit(x),inner.layers[0]) for x in (q,k)]
+        expected=(qr@kr.transpose(-1,-2))@v/9
+        dirty=torch.full((2,2,8,8),float('nan'),dtype=torch.float64)
+        read,current,ek,ev=inner.memory_step(inner.layers[0],q,k,v,dirty)
+        torch.testing.assert_close(read,expected,rtol=1e-12,atol=1e-12)
+        torch.testing.assert_close(current,v.transpose(-1,-2)@kr/9,rtol=1e-12,atol=1e-12)
+        actual_grads=torch.autograd.grad(read.square().sum(),(q,k,v),retain_graph=True)
+        expected_grads=torch.autograd.grad(expected.square().sum(),(q,k,v))
+        for actual,wanted in zip(actual_grads,expected_grads):
+            torch.testing.assert_close(actual,wanted,rtol=1e-11,atol=1e-11)
+        self.assertIsNone(ek);self.assertIsNone(ev)
+
+    def test_current_l2_zero_addresses_have_finite_gradients_and_full_recurrence(self):
+        cfg=config();cfg.kv_qk_l2norm=True
+        inner=CurrentReadInner(cfg)
+        q,k,v=[torch.zeros(2,2,9,8,requires_grad=True) for _ in range(3)]
+        read,current,_,_=inner.memory_step(inner.layers[0],q,k,v)
+        (read.sum()+current.sum()).backward()
+        for x in (q,k,v):self.assertTrue(x.grad.isfinite().all())
+        with patch.object(t,'KVSTDPInner',CurrentReadInner):model=t.LT(vars(cfg))
+        batch=dict(inputs=torch.randint(1,cfg.vocab_size,(2,9)),labels=torch.randint(1,cfg.vocab_size,(2,9)),
+                   puzzle_identifiers=torch.zeros(2,dtype=torch.int32))
+        carry,output=model(model.initial_carry(batch),batch)
+        output['logits'].square().mean().backward()
+        for projection in [model.inner.layers[0].q_proj,model.inner.layers[0].k_proj,
+                           model.inner.layers[0].v_proj,model.inner.layers[0].out_proj]:
+            self.assertTrue(projection.weight.grad.isfinite().all())
+            self.assertGreater(float(projection.weight.grad.norm()),0)
+        self.assertIsNone(carry.key_trace);self.assertIsNone(carry.value_trace)
 
     def test_complex_current_read_preserves_initialization_traces_and_complex_product(self):
         torch.manual_seed(7);original=ORIGINAL_INNER(config()).double()

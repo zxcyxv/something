@@ -1,0 +1,316 @@
+{
+  "protocol": {
+    "gpu": "NVIDIA RTX A5000",
+    "torch": "2.8.0+cu128",
+    "batch": 8,
+    "heads": 8,
+    "channels_per_head": 104,
+    "dtype": "float32",
+    "tf32": false,
+    "compilation": "torch.compile(default, fullgraph=True)",
+    "phases": "independent per token/channel; [-1.3,1.3] radians; tau=1; no wrapping",
+    "rule": "sign(phiV-phiK) exp(-abs(phiV-phiK)); exact ties zero; no smoothing",
+    "scope": "current G write and all-Q read; includes sort/search/lookup and full backward; excludes QKV/phase projection, RoPE, FFN, norms, optimizer and full-model recurrence",
+    "ordering": "K sort once per observation, V strict prefix/suffix locations, shared integer prefix table",
+    "kernels": "dedicated forward and first-order backward; no saved token-by-channel-pair tensor",
+    "matched_control": "direct_triton_control has identical tiles/loops/backward, direct phase comparisons",
+    "baseline": "fixed_gemm is a fixed-phase cost reference, not an equivalent dynamic model",
+    "memory": "PyTorch allocated peak; extra excludes supplied inputs",
+    "repeats": 5,
+    "rounds": 3,
+    "random_input_limit": "operator equivalence/cost, not learning quality"
+  },
+  "cpu_correctness": {
+    "repeated_exact_ties": {
+      "output_max_abs_error": 2.220446049250313e-16,
+      "gradient_max_abs_errors": {
+        "Q": 2.7755575615628914e-17,
+        "K": 1.1102230246251565e-16,
+        "V": 5.551115123125783e-17,
+        "phiK": 1.1102230246251565e-16,
+        "phiV": 5.551115123125783e-17
+      }
+    },
+    "all_phases_equal": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      }
+    },
+    "near_zero_positive": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "read_value": 0.999999900000005
+    },
+    "near_zero_negative": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "read_value": -0.999999900000005
+    },
+    "queries_different_from_sources": {
+      "output_max_abs_error": 1.1102230246251565e-16,
+      "gradient_max_abs_errors": {
+        "Q": 1.457167719820518e-16,
+        "K": 5.551115123125783e-17,
+        "V": 1.1102230246251565e-16,
+        "phiK": 1.1102230246251565e-16,
+        "phiV": 2.220446049250313e-16
+      }
+    },
+    "phases_shared_across_tokens": {
+      "output_max_abs_error": 4.440892098500626e-16,
+      "gradient_max_abs_errors": {
+        "Q": 6.661338147750939e-16,
+        "K": 8.881784197001252e-16,
+        "V": 8.881784197001252e-16,
+        "phiK": 8.881784197001252e-16,
+        "phiV": 1.3322676295501878e-15
+      }
+    },
+    "random": {
+      "output_max_abs_error": 8.881784197001252e-16,
+      "gradient_max_abs_errors": {
+        "Q": 6.661338147750939e-16,
+        "K": 8.881784197001252e-16,
+        "V": 8.881784197001252e-16,
+        "phiK": 1.7763568394002505e-15,
+        "phiV": 1.3322676295501878e-15
+      }
+    }
+  },
+  "rows": [],
+  "cuda_correctness": [
+    {
+      "output_max_abs_error": 1.7881393432617188e-07,
+      "gradient_max_abs_errors": {
+        "Q": 1.1920928955078125e-07,
+        "K": 2.384185791015625e-07,
+        "V": 1.7881393432617188e-07,
+        "phiK": 1.1920928955078125e-07,
+        "phiV": 1.1920928955078125e-07
+      },
+      "case": "repeated_exact_ties",
+      "implementation": "shared_order_triton",
+      "compilation": "eager wrapper / Triton kernels"
+    },
+    {
+      "output_max_abs_error": 1.7881393432617188e-07,
+      "gradient_max_abs_errors": {
+        "Q": 1.1920928955078125e-07,
+        "K": 2.384185791015625e-07,
+        "V": 1.7881393432617188e-07,
+        "phiK": 1.1920928955078125e-07,
+        "phiV": 1.1920928955078125e-07
+      },
+      "case": "repeated_exact_ties",
+      "implementation": "direct_triton_control",
+      "compilation": "eager wrapper / Triton kernels"
+    },
+    {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "case": "all_phases_equal",
+      "implementation": "shared_order_triton",
+      "compilation": "eager wrapper / Triton kernels"
+    },
+    {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "case": "all_phases_equal",
+      "implementation": "direct_triton_control",
+      "compilation": "eager wrapper / Triton kernels"
+    },
+    {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "case": "near_zero_positive",
+      "implementation": "shared_order_triton",
+      "compilation": "eager wrapper / Triton kernels",
+      "read_value": 0.9999998807907104
+    },
+    {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "case": "near_zero_positive",
+      "implementation": "direct_triton_control",
+      "compilation": "eager wrapper / Triton kernels",
+      "read_value": 0.9999998807907104
+    },
+    {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "case": "near_zero_negative",
+      "implementation": "shared_order_triton",
+      "compilation": "eager wrapper / Triton kernels",
+      "read_value": -0.9999998807907104
+    },
+    {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "case": "near_zero_negative",
+      "implementation": "direct_triton_control",
+      "compilation": "eager wrapper / Triton kernels",
+      "read_value": -0.9999998807907104
+    },
+    {
+      "output_max_abs_error": 1.1920928955078125e-07,
+      "gradient_max_abs_errors": {
+        "Q": 2.384185791015625e-07,
+        "K": 1.7881393432617188e-07,
+        "V": 2.384185791015625e-07,
+        "phiK": 2.980232238769531e-07,
+        "phiV": 5.960464477539063e-08
+      },
+      "case": "queries_different_from_sources",
+      "implementation": "shared_order_triton",
+      "compilation": "eager wrapper / Triton kernels"
+    },
+    {
+      "output_max_abs_error": 1.1920928955078125e-07,
+      "gradient_max_abs_errors": {
+        "Q": 2.384185791015625e-07,
+        "K": 1.7881393432617188e-07,
+        "V": 1.7881393432617188e-07,
+        "phiK": 2.980232238769531e-07,
+        "phiV": 8.940696716308594e-08
+      },
+      "case": "queries_different_from_sources",
+      "implementation": "direct_triton_control",
+      "compilation": "eager wrapper / Triton kernels"
+    },
+    {
+      "output_max_abs_error": 4.76837158203125e-07,
+      "gradient_max_abs_errors": {
+        "Q": 4.76837158203125e-07,
+        "K": 3.5762786865234375e-07,
+        "V": 3.5762786865234375e-07,
+        "phiK": 4.76837158203125e-07,
+        "phiV": 9.5367431640625e-07
+      },
+      "case": "phases_shared_across_tokens",
+      "implementation": "shared_order_triton",
+      "compilation": "eager wrapper / Triton kernels"
+    },
+    {
+      "output_max_abs_error": 4.76837158203125e-07,
+      "gradient_max_abs_errors": {
+        "Q": 4.76837158203125e-07,
+        "K": 3.5762786865234375e-07,
+        "V": 4.76837158203125e-07,
+        "phiK": 4.76837158203125e-07,
+        "phiV": 8.344650268554688e-07
+      },
+      "case": "phases_shared_across_tokens",
+      "implementation": "direct_triton_control",
+      "compilation": "eager wrapper / Triton kernels"
+    },
+    {
+      "output_max_abs_error": 4.76837158203125e-07,
+      "gradient_max_abs_errors": {
+        "Q": 4.76837158203125e-07,
+        "K": 4.76837158203125e-07,
+        "V": 5.066394805908203e-07,
+        "phiK": 8.344650268554688e-07,
+        "phiV": 9.5367431640625e-07
+      },
+      "case": "random",
+      "tokens": 81,
+      "implementation": "shared_order_triton",
+      "compilation": "torch.compile(default, fullgraph=True)"
+    },
+    {
+      "output_max_abs_error": 4.76837158203125e-07,
+      "gradient_max_abs_errors": {
+        "Q": 5.960464477539062e-07,
+        "K": 4.76837158203125e-07,
+        "V": 4.76837158203125e-07,
+        "phiK": 8.344650268554688e-07,
+        "phiV": 9.5367431640625e-07
+      },
+      "case": "random",
+      "tokens": 81,
+      "implementation": "direct_triton_control",
+      "compilation": "torch.compile(default, fullgraph=True)"
+    },
+    {
+      "output_max_abs_error": 2.682209014892578e-07,
+      "gradient_max_abs_errors": {
+        "Q": 2.384185791015625e-07,
+        "K": 1.7881393432617188e-07,
+        "V": 1.7881393432617188e-07,
+        "phiK": 3.5762786865234375e-07,
+        "phiV": 4.76837158203125e-07
+      },
+      "case": "random",
+      "tokens": 900,
+      "implementation": "shared_order_triton",
+      "compilation": "torch.compile(default, fullgraph=True)"
+    },
+    {
+      "output_max_abs_error": 2.5331974029541016e-07,
+      "gradient_max_abs_errors": {
+        "Q": 2.5331974029541016e-07,
+        "K": 1.7881393432617188e-07,
+        "V": 1.7881393432617188e-07,
+        "phiK": 3.5762786865234375e-07,
+        "phiV": 4.76837158203125e-07
+      },
+      "case": "random",
+      "tokens": 900,
+      "implementation": "direct_triton_control",
+      "compilation": "torch.compile(default, fullgraph=True)"
+    }
+  ]
+}

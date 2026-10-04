@@ -1,0 +1,97 @@
+{
+  "finding": "Terminal-segment increases need not indicate overall loss reversal. Console cadence changed from 250 to 16, sampling different segment phases; the logger equation itself remains current loss plus last halted metrics.",
+  "windows": {
+    "kv_b_only_fresh_20261004": [
+      {
+        "start": 2000,
+        "end": 4000,
+        "n": 2000,
+        "all_segment_loss": 0.7195509005486965,
+        "terminal_loss": 0.3291239330768585
+      },
+      {
+        "start": 4000,
+        "end": 6000,
+        "n": 2000,
+        "all_segment_loss": 0.7081993042007089,
+        "terminal_loss": 0.3546655272245407
+      },
+      {
+        "start": 6000,
+        "end": 7400,
+        "n": 1400,
+        "all_segment_loss": 0.6985696239450149,
+        "terminal_loss": 0.36928849264808083
+      }
+    ],
+    "kv_b_only_urm_norm_20261004": [
+      {
+        "start": 2000,
+        "end": 4000,
+        "n": 2000,
+        "all_segment_loss": 0.7357527306079864,
+        "terminal_loss": 0.3732069594860077
+      },
+      {
+        "start": 4000,
+        "end": 6000,
+        "n": 2000,
+        "all_segment_loss": 0.6989701262414455,
+        "terminal_loss": 0.3587095432281494
+      },
+      {
+        "start": 6000,
+        "end": 7400,
+        "n": 1400,
+        "all_segment_loss": 0.6870455827670437,
+        "terminal_loss": 0.35949105709448625
+      }
+    ],
+    "kv_phase_current_20261004": [
+      {
+        "start": 2000,
+        "end": 4000,
+        "n": 2000,
+        "all_segment_loss": 0.7258262279927731,
+        "terminal_loss": 0.37913824343681335
+      },
+      {
+        "start": 4000,
+        "end": 6000,
+        "n": 2000,
+        "all_segment_loss": 0.7030608160346746,
+        "terminal_loss": 0.37519448637962344
+      },
+      {
+        "start": 6000,
+        "end": 7400,
+        "n": 1400,
+        "all_segment_loss": 0.6990947395137378,
+        "terminal_loss": 0.38494446188554
+      }
+    ],
+    "kv_phase_exp_current_20261004": [
+      {
+        "start": 2000,
+        "end": 4000,
+        "n": 2000,
+        "all_segment_loss": 0.7348088721260428,
+        "terminal_loss": 0.3634012931585312
+      },
+      {
+        "start": 4000,
+        "end": 6000,
+        "n": 2000,
+        "all_segment_loss": 0.7016793980523944,
+        "terminal_loss": 0.33713358104228974
+      },
+      {
+        "start": 6000,
+        "end": 7400,
+        "n": 1400,
+        "all_segment_loss": 0.6879767725190946,
+        "terminal_loss": 0.3342557715616007
+      }
+    ]
+  }
+}

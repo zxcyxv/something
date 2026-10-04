@@ -1,0 +1,7 @@
+{
+  "memory_type": "kv_stdp",
+  "kv_qk_rmsnorm": false,
+  "kv_qk_l2norm": false,
+  "kv_write_reduction": "mean",
+  "nograd_blocks": 0
+}

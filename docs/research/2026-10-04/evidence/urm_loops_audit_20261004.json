@@ -1,0 +1,66 @@
+{
+  "upstream_commit": "c14e55f5f9227873617015cf60a239126b55adcd",
+  "upstream": {
+    "loops": 16,
+    "H_cycles": 4,
+    "L_cycles": 3,
+    "num_layers": 8,
+    "inner_iterations_per_call": 12,
+    "gradient_enabled_iterations_per_call": 3,
+    "carry_detach_per_call": true,
+    "act_early_halt": true,
+    "optimizer_update_per_call": true
+  },
+  "evidence": {
+    "inner_forward": "third_party/URM/models/urm/urm.py:142",
+    "sample_replacement": "third_party/URM/models/urm/urm.py:190",
+    "trainer": "third_party/URM/pretrain.py:522",
+    "training_loop": "third_party/URM/pretrain.py:919",
+    "default_config": "third_party/URM/config/arch/urm.yaml"
+  },
+  "runs": [
+    {
+      "run": "kv_b_only_urm_norm_20261004",
+      "loops": 16,
+      "internal_iterations_per_call": 8,
+      "layers": 1,
+      "no_grad_fixed": 0,
+      "no_grad_every": 0
+    },
+    {
+      "run": "kv_phase_current_20261004",
+      "loops": 16,
+      "internal_iterations_per_call": 8,
+      "layers": 1,
+      "no_grad_fixed": 0,
+      "no_grad_every": 0
+    },
+    {
+      "run": "kv_phase_exp_current_20261004",
+      "loops": 16,
+      "internal_iterations_per_call": 8,
+      "layers": 1,
+      "no_grad_fixed": 0,
+      "no_grad_every": 0
+    },
+    {
+      "run": "urm_2layer_8iter_full_bptt_20261004",
+      "loops": 1,
+      "internal_iterations_per_call": 8,
+      "layers": 2,
+      "no_grad_fixed": 0,
+      "no_grad_every": 0
+    },
+    {
+      "run": "urm_swiglu_2layer_8iter_20261004",
+      "loops": 1,
+      "internal_iterations_per_call": 8,
+      "layers": 2,
+      "no_grad_fixed": 0,
+      "no_grad_every": 0
+    }
+  ],
+  "finding": "Only the two imported URM comparison runs changed loops from 16 to 1. Their optimizer-step curves are not controlled architecture-only comparisons with the earlier B/phase runs.",
+  "reason": "Agent chose loops=1 to make the requested 8 internal iterations one full graph, without preserving the outer sample-retention protocol.",
+  "pending_decision": "Whether to preserve per-external-call detach/update or combine all 16 external calls into one full graph; cannot preserve both original update schedule and full across-call backprop through changing weights."
+}

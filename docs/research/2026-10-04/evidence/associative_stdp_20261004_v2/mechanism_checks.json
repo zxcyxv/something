@@ -1,0 +1,8 @@
+{
+  "forward_pair_error": 2.220446049250313e-16,
+  "reverse_pair_error": 2.220446049250313e-16,
+  "constant_activity_write_absmax": 4.440892098500626e-16,
+  "identity_population_skew_error": 0.0,
+  "zero_update_retention_error": 0.0,
+  "interpretation": "Pulse order only checks signs. Balanced zero-lag cancellation and skew symmetry are algebraic limitations, not a domain verdict."
+}

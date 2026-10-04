@@ -1,0 +1,23 @@
+{
+  "commit": "36d87ee873df2a83c302385cb9bb41c95e37a35b",
+  "trainer_sha256": "65221608b193b1c86893bc1bfe973a6c400fe960d2fefed74905aedcb9c71e2f",
+  "torch": "2.8.0+cu128",
+  "gpu": "NVIDIA RTX A5000",
+  "variant": "current_only_urm_norm",
+  "protocol": "original CFG; same data/seed/batch/depth/optimizer; explicit model control only",
+  "selftest_note": "Original selftest fails bitwise resume equality for q_proj on CPU (max difference 7.45e-9, both finite); not altered.",
+  "read_equation": "RoPE(Q) @ (V.T @ RoPE(K) / T).T; raw Q/K",
+  "qk_normalization": "none",
+  "block_equation": "u=RMSNorm(h+attention(h)); next=RMSNorm(u+bilinear_FFN(u))",
+  "block_normalization": {
+    "eps": 1e-05,
+    "affine": false,
+    "accumulation_dtype": "float32",
+    "count": 2
+  },
+  "phi_replaced": true,
+  "recurrent_memory": false,
+  "eligibility_traces": false,
+  "reference": "UbiquantAI/URM c14e55f5f9227873617015cf60a239126b55adcd models/layers.py:rms_norm",
+  "unchanged": "Original B-only projections, bilinear FFN, input injection, initialization, data, depth and optimizer."
+}

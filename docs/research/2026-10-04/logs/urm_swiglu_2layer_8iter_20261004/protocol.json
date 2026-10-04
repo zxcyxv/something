@@ -1,0 +1,28 @@
+{
+  "upstream_commit": "c14e55f5f9227873617015cf60a239126b55adcd",
+  "layers": 2,
+  "iterations": 8,
+  "outer_calls": 1,
+  "layer_applications": 16,
+  "ffn": "swiglu",
+  "act_enabled": false,
+  "no_grad_recurrence": false,
+  "truncated_bptt": false,
+  "supervision": "one final loss per fresh batch",
+  "preserved": [
+    "URM softmax attention",
+    "1D RoPE",
+    "SwiGLU",
+    "two post-residual RMSNorms",
+    "puzzle prefix token",
+    "input reinjection",
+    "URM initialization"
+  ],
+  "adapted": [
+    "shared Sudoku data/loss/AdamATan2/EMA/logging harness",
+    "fixed iteration count; ACT disabled; unused q_head retained",
+    "PyTorch SDPA fallback if flash-attn is unavailable",
+    "activation checkpointing recomputes full graph; no gradient truncation"
+  ],
+  "comparison_limit": "Prior models train across 16 outer segments; this baseline has one 8-iteration graph per optimizer step."
+}

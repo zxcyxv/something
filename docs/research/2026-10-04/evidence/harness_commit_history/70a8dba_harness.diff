@@ -1,0 +1,30 @@
+--- create_optimizers old
++++ create_optimizers new
+@@ -4,6 +4,7 @@
+         opts.append(CastedSparseEmbeddingSignSGD_Distributed(base.model.puzzle_emb, world_size, weight_decay=cfg['puzzle_emb_weight_decay']))
+         lrs.append(cfg['puzzle_emb_lr'])
+     named = [(n, p) for n, p in base.named_parameters() if p.requires_grad]
+-    opts.append(AdamATan2([{'params': [p for n, p in named if _is_no_decay(n, p)], 'weight_decay': 0.0}, {'params': [p for n, p in named if not _is_no_decay(n, p)], 'weight_decay': cfg['weight_decay']}], lr=0, betas=(cfg['beta1'], cfg['beta2'])))
++    qkv_no_decay = cfg.get('qkv_no_decay', False)
++    opts.append(AdamATan2([{'params': [p for n, p in named if _is_no_decay(n, p, qkv_no_decay)], 'weight_decay': 0.0}, {'params': [p for n, p in named if not _is_no_decay(n, p, qkv_no_decay)], 'weight_decay': cfg['weight_decay']}], lr=0, betas=(cfg['beta1'], cfg['beta2'])))
+     lrs.append(cfg['lr'])
+     return (opts, lrs)
+--- load_training_checkpoint old
++++ load_training_checkpoint new
+@@ -5,6 +5,9 @@
+     old = ck['cfg']
+     was, now = (_effective_recipe(old), _effective_recipe(cfg))
+     changed = {k: (was[k], now[k]) for k in _RESUME_KEYS if was[k] != now[k]}
++    trace_activity_fork = cfg.get('allow_trace_activity_fork', False) and changed.get('kv_trace_activity_detach') == (False, True)
++    if trace_activity_fork:
++        changed.pop('kv_trace_activity_detach')
+     if changed:
+         raise ValueError(f'Resume config/data mismatch (start a new out_dir for a new experiment): {changed}')
+     for key, default in (('beta_init_mean', 0.0), ('beta_init_std', 0.5)):
+@@ -28,4 +31,6 @@
+         _restore_rng(ck['rank_states'][rank]['rng'], device)
+     elif rank == 0:
+         print(f'[LT] resharded saved h/w/z/data: {ck['world_size']} -> {ws} ranks; bitwise equality across GPU layouts is not promised.', flush=True)
++    if trace_activity_fork and rank == 0:
++        print(f'[LT] TRACE_ACTIVITY_GRADIENT_FORK step={ts.step}: False -> True; raw weights/optimizer/EMA/carry/RNG/data cursor restored; only K/V activity sources in eligibility EMA are detached', flush=True)
+     return ts

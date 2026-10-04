@@ -2137,7 +2137,7 @@ def main(cfg):
         print(f"[LT] {model_id_of(cfg)} torch={torch.__version__} device={device} ranks={ws} local_bs={lbs}",flush=True)
         print(f"[LT] params={sum(p.numel() for p in base.parameters()):,} amp={cfg['amp_dtype']} "
               f"activation_checkpoint={cfg['activation_checkpoint']} compile={cfg['compile']}",flush=True)
-        if cfg.get("memory_type", "address") == "address":
+        if cfg.get("memory_type", "address") == "address" and cfg.get("research_arch") != "urm_full_bptt":
             print(f"[LT] beta initialization: mean={cfg['beta_init_mean']:.8f} rad, "
                   f"std={cfg['beta_init_std']:.8f}; "
                   + ("resumed learned beta from checkpoint" if path else
@@ -2189,6 +2189,10 @@ def main(cfg):
                   "Q/out_proj/FFN follow configured AMP; autocast cache disabled",flush=True)
             print(f"[LT] KV-HEBBIAN optimizer: Q/K/V weight_decay={qkv_decay:g}; "
                   f"out_proj/FFN weight_decay={cfg['weight_decay']:g}; theta weight_decay=0",flush=True)
+        elif cfg.get("research_arch") == "urm_full_bptt":
+            print(f"[URM] original softmax attention + {cfg.get('urm_ffn','convswiglu')} + 1D RoPE; "
+                  "two post-residual RMSNorms; full within-segment gradients; "
+                  "segment-boundary detach; ACT disabled",flush=True)
         else:
             print(f"[LT] {'v1.8' if cfg.get('plastic_select') else 'v1.71'}: projection={cfg['address_projection']} "
                   f"order={cfg['block_order']} address_trace={cfg['use_trace']} "

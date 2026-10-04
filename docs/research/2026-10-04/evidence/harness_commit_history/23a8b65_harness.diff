@@ -1,0 +1,65 @@
+--- lr_at old
++++ lr_at new
+@@ -0,0 +1,10 @@
++def lr_at(step, base_lr, cfg, planned_steps):
++    """기존 스케줄 (warmup 후 전체 계획 스텝에 걸친 cosine, lr_min_ratio=1 이면 상수)에 재가열을 곱한다:
++    lr_rewarm_start 부터 lr_rewarm_steps 동안 lr_rewarm_from_ratio 배 → 1 배로 선형, 이후 1 배.
++    init_from 으로 새 optimizer 를 만들어 이어 학습할 때 쓴다. lr_rewarm_start=None 이면 기존과 같다."""
++    lr = cosine_schedule_with_warmup_lr_lambda(step, base_lr=base_lr, num_warmup_steps=cfg['lr_warmup_steps'], num_training_steps=planned_steps, min_ratio=cfg['lr_min_ratio'])
++    start = cfg.get('lr_rewarm_start')
++    if start is None or step < start:
++        return lr
++    r0, t = (cfg['lr_rewarm_from_ratio'], min(1.0, (step - start) / max(1, cfg['lr_rewarm_steps'])))
++    return lr * (r0 + (1 - r0) * t)
+--- train_batch old
++++ train_batch new
+@@ -1,6 +1,7 @@
+ def train_batch(model, base, ts, batch, cfg, optimizers, lrs, total_steps, rank, world_size, device):
+     planned_steps, ws = (total_steps, world_size)
+     ts.in_step = True
++    base.model.config.nograd_blocks = nograd_at(ts.step, cfg)
+     batch = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
+     if ts.carry is None:
+         ts.carry = base.initial_carry(batch)
+@@ -12,12 +13,15 @@
+     _check_finite_gradients(base, loss, device, ws)
+     lr = 0.0
+     for opt, base_lr in zip(optimizers, lrs):
+-        lr = cosine_schedule_with_warmup_lr_lambda(ts.step, base_lr=base_lr, num_warmup_steps=cfg['lr_warmup_steps'], num_training_steps=planned_steps, min_ratio=cfg['lr_min_ratio'])
++        lr = lr_at(ts.step, base_lr, cfg, planned_steps)
+         for group in opt.param_groups:
+             group['lr'] = lr
+         opt.step()
+         opt.zero_grad(set_to_none=True)
+     ts.carry, ts.step = (nc, ts.step + 1)
++    extra = late_supervision_extra(cfg, ts.step, nc)
++    if extra:
++        ts.carry = run_unsupervised_segments(base, nc, extra)
+     ts.in_step = False
+     vals = torch.stack([metrics[k].float() for k in _METRIC_KEYS])
+     if ws > 1:
+--- evaluate old
++++ evaluate new
+@@ -25,5 +25,5 @@
+         return None
+     d = dict(zip(_METRIC_KEYS, totals.cpu().tolist()))
+     n = int(d['count'])
+-    print(f'[EVAL] step {step} acc {d['accuracy'] / max(n, 1):.4f} exact {int(d['exact_accuracy'])}/{n}' + (' [partial: time/stop]' if interrupted else ''), flush=True)
++    print(f'[EVAL] step {step} blocks/seg {getattr(base.model.config, 'nograd_blocks', 0)}+{cfg['blocks_per_seg']} acc {d['accuracy'] / max(n, 1):.4f} exact {int(d['exact_accuracy'])}/{n}' + (' [partial: time/stop]' if interrupted else ''), flush=True)
+     return {k: v / max(n, 1) if k != 'count' else v for k, v in d.items()}
+--- load_training_checkpoint old
++++ load_training_checkpoint new
+@@ -1,9 +1,10 @@
+ def load_training_checkpoint(path, base, optimizers, ema, cfg, rank, ws, device):
+     ck = torch.load(path, map_location='cpu', weights_only=False)
+-    if ck.get('model_id') != MODEL_ID:
+-        raise ValueError('Expected a Kaggle v1.71 checkpoint. Start a new output directory for v1.71 training from scratch; other architectures are not auto-converted.')
++    if ck.get('model_id') != model_id_of(cfg):
++        raise ValueError(f'Checkpoint model_id={ck.get('model_id')!r} but this run is {model_id_of(cfg)!r}. Resume needs the same architecture; use init_from to start v1.8 from v1.71 weights.')
+     old = ck['cfg']
+-    changed = {k: (old.get(k), cfg.get(k)) for k in _RESUME_KEYS if old.get(k) != cfg.get(k)}
++    was, now = (_effective_recipe(old), _effective_recipe(cfg))
++    changed = {k: (was[k], now[k]) for k in _RESUME_KEYS if was[k] != now[k]}
+     if changed:
+         raise ValueError(f'Resume config/data mismatch (start a new out_dir for a new experiment): {changed}')
+     for key, default in (('beta_init_mean', 0.0), ('beta_init_std', 0.5)):

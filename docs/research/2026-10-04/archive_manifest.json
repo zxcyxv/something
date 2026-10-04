@@ -1,0 +1,843 @@
+{
+  "captured_utc": "2026-10-04T11:15:23.820628+00:00",
+  "scope": "October 4 selected scalar logs, protocols and raw numerical evidence; checkpoints and duplicate source/image snapshots excluded",
+  "compression": "gzip level 9, mtime=0; SHA256 refers to uncompressed bytes",
+  "active_run_note": "The dynamic Gaussian run continues; its archived logs are a frozen complete-line prefix, not final results",
+  "runs": [
+    {
+      "run": "kv_b_only_fresh_20261004",
+      "rows": 20000,
+      "last_step": 20000,
+      "last_terminal_step": 20000,
+      "ongoing": false
+    },
+    {
+      "run": "kv_b_only_qk_l2_20261004",
+      "rows": 9325,
+      "last_step": 9325,
+      "last_terminal_step": 9312,
+      "ongoing": false
+    },
+    {
+      "run": "kv_b_only_urm_norm_20261004",
+      "rows": 20000,
+      "last_step": 20000,
+      "last_terminal_step": 20000,
+      "ongoing": false
+    },
+    {
+      "run": "kv_phase_current_20261004",
+      "rows": 7475,
+      "last_step": 7475,
+      "last_terminal_step": 7472,
+      "ongoing": false
+    },
+    {
+      "run": "kv_phase_exp_current_20261004",
+      "rows": 10025,
+      "last_step": 10025,
+      "last_terminal_step": 10016,
+      "ongoing": false
+    },
+    {
+      "run": "urm_2layer_8iter_full_bptt_20261004",
+      "rows": 2050,
+      "last_step": 2050,
+      "last_terminal_step": 2050,
+      "ongoing": false
+    },
+    {
+      "run": "urm_swiglu_2layer_8iter_20261004",
+      "rows": 850,
+      "last_step": 850,
+      "last_terminal_step": 850,
+      "ongoing": false
+    },
+    {
+      "run": "urm_swiglu_loops16_20261004",
+      "rows": 6025,
+      "last_step": 6025,
+      "last_terminal_step": 6016,
+      "ongoing": false
+    },
+    {
+      "run": "v17_aligned_6000_20261004",
+      "rows": 6000,
+      "last_step": 6000,
+      "last_terminal_step": 6000,
+      "ongoing": false
+    },
+    {
+      "run": "kv_unit_phase_gaussian_dynamic_20261004",
+      "rows": 1382,
+      "last_step": 1382,
+      "last_terminal_step": 1376,
+      "ongoing": true
+    }
+  ],
+  "files": [
+    {
+      "source": "runs/kv_b_only_fresh_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_fresh_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 5717129,
+      "stored_bytes": 759660,
+      "sha256": "d5cbac771ccfa7b9749db81d9e84ac847255bcc928c1fe34684fe0a7c984b93b"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_fresh_20261004/console.log.gz",
+      "uncompressed_bytes": 106230,
+      "stored_bytes": 19635,
+      "sha256": "e919d482270622a77a00b0717a6ec7527961bc436601d2bcb57b68db7da438f1"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_fresh_20261004/config.json",
+      "uncompressed_bytes": 2573,
+      "stored_bytes": 2573,
+      "sha256": "6d91f9874ffc21453994fffd34d4900ba6c518cfbd467f41e60c0dc54e0bc36e"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_fresh_20261004/protocol.json",
+      "uncompressed_bytes": 1000,
+      "stored_bytes": 1000,
+      "sha256": "82d76b942ef7888da7abcea4def8af7baf648967e0d88598b256fa8152899c60"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/diagnostics.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_fresh_20261004/diagnostics.jsonl.gz",
+      "uncompressed_bytes": 1993723,
+      "stored_bytes": 401601,
+      "sha256": "f2e7ab7c277293537c4c6989ef1a54bb4fc9ec1b9184876b0cbdb1eeed3447d5"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/completed.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_fresh_20261004/completed.json",
+      "uncompressed_bytes": 78,
+      "stored_bytes": 78,
+      "sha256": "3ee35fa8419fe8ae1bf707e9ff99e6f1a04e4358ec5c492b4675f546753fd1bb"
+    },
+    {
+      "source": "runs/kv_b_only_qk_l2_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_qk_l2_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 2671315,
+      "stored_bytes": 343355,
+      "sha256": "eff9b2791417c25ccc0fb96b5ef39f75d21e90360619b68b5e4eb5445726aa03"
+    },
+    {
+      "source": "runs/kv_b_only_qk_l2_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_qk_l2_20261004/console.log.gz",
+      "uncompressed_bytes": 49991,
+      "stored_bytes": 9937,
+      "sha256": "ca740b8b3ac67a5e2b3819578edf09623540702f22d0899312fb9a5122e00731"
+    },
+    {
+      "source": "runs/kv_b_only_qk_l2_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_qk_l2_20261004/config.json",
+      "uncompressed_bytes": 2572,
+      "stored_bytes": 2572,
+      "sha256": "b56c832230e11ffab22a863ec74ce1d909600f5e7006b5fb5fe2cc38e53bbfb3"
+    },
+    {
+      "source": "runs/kv_b_only_qk_l2_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_qk_l2_20261004/protocol.json",
+      "uncompressed_bytes": 1253,
+      "stored_bytes": 1253,
+      "sha256": "525fbafe8f42c58f76e4b9ac95dc1806767ffd7f0ff79f20b21ca1a1481f41e1"
+    },
+    {
+      "source": "runs/kv_b_only_qk_l2_20261004/diagnostics.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_qk_l2_20261004/diagnostics.jsonl.gz",
+      "uncompressed_bytes": 936806,
+      "stored_bytes": 188237,
+      "sha256": "4ed8147078d9a46ddfa1322af95877fe2fb60363a091a7258353e3aabf47813f"
+    },
+    {
+      "source": "runs/kv_b_only_qk_l2_20261004/stopped.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_qk_l2_20261004/stopped.json",
+      "uncompressed_bytes": 78,
+      "stored_bytes": 78,
+      "sha256": "00a98abec32c538193d00ea9dfc0c50e6040f92cf22ef24a8cc74b30a91480a5"
+    },
+    {
+      "source": "runs/kv_b_only_urm_norm_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_urm_norm_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 5716416,
+      "stored_bytes": 761264,
+      "sha256": "267ee2e88ab899e3b56f567dc934c06df283fde3e65eb5e7434619f58335c8ed"
+    },
+    {
+      "source": "runs/kv_b_only_urm_norm_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_urm_norm_20261004/console.log.gz",
+      "uncompressed_bytes": 106250,
+      "stored_bytes": 19542,
+      "sha256": "aad12e8da4ef9e4de276c07fd80b72ea8a43eb76d837626efe6d4ae88d2f6713"
+    },
+    {
+      "source": "runs/kv_b_only_urm_norm_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_urm_norm_20261004/config.json",
+      "uncompressed_bytes": 2594,
+      "stored_bytes": 2594,
+      "sha256": "cf9f5765d3af04a7c1a257eb647dabf5ed0b2d729575a1f1a9977d862e3939e0"
+    },
+    {
+      "source": "runs/kv_b_only_urm_norm_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_urm_norm_20261004/protocol.json",
+      "uncompressed_bytes": 1079,
+      "stored_bytes": 1079,
+      "sha256": "25ae3d6d05d9511f7048e2cd09a79daf6ce54423f91ddc000ec565114bdfc4ef"
+    },
+    {
+      "source": "runs/kv_b_only_urm_norm_20261004/diagnostics.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_urm_norm_20261004/diagnostics.jsonl.gz",
+      "uncompressed_bytes": 1993396,
+      "stored_bytes": 391075,
+      "sha256": "fa2218fd53d0a843bd075a783cabec039483a6b19ba06a3ee46172c3feffa0c9"
+    },
+    {
+      "source": "runs/kv_b_only_urm_norm_20261004/completed.json",
+      "archive": "docs/research/2026-10-04/logs/kv_b_only_urm_norm_20261004/completed.json",
+      "uncompressed_bytes": 79,
+      "stored_bytes": 79,
+      "sha256": "d01d0154b1f64a0f36deec5aee45f7e76d5a9c3ec60b9a5e5015a56e1a272863"
+    },
+    {
+      "source": "runs/kv_phase_current_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_current_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 2141681,
+      "stored_bytes": 284148,
+      "sha256": "bd46b9bf81e0774068e3d293b934dff910f9c48d832aad894849eda6e3b3bd1f"
+    },
+    {
+      "source": "runs/kv_phase_current_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_current_20261004/console.log.gz",
+      "uncompressed_bytes": 40346,
+      "stored_bytes": 8524,
+      "sha256": "e7c5bfeb24ddff0fb605c1e7982b99bfc425bf6605568cfa99a1090ea6432f7e"
+    },
+    {
+      "source": "runs/kv_phase_current_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_current_20261004/config.json",
+      "uncompressed_bytes": 2586,
+      "stored_bytes": 2586,
+      "sha256": "3b5aab2e1c80558399fe950e05765d743ec3517e1161163478fa24c269d75798"
+    },
+    {
+      "source": "runs/kv_phase_current_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_current_20261004/protocol.json",
+      "uncompressed_bytes": 1629,
+      "stored_bytes": 1629,
+      "sha256": "a1fe8ca26941403e1895d3f08bbd89168c9de2b3a65703ee12c4249cc8712699"
+    },
+    {
+      "source": "runs/kv_phase_current_20261004/diagnostics.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_current_20261004/diagnostics.jsonl.gz",
+      "uncompressed_bytes": 880151,
+      "stored_bytes": 177029,
+      "sha256": "426435f37906acdaf4bc5514f18fc2f1f21f5a87497e8b570d63a4ea3478aa41"
+    },
+    {
+      "source": "runs/kv_phase_current_20261004/stopped.json",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_current_20261004/stopped.json",
+      "uncompressed_bytes": 78,
+      "stored_bytes": 78,
+      "sha256": "9a3d1475a8241620971e53f0223547cd7cd69b984ea1b9c8ac69506c36f5d3f2"
+    },
+    {
+      "source": "runs/kv_phase_exp_current_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_exp_current_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 2868052,
+      "stored_bytes": 382111,
+      "sha256": "00ac018aee9d08936f4c06888e9e1e9cf0803430ba5710244d80df299a08a6a9"
+    },
+    {
+      "source": "runs/kv_phase_exp_current_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_exp_current_20261004/console.log.gz",
+      "uncompressed_bytes": 53517,
+      "stored_bytes": 10876,
+      "sha256": "31b8078734150783e7c6687a0eaf7124d4e323a2c659bf34912fbc1895e62809"
+    },
+    {
+      "source": "runs/kv_phase_exp_current_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_exp_current_20261004/config.json",
+      "uncompressed_bytes": 2598,
+      "stored_bytes": 2598,
+      "sha256": "a2144cad042816ddc3754fbca39828bb8f1dcb5b2f00e6ef9daa0d41dea05c47"
+    },
+    {
+      "source": "runs/kv_phase_exp_current_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_exp_current_20261004/protocol.json",
+      "uncompressed_bytes": 2101,
+      "stored_bytes": 2101,
+      "sha256": "69107515bd1d57194f5e1542806e4af5ef080e9de0b8818fa055db4a87e58cdd"
+    },
+    {
+      "source": "runs/kv_phase_exp_current_20261004/diagnostics.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_exp_current_20261004/diagnostics.jsonl.gz",
+      "uncompressed_bytes": 1174719,
+      "stored_bytes": 235830,
+      "sha256": "b7687578fc911691f206d0c0f8430c46c3520f0205c20ffcb9333ecb11746fd4"
+    },
+    {
+      "source": "runs/kv_phase_exp_current_20261004/stopped.json",
+      "archive": "docs/research/2026-10-04/logs/kv_phase_exp_current_20261004/stopped.json",
+      "uncompressed_bytes": 79,
+      "stored_bytes": 79,
+      "sha256": "cdb9eeb649083f77b75b6836ab4785ea74eb030152e7937a71c50593227fe3ba"
+    },
+    {
+      "source": "runs/urm_2layer_8iter_full_bptt_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/urm_2layer_8iter_full_bptt_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 539514,
+      "stored_bytes": 71592,
+      "sha256": "0bc80b0aa83c39e4346425c933ab5bbf22295e39d61515f5135f38e2a330fab2"
+    },
+    {
+      "source": "runs/urm_2layer_8iter_full_bptt_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/urm_2layer_8iter_full_bptt_20261004/console.log.gz",
+      "uncompressed_bytes": 11712,
+      "stored_bytes": 2904,
+      "sha256": "cffe495029c13b9225680e148a0a187bb6029de2c4e86163dbabf7f338d606b6"
+    },
+    {
+      "source": "runs/urm_2layer_8iter_full_bptt_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/urm_2layer_8iter_full_bptt_20261004/config.json",
+      "uncompressed_bytes": 2578,
+      "stored_bytes": 2578,
+      "sha256": "639938c0afd8e7b4563e7b813ea1b9085e38f2b6e3fee7f58e69fe4923180533"
+    },
+    {
+      "source": "runs/urm_2layer_8iter_full_bptt_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/urm_2layer_8iter_full_bptt_20261004/protocol.json",
+      "uncompressed_bytes": 867,
+      "stored_bytes": 867,
+      "sha256": "064a7668967de6baefbbf8a2a9d1ca834b8108920b75cb45d1405a54edea3dbb"
+    },
+    {
+      "source": "runs/urm_2layer_8iter_full_bptt_20261004/finished.json",
+      "archive": "docs/research/2026-10-04/logs/urm_2layer_8iter_full_bptt_20261004/finished.json",
+      "uncompressed_bytes": 31,
+      "stored_bytes": 31,
+      "sha256": "f2fbf5cc12830f61d63e889af23f630daaafd6b7e6a8d548549440c42d427d97"
+    },
+    {
+      "source": "runs/urm_swiglu_2layer_8iter_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_2layer_8iter_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 221954,
+      "stored_bytes": 29983,
+      "sha256": "c91d2cbbbf4a7ee67f78f2ea384e86ce5501886574b46b6e60928879fb9d5467"
+    },
+    {
+      "source": "runs/urm_swiglu_2layer_8iter_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_2layer_8iter_20261004/console.log.gz",
+      "uncompressed_bytes": 5414,
+      "stored_bytes": 1626,
+      "sha256": "7045bcfbca41d426b2032904de56e5317d3637b82cb4e7d4f3a2160c4167dfc4"
+    },
+    {
+      "source": "runs/urm_swiglu_2layer_8iter_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_2layer_8iter_20261004/config.json",
+      "uncompressed_bytes": 2605,
+      "stored_bytes": 2605,
+      "sha256": "9b1cb863f796392e0dada56c22a27f11669449afcdbff45bc9c627f6fcb3a771"
+    },
+    {
+      "source": "runs/urm_swiglu_2layer_8iter_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_2layer_8iter_20261004/protocol.json",
+      "uncompressed_bytes": 906,
+      "stored_bytes": 906,
+      "sha256": "8ffe989f6979fbdff0fe13034c673e813b6d425924642598be33d6fcfee45e4b"
+    },
+    {
+      "source": "runs/urm_swiglu_2layer_8iter_20261004/finished.json",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_2layer_8iter_20261004/finished.json",
+      "uncompressed_bytes": 32,
+      "stored_bytes": 32,
+      "sha256": "398fbbe355555730dc44845b98422c6f27f52b9429e489e41bda77f18a80c3dd"
+    },
+    {
+      "source": "runs/urm_swiglu_loops16_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_loops16_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 1451540,
+      "stored_bytes": 165574,
+      "sha256": "de20c7f307fbf1682215455951e2324574f1b2092a73ef492497b4d25269c959"
+    },
+    {
+      "source": "runs/urm_swiglu_loops16_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_loops16_20261004/console.log.gz",
+      "uncompressed_bytes": 32247,
+      "stored_bytes": 6815,
+      "sha256": "9354665ee413631783314bbfa6470f045b14f9636245b48409569655bc2507cc"
+    },
+    {
+      "source": "runs/urm_swiglu_loops16_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_loops16_20261004/config.json",
+      "uncompressed_bytes": 2612,
+      "stored_bytes": 2612,
+      "sha256": "257edc2bca17e8bf70a37e00192b1aa94fa1833cc2c8644418cc268a8a57af5e"
+    },
+    {
+      "source": "runs/urm_swiglu_loops16_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_loops16_20261004/protocol.json",
+      "uncompressed_bytes": 1097,
+      "stored_bytes": 1097,
+      "sha256": "f850e2d73bf38717987bfd0f44be2d17bfe6a443f16a74a04e2d5c86aa168e88"
+    },
+    {
+      "source": "runs/urm_swiglu_loops16_20261004/finished.json",
+      "archive": "docs/research/2026-10-04/logs/urm_swiglu_loops16_20261004/finished.json",
+      "uncompressed_bytes": 31,
+      "stored_bytes": 31,
+      "sha256": "f1ed33542bcd19232d9064db3496516c7a64136548d3a7363aee870a387eb706"
+    },
+    {
+      "source": "runs/v17_aligned_6000_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/v17_aligned_6000_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 1532907,
+      "stored_bytes": 166046,
+      "sha256": "2008daeae7f772ee2ebb5cae96ffe3335acf068b9511ad9f9702bdf6d044b92d"
+    },
+    {
+      "source": "runs/v17_aligned_6000_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/v17_aligned_6000_20261004/console.log.gz",
+      "uncompressed_bytes": 32892,
+      "stored_bytes": 6808,
+      "sha256": "8fb40c7ac53859ff034dd91a1ca8c3abfe9ace4b528395cb38a3e3c62a0be2b6"
+    },
+    {
+      "source": "runs/v17_aligned_6000_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/v17_aligned_6000_20261004/config.json",
+      "uncompressed_bytes": 2790,
+      "stored_bytes": 2790,
+      "sha256": "5ed80d9be0e64a5755f2db63c63ed5abec8fbfd191159f0c42e48ad8c90ca4d5"
+    },
+    {
+      "source": "runs/v17_aligned_6000_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/v17_aligned_6000_20261004/protocol.json",
+      "uncompressed_bytes": 814,
+      "stored_bytes": 814,
+      "sha256": "a2b2dfeeab8d092906c77854be3b5a6d1ac087e1e0c9bf46f5ddb020af293076"
+    },
+    {
+      "source": "runs/v17_aligned_6000_20261004/finished.json",
+      "archive": "docs/research/2026-10-04/logs/v17_aligned_6000_20261004/finished.json",
+      "uncompressed_bytes": 32,
+      "stored_bytes": 32,
+      "sha256": "00155c16c1bc8404dd71a7a8f6fac7567446d7ff0a95287ac84c1f0578e59b52"
+    },
+    {
+      "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/train.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/train.jsonl.gz",
+      "uncompressed_bytes": 401582,
+      "stored_bytes": 54622,
+      "sha256": "c0e557d75b406140be0e3165363021193d66f737f47db50164d5760711e19491"
+    },
+    {
+      "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/console.log",
+      "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/console.log.gz",
+      "uncompressed_bytes": 9120,
+      "stored_bytes": 2693,
+      "sha256": "c32921ce0a6ed40c8d1caa3be4810fbcee5079a26f8feb2b935814dc9f823caa"
+    },
+    {
+      "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/config.json",
+      "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/config.json",
+      "uncompressed_bytes": 2650,
+      "stored_bytes": 2650,
+      "sha256": "e8de83967464462080feb3087a19a2b2dfe721b4ee48583759fc9474bed579ab"
+    },
+    {
+      "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/protocol.json",
+      "uncompressed_bytes": 3191,
+      "stored_bytes": 3191,
+      "sha256": "3ac3f29d88a0faf492b97f78ee11d506ba1e1640dac93b57b69903f56ea516b5"
+    },
+    {
+      "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/diagnostics.jsonl",
+      "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/diagnostics.jsonl.gz",
+      "uncompressed_bytes": 204631,
+      "stored_bytes": 41066,
+      "sha256": "b6b65f009f24e1934ff41986bcfb21119d5028a55767230fbe20b2356e71e23a"
+    },
+    {
+      "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/startup_verification.json",
+      "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/startup_verification.json",
+      "uncompressed_bytes": 1175,
+      "stored_bytes": 1175,
+      "sha256": "ec1db96881b5edd0c748c370cf8961c040df39a2cd5ab78c6316524b176c2ffb"
+    },
+    {
+      "source": "runs/kv_interference_20261004/results.json",
+      "archive": "docs/research/2026-10-04/evidence/kv_interference_20261004/results.json",
+      "uncompressed_bytes": 66092,
+      "stored_bytes": 66092,
+      "sha256": "8dd5981e4076fcb69ae1876c7d0a17fb26d720b20eec3537c77c33e925581bc8"
+    },
+    {
+      "source": "runs/kv_interference_20261004/load_sweep.csv",
+      "archive": "docs/research/2026-10-04/evidence/kv_interference_20261004/load_sweep.csv",
+      "uncompressed_bytes": 16647,
+      "stored_bytes": 16647,
+      "sha256": "a50666414d556cf5e911f7873c3c1612be2965f9fe6893d1e5300854d4b9855c"
+    },
+    {
+      "source": "runs/kv_interference_20261004/continuous_STDP_cycle.csv",
+      "archive": "docs/research/2026-10-04/evidence/kv_interference_20261004/continuous_STDP_cycle.csv",
+      "uncompressed_bytes": 1720,
+      "stored_bytes": 1720,
+      "sha256": "a7d5f7cc3b2c000fbea7dc18aa021f7db38460cfa35aef53db5fd55711766968"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/protocol.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/protocol.json",
+      "uncompressed_bytes": 2364,
+      "stored_bytes": 2364,
+      "sha256": "19202ca9471655a343c287152f82eebdd46e301fb76a0e2bf7ac4016041b6816"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/mechanism_checks.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/mechanism_checks.json",
+      "uncompressed_bytes": 386,
+      "stored_bytes": 386,
+      "sha256": "805db280938a28e1e3bbf41d3790b84374cd8e02b51341fd646bacc97a208c05"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/fixed_results.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/fixed_results.json",
+      "uncompressed_bytes": 251113,
+      "stored_bytes": 251113,
+      "sha256": "f3d187a5ec4e5e669e256555d7691900d11c703eaa4c9575c9919275b1e0cc32"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/training.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/training.json",
+      "uncompressed_bytes": 112124,
+      "stored_bytes": 112124,
+      "sha256": "7945e73ef21da76f08976cf265a07fcdda44e9fbe0ca73b890a1ae00c4615fda"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/learned_results.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/learned_results.json",
+      "uncompressed_bytes": 270892,
+      "stored_bytes": 270892,
+      "sha256": "6ed208ad0206f4cb2a4165ee1b85b7ec623149bd8affa2a7f662d01bd76a3455"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/storage_diagnostics.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/storage_diagnostics.json",
+      "uncompressed_bytes": 15270,
+      "stored_bytes": 15270,
+      "sha256": "ade8cbbe34792915f193494d6b5b2340977fb7045cdc75e27044f66a06f69a47"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/metrics.csv",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/metrics.csv",
+      "uncompressed_bytes": 143792,
+      "stored_bytes": 143792,
+      "sha256": "7322babfa8321e1f9299d77814f009e322c4321e95c0c4ecd3c18b2133d9017d"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/summary.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/summary.json",
+      "uncompressed_bytes": 2967,
+      "stored_bytes": 2967,
+      "sha256": "5d47fec445daca4d9e4bf1df72eb803beb8831995c2032ae4b0ac68593d4727c"
+    },
+    {
+      "source": "runs/associative_stdp_20261004_v2/analysis.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_20261004_v2/analysis.json",
+      "uncompressed_bytes": 5866,
+      "stored_bytes": 5866,
+      "sha256": "572962b44ec2d5e660b78533bbc635034340f286797b96954b9cecc843e8df3f"
+    },
+    {
+      "source": "runs/associative_stdp_background_holdout_20261004/protocol.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_background_holdout_20261004/protocol.json",
+      "uncompressed_bytes": 679,
+      "stored_bytes": 679,
+      "sha256": "5c9c47c74e4ccc9ed85a405893f9bb92febf4134809a57cd1cc8123199cd7390"
+    },
+    {
+      "source": "runs/associative_stdp_background_holdout_20261004/results.json",
+      "archive": "docs/research/2026-10-04/evidence/associative_stdp_background_holdout_20261004/results.json",
+      "uncompressed_bytes": 9428,
+      "stored_bytes": 9428,
+      "sha256": "199cde2e5e5bcc2a5299c482988b60a9cc2659f6a78e5cee55908fb9ab10392c"
+    },
+    {
+      "source": "runs/phase_stdp_math_20261004/results.json",
+      "archive": "docs/research/2026-10-04/evidence/phase_stdp_math_20261004/results.json",
+      "uncompressed_bytes": 134220,
+      "stored_bytes": 134220,
+      "sha256": "6ce6e07ec73955668d247937975af596b019eea7e2973616ed5a99bdb709b440"
+    },
+    {
+      "source": "runs/phase_stdp_math_20261004/verification.log",
+      "archive": "docs/research/2026-10-04/evidence/phase_stdp_math_20261004/verification.log",
+      "uncompressed_bytes": 4225,
+      "stored_bytes": 4225,
+      "sha256": "6155d876f961ef4170c04bf630d1b1988fa6978f95ddd7a17d8f2fef63076d21"
+    },
+    {
+      "source": "runs/dynamic_phase_benchmark_20261004/compiled_b8.json",
+      "archive": "docs/research/2026-10-04/evidence/dynamic_phase_benchmark_20261004/compiled_b8.json",
+      "uncompressed_bytes": 7532,
+      "stored_bytes": 7532,
+      "sha256": "f41cfeb4c9e13ee002d79f7aa9ba6ae3c2f452aa17878d20eccf6afd23f31d0c"
+    },
+    {
+      "source": "runs/dynamic_phase_benchmark_20261004/compiled_b128.json",
+      "archive": "docs/research/2026-10-04/evidence/dynamic_phase_benchmark_20261004/compiled_b128.json",
+      "uncompressed_bytes": 4655,
+      "stored_bytes": 4655,
+      "sha256": "d49a06d7196aef89a6089f9b768188d3ed8e8a6cca8deff2636bb912e1e4cb49"
+    },
+    {
+      "source": "runs/dynamic_phase_benchmark_20261004/cuda_checks.json",
+      "archive": "docs/research/2026-10-04/evidence/dynamic_phase_benchmark_20261004/cuda_checks.json",
+      "uncompressed_bytes": 4053,
+      "stored_bytes": 4053,
+      "sha256": "336f3f364da9500c313d7573b03628738f29e511a91fdb070d135216d146dd71"
+    },
+    {
+      "source": "runs/shared_order_stdp_20261004/compiled_b8.json",
+      "archive": "docs/research/2026-10-04/evidence/shared_order_stdp_20261004/compiled_b8.json",
+      "uncompressed_bytes": 8987,
+      "stored_bytes": 8987,
+      "sha256": "e2ecdd7cc6ccafc329537f0d68e721f96a88bb43a5f4525620b0f756de585c63"
+    },
+    {
+      "source": "runs/shared_order_stdp_20261004/compiled_b128.json",
+      "archive": "docs/research/2026-10-04/evidence/shared_order_stdp_20261004/compiled_b128.json",
+      "uncompressed_bytes": 8906,
+      "stored_bytes": 8906,
+      "sha256": "adef7d7450ccde62e76b1d918006986c5f13256aa616a3a747e014206685d323"
+    },
+    {
+      "source": "runs/shared_order_stdp_20261004/cuda_checks.json",
+      "archive": "docs/research/2026-10-04/evidence/shared_order_stdp_20261004/cuda_checks.json",
+      "uncompressed_bytes": 9801,
+      "stored_bytes": 9801,
+      "sha256": "9eaf1bb3681ee774ff5ae68718736e2f3b827f6bf383007ed62f82c9f0fdfd4a"
+    },
+    {
+      "source": "runs/unit_phase_gaussian_20261004/compiled_b8.json",
+      "archive": "docs/research/2026-10-04/evidence/unit_phase_gaussian_20261004/compiled_b8.json",
+      "uncompressed_bytes": 18322,
+      "stored_bytes": 18322,
+      "sha256": "0dac579a945f89c5ad85eb8b179191b8a2df394db7cd46ba882782a52c188899"
+    },
+    {
+      "source": "runs/unit_phase_gaussian_20261004/precomputed_b8.json",
+      "archive": "docs/research/2026-10-04/evidence/unit_phase_gaussian_20261004/precomputed_b8.json",
+      "uncompressed_bytes": 11214,
+      "stored_bytes": 11214,
+      "sha256": "1c7ca34ecb2b70687c1f45a2245c09c72e94a4338538476d8bcce9ed797b32d2"
+    },
+    {
+      "source": "runs/unit_phase_gaussian_20261004/compiled_b128.json",
+      "archive": "docs/research/2026-10-04/evidence/unit_phase_gaussian_20261004/compiled_b128.json",
+      "uncompressed_bytes": 16851,
+      "stored_bytes": 16851,
+      "sha256": "a80529b1f8643f74de7771569edee4021f6b27af20b6b612bddfeb0e0f86a7a8"
+    },
+    {
+      "source": "runs/unit_phase_gaussian_20261004/cuda_checks.json",
+      "archive": "docs/research/2026-10-04/evidence/unit_phase_gaussian_20261004/cuda_checks.json",
+      "uncompressed_bytes": 25545,
+      "stored_bytes": 25545,
+      "sha256": "b82f7b96d32a687d86a7731266787652ee85934a5650261d5e66a0b6ad690629"
+    },
+    {
+      "source": "runs/harness_audit_20261004/results.json",
+      "archive": "docs/research/2026-10-04/evidence/harness_audit_20261004/results.json",
+      "uncompressed_bytes": 14799,
+      "stored_bytes": 14799,
+      "sha256": "5aae2b6667066a6da5876eee634ff1e01f06571e0b0f90f119924eeeeb8462c3"
+    },
+    {
+      "source": "runs/b_only_v17_training_comparison_20261004/summary.json",
+      "archive": "docs/research/2026-10-04/evidence/b_only_v17_training_comparison_20261004/summary.json",
+      "uncompressed_bytes": 12259,
+      "stored_bytes": 12259,
+      "sha256": "a443be99eb6c2974b2f0164f99ffcc8f60d67cb16425ada0683a8ac51268dc17"
+    },
+    {
+      "source": "runs/b_only_v17_training_comparison_20261004/windows.csv",
+      "archive": "docs/research/2026-10-04/evidence/b_only_v17_training_comparison_20261004/windows.csv",
+      "uncompressed_bytes": 1900,
+      "stored_bytes": 1900,
+      "sha256": "0ba8b68380679c28968101d81326a9f72bc6dac3be9c1dfe5041e76f3ff7f9e2"
+    },
+    {
+      "source": "runs/b_only_v17_training_comparison_20261004/matched_training.csv",
+      "archive": "docs/research/2026-10-04/evidence/b_only_v17_training_comparison_20261004/matched_training.csv",
+      "uncompressed_bytes": 5999,
+      "stored_bytes": 5999,
+      "sha256": "b205aa1c177256aaf3f0e4b33417ce64f0b78760beb59ec4d7fd97fc1acc020a"
+    },
+    {
+      "source": "runs/loss_aggregation_audit_20261004.json",
+      "archive": "docs/research/2026-10-04/evidence/loss_aggregation_audit_20261004.json",
+      "uncompressed_bytes": 2491,
+      "stored_bytes": 2491,
+      "sha256": "a8f7dcf1f1734abb1d6a8ec9e7cfbfb4fca1eb810fb4adfb891fe069bbb34f91"
+    },
+    {
+      "source": "runs/urm_loops_audit_20261004.json",
+      "archive": "docs/research/2026-10-04/evidence/urm_loops_audit_20261004.json",
+      "uncompressed_bytes": 2207,
+      "stored_bytes": 2207,
+      "sha256": "fa09d44eb03da65cee266621cd1b828e951397ac59b0531b16086e7b5e3bbf01"
+    },
+    {
+      "source": "runs/kv_phase_current_20261004/phase_analysis_step3000/summary.json",
+      "archive": "docs/research/2026-10-04/evidence/phase_analysis_step3000.json",
+      "uncompressed_bytes": 31692,
+      "stored_bytes": 31692,
+      "sha256": "ce8ff1a1efb35dd88c42bca797f8ffa185a34ad3b61cce9f7e48598a8ab428c0"
+    },
+    {
+      "source": "runs/harness_audit_20261004/commit_history/7f1e2b7_harness.diff",
+      "archive": "docs/research/2026-10-04/evidence/harness_commit_history/7f1e2b7_harness.diff",
+      "uncompressed_bytes": 27056,
+      "stored_bytes": 27056,
+      "sha256": "a4413e6f9dc7646f4c20827581d706ce4cae0f15c410db9ae27b6b0997df0ad5"
+    },
+    {
+      "source": "runs/harness_audit_20261004/commit_history/23a8b65_harness.diff",
+      "archive": "docs/research/2026-10-04/evidence/harness_commit_history/23a8b65_harness.diff",
+      "uncompressed_bytes": 3918,
+      "stored_bytes": 3918,
+      "sha256": "0bc3b562d4af8e32cd87f2c47ceaafb0645565bf36ccfba9b12c8dbf39767c8f"
+    },
+    {
+      "source": "runs/harness_audit_20261004/commit_history/5d901a9_harness.diff",
+      "archive": "docs/research/2026-10-04/evidence/harness_commit_history/5d901a9_harness.diff",
+      "uncompressed_bytes": 1,
+      "stored_bytes": 1,
+      "sha256": "01ba4719c80b6fe911b091a7c05124b64eeece964e09c058ef8f9805daca546b"
+    },
+    {
+      "source": "runs/harness_audit_20261004/commit_history/70a8dba_harness.diff",
+      "archive": "docs/research/2026-10-04/evidence/harness_commit_history/70a8dba_harness.diff",
+      "uncompressed_bytes": 2140,
+      "stored_bytes": 2140,
+      "sha256": "0f75416cb27b911b55c380186fa0717476ac0cfc0f21d238ceb286247aa6d498"
+    },
+    {
+      "source": "runs/harness_audit_20261004/commit_history/index.json",
+      "archive": "docs/research/2026-10-04/evidence/harness_commit_history/index.json",
+      "uncompressed_bytes": 2697,
+      "stored_bytes": 2697,
+      "sha256": "af4af5bbafd4cbb01bd542d1633f456b498931d9eb9979474e45bb76a924dfd5"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/reference/R1B8_bilin_ok.log",
+      "archive": "docs/research/2026-10-04/reference/r1b8/R1B8_bilin_ok.log",
+      "uncompressed_bytes": 26955,
+      "stored_bytes": 26955,
+      "sha256": "27274096ae6de8565de59f748ef6d23da6e6964d8038edef928bad597c55d944"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/reference/R1B8_config.yaml",
+      "archive": "docs/research/2026-10-04/reference/r1b8/R1B8_config.yaml",
+      "uncompressed_bytes": 921,
+      "stored_bytes": 921,
+      "sha256": "0588433ad8ae58d692cb5d73d8657df135be15671f74ea49257b39d8fba02c8b"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/reference/R1B8_lt.py",
+      "archive": "docs/research/2026-10-04/reference/r1b8/R1B8_lt.py",
+      "uncompressed_bytes": 20338,
+      "stored_bytes": 20338,
+      "sha256": "7bc677a8739969a28213abc4ff36695967d34f87a480806fcbd96a23733f8cd0"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/reference/R1B8_model1.py",
+      "archive": "docs/research/2026-10-04/reference/r1b8/R1B8_model1.py",
+      "uncompressed_bytes": 18841,
+      "stored_bytes": 18841,
+      "sha256": "74399f8fc7c2e835d1f194d94935647c1f178671547ca67d8b188f8f1c67d4c9"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/reference/R1B8_urm_patches.diff",
+      "archive": "docs/research/2026-10-04/reference/r1b8/R1B8_urm_patches.diff",
+      "uncompressed_bytes": 11617,
+      "stored_bytes": 11617,
+      "sha256": "8f3f464feb9e09886ce2c63657face0a6341aae726e7c9d0bf5157ee28eef09b"
+    },
+    {
+      "source": "runs/kv_b_only_fresh_20261004/reference/manifest.json",
+      "archive": "docs/research/2026-10-04/reference/r1b8/manifest.json",
+      "uncompressed_bytes": 979,
+      "stored_bytes": 979,
+      "sha256": "3ecc9efb00b5e190f9c118ea4628b96a5ea0c7caa4477622ab5cf2baf3d419c1"
+    },
+    {
+      "source": "third_party/URM/IMPORT_PROVENANCE.json",
+      "archive": "docs/research/2026-10-04/reference/urm/IMPORT_PROVENANCE.json",
+      "uncompressed_bytes": 4305,
+      "stored_bytes": 4305,
+      "sha256": "00084bd3e5d8c01c988fa712442c2908b2027e7cae81a26c8d12b59a0d55045c"
+    },
+    {
+      "source": "third_party/URM/pretrain.py",
+      "archive": "docs/research/2026-10-04/reference/urm/pretrain.py",
+      "uncompressed_bytes": 33163,
+      "stored_bytes": 33163,
+      "sha256": "206bc50c840f6a712a807cf02d07db44f7006fad670cfa05ea3ba8c6c14b98c5"
+    },
+    {
+      "source": "third_party/URM/config/arch/urm.yaml",
+      "archive": "docs/research/2026-10-04/reference/urm/config/arch/urm.yaml",
+      "uncompressed_bytes": 480,
+      "stored_bytes": 480,
+      "sha256": "e4b2463df45d07c5f362a37cc97f58c36243f386828c7ffd272d5f5e670712d8"
+    },
+    {
+      "source": "third_party/URM/config/cfg_pretrain.yaml",
+      "archive": "docs/research/2026-10-04/reference/urm/config/cfg_pretrain.yaml",
+      "uncompressed_bytes": 580,
+      "stored_bytes": 580,
+      "sha256": "1816e89abfc92c3a17a9fcc32d453c7ce891bde2f03d20d9f1cfbda9aeef58c2"
+    },
+    {
+      "source": "third_party/URM/scripts/URM_sudoku.sh",
+      "archive": "docs/research/2026-10-04/reference/urm/scripts/URM_sudoku.sh",
+      "uncompressed_bytes": 436,
+      "stored_bytes": 436,
+      "sha256": "06220d73159b9f4fd20e11c4170e26330e0381305eec8d3b6ecd64104bed5393"
+    },
+    {
+      "source": "https://github.com/UbiquantAI/URM/blob/c14e55f5f9227873617015cf60a239126b55adcd/models/common.py",
+      "archive": "lt/urm_vendor/common.py",
+      "stored_bytes": 1216,
+      "sha256": "fa749ad9b68ac0852f9cda157baa3a9c2ff8abaee973751b32b7cd010a4cf859",
+      "patched": true
+    },
+    {
+      "source": "https://github.com/UbiquantAI/URM/blob/c14e55f5f9227873617015cf60a239126b55adcd/models/layers.py",
+      "archive": "lt/urm_vendor/layers.py",
+      "stored_bytes": 9566,
+      "sha256": "57c6ba2d6246befbd267b87522f77f523748483f14469e8d942cc5382a5e6401",
+      "patched": true
+    },
+    {
+      "source": "https://github.com/UbiquantAI/URM/blob/c14e55f5f9227873617015cf60a239126b55adcd/models/sparse_embedding.py",
+      "archive": "lt/urm_vendor/sparse_embedding.py",
+      "stored_bytes": 5462,
+      "sha256": "557b0864d8b0a446f98ca78d9d32e0f2c4bf5ad1aec086f6e31d5a4483f678e9",
+      "patched": true
+    },
+    {
+      "source": "https://github.com/UbiquantAI/URM/blob/c14e55f5f9227873617015cf60a239126b55adcd/models/urm/urm.py",
+      "archive": "lt/urm_vendor/urm.py",
+      "stored_bytes": 8670,
+      "sha256": "8a5ff012d337ef7e5cb8072ba7c2c5b3e9f6aa069447375a085edcb0011e3263",
+      "patched": true
+    }
+  ]
+}

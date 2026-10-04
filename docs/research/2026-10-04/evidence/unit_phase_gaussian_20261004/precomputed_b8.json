@@ -1,0 +1,425 @@
+{
+  "protocol": {
+    "gpu": "NVIDIA RTX A5000",
+    "torch": "2.8.0+cu128",
+    "batch": 8,
+    "heads": 8,
+    "channels_per_head": 104,
+    "dtype": "float32",
+    "tf32": false,
+    "compilation": "torch.compile(default, fullgraph=True)",
+    "phases": "independent per token/channel in [-1.3,1.3]; every difference within (-pi,pi)",
+    "rule": "A=sign(Im(exp(i phiV) conj(exp(i phiK))))=sign(sin(delta)); L=A exp(-delta^2/tau)",
+    "tau": 1.0,
+    "gain": 1.0,
+    "zero_lag": "zero at exact ties; one-sided limits +/-1; no epsilon/surrogate",
+    "derivatives": "ordinary sign gradient zero; phase envelope derivative -2 delta L/tau",
+    "scope": "current G write + all-Q read with full first-order gradients; excludes QKV/phase projection, RoPE, FFN, RMSNorm, optimizer, full-model recurrence",
+    "kernels": "fused pairwise tiles and custom backward; no saved B,H,T,D,D tensor",
+    "precomputed": "sin/cos prepared per neuron; near-cancellation reevaluation, not sign smoothing",
+    "matched_control": "gaussian_lag_triton: identical kernels with direct lag signs",
+    "baseline": "fixed_gemm/split_g use the original exponential window and are cost references, not quality controls",
+    "memory": "PyTorch allocated peak; extra peak excludes supplied inputs",
+    "repetitions": 5,
+    "rounds": 3
+  },
+  "cpu_correctness": {
+    "value_gradient_checks": [
+      {
+        "case": "repeated_exact_ties",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "repeated_exact_ties",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "all_phases_equal",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "all_phases_equal",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "near_zero_positive",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "near_zero_positive",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "near_zero_negative",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "near_zero_negative",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "queries_different_from_sources",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "queries_different_from_sources",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "phases_shared_across_tokens",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "phases_shared_across_tokens",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "random",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "random",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "adjacent_float_negative",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "adjacent_float_negative",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "adjacent_float_positive",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "adjacent_float_positive",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "noncontiguous_inputs",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "noncontiguous_inputs",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "normalize_before_observation_sum",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "normalize_before_observation_sum",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "different_width_and_gain",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      }
+    ],
+    "common_carrier_max_abs_error": 3.3306690738754696e-16
+  },
+  "window": [
+    {
+      "lag": -1.5,
+      "A": -1.0,
+      "gaussian": -0.10539922456186433,
+      "gaussian_phase_gradient": -0.316197673685593,
+      "exponential": -0.22313016014842982
+    },
+    {
+      "lag": -1.0,
+      "A": -1.0,
+      "gaussian": -0.36787944117144233,
+      "gaussian_phase_gradient": -0.7357588823428847,
+      "exponential": -0.36787944117144233
+    },
+    {
+      "lag": -0.1,
+      "A": -1.0,
+      "gaussian": -0.9900498337491681,
+      "gaussian_phase_gradient": -0.19800996674983362,
+      "exponential": -0.9048374180359595
+    },
+    {
+      "lag": -1e-07,
+      "A": -1.0,
+      "gaussian": -0.99999999999999,
+      "gaussian_phase_gradient": -1.99999999999998e-07,
+      "exponential": -0.999999900000005
+    },
+    {
+      "lag": 0.0,
+      "A": 0.0,
+      "gaussian": 0.0,
+      "gaussian_phase_gradient": 0.0,
+      "exponential": 0.0
+    },
+    {
+      "lag": 1e-07,
+      "A": 1.0,
+      "gaussian": 0.99999999999999,
+      "gaussian_phase_gradient": -1.99999999999998e-07,
+      "exponential": 0.999999900000005
+    },
+    {
+      "lag": 0.1,
+      "A": 1.0,
+      "gaussian": 0.9900498337491681,
+      "gaussian_phase_gradient": -0.19800996674983362,
+      "exponential": 0.9048374180359595
+    },
+    {
+      "lag": 1.0,
+      "A": 1.0,
+      "gaussian": 0.36787944117144233,
+      "gaussian_phase_gradient": -0.7357588823428847,
+      "exponential": 0.36787944117144233
+    },
+    {
+      "lag": 1.5,
+      "A": 1.0,
+      "gaussian": 0.10539922456186433,
+      "gaussian_phase_gradient": -0.316197673685593,
+      "exponential": 0.22313016014842982
+    }
+  ],
+  "rows": [
+    {
+      "tokens": 81,
+      "implementation": "unit_phase_precomputed",
+      "forward": {
+        "median_ms": 1.464755153656006,
+        "rounds_ms": [
+          1.4517760276794434,
+          1.4700544357299805,
+          1.464755153656006
+        ],
+        "base_allocated_mib": 18.408203125,
+        "peak_allocated_mib": 30.181640625,
+        "extra_peak_mib": 11.7734375
+      },
+      "forward_backward": {
+        "median_ms": 3.4592384338378905,
+        "rounds_ms": [
+          3.480723190307617,
+          3.4592384338378905,
+          3.457017517089844
+        ],
+        "base_allocated_mib": 26.533203125,
+        "peak_allocated_mib": 68.8115234375,
+        "extra_peak_mib": 42.2783203125
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "unit_phase_precomputed",
+      "forward": {
+        "median_ms": 9.737785339355469,
+        "rounds_ms": [
+          9.649823760986328,
+          9.737785339355469,
+          9.74185562133789
+        ],
+        "base_allocated_mib": 130.5078125,
+        "peak_allocated_mib": 224.5546875,
+        "extra_peak_mib": 94.046875
+      },
+      "forward_backward": {
+        "median_ms": 28.465338134765624,
+        "rounds_ms": [
+          28.439352416992186,
+          28.46617736816406,
+          28.465338134765624
+        ],
+        "base_allocated_mib": 130.5078125,
+        "peak_allocated_mib": 384.5166015625,
+        "extra_peak_mib": 254.0087890625
+      }
+    }
+  ]
+}

@@ -1,0 +1,359 @@
+{
+  "cleaned_utc": "2026-10-04T11:24:44.839420+00:00",
+  "archive_verified_files": 109,
+  "active_run_preserved": "kv_unit_phase_gaussian_dynamic_20261004",
+  "removed_files": 70,
+  "freed_bytes": 7358256466,
+  "removed": [
+    {
+      "path": "lt/queue_urm_after_phase.py",
+      "bytes": 3494,
+      "reason": "Superseded temporary queue or loops=1 reusable config; historical actual configs/logs archived"
+    },
+    {
+      "path": "configs/urm_2layer_8iter_full_bptt.json",
+      "bytes": 2361,
+      "reason": "Superseded temporary queue or loops=1 reusable config; historical actual configs/logs archived"
+    },
+    {
+      "path": "configs/urm_swiglu_2layer_8iter_full_bptt.json",
+      "bytes": 2411,
+      "reason": "Superseded temporary queue or loops=1 reusable config; historical actual configs/logs archived"
+    },
+    {
+      "path": "third_party/URM/README.md",
+      "bytes": 3376,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/attn_maps_ab.py",
+      "bytes": 15571,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/evaluate_trained_model.py",
+      "bytes": 16432,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/pretrain.py",
+      "bytes": 33163,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/puzzle_dataset.py",
+      "bytes": 8155,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/requirements.txt",
+      "bytes": 196,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/utils.py",
+      "bytes": 2504,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/IMPORT_PROVENANCE.json",
+      "bytes": 4305,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/config/cfg_eval.yaml",
+      "bytes": 401,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/config/cfg_pretrain.yaml",
+      "bytes": 580,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/data/build_arc_dataset.py",
+      "bytes": 11171,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/data/build_maze_dataset.py",
+      "bytes": 4496,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/data/build_sudoku_dataset.py",
+      "bytes": 5788,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/data/common.py",
+      "bytes": 1397,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/evaluators/arc.py",
+      "bytes": 8384,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/evaluators/arc_augmentation_ablation.py",
+      "bytes": 7920,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/common.py",
+      "bytes": 1216,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/layers.py",
+      "bytes": 9213,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/losses.py",
+      "bytes": 8967,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/muon.py",
+      "bytes": 13669,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/sparse_embedding.py",
+      "bytes": 5468,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/scripts/URM_arcagi1.sh",
+      "bytes": 393,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/scripts/URM_arcagi2.sh",
+      "bytes": 409,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/scripts/URM_sudoku.sh",
+      "bytes": 436,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/config/arch/hrm.yaml",
+      "bytes": 342,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/config/arch/trm.yaml",
+      "bytes": 557,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/config/arch/urm.yaml",
+      "bytes": 480,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_concept-challenges.json",
+      "bytes": 804217,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_concept-solutions.json",
+      "bytes": 209979,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_evaluation-challenges.json",
+      "bytes": 2062906,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_evaluation-solutions.json",
+      "bytes": 312989,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_evaluation2-challenges.json",
+      "bytes": 984679,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_evaluation2-solutions.json",
+      "bytes": 223838,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_training-challenges.json",
+      "bytes": 1269733,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_training-solutions.json",
+      "bytes": 184616,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_training2-challenges.json",
+      "bytes": 4010050,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/kaggle/combined/arc-agi_training2-solutions.json",
+      "bytes": 658743,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/hrm/hrm_act_v1.py",
+      "bytes": 13187,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/hrm/hrm_act_v2.py",
+      "bytes": 13257,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/trm/trm.py",
+      "bytes": 12593,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "third_party/URM/models/urm/urm.py",
+      "bytes": 8688,
+      "reason": "Full upstream clone replaced by minimal runnable vendor and source/provenance references"
+    },
+    {
+      "path": "runs/kv_b_only_fresh_20261004/step_19000.pt",
+      "bytes": 249723021,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_b_only_fresh_20261004/step_19530.pt",
+      "bytes": 249723021,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_b_only_fresh_20261004/step_20000.pt",
+      "bytes": 249723021,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_b_only_qk_l2_20261004/step_8000.pt",
+      "bytes": 249722949,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_b_only_qk_l2_20261004/step_9000.pt",
+      "bytes": 249722949,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_b_only_qk_l2_20261004/step_9325.pt",
+      "bytes": 249722949,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_b_only_urm_norm_20261004/step_19000.pt",
+      "bytes": 249723021,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_b_only_urm_norm_20261004/step_19530.pt",
+      "bytes": 249722957,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_b_only_urm_norm_20261004/step_20000.pt",
+      "bytes": 249723021,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_phase_current_20261004/step_6000.pt",
+      "bytes": 249759193,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_phase_current_20261004/step_7000.pt",
+      "bytes": 249759193,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_phase_current_20261004/step_7475.pt",
+      "bytes": 249759193,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_phase_exp_current_20261004/step_9765.pt",
+      "bytes": 249759193,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_phase_exp_current_20261004/step_10000.pt",
+      "bytes": 249759275,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/kv_phase_exp_current_20261004/step_10025.pt",
+      "bytes": 249759275,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/urm_2layer_8iter_full_bptt_20261004/step_1953.pt",
+      "bytes": 376380721,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/urm_2layer_8iter_full_bptt_20261004/step_2000.pt",
+      "bytes": 376380721,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/urm_2layer_8iter_full_bptt_20261004/step_2050.pt",
+      "bytes": 376380721,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/urm_swiglu_2layer_8iter_20261004/step_850.pt",
+      "bytes": 376236287,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/urm_swiglu_loops16_20261004/step_5859.pt",
+      "bytes": 376236361,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/urm_swiglu_loops16_20261004/step_6000.pt",
+      "bytes": 376236361,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/urm_swiglu_loops16_20261004/step_6025.pt",
+      "bytes": 376236361,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/v17_aligned_6000_20261004/step_5000.pt",
+      "bytes": 239146941,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/v17_aligned_6000_20261004/step_5859.pt",
+      "bytes": 239146941,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/v17_aligned_6000_20261004/step_6000.pt",
+      "bytes": 239146941,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    },
+    {
+      "path": "runs/harness_audit_20261004/checkpoint_side_effect/step_20016.pt",
+      "bytes": 249723149,
+      "reason": "Completed October 4 early training; all scalar logs and protocols archived, checkpoints not retained"
+    }
+  ]
+}

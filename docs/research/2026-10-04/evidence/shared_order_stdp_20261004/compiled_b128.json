@@ -1,0 +1,307 @@
+{
+  "protocol": {
+    "gpu": "NVIDIA RTX A5000",
+    "torch": "2.8.0+cu128",
+    "batch": 128,
+    "heads": 8,
+    "channels_per_head": 104,
+    "dtype": "float32",
+    "tf32": false,
+    "compilation": "torch.compile(default, fullgraph=True)",
+    "phases": "independent per token/channel; [-1.3,1.3] radians; tau=1; no wrapping",
+    "rule": "sign(phiV-phiK) exp(-abs(phiV-phiK)); exact ties zero; no smoothing",
+    "scope": "current G write and all-Q read; includes sort/search/lookup and full backward; excludes QKV/phase projection, RoPE, FFN, norms, optimizer and full-model recurrence",
+    "ordering": "K sort once per observation, V strict prefix/suffix locations, shared integer prefix table",
+    "kernels": "dedicated forward and first-order backward; no saved token-by-channel-pair tensor",
+    "matched_control": "direct_triton_control has identical tiles/loops/backward, direct phase comparisons",
+    "baseline": "fixed_gemm is a fixed-phase cost reference, not an equivalent dynamic model",
+    "memory": "PyTorch allocated peak; extra excludes supplied inputs",
+    "repeats": 3,
+    "rounds": 3,
+    "random_input_limit": "operator equivalence/cost, not learning quality"
+  },
+  "cpu_correctness": {
+    "repeated_exact_ties": {
+      "output_max_abs_error": 2.220446049250313e-16,
+      "gradient_max_abs_errors": {
+        "Q": 2.7755575615628914e-17,
+        "K": 1.1102230246251565e-16,
+        "V": 5.551115123125783e-17,
+        "phiK": 1.1102230246251565e-16,
+        "phiV": 5.551115123125783e-17
+      }
+    },
+    "all_phases_equal": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      }
+    },
+    "near_zero_positive": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "read_value": 0.999999900000005
+    },
+    "near_zero_negative": {
+      "output_max_abs_error": 0.0,
+      "gradient_max_abs_errors": {
+        "Q": 0.0,
+        "K": 0.0,
+        "V": 0.0,
+        "phiK": 0.0,
+        "phiV": 0.0
+      },
+      "read_value": -0.999999900000005
+    },
+    "queries_different_from_sources": {
+      "output_max_abs_error": 1.1102230246251565e-16,
+      "gradient_max_abs_errors": {
+        "Q": 1.457167719820518e-16,
+        "K": 5.551115123125783e-17,
+        "V": 1.1102230246251565e-16,
+        "phiK": 1.1102230246251565e-16,
+        "phiV": 2.220446049250313e-16
+      }
+    },
+    "phases_shared_across_tokens": {
+      "output_max_abs_error": 4.440892098500626e-16,
+      "gradient_max_abs_errors": {
+        "Q": 6.661338147750939e-16,
+        "K": 8.881784197001252e-16,
+        "V": 8.881784197001252e-16,
+        "phiK": 8.881784197001252e-16,
+        "phiV": 1.3322676295501878e-15
+      }
+    },
+    "random": {
+      "output_max_abs_error": 8.881784197001252e-16,
+      "gradient_max_abs_errors": {
+        "Q": 6.661338147750939e-16,
+        "K": 8.881784197001252e-16,
+        "V": 8.881784197001252e-16,
+        "phiK": 1.7763568394002505e-15,
+        "phiV": 1.3322676295501878e-15
+      }
+    }
+  },
+  "rows": [
+    {
+      "tokens": 81,
+      "implementation": "fixed_gemm",
+      "forward": {
+        "median_ms": 0.6295466820398966,
+        "rounds_ms": [
+          0.6441706816355387,
+          0.6295466820398966,
+          0.6280639966328939
+        ],
+        "base_allocated_mib": 106.8505859375,
+        "peak_allocated_mib": 182.0068359375,
+        "extra_peak_mib": 75.15625
+      },
+      "forward_backward": {
+        "median_ms": 2.591818650563558,
+        "rounds_ms": [
+          2.6036693255106607,
+          2.591818650563558,
+          2.5910399754842124
+        ],
+        "base_allocated_mib": 114.9755859375,
+        "peak_allocated_mib": 364.0078125,
+        "extra_peak_mib": 249.0322265625
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "split_g",
+      "forward": {
+        "median_ms": 4.525984128316243,
+        "rounds_ms": [
+          4.486101468404134,
+          4.525984128316243,
+          4.744906743367513
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 255.9375,
+        "extra_peak_mib": 75.15625
+      },
+      "forward_backward": {
+        "median_ms": 15.790730794270834,
+        "rounds_ms": [
+          15.074143727620443,
+          15.790730794270834,
+          15.887232462565104
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 453.3759765625,
+        "extra_peak_mib": 272.5947265625
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "shared_order_triton",
+      "forward": {
+        "median_ms": 11.510528564453125,
+        "rounds_ms": [
+          11.112640380859375,
+          11.510528564453125,
+          11.51629892985026
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 453.5732421875,
+        "extra_peak_mib": 272.7919921875
+      },
+      "forward_backward": {
+        "median_ms": 37.83394114176432,
+        "rounds_ms": [
+          37.83394114176432,
+          38.128395080566406,
+          37.60245259602865
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 859.98046875,
+        "extra_peak_mib": 679.19921875
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "direct_triton_control",
+      "forward": {
+        "median_ms": 5.837194442749023,
+        "rounds_ms": [
+          5.665365219116211,
+          5.837194442749023,
+          6.102687835693359
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 354.65625,
+        "extra_peak_mib": 173.875
+      },
+      "forward_backward": {
+        "median_ms": 34.82391357421875,
+        "rounds_ms": [
+          34.82391357421875,
+          34.80757395426432,
+          34.82666778564453
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 673.8759765625,
+        "extra_peak_mib": 493.0947265625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "fixed_gemm",
+      "forward": {
+        "median_ms": 3.9524799982706704,
+        "rounds_ms": [
+          3.9524799982706704,
+          3.9351253509521484,
+          4.569013277689616
+        ],
+        "base_allocated_mib": 1114.2568359375,
+        "peak_allocated_mib": 1522.5068359375,
+        "extra_peak_mib": 408.25
+      },
+      "forward_backward": {
+        "median_ms": 20.49635187784831,
+        "rounds_ms": [
+          19.87054951985677,
+          20.49635187784831,
+          20.497365315755207
+        ],
+        "base_allocated_mib": 1114.2568359375,
+        "peak_allocated_mib": 3028.7578125,
+        "extra_peak_mib": 1914.5009765625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "split_g",
+      "forward": {
+        "median_ms": 50.267862955729164,
+        "rounds_ms": [
+          50.403167724609375,
+          50.267862955729164,
+          50.184844970703125
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 2254.5,
+        "extra_peak_mib": 408.25
+      },
+      "forward_backward": {
+        "median_ms": 168.82443237304688,
+        "rounds_ms": [
+          168.82443237304688,
+          168.66413370768228,
+          169.06640625
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 4450.5009765625,
+        "extra_peak_mib": 2604.2509765625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "shared_order_triton",
+      "forward": {
+        "median_ms": 111.2382100423177,
+        "rounds_ms": [
+          111.2382100423177,
+          111.19921875,
+          111.27427164713542
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 4450.5107421875,
+        "extra_peak_mib": 2604.2607421875
+      },
+      "forward_backward": {
+        "median_ms": 366.2855631510417,
+        "rounds_ms": [
+          365.3962809244792,
+          366.2855631510417,
+          366.4336344401042
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 6322.76171875,
+        "extra_peak_mib": 4476.51171875
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "direct_triton_control",
+      "forward": {
+        "median_ms": 60.64356486002604,
+        "rounds_ms": [
+          60.64642333984375,
+          60.64356486002604,
+          60.3934071858724
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 3352.5,
+        "extra_peak_mib": 1506.25
+      },
+      "forward_backward": {
+        "median_ms": 336.31768798828125,
+        "rounds_ms": [
+          336.31768798828125,
+          337.1951904296875,
+          336.04864501953125
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 5224.7509765625,
+        "extra_peak_mib": 3378.5009765625
+      }
+    }
+  ]
+}

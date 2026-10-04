@@ -1,0 +1,22 @@
+{
+  "selection": "Window selected on discovery fixed_results.json; held-out evaluation never retunes",
+  "window": {
+    "lambda_plus": 0.1,
+    "lambda_minus": 0.9,
+    "amplitude_plus": 1,
+    "amplitude_minus": 1
+  },
+  "axis": "Internal settling, all patterns simultaneous",
+  "seeds": [
+    71001,
+    71002,
+    71003
+  ],
+  "trials": 1024,
+  "conditions": [
+    "settling",
+    "shared_background"
+  ],
+  "source_sha256": "5b8d1551e11939d7f306d6f199b3dd42da9eaa37fc3eca8831d0d616964e1021",
+  "interpretation": "A conditional advantage tests a temporal filtering mechanism; it cannot establish universal STDP superiority or selective weakening in the learned programmer."
+}

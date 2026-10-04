@@ -1,0 +1,26 @@
+{
+  "repository": "zxcyxv/LinearTuring",
+  "commit": "1591470189d1ee1f4fcaa4cff28cbb3a77e77cb9",
+  "files": {
+    "R1B8_bilin_ok.log": {
+      "source": "sudoku_runs/2026-08-26/R1B8_bilin_ok.log",
+      "sha256": "27274096ae6de8565de59f748ef6d23da6e6964d8038edef928bad597c55d944"
+    },
+    "R1B8_config.yaml": {
+      "source": "sudoku_runs/2026-08-26/checkpoints/R1B8_bilin_ok_config.yaml",
+      "sha256": "0588433ad8ae58d692cb5d73d8657df135be15671f74ea49257b39d8fba02c8b"
+    },
+    "R1B8_lt.py": {
+      "source": "sudoku_runs/2026-08-26/code/lt.py",
+      "sha256": "7bc677a8739969a28213abc4ff36695967d34f87a480806fcbd96a23733f8cd0"
+    },
+    "R1B8_model1.py": {
+      "source": "model1.py",
+      "sha256": "74399f8fc7c2e835d1f194d94935647c1f178671547ca67d8b188f8f1c67d4c9"
+    },
+    "R1B8_urm_patches.diff": {
+      "source": "sudoku_runs/2026-08-26/code/urm_patches.diff",
+      "sha256": "8f3f464feb9e09886ce2c63657face0a6341aae726e7c9d0bf5157ee28eef09b"
+    }
+  }
+}

@@ -1,5 +1,10 @@
 # LinearTuring
 
+2026-10-04 연구: [오늘의 설계 결정·학습 비교·정리된 로그](docs/research/2026-10-04/README.md).
+현재 새 실험은 상태 의존 위상의 가우시안 STDP 창으로 현재 G만 읽는다.
+신규 아키텍처의 두 residual RMSNorm 규칙은 [AGENTS.md](AGENTS.md)에 기록했다.
+과거 아키텍처 재현은 당시 정규화 구조를 유지한다.
+
 2026-10-03 KV-STDP 연구: [현재 결론·실험 비교·원본 로그](docs/research/2026-10-03/README.md),
 [상세 조사 기록](docs/kv_collapse_research.md). 현재 `lt/train.py`의 기본 모델은
 KV-STDP이며, 아래 본문은 기존 QK 결합 기억 모델의 설명이다.

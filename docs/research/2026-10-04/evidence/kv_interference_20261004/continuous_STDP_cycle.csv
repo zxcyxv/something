@@ -1,0 +1,9 @@
+d,lambda_value,prefix_blocks,tail_G_read_rms,tail_M_read_rms,cycle_mean_M_read_to_G_rms,M_alternating_read_to_G_rms,reconstruction_error,note
+16,0.1,0,0.3153577648762135,0.22299161404380285,0.49999999999999756,0.5,2.220446049250313e-16,Same prescribed final cycle and fixed query; no target declares the persistent mean useful or harmful.
+16,0.1,16,0.3153577648762135,1.3015574073718064,4.096842189978351,0.5,4.440892098500626e-16,Same prescribed final cycle and fixed query; no target declares the persistent mean useful or harmful.
+16,0.1,64,0.3153577648762135,2.5912367159278387,8.20158914726112,0.5,8.881784197001252e-16,Same prescribed final cycle and fixed query; no target declares the persistent mean useful or harmful.
+16,0.1,256,0.3153577648762135,5.152295667843329,16.330285485788554,0.5,1.3322676295501878e-15,Same prescribed final cycle and fixed query; no target declares the persistent mean useful or harmful.
+16,0.9,0,0.18257554808622878,0.12910040813062315,0.5000000000000014,0.5,8.837935118396444e-17,Same prescribed final cycle and fixed query; no target declares the persistent mean useful or harmful.
+16,0.9,16,0.18257554808622878,0.6286610352673897,3.406796734413148,0.5,3.3306690738754696e-16,Same prescribed final cycle and fixed query; no target declares the persistent mean useful or harmful.
+16,0.9,64,0.18257554808622878,0.864000851890088,4.705803860415069,0.5,4.440892098500626e-16,Same prescribed final cycle and fixed query; no target declares the persistent mean useful or harmful.
+16,0.9,256,0.18257554808622878,1.4305876708378027,7.819623796099553,0.5,4.440892098500626e-16,Same prescribed final cycle and fixed query; no target declares the persistent mean useful or harmful.

@@ -1,0 +1,113 @@
+[
+  {
+    "commit": "59d4adf",
+    "trainer_sha256": "9496e249a7efecae8edb0c23d06cdea6f002b68dc4de76bada12c86c15932dda",
+    "present": [
+      "CastedSparseEmbedding",
+      "CastedSparseEmbeddingSignSGD_Distributed",
+      "ACTLossHead",
+      "AdamATan2",
+      "create_optimizers",
+      "EMAHelper",
+      "_EMASwap",
+      "SudokuTrainDataset",
+      "train_batch",
+      "evaluate"
+    ]
+  },
+  {
+    "commit": "7f1e2b7",
+    "trainer_sha256": "7eee30cdb4ce2e0ca534848840abe75589bf2dadbeefabc85bb6e74167ca7d80",
+    "present": [
+      "CastedSparseEmbedding",
+      "CastedSparseEmbeddingSignSGD_Distributed",
+      "ACTLossHead",
+      "AdamATan2",
+      "create_optimizers",
+      "EMAHelper",
+      "_EMASwap",
+      "SudokuTrainDataset",
+      "train_batch",
+      "evaluate",
+      "load_training_checkpoint"
+    ],
+    "changed": [
+      "CastedSparseEmbedding",
+      "CastedSparseEmbeddingSignSGD_Distributed",
+      "ACTLossHead",
+      "AdamATan2",
+      "create_optimizers",
+      "EMAHelper",
+      "_EMASwap",
+      "SudokuTrainDataset",
+      "train_batch",
+      "evaluate",
+      "load_training_checkpoint"
+    ]
+  },
+  {
+    "commit": "23a8b65",
+    "trainer_sha256": "2b5c3adac45779172d364dbbeba842182a7afda93eb84271eead0d3b3deb715b",
+    "present": [
+      "CastedSparseEmbedding",
+      "CastedSparseEmbeddingSignSGD_Distributed",
+      "ACTLossHead",
+      "AdamATan2",
+      "create_optimizers",
+      "lr_at",
+      "EMAHelper",
+      "_EMASwap",
+      "SudokuTrainDataset",
+      "train_batch",
+      "evaluate",
+      "load_training_checkpoint"
+    ],
+    "changed": [
+      "lr_at",
+      "train_batch",
+      "evaluate",
+      "load_training_checkpoint"
+    ]
+  },
+  {
+    "commit": "5d901a9",
+    "trainer_sha256": "f547706ef850e405a0be75ce792daae0818586ab9bedc8c2d2d08d1489726182",
+    "present": [
+      "CastedSparseEmbedding",
+      "CastedSparseEmbeddingSignSGD_Distributed",
+      "ACTLossHead",
+      "AdamATan2",
+      "create_optimizers",
+      "lr_at",
+      "EMAHelper",
+      "_EMASwap",
+      "SudokuTrainDataset",
+      "train_batch",
+      "evaluate",
+      "load_training_checkpoint"
+    ],
+    "changed": []
+  },
+  {
+    "commit": "70a8dba",
+    "trainer_sha256": "19ea02782716cd727fbf2a59e2933a4c2ada798dd5b41a2692e25b5c360ea4df",
+    "present": [
+      "CastedSparseEmbedding",
+      "CastedSparseEmbeddingSignSGD_Distributed",
+      "ACTLossHead",
+      "AdamATan2",
+      "create_optimizers",
+      "lr_at",
+      "EMAHelper",
+      "_EMASwap",
+      "SudokuTrainDataset",
+      "train_batch",
+      "evaluate",
+      "load_training_checkpoint"
+    ],
+    "changed": [
+      "create_optimizers",
+      "load_training_checkpoint"
+    ]
+  }
+]

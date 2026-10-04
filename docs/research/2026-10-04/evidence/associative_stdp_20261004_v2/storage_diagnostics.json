@@ -1,0 +1,497 @@
+[
+  {
+    "seed": 0,
+    "rule": "hebb",
+    "lambda_plus": 0.10000000149011612,
+    "lambda_minus": 0.10000000149011612,
+    "amplitude_plus": 1.0,
+    "amplitude_minus": 1.0,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 1.1191771030426025,
+        "write_to_terms_ratio": 1119177103042.6025
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 1.9054402112960815,
+        "negative_term_rms": 2.028702735900879,
+        "write_rms": 4.309607028961182,
+        "write_to_terms_ratio": 1.0954373256901202
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 2.658567428588867,
+        "negative_term_rms": 2.6797547340393066,
+        "write_rms": 1.902389407157898,
+        "write_to_terms_ratio": 0.35636466837380854
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 1.7529644966125488,
+        "negative_term_rms": 1.7429399490356445,
+        "write_rms": 1.5531643629074097,
+        "write_to_terms_ratio": 0.4442811258300812
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 1.5437004566192627,
+        "negative_term_rms": 1.5481960773468018,
+        "write_rms": 1.5157604217529297,
+        "write_to_terms_ratio": 0.49023646331662013
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 1.4677588939666748,
+        "negative_term_rms": 1.4739996194839478,
+        "write_rms": 1.4283063411712646,
+        "write_to_terms_ratio": 0.48552807262735004
+      }
+    ],
+    "latent_symmetric_rms": 0.9898624420166016,
+    "latent_skew_rms": 0.0,
+    "latent_mapping_max_error": 7.152557373046875e-07
+  },
+  {
+    "seed": 0,
+    "rule": "balanced_stdp",
+    "lambda_plus": 0.10000000149011612,
+    "lambda_minus": 0.10000000149011612,
+    "amplitude_plus": 1.0,
+    "amplitude_minus": 1.0,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 0.0,
+        "write_to_terms_ratio": 0.0
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 1.157119631767273,
+        "negative_term_rms": 1.2263572216033936,
+        "write_rms": 0.16253115236759186,
+        "write_to_terms_ratio": 0.0681907827792308
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 3.0393314361572266,
+        "negative_term_rms": 3.352968692779541,
+        "write_rms": 0.6609535813331604,
+        "write_to_terms_ratio": 0.10339839619561066
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 3.7427756786346436,
+        "negative_term_rms": 4.637357234954834,
+        "write_rms": 1.9725005626678467,
+        "write_to_terms_ratio": 0.23537819543040236
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 5.380095481872559,
+        "negative_term_rms": 5.966755390167236,
+        "write_rms": 2.1185107231140137,
+        "write_to_terms_ratio": 0.18670472953285475
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 6.571779251098633,
+        "negative_term_rms": 6.623059272766113,
+        "write_rms": 0.7723150849342346,
+        "write_to_terms_ratio": 0.05853160563786621
+      }
+    ],
+    "latent_symmetric_rms": 0.0,
+    "latent_skew_rms": 0.24876126646995544,
+    "latent_mapping_max_error": 4.470348358154297e-07
+  },
+  {
+    "seed": 0,
+    "rule": "general_stdp",
+    "lambda_plus": 0.093660369515419,
+    "lambda_minus": 0.0959332287311554,
+    "amplitude_plus": 0.7709856629371643,
+    "amplitude_minus": 1.2290143966674805,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 0.0,
+        "write_to_terms_ratio": 0.0
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 1.4483768939971924,
+        "negative_term_rms": 2.3093979358673096,
+        "write_rms": 0.8756098747253418,
+        "write_to_terms_ratio": 0.23301286382736283
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 3.217355966567993,
+        "negative_term_rms": 5.069225788116455,
+        "write_rms": 1.9724522829055786,
+        "write_to_terms_ratio": 0.23802966546372428
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 3.2574234008789062,
+        "negative_term_rms": 4.9519500732421875,
+        "write_rms": 2.1417815685272217,
+        "write_to_terms_ratio": 0.2608946438213134
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 2.9289863109588623,
+        "negative_term_rms": 4.401468753814697,
+        "write_rms": 1.7277004718780518,
+        "write_to_terms_ratio": 0.23568802436021555
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 2.616898775100708,
+        "negative_term_rms": 4.018838405609131,
+        "write_rms": 1.4965856075286865,
+        "write_to_terms_ratio": 0.22553418961182667
+      }
+    ],
+    "latent_symmetric_rms": 0.5516991019248962,
+    "latent_skew_rms": 0.261968731880188,
+    "latent_mapping_max_error": 5.960464477539062e-07
+  },
+  {
+    "seed": 1,
+    "rule": "hebb",
+    "lambda_plus": 0.10000000149011612,
+    "lambda_minus": 0.10000000149011612,
+    "amplitude_plus": 1.0,
+    "amplitude_minus": 1.0,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 1.1332932710647583,
+        "write_to_terms_ratio": 1133293271064.7583
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 1.937536597251892,
+        "negative_term_rms": 2.046659231185913,
+        "write_rms": 4.380665302276611,
+        "write_to_terms_ratio": 1.09951053886655
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 2.6862194538116455,
+        "negative_term_rms": 2.648892879486084,
+        "write_rms": 1.8744254112243652,
+        "write_to_terms_ratio": 0.35133757156813183
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 1.6521100997924805,
+        "negative_term_rms": 1.640641450881958,
+        "write_rms": 1.3979498147964478,
+        "write_to_terms_ratio": 0.4245536880879117
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 1.393240213394165,
+        "negative_term_rms": 1.3979233503341675,
+        "write_rms": 1.360084056854248,
+        "write_to_terms_ratio": 0.4872821050433214
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 1.3288887739181519,
+        "negative_term_rms": 1.3277980089187622,
+        "write_rms": 1.2952181100845337,
+        "write_to_terms_ratio": 0.4875313561431437
+      }
+    ],
+    "latent_symmetric_rms": 0.908197283744812,
+    "latent_skew_rms": 0.0,
+    "latent_mapping_max_error": 6.556510925292969e-07
+  },
+  {
+    "seed": 1,
+    "rule": "balanced_stdp",
+    "lambda_plus": 0.10000000149011612,
+    "lambda_minus": 0.10000000149011612,
+    "amplitude_plus": 1.0,
+    "amplitude_minus": 1.0,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 0.0,
+        "write_to_terms_ratio": 0.0
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 1.183334469795227,
+        "negative_term_rms": 1.237170934677124,
+        "write_rms": 0.12499263137578964,
+        "write_to_terms_ratio": 0.05163906312491184
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 2.9875848293304443,
+        "negative_term_rms": 3.2925240993499756,
+        "write_rms": 0.5850664377212524,
+        "write_to_terms_ratio": 0.09316182957420355
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 3.374799966812134,
+        "negative_term_rms": 4.562382698059082,
+        "write_rms": 2.052032470703125,
+        "write_to_terms_ratio": 0.2585341118309971
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 4.503108978271484,
+        "negative_term_rms": 5.5935235023498535,
+        "write_rms": 2.4030675888061523,
+        "write_to_terms_ratio": 0.2380068397476256
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 5.628079414367676,
+        "negative_term_rms": 5.815568923950195,
+        "write_rms": 0.9003939032554626,
+        "write_to_terms_ratio": 0.07868066866757066
+      }
+    ],
+    "latent_symmetric_rms": 0.0,
+    "latent_skew_rms": 0.27242064476013184,
+    "latent_mapping_max_error": 4.76837158203125e-07
+  },
+  {
+    "seed": 1,
+    "rule": "general_stdp",
+    "lambda_plus": 0.0880303606390953,
+    "lambda_minus": 0.09438766539096832,
+    "amplitude_plus": 0.7446250915527344,
+    "amplitude_minus": 1.2553749084472656,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 0.0,
+        "write_to_terms_ratio": 0.0
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 1.2643204927444458,
+        "negative_term_rms": 2.188173532485962,
+        "write_rms": 0.9489541053771973,
+        "write_to_terms_ratio": 0.27486046273855386
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 2.8571298122406006,
+        "negative_term_rms": 4.834262847900391,
+        "write_rms": 2.0899295806884766,
+        "write_to_terms_ratio": 0.27172316809656866
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 2.824930191040039,
+        "negative_term_rms": 4.5460920333862305,
+        "write_rms": 2.164973497390747,
+        "write_to_terms_ratio": 0.29371414594520046
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 2.4484615325927734,
+        "negative_term_rms": 3.9109580516815186,
+        "write_rms": 1.6780879497528076,
+        "write_to_terms_ratio": 0.26387438782969364
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 2.1492955684661865,
+        "negative_term_rms": 3.516296148300171,
+        "write_rms": 1.4279382228851318,
+        "write_to_terms_ratio": 0.25203690881203794
+      }
+    ],
+    "latent_symmetric_rms": 0.5797823071479797,
+    "latent_skew_rms": 0.26272109150886536,
+    "latent_mapping_max_error": 5.960464477539062e-07
+  },
+  {
+    "seed": 2,
+    "rule": "hebb",
+    "lambda_plus": 0.10000000149011612,
+    "lambda_minus": 0.10000000149011612,
+    "amplitude_plus": 1.0,
+    "amplitude_minus": 1.0,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 1.2692410945892334,
+        "write_to_terms_ratio": 1269241094589.2334
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 2.1038289070129395,
+        "negative_term_rms": 2.208341121673584,
+        "write_rms": 4.579843044281006,
+        "write_to_terms_ratio": 1.0620738546515414
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 3.0237693786621094,
+        "negative_term_rms": 3.1244332790374756,
+        "write_rms": 2.354614019393921,
+        "write_to_terms_ratio": 0.38297599322702575
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 2.152418613433838,
+        "negative_term_rms": 2.153956651687622,
+        "write_rms": 1.9202451705932617,
+        "write_to_terms_ratio": 0.4459075329884554
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 1.9062165021896362,
+        "negative_term_rms": 1.8867219686508179,
+        "write_rms": 1.8418619632720947,
+        "write_to_terms_ratio": 0.4856029111549184
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 1.810457706451416,
+        "negative_term_rms": 1.8010189533233643,
+        "write_rms": 1.7649389505386353,
+        "write_to_terms_ratio": 0.4887028539312814
+      }
+    ],
+    "latent_symmetric_rms": 1.1146687269210815,
+    "latent_skew_rms": 0.0,
+    "latent_mapping_max_error": 7.152557373046875e-07
+  },
+  {
+    "seed": 2,
+    "rule": "balanced_stdp",
+    "lambda_plus": 0.10000000149011612,
+    "lambda_minus": 0.10000000149011612,
+    "amplitude_plus": 1.0,
+    "amplitude_minus": 1.0,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 0.0,
+        "write_to_terms_ratio": 0.0
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 1.350390076637268,
+        "negative_term_rms": 1.3490945100784302,
+        "write_rms": 0.26161351799964905,
+        "write_to_terms_ratio": 0.0969123955317121
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 3.1890816688537598,
+        "negative_term_rms": 3.491199254989624,
+        "write_rms": 1.186126470565796,
+        "write_to_terms_ratio": 0.17755637586019377
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 3.3250880241394043,
+        "negative_term_rms": 4.9534525871276855,
+        "write_rms": 3.1498491764068604,
+        "write_to_terms_ratio": 0.38048362921835965
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 4.566651344299316,
+        "negative_term_rms": 5.1858391761779785,
+        "write_rms": 1.9980199337005615,
+        "write_to_terms_ratio": 0.20487278911013715
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 5.133757591247559,
+        "negative_term_rms": 5.053613662719727,
+        "write_rms": 0.6439404487609863,
+        "write_to_terms_ratio": 0.06320967722759219
+      }
+    ],
+    "latent_symmetric_rms": 0.0,
+    "latent_skew_rms": 0.25974828004837036,
+    "latent_mapping_max_error": 5.364418029785156e-07
+  },
+  {
+    "seed": 2,
+    "rule": "general_stdp",
+    "lambda_plus": 0.08844064176082611,
+    "lambda_minus": 0.10507199913263321,
+    "amplitude_plus": 0.8100686073303223,
+    "amplitude_minus": 1.1899313926696777,
+    "recurrences": [
+      {
+        "recurrence": 1,
+        "positive_term_rms": 0.0,
+        "negative_term_rms": 0.0,
+        "write_rms": 0.0,
+        "write_to_terms_ratio": 0.0
+      },
+      {
+        "recurrence": 2,
+        "positive_term_rms": 1.5952633619308472,
+        "negative_term_rms": 2.289138078689575,
+        "write_rms": 0.7162286043167114,
+        "write_to_terms_ratio": 0.184385835312153
+      },
+      {
+        "recurrence": 3,
+        "positive_term_rms": 3.570295572280884,
+        "negative_term_rms": 5.090673923492432,
+        "write_rms": 1.664825201034546,
+        "write_to_terms_ratio": 0.19222157540755844
+      },
+      {
+        "recurrence": 4,
+        "positive_term_rms": 3.6342430114746094,
+        "negative_term_rms": 5.048335552215576,
+        "write_rms": 1.867625117301941,
+        "write_to_terms_ratio": 0.2151002842763758
+      },
+      {
+        "recurrence": 5,
+        "positive_term_rms": 3.311424493789673,
+        "negative_term_rms": 4.5883564949035645,
+        "write_rms": 1.5333846807479858,
+        "write_to_terms_ratio": 0.19410470783208897
+      },
+      {
+        "recurrence": 6,
+        "positive_term_rms": 3.0120320320129395,
+        "negative_term_rms": 4.256148815155029,
+        "write_rms": 1.3471734523773193,
+        "write_to_terms_ratio": 0.18535221958628853
+      }
+    ],
+    "latent_symmetric_rms": 0.45630979537963867,
+    "latent_skew_rms": 0.24159567058086395,
+    "latent_mapping_max_error": 5.960464477539062e-07
+  }
+]

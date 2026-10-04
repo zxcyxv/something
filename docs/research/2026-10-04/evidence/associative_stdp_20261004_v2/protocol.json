@@ -1,0 +1,47 @@
+{
+  "args": {
+    "out": "runs/associative_stdp_20261004_v2",
+    "steps": 3000,
+    "seeds": [
+      0,
+      1,
+      2
+    ],
+    "fixed_trials": 128,
+    "threads": 2
+  },
+  "source_sha256": "9add4e33a4f5ca69da622a3085f7d041f5bfb338e8345f29ae1342a0131b5ea3",
+  "torch": "2.8.0+cu128",
+  "numpy": "2.1.2",
+  "axis": "internal recurrence; parallel pattern lanes",
+  "dim": 32,
+  "hidden": 32,
+  "store_steps": 6,
+  "recall_steps": 4,
+  "batch_size": 16,
+  "primary": "Frozen-memory recall on unseen random bipolar pattern banks",
+  "write_scale": "write_gain/(number_of_patterns*store_steps), write_gain=1 for all rules",
+  "optimizer": "Adam lr=1e-3, weight_decay=0, clip_grad_norm=1; identical batches per rule",
+  "normalization": "Two affine-free post-residual RMSNorms, FP32 eps=1e-5; QK raw",
+  "storage": "All complete patterns are shown simultaneously on every storage recurrence; no query target is supplied at recall",
+  "trace": "Strict past normalized EMA; no trace reset during storage; zero initial memory/traces",
+  "general_window": "alpha_plus=2sigmoid(b), alpha_minus=2-alpha_plus; lambda_plus/minus=sigmoid(theta); initialized alpha=1, lambda=.1",
+  "slow_learning": "Supervised reconstruction trains the programmer; fast updates never receive target errors",
+  "checkpoint_selection": "Lowest held-out validation missing-bit MSE, validation evaluated every 250 steps",
+  "controls": [
+    "Canonical Hopfield",
+    "constant/correlated-in-time/noisy settling activities/shared background",
+    "zero/shuffled memory",
+    "fixed vs online recall",
+    "recall extrapolation 4/8/16",
+    "noisy cues"
+  ],
+  "limitations": [
+    "Continuous signed pair rule, not a spiking STDP reproduction",
+    "No positional RoPE and scalar traces in this toy: shared-latent skew factorization does not directly apply to the full Sudoku model with positional rotations and channel-dependent traces",
+    "General STDP has four effective-window scalars represented by three learned parameters; controls have no extra parameters",
+    "Fixed learning rate and write gain: a negative result cannot establish impossibility or domain mismatch",
+    "Frozen Hopfield reference clamps observed cue bits; learned reader receives a mask without output clamping",
+    "General windows are normalized-EMA windows: changing lambda also changes impulse amplitude"
+  ]
+}

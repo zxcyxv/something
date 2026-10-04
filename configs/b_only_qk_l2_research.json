@@ -1,0 +1,10 @@
+{
+  "kv_qk_l2norm": true,
+  "kv_qk_rmsnorm": false,
+  "eps": 0.0001,
+  "nograd_fixed": 0,
+  "nograd_every": 0,
+  "resume_from": null,
+  "require_resume": false,
+  "init_from": null
+}

@@ -1,0 +1,520 @@
+--- CastedSparseEmbedding old
++++ CastedSparseEmbedding new
+@@ -1,17 +1,16 @@
+ class CastedSparseEmbedding(nn.Module):
+ 
+-    def __init__(self, num_embeddings: int, embedding_dim: int, batch_size: int, init_std: float, cast_to: torch.dtype):
++    def __init__(self, num_embeddings, embedding_dim, batch_size, init_std, cast_to):
+         super().__init__()
+         self.cast_to = cast_to
+-        self.num_embeddings = num_embeddings
+-        self.weights = nn.Buffer(trunc_normal_init_(torch.empty((num_embeddings, embedding_dim)), std=init_std), persistent=True)
+-        self.local_weights = nn.Buffer(torch.zeros(batch_size, embedding_dim, requires_grad=True), persistent=False)
+-        self.local_ids = nn.Buffer(torch.zeros(batch_size, dtype=torch.int64), persistent=False)
++        self.register_buffer('weights', trunc_normal_init_(torch.empty(num_embeddings, embedding_dim), std=init_std))
++        self.register_buffer('local_weights', torch.zeros(batch_size, embedding_dim, requires_grad=True), persistent=False)
++        self.register_buffer('local_ids', torch.zeros(batch_size, dtype=torch.long), persistent=False)
+ 
+-    def forward(self, inputs: torch.Tensor) -> torch.Tensor:
++    def forward(self, inputs):
+         if not self.training:
+-            return self.weights[inputs].to(self.cast_to)
++            return self.weights[inputs.long()].to(self.cast_to)
+         with torch.no_grad():
+-            self.local_weights.copy_(self.weights[inputs])
++            self.local_weights.copy_(self.weights[inputs.long()])
+             self.local_ids.copy_(inputs)
+         return self.local_weights.to(self.cast_to)
+--- CastedSparseEmbeddingSignSGD_Distributed old
++++ CastedSparseEmbeddingSignSGD_Distributed new
+@@ -1,29 +1,25 @@
+ class CastedSparseEmbeddingSignSGD_Distributed(Optimizer):
+ 
+-    def __init__(self, params, world_size: int, lr=0.001, weight_decay: float=0.01):
+-        if not 0.0 <= lr:
+-            raise ValueError(f'Invalid learning rate: {lr}')
+-        if not 0.0 <= weight_decay:
+-            raise ValueError(f'Invalid weight_decay value: {weight_decay}')
+-        super().__init__(params, dict(lr=lr, weight_decay=weight_decay, world_size=world_size))
++    def __init__(self, embedding, world_size, lr=0.0, weight_decay=0.0):
++        self.embedding = embedding
++        super().__init__([embedding.weights, embedding.local_weights, embedding.local_ids], dict(lr=lr, weight_decay=weight_decay, world_size=world_size))
+ 
+     @torch.no_grad()
+     def step(self, closure=None):
+-        for group in self.param_groups:
+-            local_weights_grad = None
+-            local_ids = None
+-            weights = None
+-            assert len(group['params']) == 3
+-            for p in group['params']:
+-                if p.requires_grad:
+-                    local_weights_grad = p.grad
+-                elif p.ndim == 1:
+-                    local_ids = p
+-                elif p.ndim == 2:
+-                    weights = p
+-                else:
+-                    assert False
+-            assert local_ids is not None
+-            assert weights is not None
+-            if local_weights_grad is not None:
+-                _sparse_emb_signsgd_dist(local_weights_grad, local_ids, weights, lr=group['lr'], weight_decay=group['weight_decay'], world_size=group['world_size'])
++        group = self.param_groups[0]
++        e = self.embedding
++        grad, ids = (e.local_weights.grad, e.local_ids)
++        if grad is None:
++            grad = torch.zeros_like(e.local_weights)
++        if group['world_size'] > 1:
++            all_g = torch.empty((len(grad) * group['world_size'], grad.shape[1]), device=grad.device)
++            all_i = torch.empty(len(ids) * group['world_size'], dtype=ids.dtype, device=ids.device)
++            dist.all_gather_into_tensor(all_g, grad.contiguous())
++            dist.all_gather_into_tensor(all_i, ids.contiguous())
++            grad, ids = (all_g, all_i)
++        unique, inverse = ids.unique(return_inverse=True)
++        summed = torch.zeros((len(unique), grad.shape[1]), dtype=grad.dtype, device=grad.device)
++        summed.scatter_add_(0, inverse[:, None].expand_as(grad), grad)
++        p = e.weights[unique]
++        p.mul_(1 - group['lr'] * group['weight_decay']).add_(summed.sign(), alpha=-group['lr'])
++        e.weights[unique] = p
+--- ACTLossHead old
++++ ACTLossHead new
+@@ -1,36 +1,27 @@
+ class ACTLossHead(nn.Module):
+ 
+-    def __init__(self, model: nn.Module, loss_type: str, q_weight: float=0.5):
++    def __init__(self, model, loss_type='stablemax_cross_entropy', q_weight=0.5):
+         super().__init__()
+-        self.model = model
+-        self.loss_fn = globals()[loss_type]
+-        self.q_weight = q_weight
++        self.model, self.loss_fn, self.q_weight = (model, globals()[loss_type], q_weight)
+ 
+-    def initial_carry(self, *args, **kwargs):
+-        return self.model.initial_carry(*args, **kwargs)
++    def initial_carry(self, batch):
++        return self.model.initial_carry(batch)
+ 
+-    def forward(self, return_keys: Set[str], **model_kwargs):
+-        new_carry, outputs = self.model(**model_kwargs)
+-        labels = new_carry.current_data['labels']
++    def forward(self, return_keys: set, **kwargs):
++        carry, out = self.model(**kwargs)
++        y = carry.current_data['labels']
+         with torch.no_grad():
+-            outputs['preds'] = torch.argmax(outputs['logits'], dim=-1)
+-            mask = labels != IGNORE_LABEL_ID
+-            loss_counts = mask.sum(-1)
+-            loss_divisor = loss_counts.clamp_min(1).unsqueeze(-1)
+-            is_correct = mask & (outputs['preds'] == labels)
+-            seq_is_correct = is_correct.sum(-1) == loss_counts
+-            valid_metrics = new_carry.halted & (loss_counts > 0)
+-            metrics = {'count': valid_metrics.sum(), 'accuracy': torch.where(valid_metrics, (is_correct.to(torch.float32) / loss_divisor).sum(-1), 0).sum(), 'exact_accuracy': (valid_metrics & seq_is_correct).sum(), 'q_halt_accuracy': (valid_metrics & ((outputs['q_halt_logits'] >= 0) == seq_is_correct)).sum(), 'steps': torch.where(valid_metrics, new_carry.steps, 0).sum()}
+-        lm_loss = (self.loss_fn(outputs['logits'], labels, ignore_index=IGNORE_LABEL_ID) / loss_divisor).sum()
+-        q_halt_loss = F.binary_cross_entropy_with_logits(outputs['q_halt_logits'], seq_is_correct.to(outputs['q_halt_logits'].dtype), reduction='sum')
+-        metrics.update({'lm_loss': lm_loss.detach(), 'q_halt_loss': q_halt_loss.detach()})
+-        q_continue_loss = 0
+-        if 'target_q_continue' in outputs:
+-            q_continue_loss = F.binary_cross_entropy_with_logits(outputs['q_continue_logits'], outputs['target_q_continue'], reduction='sum')
+-            metrics['q_continue_loss'] = q_continue_loss.detach()
+-        returned_outputs: Dict[str, torch.Tensor] = {}
+-        for k in return_keys:
+-            if k in outputs:
+-                returned_outputs[k] = outputs[k].detach()
+-        total_loss = lm_loss + self.q_weight * (q_halt_loss + q_continue_loss)
+-        return (new_carry, total_loss, metrics, returned_outputs, new_carry.halted.all())
++            pred = out['logits'].argmax(-1)
++            mask = y != IGNORE_LABEL_ID
++            counts = mask.sum(-1)
++            divisor = counts.clamp_min(1).unsqueeze(-1)
++            ok = mask & (pred == y)
++            exact = ok.sum(-1) == counts
++            valid = carry.halted & (counts > 0)
++            metrics = dict(count=valid.sum(), accuracy=torch.where(valid, (ok.float() / divisor).sum(-1), 0).sum(), exact_accuracy=(valid & exact).sum(), q_halt_accuracy=(valid & ((out['q_halt_logits'] >= 0) == exact)).sum(), steps=torch.where(valid, carry.steps, 0).sum())
++        lm = (self.loss_fn(out['logits'], y, IGNORE_LABEL_ID) / divisor).sum()
++        qloss = F.binary_cross_entropy_with_logits(out['q_halt_logits'], exact.float(), reduction='sum')
++        metrics.update(lm_loss=lm.detach(), q_halt_loss=qloss.detach())
++        out['preds'] = pred
++        returned = {k: out[k].detach() for k in return_keys if k in out}
++        return (carry, lm + self.q_weight * qloss, metrics, returned, carry.halted.all())
+--- AdamATan2 old
++++ AdamATan2 new
+@@ -1,32 +1,21 @@
+ class AdamATan2(Optimizer):
+-    """수식 (Everett et al. 2024 정준형):
+-        p ← p · (1 − lr·wd)              # AdamW 식 분리 감쇠
+-        p ← p − lr · atan2(m̂, √v̂)       # ε 없는 스케일 불변 갱신
+-    """
+ 
+     def __init__(self, params, lr=0.001, betas=(0.9, 0.999), weight_decay=0.01):
+         super().__init__(params, dict(lr=lr, betas=betas, weight_decay=weight_decay))
+ 
+     @torch.no_grad()
+-    def step(self):
++    def step(self, closure=None):
+         for g in self.param_groups:
+             b1, b2 = g['betas']
+-            lr = g['lr']
+-            wd = g['weight_decay']
+             for p in g['params']:
+                 if p.grad is None:
+                     continue
+                 st = self.state[p]
+-                if len(st) == 0:
+-                    st['step'] = 0
+-                    st['m'] = torch.zeros_like(p)
+-                    st['v'] = torch.zeros_like(p)
++                if not st:
++                    st.update(step=0, m=torch.zeros_like(p), v=torch.zeros_like(p))
+                 st['step'] += 1
+-                t = st['step']
+-                m, v = (st['m'], st['v'])
++                t, m, v = (st['step'], st['m'], st['v'])
+                 m.mul_(b1).add_(p.grad, alpha=1 - b1)
+                 v.mul_(b2).addcmul_(p.grad, p.grad, value=1 - b2)
+-                mh = m / (1 - b1 ** t)
+-                vh = v / (1 - b2 ** t)
+-                p.mul_(1 - lr * wd)
+-                p.add_(torch.atan2(mh, vh.sqrt()), alpha=-lr)
++                p.mul_(1 - g['lr'] * g['weight_decay'])
++                p.add_(torch.atan2(m / (1 - b1 ** t), (v / (1 - b2 ** t)).sqrt()), alpha=-g['lr'])
+--- create_optimizers old
++++ create_optimizers new
+@@ -1,5 +1,9 @@
+-def create_optimizers(model: nn.Module, cfg: dict, world_size: int):
+-    """pretrain.py:224-248 의 옵티마이저 구성 그대로 (use_muon=False 경로)."""
+-    optimizers = [CastedSparseEmbeddingSignSGD_Distributed(model.model.puzzle_emb.buffers(), lr=0, weight_decay=cfg['puzzle_emb_weight_decay'], world_size=world_size), AdamATan2([{'params': [p for n, p in model.named_parameters() if _is_no_decay(n, p)], 'weight_decay': 0.0}, {'params': [p for n, p in model.named_parameters() if not _is_no_decay(n, p)], 'weight_decay': cfg['weight_decay']}], lr=0, weight_decay=cfg['weight_decay'], betas=(cfg['beta1'], cfg['beta2']))]
+-    optimizer_lrs = [cfg['puzzle_emb_lr'], cfg['lr']]
+-    return (optimizers, optimizer_lrs)
++def create_optimizers(base, cfg, world_size):
++    opts, lrs = ([], [])
++    if base.model.puzzle_emb is not None:
++        opts.append(CastedSparseEmbeddingSignSGD_Distributed(base.model.puzzle_emb, world_size, weight_decay=cfg['puzzle_emb_weight_decay']))
++        lrs.append(cfg['puzzle_emb_lr'])
++    named = [(n, p) for n, p in base.named_parameters() if p.requires_grad]
++    opts.append(AdamATan2([{'params': [p for n, p in named if _is_no_decay(n, p)], 'weight_decay': 0.0}, {'params': [p for n, p in named if not _is_no_decay(n, p)], 'weight_decay': cfg['weight_decay']}], lr=0, betas=(cfg['beta1'], cfg['beta2'])))
++    lrs.append(cfg['lr'])
++    return (opts, lrs)
+--- EMAHelper old
++++ EMAHelper new
+@@ -1,22 +1,19 @@
+-class EMAHelper(object):
++class EMAHelper:
+ 
+     def __init__(self, mu=0.999):
+-        self.mu = mu
+-        self.shadow = {}
+-
+-    def register(self, module):
+-        for name, param in module.named_parameters():
+-            if param.requires_grad:
+-                self.shadow[name] = param.data.clone()
+-
+-    @torch.no_grad()
+-    def update(self, module):
+-        for name, param in module.named_parameters():
+-            if param.requires_grad:
+-                self.shadow[name].data = (1.0 - self.mu) * param.data + self.mu * self.shadow[name].data
++        self.mu, self.shadow = (mu, {})
+ 
+     def state_dict(self):
+         return self.shadow
+ 
+-    def load_state_dict(self, state_dict):
+-        self.shadow = state_dict
++    def load_state_dict(self, state):
++        self.shadow = state
++
++    def register(self, module):
++        self.shadow = {n: p.detach().clone() for n, p in module.named_parameters() if p.requires_grad}
++
++    @torch.no_grad()
++    def update(self, module):
++        for n, p in module.named_parameters():
++            if p.requires_grad:
++                self.shadow[n].mul_(self.mu).add_(p, alpha=1 - self.mu)
+--- _EMASwap old
++++ _EMASwap new
+@@ -1,25 +1,21 @@
+ class _EMASwap:
+-    """with 블록 동안 모델 파라미터를 EMA shadow 로 바꿔 끼운다."""
+ 
+-    def __init__(self, module, ema: Optional[EMAHelper]):
++    def __init__(self, module, ema):
+         self.module, self.ema, self.backup = (module, ema, {})
+ 
+     def __enter__(self):
+-        if self.ema is None:
+-            return self.module
+-        with torch.no_grad():
+-            for name, param in self.module.named_parameters():
+-                if param.requires_grad and name in self.ema.shadow:
+-                    self.backup[name] = param.data.clone()
+-                    param.data.copy_(self.ema.shadow[name].data)
++        if self.ema is not None:
++            with torch.no_grad():
++                for n, p in self.module.named_parameters():
++                    if n in self.ema.shadow:
++                        self.backup[n] = p.detach().clone()
++                        p.copy_(self.ema.shadow[n])
+         return self.module
+ 
+     def __exit__(self, *exc):
+-        if self.ema is None:
+-            return False
+         with torch.no_grad():
+-            for name, param in self.module.named_parameters():
+-                if name in self.backup:
+-                    param.data.copy_(self.backup[name])
++            for n, p in self.module.named_parameters():
++                if n in self.backup:
++                    p.copy_(self.backup[n])
+         self.backup.clear()
+         return False
+--- SudokuTrainDataset old
++++ SudokuTrainDataset new
+@@ -1,23 +1,17 @@
+ class SudokuTrainDataset(IterableDataset):
+-    """URM PuzzleDataset(_iter_train) 을 스도쿠 1k-aug-N 구조에 특화해 옮긴 것.
+ 
+-    구조상 group_indices = arange(0, n*(1+num_aug)+1, 1+num_aug), puzzle_indices = arange(...),
+-    mean_puzzle_examples = 1 이므로 원본의 인덱스 배열을 파일로 들고 다닐 필요가 없다.
+-    """
+-
+-    def __init__(self, inputs: np.ndarray, labels: np.ndarray, *, seed: int, num_aug: int, global_batch_size: int, rank: int, world_size: int, epochs_per_iter: int, start_iter: int, total_iters: int, skip_batches: int=0):
++    def __init__(self, inputs, labels, *, seed, num_aug, global_batch_size, rank, world_size, epochs_per_iter, start_iter, total_iters, skip_batches=0):
+         super().__init__()
+         self.inputs, self.labels = (inputs, labels)
+         self.seed, self.num_aug = (seed, num_aug)
+         self.gbs, self.rank, self.world_size = (global_batch_size, rank, world_size)
+         self.local_bs = global_batch_size // world_size
+-        self.epochs_per_iter = epochs_per_iter
+-        self.start_iter, self.total_iters, self.skip_batches = (start_iter, total_iters, skip_batches)
+-        self.n_groups = len(inputs)
+-        self.gsize = 1 + num_aug
+-        self._aug_key0 = np.uint64(11400714819323198485 ^ np.uint64(seed))
++        self.epochs_per_iter, self.start_iter = (epochs_per_iter, start_iter)
++        self.total_iters, self.skip_batches = (total_iters, skip_batches)
++        self.n_groups, self.gsize = (len(inputs), 1 + num_aug)
++        self._aug_key0 = np.uint64(11400714819323198485 ^ int(seed))
+ 
+-    def _augmented(self, gid: int, aug_idx: int):
++    def _augmented(self, gid, aug_idx):
+         if aug_idx == 0:
+             return (self.inputs[gid], self.labels[gid])
+         key = np.array([self._aug_key0, np.uint64(gid * self.gsize + aug_idx)], dtype=np.uint64)
+@@ -26,33 +20,32 @@
+         return (_apply_aug(self.inputs[gid], *prm), _apply_aug(self.labels[gid], *prm))
+ 
+     def __iter__(self):
+-        from torch.utils.data import get_worker_info
+-        wi = get_worker_info()
+-        assert wi is None or wi.num_workers == 1, 'Multithreaded data loading is not currently supported.'
++        wi = torch.utils.data.get_worker_info()
++        if wi is not None and wi.num_workers != 1:
++            raise RuntimeError('dataloader_workers must be 0 or 1.')
+         skip = self.skip_batches
+         for it in range(self.start_iter, self.total_iters):
+             rng = np.random.Generator(np.random.Philox(seed=self.seed + it + 1))
+-            group_order = np.concatenate([rng.permutation(self.n_groups) for _ in range(self.epochs_per_iter)])
+-            start_index = 0
+-            while start_index < group_order.size:
++            groups = np.concatenate([rng.permutation(self.n_groups) for _ in range(self.epochs_per_iter)])
++            start = 0
++            while start < len(groups):
+                 gsel, asel = ([], [])
+-                while start_index < group_order.size and len(gsel) < self.gbs:
+-                    g = int(group_order[start_index])
++                while start < len(groups) and len(gsel) < self.gbs:
++                    g = int(groups[start])
+                     pid = int(rng.integers(g * self.gsize, (g + 1) * self.gsize))
+-                    start_index += 1
++                    start += 1
+                     rng.choice(1, 1, replace=False)
+                     gsel.append(g)
+                     asel.append(pid - g * self.gsize)
+                 if len(gsel) < self.gbs:
+                     break
+-                if skip > 0:
++                if skip:
+                     skip -= 1
+                     continue
+                 off = self.rank * self.local_bs
+                 inp = np.empty((self.local_bs, 81), dtype=np.int32)
+-                lab = np.empty((self.local_bs, 81), dtype=np.int32)
++                lab = np.empty_like(inp)
+                 for j in range(self.local_bs):
+-                    bi, bl = self._augmented(gsel[off + j], asel[off + j])
+-                    inp[j] = bi.reshape(81).astype(np.int32) + 1
+-                    lab[j] = bl.reshape(81).astype(np.int32) + 1
+-                yield (it, {'inputs': torch.from_numpy(inp), 'labels': torch.from_numpy(lab), 'puzzle_identifiers': torch.zeros(self.local_bs, dtype=torch.int32)})
++                    x, y = self._augmented(gsel[off + j], asel[off + j])
++                    inp[j], lab[j] = (x.reshape(81) + 1, y.reshape(81) + 1)
++                yield (it, dict(inputs=torch.from_numpy(inp), labels=torch.from_numpy(lab), puzzle_identifiers=torch.zeros(self.local_bs, dtype=torch.int32)))
+--- train_batch old
++++ train_batch new
+@@ -1,59 +1,31 @@
+-def train_batch(model, base, ts: TrainState, batch, cfg, optimizers, optimizer_lrs, total_steps: int, rank: int, world_size: int, device):
+-    accum_steps = max(1, cfg['grad_accum_steps'])
+-    gbs = cfg['global_batch_size']
+-    if ts.step >= total_steps:
+-        return None
++def train_batch(model, base, ts, batch, cfg, optimizers, lrs, total_steps, rank, world_size, device):
++    planned_steps, ws = (total_steps, world_size)
++    ts.in_step = True
+     batch = {k: v.to(device, non_blocking=True) for k, v in batch.items()}
+     if ts.carry is None:
+-        with torch.device(device):
+-            ts.carry = base.initial_carry(batch)
+-    if _TIME_SYNC:
+-        torch.cuda.synchronize()
+-        _tf = time.perf_counter()
+-    ts.carry, loss, metrics, _, _ = model(carry=ts.carry, batch=batch, return_keys=set())
+-    loss_scale = 1.0 / (gbs * accum_steps)
+-    (loss_scale * loss).backward()
+-    if _TIME_SYNC:
+-        torch.cuda.synchronize()
+-        ts.last_fwdbwd_s = time.perf_counter() - _tf
+-    ts.last_allreduce_s = 0.0
+-    if world_size > 1:
+-        grads = []
+-        for param in base.parameters():
+-            if not param.requires_grad:
+-                continue
+-            if param.grad is None:
+-                param.grad = torch.zeros_like(param)
+-            grads.append(param.grad)
+-        if _TIME_SYNC:
+-            torch.cuda.synchronize()
+-            _ta = time.perf_counter()
+-        flat = torch._utils._flatten_dense_tensors(grads)
+-        dist.all_reduce(flat)
+-        for g, src in zip(grads, torch._utils._unflatten_dense_tensors(flat, grads)):
+-            g.copy_(src)
+-        if _TIME_SYNC:
+-            torch.cuda.synchronize()
+-            ts.last_allreduce_s = time.perf_counter() - _ta
+-    lr_this_step = None
+-    for optim, base_lr in zip(optimizers, optimizer_lrs):
+-        lr_this_step = cosine_schedule_with_warmup_lr_lambda(current_step=ts.step, base_lr=base_lr, num_warmup_steps=round(cfg['lr_warmup_steps']), num_training_steps=total_steps, min_ratio=cfg['lr_min_ratio'])
+-        for pg in optim.param_groups:
+-            pg['lr'] = lr_this_step
+-        optim.step()
+-        optim.zero_grad()
+-    ts.step += 1
+-    if len(metrics):
+-        metric_keys = list(sorted(metrics.keys()))
+-        metric_values = torch.stack([metrics[k].to(torch.float32) for k in metric_keys])
+-        if world_size > 1:
+-            dist.reduce(metric_values, dst=0)
+-        if rank == 0:
+-            mv = metric_values.cpu().numpy()
+-            red = {k: mv[i] for i, k in enumerate(metric_keys)}
+-            count = max(red.get('count', 0), 1)
+-            out = {k: v / gbs if k.endswith('loss') else v / count for k, v in red.items()}
+-            out['lr'] = lr_this_step
+-            out['_count_raw'] = float(red.get('count', 0.0))
+-            return out
+-    return None
++        ts.carry = base.initial_carry(batch)
++    for opt in optimizers:
++        opt.zero_grad(set_to_none=True)
++    nc, loss, metrics, _, _ = model(carry=ts.carry, batch=batch, return_keys=set())
++    (loss / cfg['global_batch_size']).backward()
++    _allreduce_parameter_grads(base, device, ws)
++    _check_finite_gradients(base, loss, device, ws)
++    lr = 0.0
++    for opt, base_lr in zip(optimizers, lrs):
++        lr = cosine_schedule_with_warmup_lr_lambda(ts.step, base_lr=base_lr, num_warmup_steps=cfg['lr_warmup_steps'], num_training_steps=planned_steps, min_ratio=cfg['lr_min_ratio'])
++        for group in opt.param_groups:
++            group['lr'] = lr
++        opt.step()
++        opt.zero_grad(set_to_none=True)
++    ts.carry, ts.step = (nc, ts.step + 1)
++    ts.in_step = False
++    vals = torch.stack([metrics[k].float() for k in _METRIC_KEYS])
++    if ws > 1:
++        dist.reduce(vals, dst=0)
++    if rank != 0:
++        return None
++    d = dict(zip(_METRIC_KEYS, vals.cpu().tolist()))
++    n = max(d['count'], 1)
++    result = {k: v / (cfg['global_batch_size'] if k.endswith('loss') else n) for k, v in d.items()}
++    result.update(lr=lr, _count_raw=d['count'])
++    return result
+--- evaluate old
++++ evaluate new
+@@ -1,17 +1,29 @@
+-def evaluate(model, base, eval_in, eval_lb, cfg, rank, world_size, device, step: int, ema: Optional[EMAHelper]):
++@torch.no_grad()
++def evaluate(base, eval_in, eval_lb, cfg, rank, ws, device, step, ema, deadline=float('inf')):
++    totals = torch.zeros(len(_METRIC_KEYS), dtype=torch.float64, device=device)
++    interrupted = False
++    training = base.training
+     with _EMASwap(base, ema):
+         base.eval()
+         try:
+-            keys, values = _eval_pass(model, base, eval_in, eval_lb, cfg, rank, world_size, device)
++            for batch in eval_batches(eval_in, eval_lb, cfg['global_batch_size'], rank, ws):
++                if stop_requested(device, deadline):
++                    interrupted = True
++                    break
++                if batch is None:
++                    continue
++                batch = {k: v.to(device) for k, v in batch.items()}
++                carry = base.initial_carry(batch)
++                for _ in range(cfg['loops']):
++                    carry, _, metrics, _, _ = base(carry=carry, batch=batch, return_keys=set())
++                totals += torch.stack([metrics[k].double() for k in _METRIC_KEYS])
+         finally:
+-            base.train()
+-    if values is None:
+-        return None
+-    if world_size > 1:
+-        dist.reduce(values, dst=0)
++            base.train(training)
++    if ws > 1:
++        dist.reduce(totals, dst=0)
+     if rank != 0:
+         return None
+-    d = dict(zip(keys, values.cpu().numpy()))
+-    n = max(float(d.get('count', 1.0)), 1.0)
+-    print(f'[EVAL] step {step}  acc {d.get('accuracy', 0.0) / n:.4f}  exact {int(d.get('exact_accuracy', 0))}/{int(n)}', flush=True)
+-    return {k: v / n if k != 'count' else v for k, v in d.items()}
++    d = dict(zip(_METRIC_KEYS, totals.cpu().tolist()))
++    n = int(d['count'])
++    print(f'[EVAL] step {step} acc {d['accuracy'] / max(n, 1):.4f} exact {int(d['exact_accuracy'])}/{n}' + (' [partial: time/stop]' if interrupted else ''), flush=True)
++    return {k: v / max(n, 1) if k != 'count' else v for k, v in d.items()}
+--- load_training_checkpoint old
++++ load_training_checkpoint new
+@@ -0,0 +1,30 @@
++def load_training_checkpoint(path, base, optimizers, ema, cfg, rank, ws, device):
++    ck = torch.load(path, map_location='cpu', weights_only=False)
++    if ck.get('model_id') != MODEL_ID:
++        raise ValueError('Expected a Kaggle v1.71 checkpoint. Start a new output directory for v1.71 training from scratch; other architectures are not auto-converted.')
++    old = ck['cfg']
++    changed = {k: (old.get(k), cfg.get(k)) for k in _RESUME_KEYS if old.get(k) != cfg.get(k)}
++    if changed:
++        raise ValueError(f'Resume config/data mismatch (start a new out_dir for a new experiment): {changed}')
++    for key, default in (('beta_init_mean', 0.0), ('beta_init_std', 0.5)):
++        cfg[key] = old.get(key, default)
++        setattr(base.model.config, key, cfg[key])
++    base.load_state_dict(ck['raw_model_state_dict'], strict=True, assign=False)
++    if len(optimizers) != len(ck['optimizer_states']):
++        raise ValueError('Optimizer count mismatch.')
++    for opt, state in zip(optimizers, ck['optimizer_states']):
++        opt.load_state_dict(state)
++        if isinstance(opt, CastedSparseEmbeddingSignSGD_Distributed):
++            opt.param_groups[0]['world_size'] = ws
++        opt.zero_grad(set_to_none=True)
++    if ema is not None:
++        shadow = ck.get('ema_shadow')
++        if shadow is None or set(shadow) != set(ema.shadow):
++            raise ValueError('EMA shadow is missing or incompatible.')
++        ema.shadow = {n: v.to(device) for n, v in shadow.items()}
++    ts = TrainState(step=int(ck['step']), iter_id=int(ck['iter_id']), batch_in_iter=int(ck['batch_in_iter']), carry=_restore_carry(ck['rank_states'], rank, ws, cfg['global_batch_size'], device))
++    if ws == ck['world_size']:
++        _restore_rng(ck['rank_states'][rank]['rng'], device)
++    elif rank == 0:
++        print(f'[LT] resharded saved h/w/z/data: {ck['world_size']} -> {ws} ranks; bitwise equality across GPU layouts is not promised.', flush=True)
++    return ts

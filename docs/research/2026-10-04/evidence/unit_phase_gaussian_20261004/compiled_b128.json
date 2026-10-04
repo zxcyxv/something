@@ -1,0 +1,633 @@
+{
+  "protocol": {
+    "gpu": "NVIDIA RTX A5000",
+    "torch": "2.8.0+cu128",
+    "batch": 128,
+    "heads": 8,
+    "channels_per_head": 104,
+    "dtype": "float32",
+    "tf32": false,
+    "compilation": "torch.compile(default, fullgraph=True)",
+    "phases": "independent per token/channel in [-1.3,1.3]; every difference within (-pi,pi)",
+    "rule": "A=sign(Im(exp(i phiV) conj(exp(i phiK))))=sign(sin(delta)); L=A exp(-delta^2/tau)",
+    "tau": 1.0,
+    "gain": 1.0,
+    "zero_lag": "zero at exact ties; one-sided limits +/-1; no epsilon/surrogate",
+    "derivatives": "ordinary sign gradient zero; phase envelope derivative -2 delta L/tau",
+    "scope": "current G write + all-Q read with full first-order gradients; excludes QKV/phase projection, RoPE, FFN, RMSNorm, optimizer, full-model recurrence",
+    "kernels": "fused pairwise tiles and custom backward; no saved B,H,T,D,D tensor",
+    "precomputed": "sin/cos prepared per neuron; near-cancellation reevaluation, not sign smoothing",
+    "matched_control": "gaussian_lag_triton: identical kernels with direct lag signs",
+    "baseline": "fixed_gemm/split_g use the original exponential window and are cost references, not quality controls",
+    "memory": "PyTorch allocated peak; extra peak excludes supplied inputs",
+    "repetitions": 3,
+    "rounds": 3
+  },
+  "cpu_correctness": {
+    "value_gradient_checks": [
+      {
+        "case": "repeated_exact_ties",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "repeated_exact_ties",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "all_phases_equal",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "all_phases_equal",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "near_zero_positive",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "near_zero_positive",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "near_zero_negative",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "near_zero_negative",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "queries_different_from_sources",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "queries_different_from_sources",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "phases_shared_across_tokens",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "phases_shared_across_tokens",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "random",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "random",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "adjacent_float_negative",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "adjacent_float_negative",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "adjacent_float_positive",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "adjacent_float_positive",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "noncontiguous_inputs",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "noncontiguous_inputs",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "normalize_before_observation_sum",
+        "implementation": "literal_unit_inner",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "normalize_before_observation_sum",
+        "implementation": "relative_angle",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      },
+      {
+        "case": "different_width_and_gain",
+        "output_max_abs_error": 0.0,
+        "gradient_max_abs_errors": {
+          "Q": 0.0,
+          "K": 0.0,
+          "V": 0.0,
+          "phiK": 0.0,
+          "phiV": 0.0
+        }
+      }
+    ],
+    "common_carrier_max_abs_error": 3.3306690738754696e-16
+  },
+  "window": [
+    {
+      "lag": -1.5,
+      "A": -1.0,
+      "gaussian": -0.10539922456186433,
+      "gaussian_phase_gradient": -0.316197673685593,
+      "exponential": -0.22313016014842982
+    },
+    {
+      "lag": -1.0,
+      "A": -1.0,
+      "gaussian": -0.36787944117144233,
+      "gaussian_phase_gradient": -0.7357588823428847,
+      "exponential": -0.36787944117144233
+    },
+    {
+      "lag": -0.1,
+      "A": -1.0,
+      "gaussian": -0.9900498337491681,
+      "gaussian_phase_gradient": -0.19800996674983362,
+      "exponential": -0.9048374180359595
+    },
+    {
+      "lag": -1e-07,
+      "A": -1.0,
+      "gaussian": -0.99999999999999,
+      "gaussian_phase_gradient": -1.99999999999998e-07,
+      "exponential": -0.999999900000005
+    },
+    {
+      "lag": 0.0,
+      "A": 0.0,
+      "gaussian": 0.0,
+      "gaussian_phase_gradient": 0.0,
+      "exponential": 0.0
+    },
+    {
+      "lag": 1e-07,
+      "A": 1.0,
+      "gaussian": 0.99999999999999,
+      "gaussian_phase_gradient": -1.99999999999998e-07,
+      "exponential": 0.999999900000005
+    },
+    {
+      "lag": 0.1,
+      "A": 1.0,
+      "gaussian": 0.9900498337491681,
+      "gaussian_phase_gradient": -0.19800996674983362,
+      "exponential": 0.9048374180359595
+    },
+    {
+      "lag": 1.0,
+      "A": 1.0,
+      "gaussian": 0.36787944117144233,
+      "gaussian_phase_gradient": -0.7357588823428847,
+      "exponential": 0.36787944117144233
+    },
+    {
+      "lag": 1.5,
+      "A": 1.0,
+      "gaussian": 0.10539922456186433,
+      "gaussian_phase_gradient": -0.316197673685593,
+      "exponential": 0.22313016014842982
+    }
+  ],
+  "rows": [
+    {
+      "tokens": 81,
+      "implementation": "fixed_gemm",
+      "forward": {
+        "median_ms": 0.6291199922561646,
+        "rounds_ms": [
+          0.6387626727422079,
+          0.6291199922561646,
+          0.6261119842529297
+        ],
+        "base_allocated_mib": 106.8505859375,
+        "peak_allocated_mib": 182.0068359375,
+        "extra_peak_mib": 75.15625
+      },
+      "forward_backward": {
+        "median_ms": 2.592127958933512,
+        "rounds_ms": [
+          2.601151943206787,
+          2.592127958933512,
+          2.588874657948812
+        ],
+        "base_allocated_mib": 114.9755859375,
+        "peak_allocated_mib": 364.0078125,
+        "extra_peak_mib": 249.0322265625
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "split_g",
+      "forward": {
+        "median_ms": 4.47814400990804,
+        "rounds_ms": [
+          4.47814400990804,
+          4.469888051350911,
+          4.878207842508952
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 255.9375,
+        "extra_peak_mib": 75.15625
+      },
+      "forward_backward": {
+        "median_ms": 15.723285675048828,
+        "rounds_ms": [
+          15.306111653645834,
+          15.740586598714193,
+          15.723285675048828
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 453.3759765625,
+        "extra_peak_mib": 272.5947265625
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "unit_phase_triton",
+      "forward": {
+        "median_ms": 11.641855875651041,
+        "rounds_ms": [
+          11.34603754679362,
+          11.641855875651041,
+          11.663434346516928
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 255.9375,
+        "extra_peak_mib": 75.15625
+      },
+      "forward_backward": {
+        "median_ms": 34.11121114095052,
+        "rounds_ms": [
+          34.02448018391927,
+          34.1716054280599,
+          34.11121114095052
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 537.8759765625,
+        "extra_peak_mib": 357.0947265625
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "unit_phase_precomputed",
+      "forward": {
+        "median_ms": 21.425460815429688,
+        "rounds_ms": [
+          21.02457555135091,
+          21.502731323242188,
+          21.425460815429688
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 354.65625,
+        "extra_peak_mib": 173.875
+      },
+      "forward_backward": {
+        "median_ms": 52.553314208984375,
+        "rounds_ms": [
+          52.15379333496094,
+          52.553314208984375,
+          52.7153065999349
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 792.8759765625,
+        "extra_peak_mib": 612.0947265625
+      }
+    },
+    {
+      "tokens": 81,
+      "implementation": "gaussian_lag_triton",
+      "forward": {
+        "median_ms": 4.600831985473633,
+        "rounds_ms": [
+          4.507957458496094,
+          4.600831985473633,
+          4.990826606750488
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 255.9375,
+        "extra_peak_mib": 75.15625
+      },
+      "forward_backward": {
+        "median_ms": 24.023508707682293,
+        "rounds_ms": [
+          23.787765502929688,
+          24.14643096923828,
+          24.023508707682293
+        ],
+        "base_allocated_mib": 180.78125,
+        "peak_allocated_mib": 537.8759765625,
+        "extra_peak_mib": 357.0947265625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "fixed_gemm",
+      "forward": {
+        "median_ms": 3.9504639307657876,
+        "rounds_ms": [
+          3.9504639307657876,
+          3.8795413970947266,
+          3.961066563924154
+        ],
+        "base_allocated_mib": 1114.2568359375,
+        "peak_allocated_mib": 1522.5068359375,
+        "extra_peak_mib": 408.25
+      },
+      "forward_backward": {
+        "median_ms": 20.318047841389973,
+        "rounds_ms": [
+          19.70148213704427,
+          20.318047841389973,
+          20.371082305908203
+        ],
+        "base_allocated_mib": 1114.2568359375,
+        "peak_allocated_mib": 3028.7578125,
+        "extra_peak_mib": 1914.5009765625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "split_g",
+      "forward": {
+        "median_ms": 50.08503214518229,
+        "rounds_ms": [
+          50.26966349283854,
+          50.08503214518229,
+          50.0416005452474
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 2254.5,
+        "extra_peak_mib": 408.25
+      },
+      "forward_backward": {
+        "median_ms": 168.23258463541666,
+        "rounds_ms": [
+          168.23258463541666,
+          169.3271484375,
+          168.13648478190103
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 4450.5009765625,
+        "extra_peak_mib": 2604.2509765625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "unit_phase_triton",
+      "forward": {
+        "median_ms": 90.04874674479167,
+        "rounds_ms": [
+          90.07423909505208,
+          90.04874674479167,
+          90.0428975423177
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 2254.5,
+        "extra_peak_mib": 408.25
+      },
+      "forward_backward": {
+        "median_ms": 324.63018798828125,
+        "rounds_ms": [
+          324.01588948567706,
+          324.6909993489583,
+          324.63018798828125
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 4450.5009765625,
+        "extra_peak_mib": 2604.2509765625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "unit_phase_precomputed",
+      "forward": {
+        "median_ms": 159.51258341471353,
+        "rounds_ms": [
+          159.41667683919272,
+          160.33829752604166,
+          159.51258341471353
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 3352.5,
+        "extra_peak_mib": 1506.25
+      },
+      "forward_backward": {
+        "median_ms": 469.7803548177083,
+        "rounds_ms": [
+          468.8490397135417,
+          469.7803548177083,
+          470.559814453125
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 5914.5009765625,
+        "extra_peak_mib": 4068.2509765625
+      }
+    },
+    {
+      "tokens": 900,
+      "implementation": "gaussian_lag_triton",
+      "forward": {
+        "median_ms": 39.476969401041664,
+        "rounds_ms": [
+          39.429344177246094,
+          39.476969401041664,
+          39.47841135660807
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 2254.5,
+        "extra_peak_mib": 408.25
+      },
+      "forward_backward": {
+        "median_ms": 235.62066650390625,
+        "rounds_ms": [
+          235.77168782552084,
+          235.5343017578125,
+          235.62066650390625
+        ],
+        "base_allocated_mib": 1846.25,
+        "peak_allocated_mib": 4450.5009765625,
+        "extra_peak_mib": 2604.2509765625
+      }
+    }
+  ]
+}

@@ -108,9 +108,81 @@ def main():
             comparison="Original baseline_ng0; same initialization, data, optimizer, depth, temporal window and additive M.",
             distinction="Same fixed-theta forward operator, but preserves event-time key coordinates across optimizer updates and detaches their past theta dependence at segment boundaries.",
             primary_criterion="Training loss/accuracy and whether sustained deterioration returns; EMA test performance is secondary.")
+    elif args.variant == "phase_unit_gaussian_current_only":
+        metadata.update(
+            write_equation="G_ij=mean_tokens(V_i*RoPE(K)_j*L(phiV_i-phiK_j)); window applied before the token mean",
+            read_equation="RoPE(Q) @ G.T (column convention: Gq)",
+            window="L(delta)=sign(sin(delta))*exp(-delta^2/tau)",
+            phase_shape="independent K/V [batch,heads,tokens,head_dim] per layer and recurrence",
+            phase_parameterization="phi=(pi/2-1e-4)*tanh(W_phase h+theta_raw); h includes current input injection",
+            phase_representation="Independent real signed activity and bounded phase projections (polar factors), not independent Cartesian real/imaginary projections",
+            phase_projection_initialization="nn.Linear default Kaiming-uniform initialization; bias=False",
+            phase_offset_initialization="independent uniform angles [-pi/4,pi/4] converted to raw tanh coordinates",
+            phase_limit=math.pi/2-1e-4,
+            phase_trainable=True, phase_projection_weight_decay=cfg["weight_decay"],
+            phase_offset_weight_decay=0, phase_projection_dtype="FP32; outside BF16 autocast",
+            phase_tau=1.0, phase_tau_units="squared radians", phase_tau_trainable=False,
+            ltp_amplitude=1.0, ltd_amplitude=1.0, zero_lag_value=0.0,
+            phase_difference_wrap=False,
+            alias_control="Bounded phases ensure all pairwise differences lie strictly inside (-pi,pi), including FP32 tanh saturation",
+            phase_gradient="ordinary first-order gradient; sign derivative zero; Gaussian envelope derivative -2*delta*L/tau; no surrogate",
+            unit_normalization="none; sin/cos already represent unit phasors; fused kernel evaluates sign(sin(delta)) directly",
+            common_carrier="cancels exactly; no clock or oscillator state",
+            qk_normalization="none; existing real spatial RoPE retained",
+            block_equation="u=RMSNorm(h+attention(h)); next=RMSNorm(u+bilinear_FFN(u))",
+            block_normalization=dict(eps=1e-5, affine=False, accumulation_dtype="float32", count=2),
+            recurrent_memory=False, eligibility_traces=False, interpolation=False,
+            carry_matrix="current G for diagnostics only; ignored on the next step",
+            within_segment_gradient="all 8 recurrent blocks; activation recomputation only, no no-grad or detach within a segment",
+            segment_boundary="existing aligned harness: detach carry after every optimizer step; same sample retained for 16 segments",
+            implementation="lt/unit_phase_stdp.py:unit_phase_gaussian_write; same unit-phase Triton operator as the benchmark",
+            comparison_note="Compared with the old fixed-phase exponential run, both phase dependence and window shape change; not a single-variable ablation")
+        kernel = Path(__file__).with_name("unit_phase_stdp.py").read_bytes()
+        metadata["kernel_sha256"] = hashlib.sha256(kernel).hexdigest()
+        (out / "unit_phase_stdp_snapshot.py").write_bytes(kernel)
+    elif args.variant in ("phase_current_only", "phase_exp_current_only"):
+        metadata.update(
+            write_equation="G_ij=mean_tokens(V_i*RoPE(K)_j*sin(phiV_i-phiK_j))",
+            read_equation="RoPE(Q) @ G.T (column convention: Gq)",
+            phase_shape="independent K/V [heads, head_dim] per layer",
+            phase_parameterization="phi=(pi/2)*tanh(theta_raw)",
+            phase_initialization="independent uniform angles [-pi/4, pi/4]",
+            phase_trainable=True, phase_weight_decay=0,
+            phase_shared_over="tokens and recurrent iterations",
+            common_carrier="cancels exactly; no clock or oscillator state",
+            window="sine only; no exponential envelope or harmonics",
+            qk_normalization="none; existing real spatial RoPE retained",
+            block_equation="u=RMSNorm(h+attention(h)); next=RMSNorm(u+bilinear_FFN(u))",
+            block_normalization=dict(eps=1e-5, affine=False, accumulation_dtype="float32", count=2),
+            recurrent_memory=False, eligibility_traces=False, interpolation=False,
+            carry_matrix="current G for diagnostics only; ignored on the next step",
+            parameter_note="Original initialization and unused trace parameters retained; theta parameters excluded from decay by existing optimizer rule.")
+        if args.variant == "phase_exp_current_only":
+            metadata.update(
+                write_equation="G=(V.T @ RoPE(K)/T) * L(phiV_i-phiK_j)",
+                window="L(delta)=sign(delta)*exp(-abs(delta)/tau); exact, no Fourier approximation",
+                phase_tau=1.0, phase_tau_units="radians; omega*tau_time",
+                phase_tau_trainable=False, ltp_amplitude=1.0, ltd_amplitude=1.0,
+                zero_lag_value=0.0, phase_difference_wrap=False,
+                phase_gradient="ordinary autodiff; sign derivative zero; envelope derivative away from zero; no surrogate",
+                distinction="Uses a phase-difference kernel on the real KV product, not the imaginary part of a single complex outer product.")
+    elif args.variant == "current_only_urm_norm":
+        metadata.update(
+            read_equation="RoPE(Q) @ (V.T @ RoPE(K) / T).T; raw Q/K",
+            qk_normalization="none",
+            block_equation="u=RMSNorm(h+attention(h)); next=RMSNorm(u+bilinear_FFN(u))",
+            block_normalization=dict(eps=1e-5, affine=False, accumulation_dtype="float32", count=2),
+            phi_replaced=True, recurrent_memory=False, eligibility_traces=False,
+            reference="UbiquantAI/URM c14e55f5f9227873617015cf60a239126b55adcd models/layers.py:rms_norm",
+            unchanged="Original B-only projections, bilinear FFN, input injection, initialization, data, depth and optimizer.")
     elif args.variant == "current_only":
+        normalized = bool(cfg.get("kv_qk_l2norm", False))
         metadata.update(
             read_equation="RoPE(Q_r) @ (V_r.T @ RoPE(K_r) / T).T",
+            qk_normalization=("Q and K independently: x / (L2_norm(x) + eps), per token/head, FP32 before RoPE"
+                              if normalized else "none; raw Q/K"),
+            normalization_eps=cfg.get("eps", 1e-4) if normalized else None,
+            unchanged="V/output projections, token mean reduction, optimizer/weight decay, data, seed and recurrent depth",
             recurrent_memory=False, eligibility_traces=False, interpolation=False,
             current_read_coefficient=1.0,
             carry_matrix="Current KV product for interface compatibility/diagnostics; never read by subsequent blocks.",
@@ -172,6 +244,12 @@ def main():
 
     t._check_finite_gradients = check
     t.train_batch = batch
+    if args.variant == "phase_unit_gaussian_current_only":
+        print("[RESEARCH] Actual variant: state-dependent per-token/channel K/V phases; "
+              "current G only (no accumulated memory or eligibility traces); "
+              "sign(sin(delta))*exp(-delta^2), exact tie=0; no phase/activity unit norm; "
+              "two FP32 post-residual RMSNorms. Generic KV configuration fields below "
+              "are inherited and do not describe this variant's memory equation.", flush=True)
     t.main(cfg)
     latest = t.find_latest_checkpoint(str(out))
     actual_step = int(Path(latest).stem.removeprefix("step_")) if latest else None

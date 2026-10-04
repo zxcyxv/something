@@ -1,0 +1,535 @@
+{
+  "reference": "docs/research/2026-10-03/reference/train_v17.py",
+  "reference_sha256": "b92260b15d59401de0bc70f102052340d460e5825a99669d6f1b9d581ed02a31",
+  "current_sha256": "65221608b193b1c86893bc1bfe973a6c400fe960d2fefed74905aedcb9c71e2f",
+  "scope": "Same B-only model through old/new loss wrappers, optimizers and train_batch; architecture held fixed. One rank.",
+  "data": {
+    "dataset_arrays_identical": [
+      true,
+      true,
+      true,
+      true
+    ],
+    "streams": {
+      "0": {
+        "batches": 64,
+        "sha256": "91872fc9c807fb6dd6649161690c7c02ea42335e1483797c1031d3e47ef66f43"
+      },
+      "1": {
+        "batches": 64,
+        "sha256": "617998fd24b3db684faeeb09209a11224051e5c23e13d2aaac96277f9602f169"
+      },
+      "3": {
+        "batches": 64,
+        "sha256": "21e0cd1881e0f4af017b6a2f5646768a12665c862031988091fc5e35e5858121"
+      }
+    }
+  },
+  "CPU_FP32_pair": {
+    "no_decay_mismatches": [],
+    "steps": 32,
+    "maxima": {
+      "metrics_max_abs": 0.0,
+      "gradient_max_abs": 0.0,
+      "model_state_max_abs": 0.0,
+      "carry_max_abs": 0.0,
+      "optimizer_max_abs": 0.0,
+      "EMA_max_abs": 2.9802322387695312e-08
+    },
+    "records": [
+      {
+        "step": 1993,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 1994,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 1995,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 1996,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 1997,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 1998,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 1999,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2000,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2001,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2002,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2003,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2004,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2005,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2006,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2007,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2008,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2009,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2010,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2011,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2012,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2013,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2014,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2015,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2016,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2017,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2018,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2019,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2020,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.4901161193847656e-08
+      },
+      {
+        "step": 2021,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 2.9802322387695312e-08
+      },
+      {
+        "step": 2022,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 2.9802322387695312e-08
+      },
+      {
+        "step": 2023,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 2.9802322387695312e-08
+      },
+      {
+        "step": 2024,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 2.9802322387695312e-08
+      }
+    ]
+  },
+  "checkpoint_pair": {
+    "no_decay_mismatches": [],
+    "steps": 16,
+    "maxima": {
+      "metrics_max_abs": 0.0,
+      "gradient_max_abs": 0.0,
+      "model_state_max_abs": 0.0,
+      "carry_max_abs": 0.0,
+      "optimizer_max_abs": 0.0,
+      "EMA_max_abs": 1.1920928955078125e-07
+    },
+    "records": [
+      {
+        "step": 20001,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 5.960464477539063e-08
+      },
+      {
+        "step": 20002,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20003,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20004,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20005,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20006,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20007,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20008,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20009,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20010,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20011,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20012,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20013,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20014,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20015,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      },
+      {
+        "step": 20016,
+        "metrics_max_abs": 0.0,
+        "gradient_max_abs": 0.0,
+        "model_state_max_abs": 0.0,
+        "carry_max_abs": 0.0,
+        "optimizer_max_abs": 0.0,
+        "EMA_max_abs": 1.1920928955078125e-07
+      }
+    ]
+  },
+  "side_effects": {
+    "current_eval": {
+      "model_state_max_abs": 0.0,
+      "carry_max_abs": 0.0,
+      "optimizer_max_abs": 0.0,
+      "EMA_max_abs": 0.0,
+      "cpu_rng_equal": true,
+      "cuda_rng_equal": true,
+      "training_mode": true,
+      "metrics": {
+        "accuracy": 0.5188078880310059,
+        "count": 128.0,
+        "exact_accuracy": 0.0,
+        "lm_loss": 1.274981435260278,
+        "q_halt_accuracy": 1.0,
+        "q_halt_loss": 0.006715297698974609,
+        "steps": 16.0
+      }
+    },
+    "historical_eval": {
+      "model_state_max_abs": 0.0,
+      "carry_max_abs": 0.0,
+      "optimizer_max_abs": 0.0,
+      "EMA_max_abs": 0.0,
+      "cpu_rng_equal": true,
+      "cuda_rng_equal": true,
+      "training_mode": true,
+      "metrics": {
+        "accuracy": 0.5188078880310059,
+        "count": 128.0,
+        "exact_accuracy": 0.0,
+        "lm_loss": 1.2749813795089722,
+        "q_halt_accuracy": 1.0,
+        "q_halt_loss": 0.006715297698974609,
+        "steps": 16.0
+      }
+    },
+    "current_save": {
+      "model_state_max_abs": 0.0,
+      "carry_max_abs": 0.0,
+      "optimizer_max_abs": 0.0,
+      "EMA_max_abs": 0.0,
+      "cpu_rng_equal": true,
+      "cuda_rng_equal": true,
+      "training_mode": true
+    }
+  }
+}

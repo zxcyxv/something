@@ -1,0 +1,15 @@
+{
+  "model": "historical v1.7",
+  "source": "docs/research/2026-10-03/reference/train_v17.py",
+  "source_sha256": "b92260b15d59401de0bc70f102052340d460e5825a99669d6f1b9d581ed02a31",
+  "initialization": "exact historical initializer, strict state load into equivalent native model",
+  "loops": 16,
+  "iterations_per_segment": 8,
+  "layers": 1,
+  "act_enabled": false,
+  "optimizer_update_per_segment": true,
+  "detach_between_segments": true,
+  "architecture": "original QR shared complex address, eligibility trace, STDP and historical phi; no new RMSNorm",
+  "logging": "All steps in train.jsonl; console every 16 steps at terminal segment. Loss/accuracy at same step.",
+  "criterion": "Compare aligned loss/accuracy and post-warmup window means; historical sparse mixed-segment log is not a matched baseline."
+}
