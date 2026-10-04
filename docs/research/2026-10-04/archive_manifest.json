@@ -2,7 +2,7 @@
   "captured_utc": "2026-10-04T11:15:23.820628+00:00",
   "scope": "October 4 selected scalar logs, protocols and raw numerical evidence; checkpoints and duplicate source/image snapshots excluded",
   "compression": "gzip level 9, mtime=0; SHA256 refers to uncompressed bytes",
-  "active_run_note": "The dynamic Gaussian run continues; its archived logs are a frozen complete-line prefix, not final results",
+  "active_run_note": "Gaussian stopped by user at step 3200; its archived logs are now final. The previous fixed-phase exponential model restarted in a new local run directory.",
   "runs": [
     {
       "run": "kv_b_only_fresh_20261004",
@@ -69,10 +69,10 @@
     },
     {
       "run": "kv_unit_phase_gaussian_dynamic_20261004",
-      "rows": 1382,
-      "last_step": 1382,
-      "last_terminal_step": 1376,
-      "ongoing": true
+      "rows": 3200,
+      "last_step": 3200,
+      "last_terminal_step": 3200,
+      "ongoing": false
     }
   ],
   "files": [
@@ -429,16 +429,16 @@
     {
       "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/train.jsonl",
       "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/train.jsonl.gz",
-      "uncompressed_bytes": 401582,
-      "stored_bytes": 54622,
-      "sha256": "c0e557d75b406140be0e3165363021193d66f737f47db50164d5760711e19491"
+      "uncompressed_bytes": 923559,
+      "stored_bytes": 120854,
+      "sha256": "ccfeba0e10ccd227829df0532b89b2bed6d1f0328f474f978d93a68c17defe1a"
     },
     {
       "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/console.log",
       "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/console.log.gz",
-      "uncompressed_bytes": 9120,
-      "stored_bytes": 2693,
-      "sha256": "c32921ce0a6ed40c8d1caa3be4810fbcee5079a26f8feb2b935814dc9f823caa"
+      "uncompressed_bytes": 18724,
+      "stored_bytes": 4439,
+      "sha256": "f4f1087bb13c9b8e5ada3abfea1189623d14a597a559397ee8ddd3c17104e720"
     },
     {
       "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/config.json",
@@ -457,9 +457,9 @@
     {
       "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/diagnostics.jsonl",
       "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/diagnostics.jsonl.gz",
-      "uncompressed_bytes": 204631,
-      "stored_bytes": 41066,
-      "sha256": "b6b65f009f24e1934ff41986bcfb21119d5028a55767230fbe20b2356e71e23a"
+      "uncompressed_bytes": 443426,
+      "stored_bytes": 89414,
+      "sha256": "eaf4380ede46a706af2cfa12c3d48998d828c6905f8e64b3c064e66509c28567"
     },
     {
       "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/startup_verification.json",
@@ -838,6 +838,14 @@
       "stored_bytes": 8670,
       "sha256": "8a5ff012d337ef7e5cb8072ba7c2c5b3e9f6aa069447375a085edcb0011e3263",
       "patched": true
+    },
+    {
+      "source": "runs/kv_unit_phase_gaussian_dynamic_20261004/stopped.json",
+      "archive": "docs/research/2026-10-04/logs/kv_unit_phase_gaussian_dynamic_20261004/stopped.json",
+      "uncompressed_bytes": 77,
+      "stored_bytes": 77,
+      "sha256": "a480f7e33cba86f29cdc4691b3f154986a2f71722ca41ad97ef1939bccf0b7aa"
     }
-  ]
+  ],
+  "updated_utc": "2026-10-04T11:35:44.293770+00:00"
 }
