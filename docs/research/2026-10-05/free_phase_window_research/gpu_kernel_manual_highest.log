@@ -1,0 +1,18 @@
+COMPILE fixed_exp
+READY fixed_exp
+COMPILE exact_dynamic_exp
+READY exact_dynamic_exp
+COMPILE direct_smooth
+READY direct_smooth
+COMPILE manual_4
+/venv/main/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:322: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+READY manual_4
+COMPILE manual_8
+READY manual_8
+MEASURED fixed_exp 1.5124586741129558
+MEASURED exact_dynamic_exp 5.131341044108073
+MEASURED direct_smooth 18.321405029296876
+MEASURED manual_4 6.190079752604166
+MEASURED manual_8 10.76366475423177
+SAVED docs/research/2026-10-05/free_phase_window_research/gpu_kernel_manual_highest.json

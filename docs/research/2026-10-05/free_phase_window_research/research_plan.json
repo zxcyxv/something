@@ -1,0 +1,24 @@
+{
+  "selected_at_utc": "2026-10-05 06:48",
+  "selection_basis": "Scalar value/derivative error, positive-window certificate and operator speed; before seeing near-3000-step learning results",
+  "smoothing_epsilon": 0.5,
+  "sine_components": 4,
+  "phase_generator": "diagonal gains on own local K/V activity",
+  "training_memory_precision": "float32",
+  "controls": [
+    "fixed_fourier4_e05",
+    "free_fourier4_e05",
+    "free_exact_exp"
+  ],
+  "steps_each": 3008,
+  "seed": 0,
+  "primary_metric": "Mean of final 32 terminal-segment training batches; also final 64 and same intervals in historical fixed exponential",
+  "caution": "One seed, short horizon; diagnostic experiment, not a long-run performance claim",
+  "addendum_0657_utc": {
+    "candidate": "C1 antisymmetric difference of exponentials",
+    "formula": "C sign(delta) [exp(-abs(delta))-exp(-abs(delta)/0.1)]",
+    "reason": "Preserves tails and sharp central transition without 8 sine components; only O(TD) exponentials, still pair comparisons",
+    "status": "CPU values and full gradients verified, including exact ties; GPU timing and gradient audit pending",
+    "training_decision": "Only consider extra short training if isolated correct kernel timing is no more than 1.5x the exact dynamic exponential and time permits"
+  }
+}

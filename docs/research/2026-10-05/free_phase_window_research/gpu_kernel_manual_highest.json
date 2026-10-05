@@ -1,0 +1,170 @@
+{
+  "protocol": {
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "torch": "2.11.0+cu128",
+    "batch": 128,
+    "heads": 8,
+    "tokens": 81,
+    "channels": 104,
+    "precision": "highest",
+    "allow_tf32": false,
+    "compiled": true,
+    "timing": "CUDA events, forward + full backward, 5 rounds x 15 repeats",
+    "scope": "write + read only; excludes phase generator, projections, FFN, norms and optimizer",
+    "existing_training_pause_pid": null
+  },
+  "rows": [
+    {
+      "name": "fixed_exp",
+      "forward_backward_median_ms": 1.5124586741129558,
+      "rounds_ms": [
+        1.5111509958902996,
+        1.5124586741129558,
+        1.5218687693277995,
+        1.513190460205078,
+        1.477358881632487
+      ],
+      "extra_peak_mib": 249.0322265625,
+      "process_peak_mib": 429.8154296875
+    },
+    {
+      "name": "exact_dynamic_exp",
+      "forward_backward_median_ms": 5.131341044108073,
+      "rounds_ms": [
+        5.048593139648437,
+        5.146487426757813,
+        5.163212585449219,
+        5.102988688151042,
+        5.131341044108073
+      ],
+      "extra_peak_mib": 272.5947265625,
+      "process_peak_mib": 453.3779296875
+    },
+    {
+      "name": "direct_smooth",
+      "forward_backward_median_ms": 18.321405029296876,
+      "rounds_ms": [
+        18.707651774088543,
+        18.309938557942708,
+        18.312396240234374,
+        18.322296142578125,
+        18.321405029296876
+      ],
+      "extra_peak_mib": 7117.0947265625,
+      "process_peak_mib": 7297.8779296875
+    },
+    {
+      "name": "manual_4",
+      "modes": 4,
+      "frequencies": [
+        1.2175127267837524,
+        2.765716075897217,
+        4.4620680809021,
+        6.164848804473877
+      ],
+      "coefficients": [
+        0.7898620367050171,
+        0.44344788789749146,
+        0.20136381685733795,
+        0.08612427115440369
+      ],
+      "correctness": {
+        "output_relative_l2": 4.3082175744311386e-07,
+        "output_max_abs_error": 1.6076574941292776e-06,
+        "gradients": {
+          "Q": {
+            "relative_l2": 4.4738514215243135e-07,
+            "max_abs_error": 2.2868901328187974e-06
+          },
+          "K": {
+            "relative_l2": 2.5626189742802607e-07,
+            "max_abs_error": 1.0904829801372529e-06
+          },
+          "V": {
+            "relative_l2": 2.455364395924489e-07,
+            "max_abs_error": 9.96412931164592e-07
+          },
+          "phaseK": {
+            "relative_l2": 2.517079129615995e-07,
+            "max_abs_error": 4.327766812917133e-06
+          },
+          "phaseV": {
+            "relative_l2": 2.485263509837854e-07,
+            "max_abs_error": 3.911456542438074e-06
+          }
+        }
+      },
+      "forward_backward_median_ms": 6.190079752604166,
+      "rounds_ms": [
+        6.591838073730469,
+        6.276795959472656,
+        6.186052449544271,
+        6.18598378499349,
+        6.190079752604166
+      ],
+      "extra_peak_mib": 834.25,
+      "process_peak_mib": 1015.033203125
+    },
+    {
+      "name": "manual_8",
+      "modes": 8,
+      "frequencies": [
+        0.5750518441200256,
+        1.9413948059082031,
+        3.564145565032959,
+        5.291749954223633,
+        7.073497295379639,
+        8.887652397155762,
+        10.714333534240723,
+        12.495712280273438
+      ],
+      "coefficients": [
+        0.6239900588989258,
+        0.6279556155204773,
+        0.3042827844619751,
+        0.14055804908275604,
+        0.06572187691926956,
+        0.031090088188648224,
+        0.014742917381227016,
+        0.006599771324545145
+      ],
+      "correctness": {
+        "output_relative_l2": 5.981064999612967e-07,
+        "output_max_abs_error": 2.129200239675555e-06,
+        "gradients": {
+          "Q": {
+            "relative_l2": 6.166279588664174e-07,
+            "max_abs_error": 2.6636999506113312e-06
+          },
+          "K": {
+            "relative_l2": 2.413942273501396e-07,
+            "max_abs_error": 9.663148137217803e-07
+          },
+          "V": {
+            "relative_l2": 2.3619870175532838e-07,
+            "max_abs_error": 1.2224268837179864e-06
+          },
+          "phaseK": {
+            "relative_l2": 2.536166779340577e-07,
+            "max_abs_error": 3.7662835516982796e-06
+          },
+          "phaseV": {
+            "relative_l2": 2.5467973125728327e-07,
+            "max_abs_error": 3.788659938663841e-06
+          }
+        }
+      },
+      "forward_backward_median_ms": 10.76366475423177,
+      "rounds_ms": [
+        10.783754475911458,
+        10.757119750976562,
+        10.788727823893229,
+        10.76366475423177,
+        10.757051595052083
+      ],
+      "extra_peak_mib": 1626.25,
+      "process_peak_mib": 1807.033203125
+    }
+  ],
+  "existing_training_resumed": null
+}

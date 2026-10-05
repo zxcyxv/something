@@ -1,0 +1,210 @@
+[
+  {
+    "epsilon": 0.08,
+    "modes": 1,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      1.4632220651288086
+    ],
+    "sampled_min": -0.10484259550637132,
+    "global_derivative_abs_bound": 0.4916630192864204,
+    "between_samples_lower_bound": -0.10484889122743306,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.08,
+    "modes": 2,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      0.5793377865549632
+    ],
+    "sampled_min": -0.08371953142250038,
+    "global_derivative_abs_bound": 1.6977108498369518,
+    "between_samples_lower_bound": -0.08375271904371477,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.08,
+    "modes": 4,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      0.24582917144151986
+    ],
+    "sampled_min": -0.04735165949553338,
+    "global_derivative_abs_bound": 4.294306886314395,
+    "between_samples_lower_bound": -0.047446533282936694,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.08,
+    "modes": 8,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      0.1117287663985509
+    ],
+    "sampled_min": -0.009140050687901746,
+    "global_derivative_abs_bound": 8.523676678195539,
+    "between_samples_lower_bound": -0.009337084227890141,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.2,
+    "modes": 1,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      1.467367696351856
+    ],
+    "sampled_min": -0.1220290633954161,
+    "global_derivative_abs_bound": 0.5947679755079776,
+    "between_samples_lower_bound": -0.12203666055871841,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.2,
+    "modes": 2,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      0.5844784134533655
+    ],
+    "sampled_min": -0.08283486647438765,
+    "global_derivative_abs_bound": 1.9121260444403205,
+    "between_samples_lower_bound": -0.08287217058767786,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.2,
+    "modes": 4,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      0.2488128218892056
+    ],
+    "sampled_min": -0.022321623699400814,
+    "global_derivative_abs_bound": 4.145904111223047,
+    "between_samples_lower_bound": -0.022413124460792345,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.2,
+    "modes": 8,
+    "certified": true,
+    "analytic_positive_interval": [
+      0,
+      0.11406495570538899
+    ],
+    "sampled_min": 0.05977098994918498,
+    "global_derivative_abs_bound": 6.237158775186359,
+    "between_samples_lower_bound": 0.059626922788021806,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.35,
+    "modes": 1,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      1.4741505164274953
+    ],
+    "sampled_min": -0.1329574951504757,
+    "global_derivative_abs_bound": 0.6927470639949433,
+    "between_samples_lower_bound": -0.13296630798345987,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.35,
+    "modes": 2,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      0.5922809727872063
+    ],
+    "sampled_min": -0.06816447503482836,
+    "global_derivative_abs_bound": 2.0080170582553194,
+    "between_samples_lower_bound": -0.06820353037343509,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.35,
+    "modes": 4,
+    "certified": true,
+    "analytic_positive_interval": [
+      0,
+      0.2547988404281639
+    ],
+    "sampled_min": 0.041572513468520714,
+    "global_derivative_abs_bound": 3.617560204382606,
+    "between_samples_lower_bound": 0.04149283855384213,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.35,
+    "modes": 8,
+    "certified": true,
+    "analytic_positive_interval": [
+      0,
+      0.12570682579452955
+    ],
+    "sampled_min": 0.09537470070395793,
+    "global_derivative_abs_bound": 4.387873384080886,
+    "between_samples_lower_bound": 0.09527373844540378,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.5,
+    "modes": 1,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      1.4819799066757935
+    ],
+    "sampled_min": -0.13589899480328443,
+    "global_derivative_abs_bound": 0.7695943905472191,
+    "between_samples_lower_bound": -0.13590873928464206,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.5,
+    "modes": 2,
+    "certified": false,
+    "analytic_positive_interval": [
+      0,
+      0.6009755244637512
+    ],
+    "sampled_min": -0.04509987830634182,
+    "global_derivative_abs_bound": 2.0087825839771725,
+    "between_samples_lower_bound": -0.0451388152832823,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.5,
+    "modes": 4,
+    "certified": true,
+    "analytic_positive_interval": [
+      0,
+      0.26208611613951904
+    ],
+    "sampled_min": 0.09625784031712098,
+    "global_derivative_abs_bound": 3.1140844600342454,
+    "between_samples_lower_bound": 0.09618942733371613,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  },
+  {
+    "epsilon": 0.5,
+    "modes": 8,
+    "certified": true,
+    "analytic_positive_interval": [
+      0,
+      0.12873072509756103
+    ],
+    "sampled_min": 0.11657464584565974,
+    "global_derivative_abs_bound": 3.425400642771338,
+    "between_samples_lower_bound": 0.11649590851666164,
+    "note": "Float64 calculation; analytic all-positive sines near zero; bound margin exceeds 1e-10, not formal interval arithmetic."
+  }
+]

@@ -1,0 +1,203 @@
+[
+  {
+    "window": "exponential",
+    "amp": "bfloat16",
+    "output_relative_l2": 0.00014613219536840916,
+    "gradient_errors": {
+      "hidden": {
+        "relative_l2": 0.000695954542607069,
+        "max_abs": 0.004388213157653809,
+        "reference_norm": 267.2735900878906
+      },
+      "injection": {
+        "relative_l2": 0.0006959544843994081,
+        "max_abs": 0.12657546997070312,
+        "reference_norm": 7709.3486328125
+      },
+      "layers.0.theta": {
+        "relative_l2": 0.0005782619118690491,
+        "max_abs": 0.051578521728515625,
+        "reference_norm": 625.3654174804688
+      },
+      "layers.0.theta_k_raw": {
+        "relative_l2": 0.0005889747990295291,
+        "max_abs": 0.008399009704589844,
+        "reference_norm": 88.31033325195312
+      },
+      "layers.0.theta_v_raw": {
+        "relative_l2": 0.0005908923340030015,
+        "max_abs": 0.010642528533935547,
+        "reference_norm": 87.74101257324219
+      },
+      "layers.0.phase_local_gain": {
+        "relative_l2": 0.000599301652982831,
+        "max_abs": 0.013339042663574219,
+        "reference_norm": 176.13070678710938
+      },
+      "layers.0.q_proj.weight": {
+        "relative_l2": 0.0019922172650694847,
+        "max_abs": 0.125,
+        "reference_norm": 3537.345947265625
+      },
+      "layers.0.k_proj.weight": {
+        "relative_l2": 0.0021913519594818354,
+        "max_abs": 0.0625,
+        "reference_norm": 3038.7236328125
+      },
+      "layers.0.v_proj.weight": {
+        "relative_l2": 0.0020159839186817408,
+        "max_abs": 0.125,
+        "reference_norm": 3039.2734375
+      },
+      "layers.0.out_proj.weight": {
+        "relative_l2": 0.0006298312800936401,
+        "max_abs": 0.125,
+        "reference_norm": 3533.2431640625
+      },
+      "layers.0.b_gate_up.weight": {
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "reference_norm": 0.0
+      },
+      "layers.0.b_down.weight": {
+        "relative_l2": 0.002237478271126747,
+        "max_abs": 0.0625,
+        "reference_norm": 2950.390869140625
+      }
+    }
+  },
+  {
+    "window": "fourier",
+    "amp": "bfloat16",
+    "output_relative_l2": 0.00015062897000461817,
+    "gradient_errors": {
+      "hidden": {
+        "relative_l2": 0.0008318649488501251,
+        "max_abs": 0.005366921424865723,
+        "reference_norm": 270.076171875
+      },
+      "injection": {
+        "relative_l2": 0.0008318648324348032,
+        "max_abs": 0.15480422973632812,
+        "reference_norm": 7790.1884765625
+      },
+      "layers.0.theta": {
+        "relative_l2": 0.0005576085532084107,
+        "max_abs": 0.05554485321044922,
+        "reference_norm": 608.8079223632812
+      },
+      "layers.0.theta_k_raw": {
+        "relative_l2": 0.0006627606344409287,
+        "max_abs": 0.021188735961914062,
+        "reference_norm": 222.51075744628906
+      },
+      "layers.0.theta_v_raw": {
+        "relative_l2": 0.0006471540546044707,
+        "max_abs": 0.02735614776611328,
+        "reference_norm": 222.37794494628906
+      },
+      "layers.0.phase_local_gain": {
+        "relative_l2": 0.0006250826991163194,
+        "max_abs": 0.04311704635620117,
+        "reference_norm": 492.3984680175781
+      },
+      "layers.0.q_proj.weight": {
+        "relative_l2": 0.0020068578887730837,
+        "max_abs": 0.125,
+        "reference_norm": 3600.396484375
+      },
+      "layers.0.k_proj.weight": {
+        "relative_l2": 0.002314845332875848,
+        "max_abs": 0.125,
+        "reference_norm": 3593.12548828125
+      },
+      "layers.0.v_proj.weight": {
+        "relative_l2": 0.0021118237636983395,
+        "max_abs": 0.125,
+        "reference_norm": 3599.527587890625
+      },
+      "layers.0.out_proj.weight": {
+        "relative_l2": 0.0006455525290220976,
+        "max_abs": 0.125,
+        "reference_norm": 3597.412109375
+      },
+      "layers.0.b_gate_up.weight": {
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "reference_norm": 0.0
+      },
+      "layers.0.b_down.weight": {
+        "relative_l2": 0.0022175295744091272,
+        "max_abs": 0.0625,
+        "reference_norm": 2947.503662109375
+      }
+    }
+  },
+  {
+    "window": "biexponential",
+    "amp": "bfloat16",
+    "output_relative_l2": 0.00015145995712373406,
+    "gradient_errors": {
+      "hidden": {
+        "relative_l2": 0.0008329264237545431,
+        "max_abs": 0.005365222692489624,
+        "reference_norm": 269.65496826171875
+      },
+      "injection": {
+        "relative_l2": 0.0008329263655468822,
+        "max_abs": 0.15475702285766602,
+        "reference_norm": 7778.0390625
+      },
+      "layers.0.theta": {
+        "relative_l2": 0.0006267311982810497,
+        "max_abs": 0.055332183837890625,
+        "reference_norm": 653.96533203125
+      },
+      "layers.0.theta_k_raw": {
+        "relative_l2": 0.0006535472348332405,
+        "max_abs": 0.060291290283203125,
+        "reference_norm": 481.18829345703125
+      },
+      "layers.0.theta_v_raw": {
+        "relative_l2": 0.0006037402199581265,
+        "max_abs": 0.06221771240234375,
+        "reference_norm": 496.82928466796875
+      },
+      "layers.0.phase_local_gain": {
+        "relative_l2": 0.000620342674665153,
+        "max_abs": 0.1054072380065918,
+        "reference_norm": 1115.4888916015625
+      },
+      "layers.0.q_proj.weight": {
+        "relative_l2": 0.0020605935715138912,
+        "max_abs": 0.125,
+        "reference_norm": 3611.61572265625
+      },
+      "layers.0.k_proj.weight": {
+        "relative_l2": 0.002314566867426038,
+        "max_abs": 0.125,
+        "reference_norm": 3539.3095703125
+      },
+      "layers.0.v_proj.weight": {
+        "relative_l2": 0.002145943231880665,
+        "max_abs": 0.125,
+        "reference_norm": 3544.8818359375
+      },
+      "layers.0.out_proj.weight": {
+        "relative_l2": 0.0006555310683324933,
+        "max_abs": 0.0625,
+        "reference_norm": 3611.784912109375
+      },
+      "layers.0.b_gate_up.weight": {
+        "relative_l2": 0.0,
+        "max_abs": 0.0,
+        "reference_norm": 0.0
+      },
+      "layers.0.b_down.weight": {
+        "relative_l2": 0.0022573466412723064,
+        "max_abs": 0.0625,
+        "reference_norm": 2947.986328125
+      }
+    }
+  }
+]

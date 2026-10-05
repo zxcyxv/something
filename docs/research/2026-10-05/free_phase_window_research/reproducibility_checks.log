@@ -1,0 +1,36 @@
+Baseline HEAD plus staged research only; no original dirty files or runs directory.
+COMMAND /venv/main/bin/python -m unittest lt.test_free_phase_windows
+.....
+----------------------------------------------------------------------
+Ran 5 tests in 0.152s
+
+OK
+EXIT 0
+COMMAND /venv/main/bin/python -m lt.summarize_free_phase_research
+historical_fixed_exp 3008 0.9299105685204268 0.150634765625 0.06694385362789035
+historical_ordered_warp 3008 0.9285662863403559 0.142333984375 0.09788700612261891
+fixed_fourier4_e05 3008 0.9265528786927462 0.155029296875 0.0676115988753736
+free_fourier4_e05 3008 0.925693865865469 0.15673828125 0.12215082300826907
+free_exact_exp 3008 0.18831983068957925 0.0 0.22964849276468158
+EXIT 0
+COMMAND /venv/main/bin/python -m lt.probe_free_phase_data
+{"block": 0, "epsilon": 0.2, "modes": 8, "phase_gap_fractions": {"0.02": 0.04717405398495142, "0.05": 0.10751104901745927, "0.1": 0.17947119950325077, "0.2": 0.29391413726349624, "0.35": 0.43431884177076485, "0.5": 0.5502433523266856}, "read_relative_l2": 0.06672429508360288, "gradients": {"q": 0.046634146389497894, "k": 0.035449864633770124, "v": 0.02690814058658103, "pk": 0.09771316485711543, "pv": 0.09330655087241148}}
+{"block": 0, "epsilon": 0.35, "modes": 4, "phase_gap_fractions": {"0.02": 0.04717405398495142, "0.05": 0.10751104901745927, "0.1": 0.17947119950325077, "0.2": 0.29391413726349624, "0.35": 0.43431884177076485, "0.5": 0.5502433523266856}, "read_relative_l2": 0.1303339224795872, "gradients": {"q": 0.0922764424408804, "k": 0.08091223831331275, "v": 0.07807144458763908, "pk": 0.18758323258947743, "pv": 0.1552913245501822}}
+{"block": 0, "epsilon": 0.35, "modes": 8, "phase_gap_fractions": {"0.02": 0.04717405398495142, "0.05": 0.10751104901745927, "0.1": 0.17947119950325077, "0.2": 0.29391413726349624, "0.35": 0.43431884177076485, "0.5": 0.5502433523266856}, "read_relative_l2": 0.013885211242053679, "gradients": {"q": 0.009789261440387447, "k": 0.007574386956614061, "v": 0.006053266915073373, "pk": 0.02335730562020663, "pv": 0.020209040798449197}}
+{"block": 0, "epsilon": 0.5, "modes": 4, "phase_gap_fractions": {"0.02": 0.04717405398495142, "0.05": 0.10751104901745927, "0.1": 0.17947119950325077, "0.2": 0.29391413726349624, "0.35": 0.43431884177076485, "0.5": 0.5502433523266856}, "read_relative_l2": 0.05573368476378076, "gradients": {"q": 0.03953407789900067, "k": 0.03657227046934085, "v": 0.03540547862705183, "pk": 0.09175668749975621, "pv": 0.07448393318956867}}
+{"block": 7, "epsilon": 0.2, "modes": 8, "phase_gap_fractions": {"0.02": 0.04334684783402732, "0.05": 0.10102317554240631, "0.1": 0.17151773321645117, "0.2": 0.2827601084812623, "0.35": 0.4219731627584192, "0.5": 0.5392628205128205}, "read_relative_l2": 0.06105203729224645, "gradients": {"q": 0.045391034944507976, "k": 0.028966626669352572, "v": 0.026053580710396207, "pk": 0.10900322840154777, "pv": 0.09629077243449922}}
+{"block": 7, "epsilon": 0.35, "modes": 4, "phase_gap_fractions": {"0.02": 0.04334684783402732, "0.05": 0.10102317554240631, "0.1": 0.17151773321645117, "0.2": 0.2827601084812623, "0.35": 0.4219731627584192, "0.5": 0.5392628205128205}, "read_relative_l2": 0.12636791994619295, "gradients": {"q": 0.0950463249629041, "k": 0.07817995496505531, "v": 0.07542878311147946, "pk": 0.1773522970176925, "pv": 0.16478139198030695}}
+{"block": 7, "epsilon": 0.35, "modes": 8, "phase_gap_fractions": {"0.02": 0.04334684783402732, "0.05": 0.10102317554240631, "0.1": 0.17151773321645117, "0.2": 0.2827601084812623, "0.35": 0.4219731627584192, "0.5": 0.5392628205128205}, "read_relative_l2": 0.012720292159559683, "gradients": {"q": 0.009233340701332615, "k": 0.006348130464492679, "v": 0.005802655202333071, "pk": 0.025174360967684776, "pv": 0.021779269572482707}}
+{"block": 7, "epsilon": 0.5, "modes": 4, "phase_gap_fractions": {"0.02": 0.04334684783402732, "0.05": 0.10102317554240631, "0.1": 0.17151773321645117, "0.2": 0.2827601084812623, "0.35": 0.4219731627584192, "0.5": 0.5392628205128205}, "read_relative_l2": 0.0540622526606705, "gradients": {"q": 0.040568553513412084, "k": 0.0351680802143727, "v": 0.03443204122540249, "pk": 0.08372502143673673, "pv": 0.0777052222236278}}
+EXIT 0
+COMMAND /venv/main/bin/python -m lt.probe_window_linearization
+{'block': 0, 'window': 'signed_exp', 'phase_noise_std': 0.0001, 'ordering_flip_fraction': 0.00011756702461830667, 'window_change_rms': 0.021683665525251094, 'window_taylor_residual_rms': 0.02168566563664568, 'window_change_max': 1.9999492287891736, 'read_change_norm': 5.120781051351892, 'read_taylor_relative_residual': 1.000098739366757}
+{'block': 0, 'window': 'fourier4_e05', 'phase_noise_std': 0.0001, 'ordering_flip_fraction': 0.00011756702461830667, 'window_change_rms': 0.0002606620421395553, 'window_taylor_residual_rms': 7.429799296873474e-08, 'window_change_max': 0.0019763436989434086, 'read_change_norm': 0.12086763797586517, 'read_taylor_relative_residual': 0.00021742751052583405}
+{'block': 0, 'window': 'biexponential', 'phase_noise_std': 0.0001, 'ordering_flip_fraction': 0.00011756702461830667, 'window_change_rms': 0.0005429615604026529, 'window_taylor_residual_rms': 7.6827353431536e-07, 'window_change_max': 0.0072335577173712196, 'read_change_norm': 0.23361451414553758, 'read_taylor_relative_residual': 0.0012586422300788973}
+{'block': 7, 'window': 'signed_exp', 'phase_noise_std': 0.0001, 'ordering_flip_fraction': 0.00012898129885309374, 'window_change_rms': 0.022711923088875596, 'window_taylor_residual_rms': 0.022713986629449477, 'window_change_max': 1.9999757941567138, 'read_change_norm': 8.86077286843415, 'read_taylor_relative_residual': 1.0002038693400346}
+{'block': 7, 'window': 'fourier4_e05', 'phase_noise_std': 0.0001, 'ordering_flip_fraction': 0.00012898129885309374, 'window_change_rms': 0.00025371964464158053, 'window_taylor_residual_rms': 7.394043427731796e-08, 'window_change_max': 0.0021733858062606415, 'read_change_norm': 0.13084847402044508, 'read_taylor_relative_residual': 0.00018250522387103628}
+{'block': 7, 'window': 'biexponential', 'phase_noise_std': 0.0001, 'ordering_flip_fraction': 0.00012898129885309374, 'window_change_rms': 0.000514697144537101, 'window_taylor_residual_rms': 7.22922633914516e-07, 'window_change_max': 0.007363360313802327, 'read_change_norm': 0.24441383522791874, 'read_taylor_relative_residual': 0.0011287905766652264}
+EXIT 0
+COMMAND /venv/main/bin/python -m lt.plot_free_phase_research
+EXIT 0
+Archived-log metric reproduction: exact match for all five runs.

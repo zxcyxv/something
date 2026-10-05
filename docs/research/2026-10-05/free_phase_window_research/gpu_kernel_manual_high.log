@@ -1,0 +1,16 @@
+COMPILE fixed_exp
+READY fixed_exp
+COMPILE exact_dynamic_exp
+READY exact_dynamic_exp
+COMPILE direct_smooth
+READY direct_smooth
+COMPILE manual_4
+READY manual_4
+COMPILE manual_8
+READY manual_8
+MEASURED fixed_exp 1.524121602376302
+MEASURED exact_dynamic_exp 5.084175109863281
+MEASURED direct_smooth 18.35252482096354
+MEASURED manual_4 6.169053649902343
+MEASURED manual_8 10.725717163085937
+SAVED docs/research/2026-10-05/free_phase_window_research/gpu_kernel_manual_high.json

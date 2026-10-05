@@ -1,0 +1,10 @@
+{
+  "status": "failed",
+  "completed_steps": 1,
+  "failing_step": 2,
+  "requested_steps": 20,
+  "observed_error": "FloatingPointError: Nonfinite loss/gradient BEFORE optimizer step.",
+  "cause": "Not isolated; scalar, standalone kernel and one-block checks passed. Full recurrent preflight did not.",
+  "accepted_for_training": false,
+  "evidence": "../preflight_free_biexponential.log"
+}

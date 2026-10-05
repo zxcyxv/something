@@ -1,0 +1,258 @@
+[
+  {
+    "epsilon": 0.08,
+    "modes": 1,
+    "analytic_positive_interval": [
+      0,
+      1.463222086069867
+    ],
+    "sampled_remainder": [
+      1.463222086069867,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 0.49166301569653337,
+    "certified_lower_bound_on_remainder": -0.10484887044348927,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.08,
+    "modes": 2,
+    "analytic_positive_interval": [
+      0,
+      0.5793377886691121
+    ],
+    "sampled_remainder": [
+      0.5793377886691121,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 1.6977108349520587,
+    "certified_lower_bound_on_remainder": -0.08375264569020141,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.08,
+    "modes": 4,
+    "analytic_positive_interval": [
+      0,
+      0.24582916690398293
+    ],
+    "sampled_remainder": [
+      0.24582916690398293,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 4.294306822544629,
+    "certified_lower_bound_on_remainder": -0.04744652818891847,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.08,
+    "modes": 8,
+    "analytic_positive_interval": [
+      0,
+      0.11172876667598469
+    ],
+    "sampled_remainder": [
+      0.11172876667598469,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 8.523676538881588,
+    "certified_lower_bound_on_remainder": -0.009337098833612514,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.2,
+    "modes": 1,
+    "analytic_positive_interval": [
+      0,
+      1.4673677068242805
+    ],
+    "sampled_remainder": [
+      1.4673677068242805,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 0.5947679581612596,
+    "certified_lower_bound_on_remainder": -0.12203664486053922,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.2,
+    "modes": 2,
+    "analytic_positive_interval": [
+      0,
+      0.5844784283208251
+    ],
+    "sampled_remainder": [
+      0.5844784283208251,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 1.912126053203553,
+    "certified_lower_bound_on_remainder": -0.08287217726803155,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.2,
+    "modes": 4,
+    "analytic_positive_interval": [
+      0,
+      0.24881282943587366
+    ],
+    "sampled_remainder": [
+      0.24881282943587366,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 4.1459040673860414,
+    "certified_lower_bound_on_remainder": -0.022413090287622818,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.2,
+    "modes": 8,
+    "analytic_positive_interval": [
+      0,
+      0.11406495648066524
+    ],
+    "sampled_remainder": [
+      0.11406495648066524,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 6.237158669886434,
+    "certified_lower_bound_on_remainder": 0.05962708331781688,
+    "positive_in_entire_open_interval_certified": true
+  },
+  {
+    "epsilon": 0.35,
+    "modes": 1,
+    "analytic_positive_interval": [
+      0,
+      1.474150541894509
+    ],
+    "sampled_remainder": [
+      1.474150541894509,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 0.6927470542976497,
+    "certified_lower_bound_on_remainder": -0.13296627161595456,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.35,
+    "modes": 2,
+    "analytic_positive_interval": [
+      0,
+      0.5922809513124906
+    ],
+    "sampled_remainder": [
+      0.5922809513124906,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 2.0080170508875153,
+    "certified_lower_bound_on_remainder": -0.06820354627339725,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.35,
+    "modes": 4,
+    "analytic_positive_interval": [
+      0,
+      0.2547988381465933
+    ],
+    "sampled_remainder": [
+      0.2547988381465933,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 3.617560179248797,
+    "certified_lower_bound_on_remainder": 0.04149280052632384,
+    "positive_in_entire_open_interval_certified": true
+  },
+  {
+    "epsilon": 0.35,
+    "modes": 8,
+    "analytic_positive_interval": [
+      0,
+      0.1257068293579019
+    ],
+    "sampled_remainder": [
+      0.1257068293579019,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 4.387873431070155,
+    "certified_lower_bound_on_remainder": 0.09527382457444539,
+    "positive_in_entire_open_interval_certified": true
+  },
+  {
+    "epsilon": 0.5,
+    "modes": 1,
+    "analytic_positive_interval": [
+      0,
+      1.4819798627579164
+    ],
+    "sampled_remainder": [
+      1.4819798627579164,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 0.7695944374595585,
+    "certified_lower_bound_on_remainder": -0.13590881392512882,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.5,
+    "modes": 2,
+    "analytic_positive_interval": [
+      0,
+      0.600975507775481
+    ],
+    "sampled_remainder": [
+      0.600975507775481,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 2.008782593975443,
+    "certified_lower_bound_on_remainder": -0.04513870678287006,
+    "positive_in_entire_open_interval_certified": false
+  },
+  {
+    "epsilon": 0.5,
+    "modes": 4,
+    "analytic_positive_interval": [
+      0,
+      0.2620861114365418
+    ],
+    "sampled_remainder": [
+      0.2620861114365418,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 3.114084511887275,
+    "certified_lower_bound_on_remainder": 0.09618939371851919,
+    "positive_in_entire_open_interval_certified": true
+  },
+  {
+    "epsilon": 0.5,
+    "modes": 8,
+    "analytic_positive_interval": [
+      0,
+      0.1287307285950302
+    ],
+    "sampled_remainder": [
+      0.1287307285950302,
+      3.141592653589793
+    ],
+    "grid_count": 65537,
+    "derivative_absolute_bound": 3.425400591320436,
+    "certified_lower_bound_on_remainder": 0.1164960241231703,
+    "positive_in_entire_open_interval_certified": true
+  }
+]

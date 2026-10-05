@@ -1,0 +1,144 @@
+{
+  "protocol": {
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "torch": "2.11.0+cu128",
+    "batch": 128,
+    "heads": 8,
+    "tokens": 81,
+    "channels": 104,
+    "precision": "highest",
+    "allow_tf32": false,
+    "compiled": true,
+    "timing": "CUDA events, forward + full backward, 5 rounds x 15 repeats",
+    "scope": "write + read only; excludes phase generator, projections, FFN, norms and optimizer",
+    "existing_training_pause_pid": null
+  },
+  "rows": [
+    {
+      "name": "fixed_exp",
+      "forward_backward_median_ms": 1.4073173522949218,
+      "rounds_ms": [
+        1.4073173522949218,
+        1.4034943898518881,
+        1.5082069396972657,
+        1.404642105102539,
+        1.5147691090901694
+      ],
+      "extra_peak_mib": 249.0322265625,
+      "process_peak_mib": 429.8154296875
+    },
+    {
+      "name": "loop_4",
+      "modes": 4,
+      "frequencies": [
+        1.2175127267837524,
+        2.765716075897217,
+        4.4620680809021,
+        6.164848804473877
+      ],
+      "coefficients": [
+        0.7898620367050171,
+        0.44344788789749146,
+        0.20136381685733795,
+        0.08612427115440369
+      ],
+      "correctness": {
+        "output_relative_l2": 2.4585659320458194e-07,
+        "output_max_abs_error": 1.3805648533260495e-06,
+        "gradients": {
+          "Q": {
+            "relative_l2": 2.575292166650264e-07,
+            "max_abs_error": 1.37852937420746e-06
+          },
+          "K": {
+            "relative_l2": 2.534040014026867e-07,
+            "max_abs_error": 1.0554837914789061e-06
+          },
+          "V": {
+            "relative_l2": 2.476755216583169e-07,
+            "max_abs_error": 1.0252608915184425e-06
+          },
+          "phaseK": {
+            "relative_l2": 2.457763710777429e-07,
+            "max_abs_error": 3.6125110756124457e-06
+          },
+          "phaseV": {
+            "relative_l2": 2.488189166783775e-07,
+            "max_abs_error": 3.6077564269376694e-06
+          }
+        }
+      },
+      "forward_backward_median_ms": 7.704377746582031,
+      "rounds_ms": [
+        7.720674133300781,
+        7.688396708170573,
+        7.685311889648437,
+        7.707784525553385,
+        7.704377746582031
+      ],
+      "extra_peak_mib": 1294.9697265625,
+      "process_peak_mib": 1475.7529296875
+    },
+    {
+      "name": "loop_8",
+      "modes": 8,
+      "frequencies": [
+        0.5750518441200256,
+        1.9413948059082031,
+        3.564145565032959,
+        5.291749954223633,
+        7.073497295379639,
+        8.887652397155762,
+        10.714333534240723,
+        12.495712280273438
+      ],
+      "coefficients": [
+        0.6239900588989258,
+        0.6279556155204773,
+        0.3042827844619751,
+        0.14055804908275604,
+        0.06572187691926956,
+        0.031090088188648224,
+        0.014742917381227016,
+        0.006599771324545145
+      ],
+      "correctness": {
+        "output_relative_l2": 2.4296766637670103e-07,
+        "output_max_abs_error": 1.2968070244312457e-06,
+        "gradients": {
+          "Q": {
+            "relative_l2": 2.524099688529049e-07,
+            "max_abs_error": 1.96162164423086e-06
+          },
+          "K": {
+            "relative_l2": 2.405960735217077e-07,
+            "max_abs_error": 9.482955902750945e-07
+          },
+          "V": {
+            "relative_l2": 2.3431637017630357e-07,
+            "max_abs_error": 9.000414133986112e-07
+          },
+          "phaseK": {
+            "relative_l2": 2.5216432055907664e-07,
+            "max_abs_error": 3.6675696257759682e-06
+          },
+          "phaseV": {
+            "relative_l2": 2.5490183516582e-07,
+            "max_abs_error": 3.810188617947574e-06
+          }
+        }
+      },
+      "forward_backward_median_ms": 17.530265299479165,
+      "rounds_ms": [
+        17.523439534505208,
+        17.530265299479165,
+        17.532177734375,
+        17.53702392578125,
+        17.522347005208335
+      ],
+      "extra_peak_mib": 2584.9697265625,
+      "process_peak_mib": 2765.7529296875
+    }
+  ],
+  "existing_training_resumed": null
+}

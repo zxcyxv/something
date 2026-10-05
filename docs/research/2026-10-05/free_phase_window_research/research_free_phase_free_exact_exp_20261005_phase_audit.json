@@ -1,0 +1,75 @@
+{
+  "checkpoint": "runs/research_free_phase_free_exact_exp_20261005/step_3008.pt",
+  "step": 3008,
+  "weights": "raw",
+  "inference": "CPU FP32, two checkpoint training puzzles rolled out from fresh carry for 16 segments; record the final 8 blocks; not an accuracy evaluation",
+  "phase_gain_norms": {
+    "layers.0.phase_local_gain": 0.2522328197956085
+  },
+  "blocks": [
+    {
+      "block": 0,
+      "phase_correction_rms": 0.15791282057762146,
+      "phase_correction_max": 1.6329811811447144,
+      "order_reversed_vs_current_base": 0.06491369009017944,
+      "pair_has_both_orders_over_tokens": 0.2108970433473587,
+      "near_zero_002": 0.02340211533010006
+    },
+    {
+      "block": 1,
+      "phase_correction_rms": 0.157912939786911,
+      "phase_correction_max": 1.6329803466796875,
+      "order_reversed_vs_current_base": 0.06491347402334213,
+      "pair_has_both_orders_over_tokens": 0.2108970433473587,
+      "near_zero_002": 0.02340232953429222
+    },
+    {
+      "block": 2,
+      "phase_correction_rms": 0.15791279077529907,
+      "phase_correction_max": 1.6329811811447144,
+      "order_reversed_vs_current_base": 0.06491369009017944,
+      "pair_has_both_orders_over_tokens": 0.2108970433473587,
+      "near_zero_002": 0.02340211533010006
+    },
+    {
+      "block": 3,
+      "phase_correction_rms": 0.15791279077529907,
+      "phase_correction_max": 1.6329801082611084,
+      "order_reversed_vs_current_base": 0.06491340696811676,
+      "pair_has_both_orders_over_tokens": 0.2108970433473587,
+      "near_zero_002": 0.02340232953429222
+    },
+    {
+      "block": 4,
+      "phase_correction_rms": 0.15791289508342743,
+      "phase_correction_max": 1.6329811811447144,
+      "order_reversed_vs_current_base": 0.06491340696811676,
+      "pair_has_both_orders_over_tokens": 0.2108970433473587,
+      "near_zero_002": 0.02340232953429222
+    },
+    {
+      "block": 5,
+      "phase_correction_rms": 0.15791282057762146,
+      "phase_correction_max": 1.6329801082611084,
+      "order_reversed_vs_current_base": 0.0649135485291481,
+      "pair_has_both_orders_over_tokens": 0.2108970433473587,
+      "near_zero_002": 0.023401973769068718
+    },
+    {
+      "block": 6,
+      "phase_correction_rms": 0.157912939786911,
+      "phase_correction_max": 1.6329811811447144,
+      "order_reversed_vs_current_base": 0.06491369009017944,
+      "pair_has_both_orders_over_tokens": 0.2108970433473587,
+      "near_zero_002": 0.023402472957968712
+    },
+    {
+      "block": 7,
+      "phase_correction_rms": 0.15791279077529907,
+      "phase_correction_max": 1.6329801082611084,
+      "order_reversed_vs_current_base": 0.06491347402334213,
+      "pair_has_both_orders_over_tokens": 0.2108970433473587,
+      "near_zero_002": 0.023401973769068718
+    }
+  ]
+}

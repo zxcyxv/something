@@ -1,0 +1,10 @@
+test_actual_forward_has_two_correct_residual_norms (lt.test_free_phase_windows.FreePhaseTests.test_actual_forward_has_two_correct_residual_norms) ... ok
+test_dense_window_placement_and_all_parameter_gradients (lt.test_free_phase_windows.FreePhaseTests.test_dense_window_placement_and_all_parameter_gradients) ... ok
+test_diagonal_head_reverses_order_and_preserves_locality (lt.test_free_phase_windows.FreePhaseTests.test_diagonal_head_reverses_order_and_preserves_locality) ... ok
+test_original_initialization_and_fixed_window_control (lt.test_free_phase_windows.FreePhaseTests.test_original_initialization_and_fixed_window_control) ... ok
+test_token_local_phase_can_reverse_order_with_fixed_weights (lt.test_free_phase_windows.FreePhaseTests.test_token_local_phase_can_reverse_order_with_fixed_weights) ... ok
+
+----------------------------------------------------------------------
+Ran 5 tests in 0.099s
+
+OK

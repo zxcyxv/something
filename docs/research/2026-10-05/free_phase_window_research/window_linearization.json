@@ -1,0 +1,206 @@
+{
+  "prediction": "Test a predeclared mechanism on identical recorded K/V and phase states.\n\nPrediction: finite phase perturbations that cross a discontinuity produce a\njump absent from the local derivative. Continuous windows should have smaller\nTaylor residuals. This tests the operator, not a causal explanation of training.\n",
+  "source_checkpoint": "runs/kv_phase_local_warp_exp_fresh_20261005/step_30550.pt",
+  "source_step": 30550,
+  "protocol": "Same recorded raw states and per-neuron phase directions for every window; K,V,Q held fixed; FP64; two blocks, one example/head each.",
+  "rows": [
+    {
+      "block": 0,
+      "window": "signed_exp",
+      "phase_noise_std": 0.001,
+      "ordering_flip_fraction": 0.001454178537511871,
+      "window_change_rms": 0.07620339991048257,
+      "window_taylor_residual_rms": 0.07626735695786015,
+      "window_change_max": 1.9999434714333328,
+      "read_change_norm": 24.468154151999478,
+      "read_taylor_relative_residual": 1.0012471927442594
+    },
+    {
+      "block": 0,
+      "window": "signed_exp",
+      "phase_noise_std": 0.0001,
+      "ordering_flip_fraction": 0.00011756702461830667,
+      "window_change_rms": 0.021683665525251094,
+      "window_taylor_residual_rms": 0.02168566563664568,
+      "window_change_max": 1.9999492287891736,
+      "read_change_norm": 5.120781051351892,
+      "read_taylor_relative_residual": 1.000098739366757
+    },
+    {
+      "block": 0,
+      "window": "signed_exp",
+      "phase_noise_std": 1e-05,
+      "ordering_flip_fraction": 1.1414274234787056e-06,
+      "window_change_rms": 0.002136736907441841,
+      "window_taylor_residual_rms": 0.0021367521361801765,
+      "window_change_max": 1.9999657668478568,
+      "read_change_norm": 0.034914242092222554,
+      "read_taylor_relative_residual": 0.9923427919494603
+    },
+    {
+      "block": 0,
+      "window": "fourier4_e05",
+      "phase_noise_std": 0.001,
+      "ordering_flip_fraction": 0.001454178537511871,
+      "window_change_rms": 0.0026065842927890446,
+      "window_taylor_residual_rms": 7.4297283197647125e-06,
+      "window_change_max": 0.01976931671887658,
+      "read_change_norm": 1.2086096073044303,
+      "read_taylor_relative_residual": 0.002174947432486613
+    },
+    {
+      "block": 0,
+      "window": "fourier4_e05",
+      "phase_noise_std": 0.0001,
+      "ordering_flip_fraction": 0.00011756702461830667,
+      "window_change_rms": 0.0002606620421395553,
+      "window_taylor_residual_rms": 7.429799296873474e-08,
+      "window_change_max": 0.0019763436989434086,
+      "read_change_norm": 0.12086763797586517,
+      "read_taylor_relative_residual": 0.00021742751052583405
+    },
+    {
+      "block": 0,
+      "window": "fourier4_e05",
+      "phase_noise_std": 1e-05,
+      "ordering_flip_fraction": 1.1414274234787056e-06,
+      "window_change_rms": 2.6066228947873918e-05,
+      "window_taylor_residual_rms": 7.42980457469948e-10,
+      "window_change_max": 0.00019762720880438234,
+      "read_change_norm": 0.012086822596432857,
+      "read_taylor_relative_residual": 2.1742099580322713e-05
+    },
+    {
+      "block": 0,
+      "window": "biexponential",
+      "phase_noise_std": 0.001,
+      "ordering_flip_fraction": 0.001454178537511871,
+      "window_change_rms": 0.005429401078810449,
+      "window_taylor_residual_rms": 7.614185034717886e-05,
+      "window_change_max": 0.07457810597848513,
+      "read_change_norm": 2.336594019802763,
+      "read_taylor_relative_residual": 0.012598415339265959
+    },
+    {
+      "block": 0,
+      "window": "biexponential",
+      "phase_noise_std": 0.0001,
+      "ordering_flip_fraction": 0.00011756702461830667,
+      "window_change_rms": 0.0005429615604026529,
+      "window_taylor_residual_rms": 7.6827353431536e-07,
+      "window_change_max": 0.0072335577173712196,
+      "read_change_norm": 0.23361451414553758,
+      "read_taylor_relative_residual": 0.0012586422300788973
+    },
+    {
+      "block": 0,
+      "window": "biexponential",
+      "phase_noise_std": 1e-05,
+      "ordering_flip_fraction": 1.1414274234787056e-06,
+      "window_change_rms": 5.429581356517929e-05,
+      "window_taylor_residual_rms": 7.694909528868979e-09,
+      "window_change_max": 0.000721158546533332,
+      "read_change_norm": 0.023361142617614437,
+      "read_taylor_relative_residual": 0.00012585900077986516
+    },
+    {
+      "block": 7,
+      "window": "signed_exp",
+      "phase_noise_std": 0.001,
+      "ordering_flip_fraction": 0.0012692672949083206,
+      "window_change_rms": 0.071196706795274,
+      "window_taylor_residual_rms": 0.07125353380147847,
+      "window_change_max": 1.9998722819757617,
+      "read_change_norm": 17.001921855964085,
+      "read_taylor_relative_residual": 1.0018449552953383
+    },
+    {
+      "block": 7,
+      "window": "signed_exp",
+      "phase_noise_std": 0.0001,
+      "ordering_flip_fraction": 0.00012898129885309374,
+      "window_change_rms": 0.022711923088875596,
+      "window_taylor_residual_rms": 0.022713986629449477,
+      "window_change_max": 1.9999757941567138,
+      "read_change_norm": 8.86077286843415,
+      "read_taylor_relative_residual": 1.0002038693400346
+    },
+    {
+      "block": 7,
+      "window": "signed_exp",
+      "phase_noise_std": 1e-05,
+      "ordering_flip_fraction": 1.1414274234787056e-06,
+      "window_change_rms": 0.0021367470593111207,
+      "window_taylor_residual_rms": 0.0021367521364900987,
+      "window_change_max": 1.9999759284382912,
+      "read_change_norm": 4.1474703055416935,
+      "read_taylor_relative_residual": 1.0000459307922547
+    },
+    {
+      "block": 7,
+      "window": "fourier4_e05",
+      "phase_noise_std": 0.001,
+      "ordering_flip_fraction": 0.0012692672949083206,
+      "window_change_rms": 0.0025371666048801603,
+      "window_taylor_residual_rms": 7.3939338955354945e-06,
+      "window_change_max": 0.021711977305131164,
+      "read_change_norm": 1.308435270256172,
+      "read_taylor_relative_residual": 0.0018249323544850841
+    },
+    {
+      "block": 7,
+      "window": "fourier4_e05",
+      "phase_noise_std": 0.0001,
+      "ordering_flip_fraction": 0.00012898129885309374,
+      "window_change_rms": 0.00025371964464158053,
+      "window_taylor_residual_rms": 7.394043427731796e-08,
+      "window_change_max": 0.0021733858062606415,
+      "read_change_norm": 0.13084847402044508,
+      "read_taylor_relative_residual": 0.00018250522387103628
+    },
+    {
+      "block": 7,
+      "window": "fourier4_e05",
+      "phase_noise_std": 1e-05,
+      "ordering_flip_fraction": 1.1414274234787056e-06,
+      "window_change_rms": 2.5371984017018884e-05,
+      "window_taylor_residual_rms": 7.394052478038841e-10,
+      "window_change_max": 0.00021735875371436952,
+      "read_change_norm": 0.013084888021523388,
+      "read_taylor_relative_residual": 1.825066604841551e-05
+    },
+    {
+      "block": 7,
+      "window": "biexponential",
+      "phase_noise_std": 0.001,
+      "ordering_flip_fraction": 0.0012692672949083206,
+      "window_change_rms": 0.005147602992093663,
+      "window_taylor_residual_rms": 7.169814113648683e-05,
+      "window_change_max": 0.07239414528493505,
+      "read_change_norm": 2.4460989490071485,
+      "read_taylor_relative_residual": 0.011228744688982313
+    },
+    {
+      "block": 7,
+      "window": "biexponential",
+      "phase_noise_std": 0.0001,
+      "ordering_flip_fraction": 0.00012898129885309374,
+      "window_change_rms": 0.000514697144537101,
+      "window_taylor_residual_rms": 7.22922633914516e-07,
+      "window_change_max": 0.007363360313802327,
+      "read_change_norm": 0.24441383522791874,
+      "read_taylor_relative_residual": 0.0011287905766652264
+    },
+    {
+      "block": 7,
+      "window": "biexponential",
+      "phase_noise_std": 1e-05,
+      "ordering_flip_fraction": 1.1414274234787056e-06,
+      "window_change_rms": 5.146858917167529e-05,
+      "window_taylor_residual_rms": 7.237589769234971e-09,
+      "window_change_max": 0.0007384838245865812,
+      "read_change_norm": 0.024439420466301934,
+      "read_taylor_relative_residual": 0.00011275557613027855
+    }
+  ]
+}

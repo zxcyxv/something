@@ -1,0 +1,18 @@
+/venv/main/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:322: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+PREFLIGHT {'step': 1, 'seconds': 63.152468744665384, 'accuracy': 0.0, 'count': 0.0, 'exact_accuracy': 0.0, 'lm_loss': 2.483959436416626, 'q_halt_accuracy': 0.0, 'q_halt_loss': 0.006715297698974609, 'steps': 0.0, 'lr': 0.0, '_count_raw': 0.0}
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/something/lt/experiment_free_phase_windows.py", line 218, in <module>
+    main()
+  File "/workspace/something/lt/experiment_free_phase_windows.py", line 197, in main
+    preflight(cfg, out, opt.steps)
+  File "/workspace/something/lt/experiment_free_phase_windows.py", line 128, in preflight
+    metrics = t.train_batch(compiled, base, state, batch, cfg, opts, lrs, 390625, 0, 1, device)
+              ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/something/lt/train.py::trainer", line 1769, in train_batch
+  File "/workspace/something/lt/experiment_free_phase_windows.py", line 119, in check
+    old_check(model, loss, device, ws)
+  File "/workspace/something/lt/train.py::trainer", line 1752, in _check_finite_gradients
+FloatingPointError: Nonfinite loss/gradient BEFORE optimizer step. Stopped without overwriting the last committed checkpoint.

@@ -1,0 +1,11 @@
+{
+  "source_run": "/workspace/something/runs/kv_phase_exp_current_fresh_20261005",
+  "max_archived_step": 3008,
+  "latest_source_step": 18300,
+  "source_train_sha256": "465e4c4b40a9c288275470a0d76439f31cccf7efaf562c0fecfca32499dcb1fa",
+  "archived_train_sha256": "e631d71fd9537e814b0fa7f9f605709ec1285a434452b71b76f7f1960d8293a7",
+  "source_rows": 18300,
+  "archived_rows": 3008,
+  "checkpoint_names": [],
+  "note": "Only scalar logs through step 3008 and metadata/source snapshots are archived. Model checkpoints remain outside Git."
+}

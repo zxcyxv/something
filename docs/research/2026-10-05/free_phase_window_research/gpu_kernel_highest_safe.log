@@ -1,0 +1,25 @@
+COMPILE fixed_exp
+READY fixed_exp
+COMPILE exact_dynamic_exp
+READY exact_dynamic_exp
+COMPILE direct_smooth
+READY direct_smooth
+COMPILE two_1
+/venv/main/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:322: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+READY two_1
+COMPILE two_2
+READY two_2
+COMPILE two_4
+Traceback (most recent call last):
+  File "<frozen runpy>", line 198, in _run_module_as_main
+  File "<frozen runpy>", line 88, in _run_code
+  File "/workspace/something/lt/benchmark_free_phase_windows.py", line 217, in <module>
+    main()
+  File "/workspace/something/lt/benchmark_free_phase_windows.py", line 198, in main
+    correctness=accuracy_check(fn, args, omega, coefficient))
+                ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "/workspace/something/lt/benchmark_free_phase_windows.py", line 148, in accuracy_check
+    assert max(x['relative_l2'] for x in result['gradients'].values()) < .01, result
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+AssertionError: {'output_relative_l2': 4.3082175744311386e-07, 'output_max_abs_error': 1.6076574941292776e-06, 'gradients': {'Q': {'relative_l2': 4.4738514215243135e-07, 'max_abs_error': 2.2868901328187974e-06}, 'K': {'relative_l2': 2.5565460384372927e-07, 'max_abs_error': 1.0904829801372529e-06}, 'V': {'relative_l2': 1.4151763607578678, 'max_abs_error': 4.827411855981569}, 'phaseK': {'relative_l2': 2.4902425088664307e-07, 'max_abs_error': 4.804603971120258e-06}, 'phaseV': {'relative_l2': 2.474963130323033e-07, 'max_abs_error': 3.6730379633365118e-06}}}

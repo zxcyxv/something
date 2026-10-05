@@ -1,0 +1,22 @@
+{
+  "variant": "local_free_exponential_r8_e0.35",
+  "window": "exponential",
+  "modes": 8,
+  "epsilon": 0.35,
+  "precision": "highest",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "phase": "(pi/2)*tanh(theta_role + zero_initialized_Linear(concat(RoPE(K_n),V_n))_role)",
+  "phase_input": "token-local, shared 2Dh -> 2Dh linear over heads/tokens; no token pooling",
+  "phase_dynamic": true,
+  "ordering": "free to reverse for dynamic controls",
+  "phase_initialization": "same original theta and other parameter draws; zero correction",
+  "write": "G_ij=mean_n V_ni K_ni[j] L(phiV_ni-phiK_nj); read=RoPE(Q)@G.T",
+  "normalization": "RMSNorm immediately after each attention/FFN residual; FP32 mean square, eps1e-5, no affine; count=2",
+  "window_note": "Fourier is exact for its chosen bounded-domain surrogate; not the original exponential. Frozen frequencies and coefficients.",
+  "scope": "Short controlled research experiment; max_steps applies only to this new diagnostic run",
+  "checkpoints": "Only trainer terminal save; keep_last=3; all step logs retained",
+  "original_training": "local_warp_exp stopped by user at step 30550; not resumed",
+  "experiment_free_phase_windows.py_sha256": "3cc736cea26ec0af034827ab25569895d60c54e0db92c2f17d0801c7ef654aae",
+  "research_free_phase_windows.py_sha256": "57dcad7aee39672175f0ae5dded74db7913ee79dbf2cbf7ecabf23cae5c09cb4"
+}

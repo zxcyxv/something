@@ -1,0 +1,8 @@
+START gpu_kernel_biexponential 1791184489.1342885
+FINISHED gpu_kernel_biexponential 1791184507.6281207
+START preflight_free_biexponential 1791184507.628219
+Traceback (most recent call last):
+  File "<stdin>", line 17, in <module>
+  File "/venv/main/lib/python3.12/subprocess.py", line 571, in run
+    raise CalledProcessError(retcode, process.args,
+subprocess.CalledProcessError: Command '['/venv/main/bin/python', '-m', 'lt.experiment_free_phase_windows', '--preflight', '--window', 'biexponential', '--generator', 'diagonal', '--steps', '20', '--out', 'docs/research/2026-10-05/free_phase_window_research/preflight_free_biexponential']' returned non-zero exit status 1.

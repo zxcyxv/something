@@ -1,0 +1,21 @@
+{
+  "packed": {
+    "output_max_abs_error": 3.3306690738754696e-16,
+    "full_gradient_max_abs_error": 5.329070518200751e-15
+  },
+  "two_packed": {
+    "output_max_abs_error": 3.3306690738754696e-16,
+    "full_gradient_max_abs_error": 5.995204332975845e-15
+  },
+  "manual": {
+    "output_max_abs_error": 3.3306690738754696e-16,
+    "full_gradient_max_abs_error": 4.218847493575595e-15
+  },
+  "loop": {
+    "output_max_abs_error": 3.3306690738754696e-16,
+    "full_gradient_max_abs_error": 3.9968028886505635e-15
+  },
+  "common_delay_shift_invariance": 4.440892098500626e-16,
+  "exact_tie_zero": true,
+  "unnormalized_write_additivity": 3.1086244689504383e-15
+}

@@ -1,0 +1,17 @@
+{
+  "cases": [
+    {
+      "exact_ties": false,
+      "output_max_abs_error": 6.106226635438361e-16,
+      "gradient_max_abs_error": 6.217248937900877e-15
+    },
+    {
+      "exact_ties": true,
+      "output_max_abs_error": 3.5388358909926865e-16,
+      "gradient_max_abs_error": 8.881784197001252e-15
+    }
+  ],
+  "zero_derivative": 12.915496650148837,
+  "scale": 1.4350551833498708,
+  "peak": 0.2558427881104495
+}

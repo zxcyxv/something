@@ -1,0 +1,173 @@
+{
+  "protocol": "Same upper step limit 3008, terminal-segment batches only; single seed; train metrics, not validation. Incomplete controls must not be compared as final.",
+  "runs": {
+    "historical_fixed_exp": {
+      "run": "/workspace/something/runs/kv_phase_exp_current_fresh_20261005",
+      "latest_step": 18300,
+      "comparison_step": 3008,
+      "complete_3008": true,
+      "terminal_windows": {
+        "32": {
+          "first_step": 2512,
+          "last_step": 3008,
+          "batches": 32,
+          "examples": 4096.0,
+          "accuracy": 0.9299105685204268,
+          "exact_accuracy": 0.150634765625,
+          "lm_loss": 0.3554969076067209,
+          "batch_accuracy_std": 0.015800446012747865
+        },
+        "64": {
+          "first_step": 2000,
+          "last_step": 3008,
+          "batches": 64,
+          "examples": 8192.0,
+          "accuracy": 0.9244219250977039,
+          "exact_accuracy": 0.1171875,
+          "lm_loss": 0.36927219154313207,
+          "batch_accuracy_std": 0.017599493603307127
+        }
+      },
+      "median_seconds_last512": 0.06694385362789035,
+      "finite_losses": true,
+      "checkpoints": []
+    },
+    "historical_ordered_warp": {
+      "run": "/workspace/something/runs/kv_phase_local_warp_exp_fresh_20261005",
+      "latest_step": 30550,
+      "comparison_step": 3008,
+      "complete_3008": true,
+      "terminal_windows": {
+        "32": {
+          "first_step": 2512,
+          "last_step": 3008,
+          "batches": 32,
+          "examples": 4096.0,
+          "accuracy": 0.9285662863403559,
+          "exact_accuracy": 0.142333984375,
+          "lm_loss": 0.3615638501942158,
+          "batch_accuracy_std": 0.017918399256464317
+        },
+        "64": {
+          "first_step": 2000,
+          "last_step": 3008,
+          "batches": 64,
+          "examples": 8192.0,
+          "accuracy": 0.9245560532435775,
+          "exact_accuracy": 0.1146240234375,
+          "lm_loss": 0.37174586951732635,
+          "batch_accuracy_std": 0.017228984036688086
+        }
+      },
+      "median_seconds_last512": 0.09788700612261891,
+      "finite_losses": true,
+      "checkpoints": [
+        "step_29295.pt",
+        "step_30000.pt",
+        "step_30550.pt"
+      ]
+    },
+    "fixed_fourier4_e05": {
+      "run": "/workspace/something/runs/research_free_phase_fixed_fourier4_e05_20261005",
+      "latest_step": 3008,
+      "comparison_step": 3008,
+      "complete_3008": true,
+      "terminal_windows": {
+        "32": {
+          "first_step": 2512,
+          "last_step": 3008,
+          "batches": 32,
+          "examples": 4096.0,
+          "accuracy": 0.9265528786927462,
+          "exact_accuracy": 0.155029296875,
+          "lm_loss": 0.36440028669312596,
+          "batch_accuracy_std": 0.01858483209342209
+        },
+        "64": {
+          "first_step": 2000,
+          "last_step": 3008,
+          "batches": 64,
+          "examples": 8192.0,
+          "accuracy": 0.9174051452428102,
+          "exact_accuracy": 0.1072998046875,
+          "lm_loss": 0.38534504151903093,
+          "batch_accuracy_std": 0.019754738861614593
+        }
+      },
+      "median_seconds_last512": 0.0676115988753736,
+      "finite_losses": true,
+      "checkpoints": [
+        "step_1953.pt",
+        "step_3008.pt"
+      ]
+    },
+    "free_fourier4_e05": {
+      "run": "/workspace/something/runs/research_free_phase_free_fourier4_e05_20261005",
+      "latest_step": 3008,
+      "comparison_step": 3008,
+      "complete_3008": true,
+      "terminal_windows": {
+        "32": {
+          "first_step": 2512,
+          "last_step": 3008,
+          "batches": 32,
+          "examples": 4096.0,
+          "accuracy": 0.925693865865469,
+          "exact_accuracy": 0.15673828125,
+          "lm_loss": 0.3624763051047921,
+          "batch_accuracy_std": 0.020911302386167945
+        },
+        "64": {
+          "first_step": 2000,
+          "last_step": 3008,
+          "batches": 64,
+          "examples": 8192.0,
+          "accuracy": 0.919304016046226,
+          "exact_accuracy": 0.117919921875,
+          "lm_loss": 0.3775622476823628,
+          "batch_accuracy_std": 0.021611203603912228
+        }
+      },
+      "median_seconds_last512": 0.12215082300826907,
+      "finite_losses": true,
+      "checkpoints": [
+        "step_1953.pt",
+        "step_3008.pt"
+      ]
+    },
+    "free_exact_exp": {
+      "run": "/workspace/something/runs/research_free_phase_free_exact_exp_20261005",
+      "latest_step": 3008,
+      "comparison_step": 3008,
+      "complete_3008": true,
+      "terminal_windows": {
+        "32": {
+          "first_step": 2512,
+          "last_step": 3008,
+          "batches": 32,
+          "examples": 4096.0,
+          "accuracy": 0.18831983068957925,
+          "exact_accuracy": 0.0,
+          "lm_loss": 2.170522004365921,
+          "batch_accuracy_std": 0.00781401923777187
+        },
+        "64": {
+          "first_step": 2000,
+          "last_step": 3008,
+          "batches": 64,
+          "examples": 8192.0,
+          "accuracy": 0.16948785004206002,
+          "exact_accuracy": 0.0,
+          "lm_loss": 2.1782695464789867,
+          "batch_accuracy_std": 0.021343473782492402
+        }
+      },
+      "median_seconds_last512": 0.22964849276468158,
+      "finite_losses": true,
+      "checkpoints": [
+        "step_1953.pt",
+        "step_3008.pt"
+      ]
+    }
+  }
+}

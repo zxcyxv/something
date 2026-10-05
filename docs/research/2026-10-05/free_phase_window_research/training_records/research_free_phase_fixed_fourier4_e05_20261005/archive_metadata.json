@@ -1,0 +1,14 @@
+{
+  "source_run": "/workspace/something/runs/research_free_phase_fixed_fourier4_e05_20261005",
+  "max_archived_step": 3008,
+  "latest_source_step": 3008,
+  "source_train_sha256": "53790c8d2881ec7434a8c2ab1ed347f06e585ef3dd352d46b7ec1dc94981d98c",
+  "archived_train_sha256": "53790c8d2881ec7434a8c2ab1ed347f06e585ef3dd352d46b7ec1dc94981d98c",
+  "source_rows": 3008,
+  "archived_rows": 3008,
+  "checkpoint_names": [
+    "step_1953.pt",
+    "step_3008.pt"
+  ],
+  "note": "Only scalar logs through step 3008 and metadata/source snapshots are archived. Model checkpoints remain outside Git."
+}
