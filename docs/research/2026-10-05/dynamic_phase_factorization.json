@@ -1,0 +1,168 @@
+{
+  "seed": 20261005,
+  "dtype": "float64",
+  "device": "cpu",
+  "checks": {
+    "state_shared_exact": {
+      "output_max_abs_error": 2.220446049250313e-16,
+      "gradient_max_abs_errors": [
+        1.6653345369377348e-16,
+        1.1102230246251565e-16,
+        4.440892098500626e-16,
+        1.3877787807814457e-16
+      ]
+    },
+    "puzzle_state_generator_exact": {
+      "output_max_abs_error": 1.6653345369377348e-16,
+      "gradient_max_abs_errors": [
+        2.220446049250313e-16,
+        1.1102230246251565e-16,
+        2.220446049250313e-16,
+        2.7755575615628914e-16,
+        2.220446049250313e-16,
+        1.3877787807814457e-16,
+        8.326672684688674e-17
+      ]
+    },
+    "zero_initialized_phase_projection": {
+      "baseline_exact_equal": true,
+      "phase_projection_gradient_norms": [
+        8.290505689211582,
+        9.406366207367837
+      ]
+    },
+    "local_order_preserving_exact": {
+      "output_max_abs_error": 1.3877787807814457e-16,
+      "gradient_max_abs_errors": [
+        1.1102230246251565e-16,
+        2.220446049250313e-16,
+        1.0061396160665481e-16
+      ]
+    },
+    "local_finite_pulse_1_modes": {
+      "output_max_abs_error": 1.3877787807814457e-17,
+      "gradient_max_abs_errors": [
+        1.9081958235744878e-17,
+        1.3877787807814457e-17,
+        1.734723475976807e-17,
+        4.163336342344337e-17,
+        4.163336342344337e-17
+      ],
+      "coefficients": [
+        0.07957747154594767
+      ],
+      "positive_halfcycle_grid_min": 7.957747154462138e-07,
+      "peak_phase": 1.5707963267948966,
+      "zero_slope": 0.07957747154594767,
+      "note": "Exact for finite positive pulse + periodized STDP; not isolated-pair exp."
+    },
+    "local_finite_pulse_2_modes": {
+      "output_max_abs_error": 5.551115123125783e-17,
+      "gradient_max_abs_errors": [
+        4.163336342344337e-17,
+        2.7755575615628914e-17,
+        6.938893903907228e-17,
+        6.938893903907228e-17,
+        8.326672684688674e-17
+      ],
+      "coefficients": [
+        0.14147106052612918,
+        0.007073553026306459
+      ],
+      "positive_halfcycle_grid_min": 1.2732395447449496e-06,
+      "peak_phase": 1.472465102737536,
+      "zero_slope": 0.15561816657874208,
+      "note": "Exact for finite positive pulse + periodized STDP; not isolated-pair exp."
+    },
+    "local_finite_pulse_4_modes": {
+      "output_max_abs_error": 8.326672684688674e-17,
+      "gradient_max_abs_errors": [
+        5.551115123125783e-17,
+        5.551115123125783e-17,
+        1.1102230246251565e-16,
+        1.1102230246251565e-16,
+        8.326672684688674e-17
+      ],
+      "coefficients": [
+        0.20371832715762608,
+        0.04074366543152522,
+        0.002494510128460727,
+        3.056997706446969e-05
+      ],
+      "positive_halfcycle_grid_min": 1.2959224677519404e-06,
+      "peak_phase": 1.2245950203693012,
+      "zero_slope": 0.2928114683143166,
+      "note": "Exact for finite positive pulse + periodized STDP; not isolated-pair exp."
+    },
+    "local_finite_pulse_8_modes": {
+      "output_max_abs_error": 1.942890293094024e-16,
+      "gradient_max_abs_errors": [
+        5.551115123125783e-17,
+        1.1102230246251565e-16,
+        1.1102230246251565e-16,
+        2.220446049250313e-16,
+        2.220446049250313e-16
+      ],
+      "coefficients": [
+        0.2515041076020074,
+        0.0985896101799869,
+        0.021999334502972277,
+        0.002995552083738055,
+        0.00023179055723052773,
+        8.975012199439077e-06,
+        1.377498168684279e-07,
+        4.730419535316893e-10
+      ],
+      "positive_halfcycle_grid_min": 1.0944674559815766e-06,
+      "peak_phase": 0.9666719055095793,
+      "zero_slope": 0.5278773106982533,
+      "note": "Exact for finite positive pulse + periodized STDP; not isolated-pair exp."
+    },
+    "independent_phase_rank_example": {
+      "channels": 104,
+      "numerical_rank": 104,
+      "interpretation": "No universally exact fixed small feature rank for this kernel."
+    },
+    "common_phase_shift_cancels": 4.440892098500626e-16
+  },
+  "matrix_operation_estimate": {
+    "baseline_macs_per_token": 8692736,
+    "harmonic": {
+      "2": {
+        "extra_matmul_macs_fraction": 0.03445635528330781,
+        "phase_projection_rank": 16,
+        "write_contraction_multiplier": 4
+      },
+      "4": {
+        "extra_matmul_macs_fraction": 0.07427258805513016,
+        "phase_projection_rank": 16,
+        "write_contraction_multiplier": 8
+      },
+      "8": {
+        "extra_matmul_macs_fraction": 0.15390505359877488,
+        "phase_projection_rank": 16,
+        "write_contraction_multiplier": 16
+      }
+    },
+    "excludes": "trigonometry, memory traffic, activations, optimizer, checkpoint recompute, backward; not a GPU latency estimate"
+  },
+  "sources": [
+    "https://arxiv.org/html/2603.15569v1#S3.SS2",
+    "https://github.com/state-spaces/mamba/blob/main/mamba_ssm/modules/mamba3.py",
+    "lt/research_phase_stdp_math.py:pulse_coefficients"
+  ],
+  "selected_design": {
+    "phase_scope": "per puzzle, head and channel; shared across tokens; recomputed each recurrent block",
+    "summary": "affine-free RMSNorm(mean_tokens(hidden + input injection)), eps=1e-5, FP32",
+    "phase": "(pi/2)*tanh(theta_role + W_role @ summary), independent K/V projections",
+    "initialization": "zero W_K and W_V; preserve baseline learned-offset initialization",
+    "window": "sign(phiV-phiK)*exp(-abs(phiV-phiK)/tau), tau=1 rad; no phase wrapping",
+    "write": "G=(V.T @ RoPE(K)/N) elementwise L; current G only",
+    "read": "RoPE(Q) @ G.T",
+    "residual_norms": "RMSNorm after attention residual, then after FFN residual; FP32 mean square, eps=1e-5, no affine",
+    "extra_parameters_at_hidden832": 1384448,
+    "limitations": "mean pool is a summary, not a sufficient statistic; no independent per-token phase; no GPU latency or training claim",
+    "implementation_status": "isolated operator prototype only; not installed in the training runner"
+  },
+  "cuda_initialized": false
+}

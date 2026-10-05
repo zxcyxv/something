@@ -1,0 +1,84 @@
+{
+  "kind": "isolated preflight; timings include concurrent existing training",
+  "batch": 128,
+  "hidden": 832,
+  "heads": 8,
+  "blocks": 8,
+  "amp": "bfloat16",
+  "compile": true,
+  "activation_checkpoint": true,
+  "steps": [
+    {
+      "step": 1,
+      "elapsed": 49.64056209567934,
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.4891440868377686,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 0.0,
+      "_count_raw": 0.0
+    },
+    {
+      "step": 2,
+      "elapsed": 2.700434932485223,
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.4900710582733154,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 5.0000000000000004e-08,
+      "_count_raw": 0.0
+    },
+    {
+      "step": 3,
+      "elapsed": 0.14883020892739296,
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.49003005027771,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 1.0000000000000001e-07,
+      "_count_raw": 0.0
+    }
+  ],
+  "phase_gradients": [
+    {
+      "model.inner.layers.0.phase_attention.channel_embedding": 0.0,
+      "model.inner.layers.0.phase_attention.profile_proj.weight": 0.0,
+      "model.inner.layers.0.phase_attention.qkv.weight": 0.0,
+      "model.inner.layers.0.phase_attention.out_proj.weight": 0.0,
+      "model.inner.layers.0.phase_attention.ffn_up.weight": 0.0,
+      "model.inner.layers.0.phase_attention.ffn_down.weight": 0.0,
+      "model.inner.layers.0.phase_attention.readout.weight": 0.09108760952949524
+    },
+    {
+      "model.inner.layers.0.phase_attention.channel_embedding": 0.0,
+      "model.inner.layers.0.phase_attention.profile_proj.weight": 0.0,
+      "model.inner.layers.0.phase_attention.qkv.weight": 0.0,
+      "model.inner.layers.0.phase_attention.out_proj.weight": 0.0,
+      "model.inner.layers.0.phase_attention.ffn_up.weight": 0.0,
+      "model.inner.layers.0.phase_attention.ffn_down.weight": 0.0,
+      "model.inner.layers.0.phase_attention.readout.weight": 0.08914946019649506
+    },
+    {
+      "model.inner.layers.0.phase_attention.channel_embedding": 6.9162857663229715e-09,
+      "model.inner.layers.0.phase_attention.profile_proj.weight": 4.135626241463797e-08,
+      "model.inner.layers.0.phase_attention.qkv.weight": 2.70603567331662e-10,
+      "model.inner.layers.0.phase_attention.out_proj.weight": 2.0351070828539264e-10,
+      "model.inner.layers.0.phase_attention.ffn_up.weight": 3.285532512720124e-09,
+      "model.inner.layers.0.phase_attention.ffn_down.weight": 5.719287710093113e-09,
+      "model.inner.layers.0.phase_attention.readout.weight": 0.08914147317409515
+    }
+  ],
+  "parameters": 8571915,
+  "phase_branch_parameters": 31008,
+  "peak_allocated_mib": 4559.83984375,
+  "readout_weight_norm": 4.700296756254829e-07
+}

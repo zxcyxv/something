@@ -1,0 +1,35 @@
+/workspace/something/lt/research_free_phase_windows.py:182: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  err = float((actual - ref).abs().max())
+{"family": "integer_fourier", "epsilon": 0.08, "modes": 1, "rmse": 0.3591467119342401, "max_abs_error": 0.9275018288112806, "derivative_relative_l2": 0.9883725474154111, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.08, "modes": 1, "rmse": 0.348539189437627, "max_abs_error": 0.9187609466849643, "derivative_relative_l2": 0.987553470687841, "wrong_sign_fraction": 0.0684835352641377}
+{"family": "integer_fourier", "epsilon": 0.08, "modes": 2, "rmse": 0.28343735165046063, "max_abs_error": 0.8381739911425605, "derivative_relative_l2": 0.9555264889084507, "wrong_sign_fraction": 0.25449385052034057}
+{"family": "optimized_frequencies", "epsilon": 0.08, "modes": 2, "rmse": 0.2303106577189582, "max_abs_error": 0.7585469342250263, "derivative_relative_l2": 0.9306215428527534, "wrong_sign_fraction": 0.024842066713461716}
+{"family": "integer_fourier", "epsilon": 0.08, "modes": 4, "rmse": 0.18584783701099586, "max_abs_error": 0.6711516720814541, "derivative_relative_l2": 0.8730932081775566, "wrong_sign_fraction": 0.11941892757957702}
+{"family": "optimized_frequencies", "epsilon": 0.08, "modes": 4, "rmse": 0.12054591667406447, "max_abs_error": 0.5068362618631879, "derivative_relative_l2": 0.7776783164738753, "wrong_sign_fraction": 0.007995849482711264}
+{"family": "integer_fourier", "epsilon": 0.08, "modes": 8, "rmse": 0.09859511477856998, "max_abs_error": 0.4377085430106056, "derivative_relative_l2": 0.704132026815683, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.08, "modes": 8, "rmse": 0.04493820793297538, "max_abs_error": 0.23279756453937445, "derivative_relative_l2": 0.5007892895769991, "wrong_sign_fraction": 0.001098666341135899}
+{"family": "integer_fourier", "epsilon": 0.2, "modes": 1, "rmse": 0.3606449866654739, "max_abs_error": 0.8463870205765472, "derivative_relative_l2": 0.9654024608102783, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.2, "modes": 1, "rmse": 0.3466413641105075, "max_abs_error": 0.8293744954560427, "derivative_relative_l2": 0.9633031096375873, "wrong_sign_fraction": 0.06582842493972595}
+{"family": "integer_fourier", "epsilon": 0.2, "modes": 2, "rmse": 0.25927409092566783, "max_abs_error": 0.6789476281507729, "derivative_relative_l2": 0.8741092117845625, "wrong_sign_fraction": 0.23178807947019867}
+{"family": "optimized_frequencies", "epsilon": 0.2, "modes": 2, "rmse": 0.1902329035786638, "max_abs_error": 0.5462232137168025, "derivative_relative_l2": 0.8125947113223096, "wrong_sign_fraction": 0.02237006744590594}
+{"family": "integer_fourier", "epsilon": 0.2, "modes": 4, "rmse": 0.13595948015304118, "max_abs_error": 0.41618693280622976, "derivative_relative_l2": 0.6737193553588828, "wrong_sign_fraction": 0.06472975859859005}
+{"family": "optimized_frequencies", "epsilon": 0.2, "modes": 4, "rmse": 0.06542544118715651, "max_abs_error": 0.2240434112134181, "derivative_relative_l2": 0.49244716127743937, "wrong_sign_fraction": 0.004303109836115604}
+{"family": "integer_fourier", "epsilon": 0.2, "modes": 8, "rmse": 0.04650317617212991, "max_abs_error": 0.16013612101597352, "derivative_relative_l2": 0.3686886233652529, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.2, "modes": 8, "rmse": 0.010206219454261301, "max_abs_error": 0.039813956339422585, "derivative_relative_l2": 0.1402838616712019, "wrong_sign_fraction": 0.0}
+{"family": "integer_fourier", "epsilon": 0.35, "modes": 1, "rmse": 0.3458339833994913, "max_abs_error": 0.7528237659431806, "derivative_relative_l2": 0.9296223150940319, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.35, "modes": 1, "rmse": 0.3291897108190234, "max_abs_error": 0.7287331958092143, "derivative_relative_l2": 0.9263716124716005, "wrong_sign_fraction": 0.06152531510361034}
+{"family": "integer_fourier", "epsilon": 0.35, "modes": 2, "rmse": 0.22319561569898586, "max_abs_error": 0.5245088887692044, "derivative_relative_l2": 0.7633632330621846, "wrong_sign_fraction": 0.18665120395519882}
+{"family": "optimized_frequencies", "epsilon": 0.35, "modes": 2, "rmse": 0.14434983994840397, "max_abs_error": 0.36772087139027976, "derivative_relative_l2": 0.6699475036880765, "wrong_sign_fraction": 0.018066957609790338}
+{"family": "integer_fourier", "epsilon": 0.35, "modes": 4, "rmse": 0.09047471374888029, "max_abs_error": 0.2347978688686223, "derivative_relative_l2": 0.4660863149827751, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.35, "modes": 4, "rmse": 0.030234369769587294, "max_abs_error": 0.08728724000194132, "derivative_relative_l2": 0.26169518285643234, "wrong_sign_fraction": 0.0}
+{"family": "integer_fourier", "epsilon": 0.35, "modes": 8, "rmse": 0.02272430942721626, "max_abs_error": 0.09434360953903129, "derivative_relative_l2": 0.1832244627124317, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.35, "modes": 8, "rmse": 0.00238141728316402, "max_abs_error": 0.007406020786874246, "derivative_relative_l2": 0.03476030367627285, "wrong_sign_fraction": 0.0}
+{"family": "integer_fourier", "epsilon": 0.5, "modes": 1, "rmse": 0.3232666649617997, "max_abs_error": 0.6659660612793616, "derivative_relative_l2": 0.8883605196258327, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.5, "modes": 1, "rmse": 0.30561408545686375, "max_abs_error": 0.6378840996865954, "derivative_relative_l2": 0.8848276344832063, "wrong_sign_fraction": 0.056520279549546804}
+{"family": "integer_fourier", "epsilon": 0.5, "modes": 2, "rmse": 0.189578438202227, "max_abs_error": 0.40621957016316385, "derivative_relative_l2": 0.654822386866166, "wrong_sign_fraction": 0.10708944975127414}
+{"family": "optimized_frequencies", "epsilon": 0.5, "modes": 2, "rmse": 0.10785109540790545, "max_abs_error": 0.24986639537032662, "derivative_relative_l2": 0.5466803058444307, "wrong_sign_fraction": 0.012268440809350871}
+{"family": "integer_fourier", "epsilon": 0.5, "modes": 4, "rmse": 0.06275665194177034, "max_abs_error": 0.13563226703352338, "derivative_relative_l2": 0.3230884415855692, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.5, "modes": 4, "rmse": 0.0142186094270019, "max_abs_error": 0.03642027125988512, "derivative_relative_l2": 0.13241086926133117, "wrong_sign_fraction": 0.0}
+{"family": "integer_fourier", "epsilon": 0.5, "modes": 8, "rmse": 0.01954440445467682, "max_abs_error": 0.1164728284378716, "derivative_relative_l2": 0.1684629343909032, "wrong_sign_fraction": 0.0}
+{"family": "optimized_frequencies", "epsilon": 0.5, "modes": 8, "rmse": 0.00046241548501354873, "max_abs_error": 0.0012346736032357586, "derivative_relative_l2": 0.007286433230819841, "wrong_sign_fraction": 0.0}

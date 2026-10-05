@@ -1,0 +1,204 @@
+{
+  "checked_utc": "2026-10-05T04:35:11.156442+00:00",
+  "start_step": 9217,
+  "end_step": 10240,
+  "training_definition": "Episode-ending rows (_count_raw>0), 16 segments, weighted by puzzle count; speed median over all 1024 optimizer steps.",
+  "runs": {
+    "fixed": {
+      "source": "runs/kv_phase_exp_current_fresh_20261005",
+      "latest_logged_step": 18300,
+      "terminal_batches": 64,
+      "terminal_puzzles": 8192.0,
+      "training": {
+        "lm_loss": 0.3362815154250711,
+        "accuracy": 0.9060495737940073,
+        "exact_accuracy": 0.320556640625
+      },
+      "all_steps_mean_loss": 0.6805584163375897,
+      "median_seconds_per_step": 0.06708022672683,
+      "mean_seconds_per_step": 0.06723020206300134,
+      "evaluations": {
+        "1953": {
+          "cell_accuracy": 0.5461,
+          "exact_count": 0,
+          "puzzles": 2048
+        },
+        "3906": {
+          "cell_accuracy": 0.6358,
+          "exact_count": 107,
+          "puzzles": 2048
+        },
+        "5859": {
+          "cell_accuracy": 0.6517,
+          "exact_count": 180,
+          "puzzles": 2048
+        },
+        "7812": {
+          "cell_accuracy": 0.667,
+          "exact_count": 211,
+          "puzzles": 2048
+        },
+        "9765": {
+          "cell_accuracy": 0.6674,
+          "exact_count": 124,
+          "puzzles": 2048
+        },
+        "11718": {
+          "cell_accuracy": 0.6872,
+          "exact_count": 288,
+          "puzzles": 2048
+        },
+        "13671": {
+          "cell_accuracy": 0.6911,
+          "exact_count": 318,
+          "puzzles": 2048
+        },
+        "15624": {
+          "cell_accuracy": 0.6857,
+          "exact_count": 260,
+          "puzzles": 2048
+        },
+        "17577": {
+          "cell_accuracy": 0.6436,
+          "exact_count": 53,
+          "puzzles": 2048
+        }
+      },
+      "trends": [
+        {
+          "start": 2497,
+          "end": 3008,
+          "batches": 32,
+          "lm_loss": 0.3554969076067209,
+          "accuracy": 0.9299105685204268,
+          "exact_accuracy": 0.150634765625
+        },
+        {
+          "start": 4993,
+          "end": 6016,
+          "batches": 64,
+          "lm_loss": 0.32864929735660553,
+          "accuracy": 0.9284999761730433,
+          "exact_accuracy": 0.2911376953125
+        },
+        {
+          "start": 6993,
+          "end": 8016,
+          "batches": 64,
+          "lm_loss": 0.32640617713332176,
+          "accuracy": 0.9195044469088316,
+          "exact_accuracy": 0.3380126953125
+        },
+        {
+          "start": 9217,
+          "end": 10240,
+          "batches": 64,
+          "lm_loss": 0.3362815154250711,
+          "accuracy": 0.9060495737940073,
+          "exact_accuracy": 0.320556640625
+        }
+      ],
+      "all_logged_losses_finite": true,
+      "checkpoint_count": 3
+    },
+    "channel_attention": {
+      "source": "runs/kv_phase_channel_exp_fresh_20261005",
+      "latest_logged_step": 10529,
+      "terminal_batches": 64,
+      "terminal_puzzles": 8192.0,
+      "training": {
+        "lm_loss": 0.6840057810768485,
+        "accuracy": 0.730566724203527,
+        "exact_accuracy": 0.0159912109375
+      },
+      "all_steps_mean_loss": 0.8588513072463684,
+      "median_seconds_per_step": 0.11971413716673851,
+      "mean_seconds_per_step": 0.11982232719401509,
+      "evaluations": {
+        "1953": {
+          "cell_accuracy": 0.4688,
+          "exact_count": 0,
+          "puzzles": 2048
+        },
+        "3906": {
+          "cell_accuracy": 0.429,
+          "exact_count": 0,
+          "puzzles": 2048
+        },
+        "5859": {
+          "cell_accuracy": 0.4271,
+          "exact_count": 0,
+          "puzzles": 2048
+        },
+        "7812": {
+          "cell_accuracy": 0.495,
+          "exact_count": 0,
+          "puzzles": 2048
+        },
+        "9765": {
+          "cell_accuracy": 0.5545,
+          "exact_count": 0,
+          "puzzles": 2048
+        }
+      },
+      "trends": [
+        {
+          "start": 2497,
+          "end": 3008,
+          "batches": 32,
+          "lm_loss": 1.4951300658285618,
+          "accuracy": 0.41867706272751093,
+          "exact_accuracy": 0.0
+        },
+        {
+          "start": 4993,
+          "end": 6016,
+          "batches": 64,
+          "lm_loss": 0.8644117219373584,
+          "accuracy": 0.6536458414047956,
+          "exact_accuracy": 0.0010986328125
+        },
+        {
+          "start": 6993,
+          "end": 8016,
+          "batches": 64,
+          "lm_loss": 0.7846314096823335,
+          "accuracy": 0.6900755446404219,
+          "exact_accuracy": 0.00634765625
+        },
+        {
+          "start": 9217,
+          "end": 10240,
+          "batches": 64,
+          "lm_loss": 0.6840057810768485,
+          "accuracy": 0.730566724203527,
+          "exact_accuracy": 0.0159912109375
+        }
+      ],
+      "all_logged_losses_finite": true,
+      "checkpoint_count": 3
+    }
+  },
+  "matched_conditions": {
+    "seed": 0,
+    "global_batch_size": 128,
+    "blocks_per_seg": 8,
+    "loops": 16,
+    "nograd_fixed": 0,
+    "nograd_every": 0,
+    "lr": 0.0001,
+    "lr_warmup_steps": 2000,
+    "data_fingerprint": "e262c62a1dd52c67d644f49653d10690a9068d9ef91c2bb78bf0d7da8d4e7ff4",
+    "amp_dtype": "bfloat16",
+    "compile": true,
+    "epochs": 50000,
+    "ema": true,
+    "ema_rate": 0.999
+  },
+  "latest_common_evaluation_step": 9765,
+  "comparison": {
+    "accuracy_difference_pp": -17.548284959048033,
+    "exact_difference_pp": -30.45654296875,
+    "step_time_ratio": 1.7846412125923328
+  }
+}

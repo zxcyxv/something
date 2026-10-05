@@ -1,0 +1,6 @@
+/venv/main/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:322: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+preflight {'step': 1, 'elapsed': 53.64367811474949, 'accuracy': 0.0, 'count': 0.0, 'exact_accuracy': 0.0, 'lm_loss': 2.489133358001709, 'q_halt_accuracy': 0.0, 'q_halt_loss': 0.006715297698974609, 'steps': 0.0, 'lr': 0.0, '_count_raw': 0.0}
+preflight {'step': 2, 'elapsed': 4.092175722122192, 'accuracy': 0.0, 'count': 0.0, 'exact_accuracy': 0.0, 'lm_loss': 2.490058422088623, 'q_halt_accuracy': 0.0, 'q_halt_loss': 0.006715297698974609, 'steps': 0.0, 'lr': 5.0000000000000004e-08, '_count_raw': 0.0}
+preflight {'step': 3, 'elapsed': 0.24023306462913752, 'accuracy': 0.0, 'count': 0.0, 'exact_accuracy': 0.0, 'lm_loss': 2.4900400638580322, 'q_halt_accuracy': 0.0, 'q_halt_loss': 0.006715297698974609, 'steps': 0.0, 'lr': 1.0000000000000001e-07, '_count_raw': 0.0}
+PASS docs/research/2026-10-05/local_warp_phase_gpu_preflight.json

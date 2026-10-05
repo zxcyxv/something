@@ -1,0 +1,206 @@
+{
+  "checkpoint": "/workspace/something/runs/research_free_phase_free_fourier4_e05_20261005/step_52731.pt",
+  "step": 52731,
+  "method": "Strict CPU model load; parameter order matched to saved AdamATan2 groups and state shapes; read-only audit",
+  "parameters": [
+    {
+      "name": "model.inner.w_cls.bias",
+      "shape": [
+        11
+      ],
+      "numel": 11,
+      "weight_decay": 0.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 1.720908284187317,
+      "max_abs": 4.055258274078369
+    },
+    {
+      "name": "model.inner.layers.0.trace_lam_raw",
+      "shape": [
+        8,
+        52
+      ],
+      "numel": 416,
+      "weight_decay": 0.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": false,
+      "rms": 2.1972246170043945,
+      "max_abs": 2.1972246170043945
+    },
+    {
+      "name": "model.inner.layers.0.theta",
+      "shape": [
+        8,
+        52,
+        2
+      ],
+      "numel": 832,
+      "weight_decay": 0.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.9449993968009949,
+      "max_abs": 2.156057357788086
+    },
+    {
+      "name": "model.inner.layers.0.theta_k_raw",
+      "shape": [
+        8,
+        104
+      ],
+      "numel": 832,
+      "weight_decay": 0.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.35389477014541626,
+      "max_abs": 0.7249484062194824
+    },
+    {
+      "name": "model.inner.layers.0.theta_v_raw",
+      "shape": [
+        8,
+        104
+      ],
+      "numel": 832,
+      "weight_decay": 0.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.3103410601615906,
+      "max_abs": 0.6305198669433594
+    },
+    {
+      "name": "model.inner.embed.weight",
+      "shape": [
+        11,
+        832
+      ],
+      "numel": 9152,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.014779230579733849,
+      "max_abs": 0.06420495361089706
+    },
+    {
+      "name": "model.inner.w_cls.weight",
+      "shape": [
+        11,
+        832
+      ],
+      "numel": 9152,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.23210199177265167,
+      "max_abs": 0.7664734125137329
+    },
+    {
+      "name": "model.inner.layers.0.phase_local_gain",
+      "shape": [
+        8,
+        208
+      ],
+      "numel": 1664,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.015433182008564472,
+      "max_abs": 0.07095043361186981
+    },
+    {
+      "name": "model.inner.layers.0.q_proj.weight",
+      "shape": [
+        832,
+        832
+      ],
+      "numel": 692224,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.010201101191341877,
+      "max_abs": 0.11073808372020721
+    },
+    {
+      "name": "model.inner.layers.0.k_proj.weight",
+      "shape": [
+        832,
+        832
+      ],
+      "numel": 692224,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.010074297897517681,
+      "max_abs": 0.10381003469228745
+    },
+    {
+      "name": "model.inner.layers.0.v_proj.weight",
+      "shape": [
+        832,
+        832
+      ],
+      "numel": 692224,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.00991565641015768,
+      "max_abs": 0.07699279487133026
+    },
+    {
+      "name": "model.inner.layers.0.out_proj.weight",
+      "shape": [
+        832,
+        832
+      ],
+      "numel": 692224,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.009494961239397526,
+      "max_abs": 0.09368714690208435
+    },
+    {
+      "name": "model.inner.layers.0.b_gate_up.weight",
+      "shape": [
+        4608,
+        832
+      ],
+      "numel": 3833856,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.010510378517210484,
+      "max_abs": 0.0884830430150032
+    },
+    {
+      "name": "model.inner.layers.0.b_down.weight",
+      "shape": [
+        832,
+        2304
+      ],
+      "numel": 1916928,
+      "weight_decay": 1.0,
+      "included_in_ema": true,
+      "has_saved_optimizer_state": true,
+      "rms": 0.010191240347921848,
+      "max_abs": 0.08614761382341385
+    }
+  ],
+  "puzzle_embedding_weight_decay": 1.0,
+  "puzzle_identifiers": 1,
+  "ema_rate": 0.999,
+  "no_decay_keys": [
+    "psi",
+    "theta",
+    "alpha_raw",
+    "gamma_raw",
+    "inj_gate",
+    "st_gain",
+    "gain_raw",
+    "eta_raw",
+    "lam_raw",
+    "beta",
+    "mu"
+  ],
+  "limitation": "Group membership and magnitudes are observations; no weight-decay or selective-EMA ablation was run."
+}

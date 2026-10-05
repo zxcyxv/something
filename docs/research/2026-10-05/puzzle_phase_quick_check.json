@@ -1,0 +1,80 @@
+{
+  "checkpoint": "step_10000.pt",
+  "step": 10000,
+  "scope": "4 saved training puzzles; raw weights; CPU FP32; no training update",
+  "roles": {
+    "K": {
+      "dynamic_abs_mean": 1.0619409084320068,
+      "offset_abs_mean": 0.2641480267047882,
+      "pre_tanh_abs_mean": 1.0494319200515747,
+      "pre_tanh_abs_max": 4.308442115783691,
+      "fraction_abs_raw_gt3": 0.020733173936605453,
+      "fraction_phase_over99pct_limit": 0.042067307978868484,
+      "mean_tanh_derivative": 0.5010291934013367,
+      "phase_std_across_puzzles": 0.518439531326294
+    },
+    "V": {
+      "dynamic_abs_mean": 0.9186002016067505,
+      "offset_abs_mean": 0.2596711814403534,
+      "pre_tanh_abs_mean": 0.9009761214256287,
+      "pre_tanh_abs_max": 3.3821091651916504,
+      "fraction_abs_raw_gt3": 0.0033052884973585606,
+      "fraction_phase_over99pct_limit": 0.012620192021131516,
+      "mean_tanh_derivative": 0.557149350643158,
+      "phase_std_across_puzzles": 0.5151692628860474
+    }
+  },
+  "blocks": [
+    {
+      "block": 0,
+      "window_abs_mean": 0.39250752329826355,
+      "window_exact_zero_fraction": 0.0,
+      "fraction_delta_abs_lt001": 0.007116193417459726
+    },
+    {
+      "block": 1,
+      "window_abs_mean": 0.3874141573905945,
+      "window_exact_zero_fraction": 0.0,
+      "fraction_delta_abs_lt001": 0.006954396143555641,
+      "strict_sign_flip_fraction": 0.48755893111228943,
+      "any_sign_change_fraction": 0.48755893111228943
+    },
+    {
+      "block": 2,
+      "window_abs_mean": 0.3968644142150879,
+      "window_exact_zero_fraction": 0.0,
+      "fraction_delta_abs_lt001": 0.007035295013338327,
+      "strict_sign_flip_fraction": 0.45037445425987244,
+      "any_sign_change_fraction": 0.45037445425987244
+    },
+    {
+      "block": 3,
+      "window_abs_mean": 0.38765648007392883,
+      "window_exact_zero_fraction": 0.0,
+      "fraction_delta_abs_lt001": 0.007199981715530157,
+      "strict_sign_flip_fraction": 0.4439343214035034,
+      "any_sign_change_fraction": 0.4439343214035034
+    }
+  ],
+  "phase_gain_probe": [
+    {
+      "gain": 1.0,
+      "mean_window_abs": 0.39544641971588135,
+      "window_zero_fraction": 0.0,
+      "phase_saturation_fraction": 0.028245192021131516
+    },
+    {
+      "gain": 0.1,
+      "mean_window_abs": 0.629694402217865,
+      "window_zero_fraction": 0.0,
+      "phase_saturation_fraction": 0.0
+    },
+    {
+      "gain": 0.0,
+      "mean_window_abs": 0.6323266625404358,
+      "window_zero_fraction": 0.0,
+      "phase_saturation_fraction": 0.0
+    }
+  ],
+  "cuda_initialized": false
+}

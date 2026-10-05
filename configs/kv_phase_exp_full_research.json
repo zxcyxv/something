@@ -1,0 +1,17 @@
+{
+  "memory_type": "kv_stdp",
+  "kv_qk_rmsnorm": false,
+  "kv_qk_l2norm": false,
+  "kv_write_reduction": "mean",
+  "nograd_fixed": 0,
+  "nograd_every": 0,
+  "init_from": null,
+  "resume_from": null,
+  "require_resume": false,
+  "max_steps": null,
+  "max_hours": null,
+  "epochs": 50000,
+  "save_every_steps": 1000,
+  "keep_last": 3,
+  "milestone_every": 0
+}

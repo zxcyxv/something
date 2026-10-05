@@ -1,0 +1,31 @@
+{
+  "registered_utc": "2026-10-05T02:41:37.579972+00:00",
+  "purpose": "Test mechanisms before inspecting their numerical gradient results; frozen checkpoint copies only",
+  "hypotheses": [
+    {
+      "id": "H1",
+      "mechanism": "L(delta)=sign(delta)*exp(-abs(delta)) is discontinuous at zero. Away from zero its ordinary derivative is -exp(-abs(delta)), but a finite crossing adds an approximately 2-unit jump. Autodiff is correct within a branch and does not predict crossings.",
+      "prediction": "Finite loss changes along a descent direction depart from its gradient prediction when crossings appear; holding baseline branch masks fixed reduces this discrepancy.",
+      "test": "FP64 finite differences and phase-only update interventions; control uses the identical forward at the unperturbed point and a replayed sign mask at every block."
+    },
+    {
+      "id": "H2",
+      "mechanism": "h -> mean(h+injection) -> RMSNorm -> W_phase -> phase/window -> attention -> next h creates a feedback derivative in addition to the activity path.",
+      "prediction": "Detaching only the summary leaves outputs/loss unchanged but materially changes recurrent state gradients and contributions to shared phase parameters.",
+      "test": "Unroll 8 blocks with identical forward, compare full gradient against summary-detached gradient; quantify gradient norm and temporal cancellation."
+    },
+    {
+      "id": "H3",
+      "mechanism": "Changes of the pooled state, amplified by summary normalization and aligned phase projections, move many channel-pair delays across zero.",
+      "prediction": "At frozen weights signs keep switching; state/summary lag correlations, projection gains and attention/FFN decomposition identify oscillation or irregular dynamics. Lower phase gain or freezing the summary can reduce hidden-state changes.",
+      "test": "Frozen-weight 16-block traces and isolated phase-gain, frozen-summary, attention and FFN interventions on the same saved puzzles."
+    }
+  ],
+  "controls": [
+    "Same raw weights, inputs, initial carry and data labels within comparisons",
+    "Direct probe vs production FP32 block parity before gradient experiments",
+    "FP64 algebraic replica for finite differences to avoid BF16/FP32 quantization",
+    "Observations on small frozen subsets are not proof of improved retraining performance"
+  ],
+  "live_training": "No stop, parameter update or configuration change to the running experiment"
+}

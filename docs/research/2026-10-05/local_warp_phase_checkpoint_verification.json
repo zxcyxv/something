@@ -1,0 +1,11 @@
+{
+  "verified_utc": "2026-10-05T05:32:13.877431+00:00",
+  "step": 1000,
+  "path": "runs/kv_phase_local_warp_exp_fresh_20261005/step_1000.pt",
+  "checkpoint_bytes": 249794083,
+  "cpu_load_verified": true,
+  "strict_model_reload_verified": true,
+  "learned_phase_projection_norm": 0.19027039408683777,
+  "retained_count": 1,
+  "keep_last": 3
+}

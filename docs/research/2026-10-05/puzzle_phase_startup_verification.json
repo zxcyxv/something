@@ -1,0 +1,25 @@
+{
+  "verified_utc": "2026-10-05T02:17:51.631275+00:00",
+  "last_step": 654,
+  "all_logged_losses_finite": true,
+  "phase_gradient_step": 528,
+  "phase_gradient_norms": {
+    "model.inner.layers.0.theta_k_raw": 0.006661379709839821,
+    "model.inner.layers.0.theta_v_raw": 0.003734349738806486,
+    "model.inner.layers.0.phase_k_proj.weight": 0.1915825456380844,
+    "model.inner.layers.0.phase_v_proj.weight": 0.10740827769041061
+  },
+  "phase_projection_weights": {
+    "phase_k_proj.weight": {
+      "rms": 0.0011566280154511333,
+      "norm": 0.9623145461082458
+    },
+    "phase_v_proj.weight": {
+      "rms": 0.0010304534807801247,
+      "norm": 0.8573372960090637
+    }
+  },
+  "median_step_seconds_after256": 0.07034957036376,
+  "cpu_tests_passed": 18,
+  "previous_run_stopped_step": 18300
+}

@@ -1,0 +1,8 @@
+/venv/main/lib/python3.12/site-packages/torch/_inductor/fx_passes/fuse_attention.py:822: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Skipping pattern matching to fused flash-attention. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+/venv/main/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:322: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+preflight {'step': 1, 'elapsed': 49.64056209567934, 'accuracy': 0.0, 'count': 0.0, 'exact_accuracy': 0.0, 'lm_loss': 2.4891440868377686, 'q_halt_accuracy': 0.0, 'q_halt_loss': 0.006715297698974609, 'steps': 0.0, 'lr': 0.0, '_count_raw': 0.0}
+preflight {'step': 2, 'elapsed': 2.700434932485223, 'accuracy': 0.0, 'count': 0.0, 'exact_accuracy': 0.0, 'lm_loss': 2.4900710582733154, 'q_halt_accuracy': 0.0, 'q_halt_loss': 0.006715297698974609, 'steps': 0.0, 'lr': 5.0000000000000004e-08, '_count_raw': 0.0}
+preflight {'step': 3, 'elapsed': 0.14883020892739296, 'accuracy': 0.0, 'count': 0.0, 'exact_accuracy': 0.0, 'lm_loss': 2.49003005027771, 'q_halt_accuracy': 0.0, 'q_halt_loss': 0.006715297698974609, 'steps': 0.0, 'lr': 1.0000000000000001e-07, '_count_raw': 0.0}
+PASS docs/research/2026-10-05/channel_phase_gpu_preflight.json

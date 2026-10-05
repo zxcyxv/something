@@ -1,0 +1,29 @@
+{
+  "step": 42966,
+  "results": {
+    "raw": {
+      "accuracy": 0.7050841636955738,
+      "count": 2048.0,
+      "exact_accuracy": 0.1904296875,
+      "lm_loss": 0.7686154470694094,
+      "q_halt_accuracy": 0.8095703125,
+      "q_halt_loss": 0.9588637351989746,
+      "steps": 16.0,
+      "exact_count": 390,
+      "elapsed_seconds": 46.53431349340826,
+      "peak_allocated_mib": 1495.3671875
+    },
+    "ema": {
+      "accuracy": 0.7231445424258709,
+      "count": 2048.0,
+      "exact_accuracy": 0.13525390625,
+      "lm_loss": 0.6710205496126137,
+      "q_halt_accuracy": 0.86474609375,
+      "q_halt_loss": 0.6829848289489746,
+      "steps": 16.0,
+      "exact_count": 277,
+      "elapsed_seconds": 45.80061496421695,
+      "peak_allocated_mib": 1495.3671875
+    }
+  }
+}

@@ -1,0 +1,23 @@
+test_block_has_norm_at_each_residual_and_injected_state_summary (lt.test_phase_puzzle_exp_current.PuzzlePhaseExponentialTests.test_block_has_norm_at_each_residual_and_injected_state_summary) ... ok
+test_direct_pairs_and_gradients_match_single_gemm (lt.test_phase_puzzle_exp_current.PuzzlePhaseExponentialTests.test_direct_pairs_and_gradients_match_single_gemm) ... ok
+test_exact_zero_signed_limits_and_channel_specific_rotations (lt.test_phase_puzzle_exp_current.PuzzlePhaseExponentialTests.test_exact_zero_signed_limits_and_channel_specific_rotations) ... ok
+test_pool_scope_summary_norm_and_fp32_autocast (lt.test_phase_puzzle_exp_current.PuzzlePhaseExponentialTests.test_pool_scope_summary_norm_and_fp32_autocast) ... ok
+test_training_checkpoint_recompute_resume_and_keep_three (lt.test_phase_puzzle_exp_current.PuzzlePhaseExponentialTests.test_training_checkpoint_recompute_resume_and_keep_three) ... ok
+test_zero_init_matches_baseline_and_projection_can_learn (lt.test_phase_puzzle_exp_current.PuzzlePhaseExponentialTests.test_zero_init_matches_baseline_and_projection_can_learn) ... ok
+test_block_two_norms_and_optimizer_update (lt.test_phase_exp_current.ExponentialPhaseTests.test_block_two_norms_and_optimizer_update) ... ok
+test_bounded_independent_angles_no_decay_and_reload (lt.test_phase_exp_current.ExponentialPhaseTests.test_bounded_independent_angles_no_decay_and_reload) ... ok
+test_complex_outer_and_direct_phase_difference (lt.test_phase_exp_current.ExponentialPhaseTests.test_complex_outer_and_direct_phase_difference) ... ok
+test_ignores_history_and_phase_parameters_do_not_advance (lt.test_phase_exp_current.ExponentialPhaseTests.test_ignores_history_and_phase_parameters_do_not_advance) ... ok
+test_zero_lag_and_one_sided_limits_and_decay (lt.test_phase_exp_current.ExponentialPhaseTests.test_zero_lag_and_one_sided_limits_and_decay) ... ok
+test_block_two_norms_and_optimizer_update (lt.test_phase_current.PhaseCurrentTests.test_block_two_norms_and_optimizer_update) ... ok
+test_bounded_independent_angles_no_decay_and_reload (lt.test_phase_current.PhaseCurrentTests.test_bounded_independent_angles_no_decay_and_reload) ... ok
+test_complex_outer_and_direct_phase_difference (lt.test_phase_current.PhaseCurrentTests.test_complex_outer_and_direct_phase_difference) ... ok
+test_ignores_history_and_phase_parameters_do_not_advance (lt.test_phase_current.PhaseCurrentTests.test_ignores_history_and_phase_parameters_do_not_advance) ... ok
+test_forward_two_norm_positions_optimizer_and_reload (lt.test_unit_phase_current.DynamicGaussianPhaseTests.test_forward_two_norm_positions_optimizer_and_reload) ... ok
+test_relation_window_before_token_mean_and_history_independence (lt.test_unit_phase_current.DynamicGaussianPhaseTests.test_relation_window_before_token_mean_and_history_independence) ... ok
+test_state_dependence_alias_margin_zero_lag_and_no_unit_norm (lt.test_unit_phase_current.DynamicGaussianPhaseTests.test_state_dependence_alias_margin_zero_lag_and_no_unit_norm) ... ok
+
+----------------------------------------------------------------------
+Ran 18 tests in 1.216s
+
+OK

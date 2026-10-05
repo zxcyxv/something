@@ -1,0 +1,151 @@
+{
+  "created_utc": "2026-10-05T04:19:44.549581+00:00",
+  "start_step": 2497,
+  "end_step": 3008,
+  "terminal_definition": "Only rows with _count_raw > 0: end of 16-segment episode. All means weighted by terminal puzzle counts.",
+  "runs": {
+    "fixed": {
+      "source": "runs/kv_phase_exp_current_fresh_20261005",
+      "latest_observed_step": 18300,
+      "all_logged_losses_finite": true,
+      "terminal_batches": 32,
+      "terminal_puzzles": 4096.0,
+      "terminal_means": {
+        "lm_loss": 0.3554969076067209,
+        "accuracy": 0.9299105685204268,
+        "exact_accuracy": 0.150634765625
+      },
+      "all_steps_mean_loss": 0.7317538015777245,
+      "median_seconds_per_step": 0.06694385362789035,
+      "mean_seconds_per_step": 0.06703200012998423,
+      "step_3008": {
+        "step": 3008,
+        "elapsed": 279.07745414599776,
+        "seconds": 0.06685403734445572,
+        "segment": 16,
+        "accuracy": 0.9552469253540039,
+        "count": 1.0,
+        "exact_accuracy": 0.3359375,
+        "lm_loss": 0.269997239112854,
+        "q_halt_accuracy": 0.6640625,
+        "q_halt_loss": 1.6864027976989746,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "trends": [
+        {
+          "start": 513,
+          "end": 1024,
+          "terminal_batches": 32,
+          "lm_loss": 1.1178900115191936,
+          "accuracy": 0.5460461368784308,
+          "exact_accuracy": 0.0
+        },
+        {
+          "start": 1537,
+          "end": 2048,
+          "terminal_batches": 32,
+          "lm_loss": 0.4880287144333124,
+          "accuracy": 0.8710907623171806,
+          "exact_accuracy": 0.02099609375
+        },
+        {
+          "start": 2497,
+          "end": 3008,
+          "terminal_batches": 32,
+          "lm_loss": 0.3554969076067209,
+          "accuracy": 0.9299105685204268,
+          "exact_accuracy": 0.150634765625
+        }
+      ],
+      "evaluation_1953": {
+        "cell_accuracy": 0.5461,
+        "exact_count": 0,
+        "puzzles": 2048,
+        "weights": "EMA"
+      }
+    },
+    "channel_attention": {
+      "source": "runs/kv_phase_channel_exp_fresh_20261005",
+      "latest_observed_step": 3799,
+      "all_logged_losses_finite": true,
+      "terminal_batches": 32,
+      "terminal_puzzles": 4096.0,
+      "terminal_means": {
+        "lm_loss": 1.4951300658285618,
+        "accuracy": 0.41867706272751093,
+        "exact_accuracy": 0.0
+      },
+      "all_steps_mean_loss": 1.499564372934401,
+      "median_seconds_per_step": 0.11971280863508582,
+      "mean_seconds_per_step": 0.11986264235019917,
+      "step_3008": {
+        "step": 3008,
+        "elapsed": 414.21022260095924,
+        "seconds": 0.12202225439250469,
+        "segment": 16,
+        "accuracy": 0.42988038063049316,
+        "count": 1.0,
+        "exact_accuracy": 0.0,
+        "lm_loss": 1.4771372079849243,
+        "q_halt_accuracy": 1.0,
+        "q_halt_loss": 0.006715297698974609,
+        "steps": 16.0,
+        "lr": 0.0001,
+        "_count_raw": 128.0
+      },
+      "trends": [
+        {
+          "start": 513,
+          "end": 1024,
+          "terminal_batches": 32,
+          "lm_loss": 1.1634433306753635,
+          "accuracy": 0.5270935855805874,
+          "exact_accuracy": 0.0
+        },
+        {
+          "start": 1537,
+          "end": 2048,
+          "terminal_batches": 32,
+          "lm_loss": 1.212418470531702,
+          "accuracy": 0.5104438019916415,
+          "exact_accuracy": 0.0
+        },
+        {
+          "start": 2497,
+          "end": 3008,
+          "terminal_batches": 32,
+          "lm_loss": 1.4951300658285618,
+          "accuracy": 0.41867706272751093,
+          "exact_accuracy": 0.0
+        }
+      ],
+      "evaluation_1953": {
+        "cell_accuracy": 0.4688,
+        "exact_count": 0,
+        "puzzles": 2048,
+        "weights": "EMA"
+      }
+    }
+  },
+  "matched_conditions": {
+    "seed": 0,
+    "global_batch_size": 128,
+    "blocks_per_seg": 8,
+    "loops": 16,
+    "nograd_fixed": 0,
+    "nograd_every": 0,
+    "lr": 0.0001,
+    "lr_warmup_steps": 2000,
+    "data_fingerprint": "e262c62a1dd52c67d644f49653d10690a9068d9ef91c2bb78bf0d7da8d4e7ff4",
+    "amp_dtype": "bfloat16",
+    "compile": true,
+    "epochs": 50000
+  },
+  "comparison": {
+    "terminal_loss_ratio": 4.205747036996997,
+    "cell_accuracy_percentage_point_difference": -51.12335057929158,
+    "median_step_time_ratio": 1.7882569070569716
+  }
+}

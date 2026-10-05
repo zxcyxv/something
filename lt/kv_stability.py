@@ -13,7 +13,7 @@ from . import train as t
 ORIGINAL_INNER = t.KVSTDPInner
 ORIGINAL_MODEL_ID = t.model_id_of
 VARIANTS = ("original", "pre_ffn_phi", "read_operator_bound", "unit_qk_activity",
-            "interpolated_read", "current_only", "current_only_urm_norm", "phase_current_only", "phase_exp_current_only", "phase_unit_gaussian_current_only", "complex_current_only",
+            "interpolated_read", "current_only", "current_only_urm_norm", "phase_current_only", "phase_exp_current_only", "phase_puzzle_exp_current_only", "phase_channel_exp_current_only", "phase_channel_gram_exp_current_only", "phase_local_warp_exp_current_only", "phase_unit_gaussian_current_only", "complex_current_only",
             "current_plus_stdp", "historical_key_trace", "read_gain_quarter")
 
 
@@ -221,6 +221,310 @@ class ExponentialPhaseCurrentReadInner(PhaseCurrentReadInner):
         return read, current, None, None
 
 
+class PuzzleStateExponentialPhaseCurrentReadInner(ExponentialPhaseCurrentReadInner):
+    """Exact exponential STDP with puzzle-conditioned, token-shared phases.
+
+    c = RMSNorm(mean_tokens(hidden + input injection))
+    phi_role = (pi/2) * tanh(theta_role + W_role c), shape [batch,heads,dim].
+    The two W projections start at zero, reproducing the fixed-phase forward
+    initially while receiving nonzero ordinary gradients through the envelope.
+    Every block recomputes the summary; no phase accumulator or history is read.
+    Token sharing allows the exact window to follow the single KV GEMM.
+    """
+    def __init__(self, config):
+        if config.kv_write_reduction != "mean":
+            raise ValueError('Puzzle-state exponential STDP uses the token mean.')
+        super().__init__(config)
+        # Add only after all baseline parameters and offsets are initialized.
+        for layer in self.layers:
+            layer.phase_k_proj = torch.nn.Linear(self.d, self.d, bias=False)
+            layer.phase_v_proj = torch.nn.Linear(self.d, self.d, bias=False)
+            torch.nn.init.zeros_(layer.phase_k_proj.weight)
+            torch.nn.init.zeros_(layer.phase_v_proj.weight)
+
+    def phases(self, layer, hidden):
+        dtype = torch.float64 if hidden.dtype == torch.float64 else torch.float32
+        with torch.autocast(device_type=hidden.device.type, enabled=False):
+            summary = hidden.to(dtype).mean(dim=1)
+            # This summary norm is separate from the two residual norms.
+            summary = summary * torch.rsqrt(
+                summary.square().mean(-1, keepdim=True) + self.norm_eps)
+            return tuple(self.phase_limit * (
+                projection(summary).reshape(hidden.shape[0], self.H, self.dh)
+                + offset[None]).tanh()
+                for projection, offset in ((layer.phase_k_proj, layer.theta_k_raw),
+                                           (layer.phase_v_proj, layer.theta_v_raw)))
+
+    def phase_window(self, layer, dtype, *, phases):
+        pk, pv = (x.to(dtype) for x in phases)
+        delta = pv[..., :, None] - pk[..., None, :]
+        return delta.sign() * torch.exp(-delta.abs() / self.phase_tau)
+
+    def memory_step(self, layer, q, k, v, memory=None, e_k=None,
+                    e_v=None, fresh=None, *, phases):
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            q, k, v = (x.to(dtype) for x in (q, k, v))
+            tables = self.rope_tables(layer)
+            qr, kr = (self.apply_rope(x, layer, tables) for x in (q, k))
+            current = (v.transpose(-1, -2) @ kr) / k.shape[-2]
+            current = current * self.phase_window(layer, dtype, phases=phases)
+            read = qr @ current.transpose(-1, -2)
+        return read, current, None, None
+
+    def block(self, layer, hidden, inj, memory, e_k, e_v, fresh):
+        hidden = hidden + self.embed_scale * inj
+        b, n, _ = hidden.shape
+        def heads(x):
+            return x.reshape(b, n, self.H, self.dh).transpose(1, 2)
+        q = heads(layer.q_proj(hidden))
+        if self.config.kv_projection_fp32:
+            with torch.autocast(device_type=hidden.device.type, enabled=False):
+                projection_h = hidden if hidden.dtype == torch.float64 else hidden.float()
+                k, v = (heads(p(projection_h)) for p in (layer.k_proj, layer.v_proj))
+        else:
+            k, v = (heads(p(hidden)) for p in (layer.k_proj, layer.v_proj))
+        read, current, _, _ = self.memory_step(
+            layer, q, k, v, phases=self.phases(layer, hidden))
+        read = read.transpose(1, 2).reshape(b, n, self.d).to(hidden.dtype)
+        hidden = hidden + layer.out_proj(read)
+        # Inherited boundary applies RMSNorm before FFN; phi after it applies
+        # the second RMSNorm to the FFN residual, both FP32 and affine-free.
+        hidden = self.phi(self.boundary(layer, hidden))
+        return hidden, current, None, None
+
+
+class ChannelPhaseAttention(torch.nn.Module):
+    """Joint K/V channel attention on position-sensitive activity profiles.
+
+    Each of the 2*head_dim channel rows contains its ordered token activities.
+    A shared token-to-latent projection keeps spatial distinctions before the
+    channels attend to each other. Heads/puzzles never mix in this branch.
+    Both residual norms accumulate in FP32, including in FP64 audit callers.
+    """
+    latent_dim = 16
+    ffn_expansion = 4
+    norm_eps = 1e-5
+
+    def __init__(self, seq_len, heads, head_dim):
+        super().__init__()
+        self.head_dim = head_dim
+        r = self.latent_dim
+        self.profile_proj = torch.nn.Linear(seq_len, r, bias=False)
+        self.channel_embedding = torch.nn.Parameter(
+            torch.empty(heads, 2 * head_dim, r))
+        torch.nn.init.normal_(self.channel_embedding, std=.02)
+        self.qkv = torch.nn.Linear(r, 3 * r, bias=False)
+        self.out_proj = torch.nn.Linear(r, r, bias=False)
+        self.ffn_up = torch.nn.Linear(r, self.ffn_expansion * r, bias=False)
+        self.ffn_down = torch.nn.Linear(self.ffn_expansion * r, r, bias=False)
+        self.readout = torch.nn.Linear(r, 1, bias=False)
+        # Only this last projection is zero: it receives gradients immediately,
+        # and opens the other gradients after its first nonzero-LR update.
+        torch.nn.init.zeros_(self.readout.weight)
+
+    def norm(self, hidden):
+        dtype = hidden.dtype
+        hidden = hidden.float()
+        return (hidden * torch.rsqrt(hidden.square().mean(-1, keepdim=True)
+                                     + self.norm_eps)).to(dtype)
+
+    def forward(self, rotated_key, value):
+        dtype = torch.float64 if rotated_key.dtype == torch.float64 else torch.float32
+        with torch.autocast(device_type=rotated_key.device.type, enabled=False):
+            profiles = torch.cat((rotated_key.to(dtype).transpose(-1, -2),
+                                  value.to(dtype).transpose(-1, -2)), dim=-2)
+            z = self.profile_proj(profiles) + self.channel_embedding
+            q, k, v = self.qkv(z).chunk(3, dim=-1)
+            weights = ((q @ k.transpose(-1, -2)) / math.sqrt(self.latent_dim)).softmax(-1)
+            u = self.norm(z + self.out_proj(weights @ v))
+            z = self.norm(u + self.ffn_down(torch.nn.functional.gelu(self.ffn_up(u))))
+            return self.readout(z).squeeze(-1).split(self.head_dim, dim=-1)
+
+
+class CoactivityChannelPhaseAttention(torch.nn.Module):
+    """Channel attention using the full token-axis Gram matrix as its logits.
+
+    Z=[RoPE(K).T; V.T], scores=Z Z.T / T; no learned token-axis projection.
+    Values and residuals use channel/role identity embeddings, so no absolute
+    token-slot weights re-enter through the value path or scalar readout.
+    The 16-wide messages are mixed only AFTER comparing full activity profiles.
+    Common permutations of already-encoded K/V token records preserve phases;
+    this does not assert invariance when changing the spatial RoPE assignment.
+    """
+    latent_dim = 16
+    ffn_expansion = 4
+    norm_eps = 1e-5
+    norm = ChannelPhaseAttention.norm
+
+    def __init__(self, seq_len, heads, head_dim):
+        super().__init__()
+        self.head_dim = head_dim
+        r = self.latent_dim
+        self.channel_embedding = torch.nn.Parameter(
+            torch.empty(heads, 2 * head_dim, r))
+        torch.nn.init.normal_(self.channel_embedding, std=.02)
+        self.value_proj = torch.nn.Linear(r, r, bias=False)
+        self.out_proj = torch.nn.Linear(r, r, bias=False)
+        self.ffn_up = torch.nn.Linear(r, self.ffn_expansion * r, bias=False)
+        self.ffn_down = torch.nn.Linear(self.ffn_expansion * r, r, bias=False)
+        self.readout = torch.nn.Linear(r, 1, bias=False)
+        torch.nn.init.zeros_(self.readout.weight)
+
+    def forward(self, rotated_key, value):
+        dtype = torch.float64 if rotated_key.dtype == torch.float64 else torch.float32
+        with torch.autocast(device_type=rotated_key.device.type, enabled=False):
+            profiles = torch.cat((rotated_key.to(dtype).transpose(-1, -2),
+                                  value.to(dtype).transpose(-1, -2)), dim=-2)
+            scores = (profiles @ profiles.transpose(-1, -2)) / profiles.shape[-1]
+            weights = scores.softmax(-1)
+            embedding = self.channel_embedding
+            messages = weights @ self.value_proj(embedding)
+            u = self.norm(embedding + self.out_proj(messages))
+            y = self.norm(u + self.ffn_down(torch.nn.functional.gelu(self.ffn_up(u))))
+            return self.readout(y).squeeze(-1).split(self.head_dim, dim=-1)
+
+
+class ChannelAttentionExponentialPhaseCurrentReadInner(ExponentialPhaseCurrentReadInner):
+    """Per-channel phases from joint attention over K/V activity profiles.
+
+    phi_role=(pi/2)*tanh(theta_role+phase_attention(RoPE(K),V)_role).
+    Phases remain token-shared, so the exact signed exponential multiplies
+    the single KV GEMM. The unwindowed K/V profiles avoid a circular forward.
+    """
+    phase_attention_cls = ChannelPhaseAttention
+
+    def __init__(self, config):
+        if config.kv_write_reduction != "mean":
+            raise ValueError('Channel-attention exponential STDP uses the token mean.')
+        super().__init__(config)
+        # Preserve every baseline parameter and initialization draw first.
+        for layer in self.layers:
+            layer.phase_attention = self.phase_attention_cls(config.seq_len, self.H, self.dh)
+
+    def phases(self, layer, rotated_key, value):
+        with torch.autocast(device_type=rotated_key.device.type, enabled=False):
+            dk, dv = layer.phase_attention(rotated_key, value)
+            return tuple(self.phase_limit * (offset[None] + correction).tanh()
+                         for offset, correction in ((layer.theta_k_raw, dk),
+                                                    (layer.theta_v_raw, dv)))
+
+    def phase_window(self, layer, dtype, *, phases):
+        pk, pv = (x.to(dtype) for x in phases)
+        delta = pv[..., :, None] - pk[..., None, :]
+        return delta.sign() * torch.exp(-delta.abs() / self.phase_tau)
+
+    def memory_step(self, layer, q, k, v, memory=None, e_k=None,
+                    e_v=None, fresh=None):
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            q, k, v = (x.to(dtype) for x in (q, k, v))
+            tables = self.rope_tables(layer)
+            qr, kr = (self.apply_rope(x, layer, tables) for x in (q, k))
+            phases = self.phases(layer, kr, v)
+            current = (v.transpose(-1, -2) @ kr) / k.shape[-2]
+            current = current * self.phase_window(layer, dtype, phases=phases)
+            read = qr @ current.transpose(-1, -2)
+        return read, current, None, None
+
+
+class CoactivityChannelExponentialPhaseCurrentReadInner(ChannelAttentionExponentialPhaseCurrentReadInner):
+    """Exact exponential write with phases generated from full channel coactivity."""
+    phase_attention_cls = CoactivityChannelPhaseAttention
+
+
+class LocalMonotonePhaseWarp(torch.nn.Module):
+    """Token-local, common K/V warp of the learned baseline phase axis.
+
+    A shared Linear([RoPE(K_n),V_n],8) sets positive normalized interval lengths
+    on [-pi/2,pi/2]. Piecewise-linear interpolation preserves channel order in
+    real arithmetic. Zero logits give the identity, using a displacement form
+    to also recover the baseline phases exactly at floating-point initialization.
+    No token pooling, phase attention, recurrent phase state, or extra FFN.
+    """
+    intervals = 8
+    phase_limit = math.pi / 2
+
+    def __init__(self, head_dim):
+        super().__init__()
+        self.projection = torch.nn.Linear(2 * head_dim, self.intervals, bias=False)
+        torch.nn.init.zeros_(self.projection.weight)
+
+    def warp(self, base_phase, logits):
+        probabilities = logits.softmax(-1)
+        # Endpoint displacement is exactly zero. The interior displacements
+        # vanish exactly when the zero-initialized head returns uniform lengths.
+        displacement = (2 * self.phase_limit *
+                        (probabilities - 1 / self.intervals).cumsum(-1)[..., :-1])
+        zero = torch.zeros_like(logits[..., :1])
+        displacement = torch.cat((zero, displacement, zero), -1)
+        coordinate = (base_phase + self.phase_limit) * self.intervals / (2 * self.phase_limit)
+        index = coordinate.floor().long().clamp(0, self.intervals - 1)
+        fraction = coordinate - index
+        index = index[None, :, None].expand(*logits.shape[:-1], base_phase.shape[-1])
+        lo, hi = (displacement.gather(-1, index + offset) for offset in (0, 1))
+        return base_phase[None, :, None] + (lo + fraction[None, :, None] * (hi - lo))
+
+    def forward(self, rotated_key, value, base_key_phase, base_value_phase):
+        dtype = torch.float64 if rotated_key.dtype == torch.float64 else torch.float32
+        with torch.autocast(device_type=rotated_key.device.type, enabled=False):
+            activity = torch.cat((rotated_key.to(dtype), value.to(dtype)), -1)
+            logits = self.projection(activity)
+            base = torch.cat((base_key_phase.to(dtype), base_value_phase.to(dtype)), -1)
+            return self.warp(base, logits).split(rotated_key.shape[-1], -1)
+
+
+class LocalWarpExponentialPhaseCurrentReadInner(ExponentialPhaseCurrentReadInner):
+    """Exact signed exponential with token-local, order-preserving phases.
+
+    Fixed K/V ordering separates the two exponential halves into two GEMMs.
+    Compute signs from the bounded baseline phases, rather than inferring them
+    again from rounded, possibly very close warped phases. Equal baseline phases
+    contribute zero. Gradients through the exponential and warp remain ordinary
+    autodiff, including through the learned baseline offsets.
+    """
+    def __init__(self, config):
+        if config.kv_write_reduction != "mean":
+            raise ValueError('Local phase warp uses the token mean.')
+        super().__init__(config)
+        for layer in self.layers:
+            layer.phase_warp = LocalMonotonePhaseWarp(self.dh)
+
+    def base_phases(self, layer):
+        return super().phases(layer)
+
+    def phases(self, layer, rotated_key, value, *, base_phases=None):
+        if base_phases is None:
+            base_phases = self.base_phases(layer)
+        return layer.phase_warp(rotated_key, value, *base_phases)
+
+    def phase_window(self, layer, dtype, *, phases):
+        """Dense diagnostic/reference only; training uses the two GEMMs below."""
+        pk, pv = (x.to(dtype) for x in phases)
+        base_k, base_v = (x.to(dtype) for x in self.base_phases(layer))
+        order = (base_v[..., :, None] - base_k[..., None, :]).sign()
+        delta = pv[..., :, None] - pk[..., None, :]
+        return order[None, :, None] * (-delta.abs() / self.phase_tau).exp()
+
+    def memory_step(self, layer, q, k, v, memory=None, e_k=None,
+                    e_v=None, fresh=None):
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            q, k, v = (x.to(dtype) for x in (q, k, v))
+            tables = self.rope_tables(layer)
+            qr, kr = (self.apply_rope(x, layer, tables) for x in (q, k))
+            base_k, base_v = (x.to(dtype) for x in self.base_phases(layer))
+            pk, pv = self.phases(layer, kr, v, base_phases=(base_k, base_v))
+            plus = ((v * (-pv / self.phase_tau).exp()).transpose(-1, -2)
+                    @ (kr * (pk / self.phase_tau).exp()))
+            minus = ((v * (pv / self.phase_tau).exp()).transpose(-1, -2)
+                     @ (kr * (-pk / self.phase_tau).exp()))
+            delta0 = base_v[..., :, None] - base_k[..., None, :]
+            current = ((delta0 > 0) * plus - (delta0 < 0) * minus) / k.shape[-2]
+            read = qr @ current.transpose(-1, -2)
+        return read, current, None, None
+
+
 class DynamicGaussianPhaseCurrentReadInner(PhaseCurrentReadInner):
     """State-dependent channel phase STDP with an instantaneous shared G.
 
@@ -397,6 +701,10 @@ def install(variant):
                     "current_only_urm_norm": URMNormCurrentReadInner,
                     "phase_current_only": PhaseCurrentReadInner,
                     "phase_exp_current_only": ExponentialPhaseCurrentReadInner,
+                    "phase_puzzle_exp_current_only": PuzzleStateExponentialPhaseCurrentReadInner,
+                    "phase_channel_exp_current_only": ChannelAttentionExponentialPhaseCurrentReadInner,
+                    "phase_channel_gram_exp_current_only": CoactivityChannelExponentialPhaseCurrentReadInner,
+                    "phase_local_warp_exp_current_only": LocalWarpExponentialPhaseCurrentReadInner,
                     "phase_unit_gaussian_current_only": DynamicGaussianPhaseCurrentReadInner,
                     "complex_current_only": ComplexCurrentReadInner,
                     "current_plus_stdp": CurrentPlusSTDPInner,

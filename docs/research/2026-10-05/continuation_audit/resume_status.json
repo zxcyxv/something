@@ -1,0 +1,68 @@
+{
+  "session": "20261005T080413464276Z",
+  "pid": 23333,
+  "status": "running",
+  "checkpoint": "/workspace/something/runs/research_free_phase_free_fourier4_e05_20261005/step_3008.pt",
+  "start_step": 3008,
+  "next_iter": 1,
+  "consumed_batches": 1055,
+  "model_id": "lt-kv-stdp-fast-weight-v1:research-local_free_fourier_r4_e0.5_diagonal_float32",
+  "max_steps": null,
+  "max_hours": null,
+  "epochs": 50000,
+  "keep_last": 3,
+  "save_every_steps": 1000,
+  "phase_protocol": {
+    "variant": "local_free_fourier_r4_e0.5_diagonal_float32",
+    "window": "fourier",
+    "modes": 4,
+    "epsilon": 0.5,
+    "generator": "diagonal",
+    "precision": "highest",
+    "feature_precision": "float32",
+    "torch": "2.11.0+cu128",
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "phase": "phiK=(pi/2)*tanh(thetaK+aK*RoPE(K_n)); phiV=(pi/2)*tanh(thetaV+aV*V_n)",
+    "phase_input": "token-local own-channel activity, learned zero-initialized gain per head/channel/role",
+    "phase_dynamic": true,
+    "ordering": "free to reverse for dynamic controls",
+    "phase_initialization": "same original theta and other parameter draws; zero correction",
+    "write": "G_ij=mean_n V_ni K_nj L(phiV_ni-phiK_nj); read=RoPE(Q)@G.T",
+    "normalization": "RMSNorm immediately after each attention/FFN residual; FP32 mean square, eps1e-5, no affine; count=2",
+    "window_note": "Fourier is exact for its chosen bounded-domain surrogate; not the original exponential. Frozen frequencies and coefficients.",
+    "scope": "Short controlled research experiment; max_steps applies only to this new diagnostic run",
+    "checkpoints": "Only trainer terminal save; keep_last=3; all step logs retained",
+    "original_training": "local_warp_exp stopped by user at step 30550; not resumed",
+    "limitation": "Phase and activity projections are tied by channel gains; free ordering, but less phase expressivity than an independent dense projection",
+    "experiment_free_phase_windows.py_sha256": "d0bb0384a3b912aa3437dacbb6c2d285be1f4dd702485e88d89524f8a88c6136",
+    "research_free_phase_windows.py_sha256": "26aaba181936ca9bda30f15c9584e3225dc44a13f19a1e428daf7d46afb8f42a",
+    "checkpoint_behavior_verified": "No periodic step saves; checkpoints at evaluation step 1953 and terminal step 3008; keep_last=3."
+  },
+  "source_sha256": {
+    "resume_free_phase_windows.py": "4745d1aa987dee24ba1b9374fb0c57e389f8751b9ddab8cd2cffa511a04273ec",
+    "experiment_free_phase_windows.py": "76b390b172936566790905cab26073f79e69bb0e5cbcbd382ae8a00b124a1b8e",
+    "research_free_phase_windows.py": "d919f03ac05d73751d38a07cb723052709b0ce8ea19239848c5a1c109bb602bb",
+    "kv_stability.py": "ec16505bb7faf5ce488209968db01c3e9f6594499bed6b5f20c7ecbd2907a323",
+    "train.py": "82d4568f94cf95d30f116d4b9942224cddf10ee34f58e4564a6f53515c516b6b"
+  },
+  "recipe_changes": {
+    "resume_from": [
+      null,
+      "/workspace/something/runs/research_free_phase_free_fourier4_e05_20261005/step_3008.pt"
+    ],
+    "require_resume": [
+      false,
+      true
+    ],
+    "save_every_steps": [
+      0,
+      1000
+    ],
+    "max_steps": [
+      3008,
+      null
+    ]
+  },
+  "restore_verified": true,
+  "restored": "raw weights and EMA exact equality; trainer restored optimizer, carry, RNG and data cursor"
+}

@@ -1,0 +1,46 @@
+{
+  "checkpoint": "runs/kv_phase_channel_exp_fresh_20261005/step_13671.pt",
+  "step": 13671,
+  "created_utc": "2026-10-05T04:42:35.086027+00:00",
+  "device": "CPU FP32",
+  "puzzles": 8,
+  "scope": "Frozen one-block phase-input sensitivity only. Reorder the paired already-RoPE-encoded K and V records solely at the phase generator; original KV sum stays unchanged. Not a transformed-puzzle accuracy test or proof of harmful bias.",
+  "profile_projection": {
+    "shape": [
+      16,
+      81
+    ],
+    "position_specific_energy_fraction": 0.9900155663490295,
+    "position_column_norm_min": 0.04512724652886391,
+    "position_column_norm_max": 0.09740039706230164,
+    "position_column_norm_mean": 0.06654128432273865
+  },
+  "controls": {
+    "swap_rows_0_1": {
+      "unwindowed_KV_relative_change": 6.56062795201251e-08,
+      "phase_change_rms_rad": 0.30970558524131775,
+      "L_sign_flip_fraction": 0.05170869454741478,
+      "L_relative_change": 0.6742544770240784,
+      "resulting_G_relative_change": 0.6048347353935242
+    },
+    "swap_bands_0_1": {
+      "unwindowed_KV_relative_change": 1.574627219724789e-07,
+      "phase_change_rms_rad": 1.434972882270813,
+      "L_sign_flip_fraction": 0.3270256519317627,
+      "L_relative_change": 1.2799286842346191,
+      "resulting_G_relative_change": 1.1995257139205933
+    },
+    "transpose_grid": {
+      "unwindowed_KV_relative_change": 2.1662505389485887e-07,
+      "phase_change_rms_rad": 0.9253125786781311,
+      "L_sign_flip_fraction": 0.17633309960365295,
+      "L_relative_change": 1.1092772483825684,
+      "resulting_G_relative_change": 0.9729574918746948
+    }
+  },
+  "remove_rope_from_phase_input_only": {
+    "phase_change_rms_rad": 1.3621197938919067,
+    "L_sign_flip_fraction": 0.2951356768608093,
+    "note": "Distribution shift for already-trained phase generator; not evidence that removing RoPE would improve training."
+  }
+}

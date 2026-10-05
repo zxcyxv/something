@@ -1,0 +1,346 @@
+{
+  "scope": "CPU scalar function shapes and finite interval approximations only. No model/training changes or GPU timing.",
+  "normalization": "All smooth target functions normalized to peak absolute magnitude 1 for shape comparison; this changes overall gain from the original exponential.",
+  "definitions": {
+    "original": "sign(delta)*exp(-abs(delta)/tau), tau=1, tie=0",
+    "gaussian_derivative": "(delta/sigma)*exp((1-(delta/sigma)^2)/2), sigma=0.4",
+    "smooth_exponential": "C*delta/sqrt(delta^2+eps^2)*exp(-sqrt(delta^2+eps^2)/tau), tau=1; mathematical construction, not a named STDP rule from the cited papers",
+    "sine_approximation": "sum_r b_r sin(r*delta); b_r=2/pi integral_0^pi target(delta)*sin(r*delta) ddelta"
+  },
+  "fourier_scope": "Fit on [-pi,pi]. Sine expansion imposes zero at endpoints and is periodic outside this interval; it does not retain global decay to zero at +/- infinity.",
+  "sources": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC10422128/",
+    "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0077395",
+    "https://www.neurones.espci.fr/Francais.Docs/dossier_recherche/Articles_PS/initialisation.pdf"
+  ],
+  "metrics": [
+    {
+      "epsilon": 0.08,
+      "modes": 2,
+      "kv_product_equivalents": 4,
+      "scale": 1.3325681214845557,
+      "target_peak_location": 0.18032741831605412,
+      "coefficients": [
+        0.434878668218488,
+        0.3119330978441509
+      ],
+      "rmse": 0.2834348385856698,
+      "max_abs_error": 0.8381740629611671,
+      "positive_half_min": -0.055197460629844625,
+      "positive_half_wrong_sign_fraction": 0.2544254425442544
+    },
+    {
+      "epsilon": 0.08,
+      "modes": 4,
+      "kv_product_equivalents": 8,
+      "scale": 1.3325681214845557,
+      "target_peak_location": 0.18032741831605412,
+      "coefficients": [
+        0.434878668218488,
+        0.3119330978441509,
+        0.24909756680763276,
+        0.17189489307876854
+      ],
+      "rmse": 0.18584636536094115,
+      "max_abs_error": 0.6711517007425454,
+      "positive_half_min": -0.017785186328519442,
+      "positive_half_wrong_sign_fraction": 0.11941194119411941
+    },
+    {
+      "epsilon": 0.08,
+      "modes": 8,
+      "kv_product_equivalents": 16,
+      "scale": 1.3325681214845557,
+      "target_peak_location": 0.18032741831605412,
+      "coefficients": [
+        0.434878668218488,
+        0.3119330978441509,
+        0.24909756680763276,
+        0.17189489307876854,
+        0.14900767924489652,
+        0.10884942050591366,
+        0.09986718128104445,
+        0.07492286408090851
+      ],
+      "rmse": 0.09859475278339755,
+      "max_abs_error": 0.4377078576169646,
+      "positive_half_min": 1.958942684020216e-05,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.08,
+      "modes": 16,
+      "kv_product_equivalents": 32,
+      "scale": 1.3325681214845557,
+      "target_peak_location": 0.18032741831605412,
+      "coefficients": [
+        0.434878668218488,
+        0.3119330978441509,
+        0.24909756680763276,
+        0.17189489307876854,
+        0.14900767924489652,
+        0.10884942050591366,
+        0.09986718128104445,
+        0.07492286408090851,
+        0.07142339605092414,
+        0.054131196101400325,
+        0.05317779651528831,
+        0.040320871392219314,
+        0.04068179458141862,
+        0.030652875167407095,
+        0.03173668697853293,
+        0.023635626701685036
+      ],
+      "rmse": 0.03739703777246252,
+      "max_abs_error": 0.19665905666458383,
+      "positive_half_min": 0.00014531817110850147,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.2,
+      "modes": 2,
+      "kv_product_equivalents": 4,
+      "scale": 1.7197439220500745,
+      "target_peak_location": 0.32421236185046665,
+      "coefficients": [
+        0.5292075091579689,
+        0.3545241236882078
+      ],
+      "rmse": 0.2592719433801267,
+      "max_abs_error": 0.678947579298038,
+      "positive_half_min": -0.048263373271178314,
+      "positive_half_wrong_sign_fraction": 0.23172317231723172
+    },
+    {
+      "epsilon": 0.2,
+      "modes": 4,
+      "kv_product_equivalents": 8,
+      "scale": 1.7197439220500745,
+      "target_peak_location": 0.32421236185046665,
+      "coefficients": [
+        0.5292075091579689,
+        0.3545241236882078,
+        0.26586187050427684,
+        0.16369666814580408
+      ],
+      "rmse": 0.1359588570324245,
+      "max_abs_error": 0.4161869317738077,
+      "positive_half_min": -0.0028584634203009662,
+      "positive_half_wrong_sign_fraction": 0.06470647064706471
+    },
+    {
+      "epsilon": 0.2,
+      "modes": 8,
+      "kv_product_equivalents": 16,
+      "scale": 1.7197439220500745,
+      "target_peak_location": 0.32421236185046665,
+      "coefficients": [
+        0.5292075091579689,
+        0.3545241236882078,
+        0.26586187050427684,
+        0.16369666814580408,
+        0.13400462146955136,
+        0.08386032818431323,
+        0.07467616575192504,
+        0.04560204342302644
+      ],
+      "rmse": 0.04650475518072717,
+      "max_abs_error": 0.16013612046708203,
+      "positive_half_min": 9.03950023799188e-05,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.2,
+      "modes": 16,
+      "kv_product_equivalents": 32,
+      "scale": 1.7197439220500745,
+      "target_peak_location": 0.32421236185046665,
+      "coefficients": [
+        0.5292075091579689,
+        0.3545241236882078,
+        0.26586187050427684,
+        0.16369666814580408,
+        0.13400462146955136,
+        0.08386032818431323,
+        0.07467616575192504,
+        0.04560204342302644,
+        0.04430198542121449,
+        0.02543142106254508,
+        0.02748714818557086,
+        0.01419673523661747,
+        0.017706394959827617,
+        0.0077328252823410815,
+        0.011817694190963903,
+        0.003943251817963759
+      ],
+      "rmse": 0.0107367456383624,
+      "max_abs_error": 0.073696546101918,
+      "positive_half_min": 0.00025140082075680815,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.35,
+      "modes": 2,
+      "kv_product_equivalents": 4,
+      "scale": 2.239796460578941,
+      "target_peak_location": 0.4602433237509047,
+      "coefficients": [
+        0.6223780023243168,
+        0.3735960158099188
+      ],
+      "rmse": 0.22319413456082401,
+      "max_abs_error": 0.5245088500015929,
+      "positive_half_min": -0.027382290444478024,
+      "positive_half_wrong_sign_fraction": 0.1866186618661866
+    },
+    {
+      "epsilon": 0.35,
+      "modes": 4,
+      "kv_product_equivalents": 8,
+      "scale": 2.239796460578941,
+      "target_peak_location": 0.4602433237509047,
+      "coefficients": [
+        0.6223780023243168,
+        0.3735960158099188,
+        0.2567570581333461,
+        0.13167980960450767
+      ],
+      "rmse": 0.09047554151744366,
+      "max_abs_error": 0.2347978182335968,
+      "positive_half_min": 3.7302633489988293e-05,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.35,
+      "modes": 8,
+      "kv_product_equivalents": 16,
+      "scale": 2.239796460578941,
+      "target_peak_location": 0.4602433237509047,
+      "coefficients": [
+        0.6223780023243168,
+        0.3735960158099188,
+        0.2567570581333461,
+        0.13167980960450767,
+        0.1028116019165463,
+        0.048453896362562844,
+        0.04607880561273178,
+        0.017255871115073373
+      ],
+      "rmse": 0.022730894865316608,
+      "max_abs_error": 0.0943436097473112,
+      "positive_half_min": 0.000165429080573995,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.35,
+      "modes": 16,
+      "kv_product_equivalents": 32,
+      "scale": 2.239796460578941,
+      "target_peak_location": 0.4602433237509047,
+      "coefficients": [
+        0.6223780023243168,
+        0.3735960158099188,
+        0.2567570581333461,
+        0.13167980960450767,
+        0.1028116019165463,
+        0.048453896362562844,
+        0.04607880561273178,
+        0.017255871115073373,
+        0.02286961426109275,
+        0.0048729843325783185,
+        0.012652549279431914,
+        -0.00010989433759826846,
+        0.007872947390913147,
+        -0.0020493662367248194,
+        0.005493411220621807,
+        -0.002714347293946788
+      ],
+      "rmse": 0.010555447098868012,
+      "max_abs_error": 0.0943436097473111,
+      "positive_half_min": 0.00033961854578296567,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.5,
+      "modes": 2,
+      "kv_product_equivalents": 4,
+      "scale": 2.8392578766363425,
+      "target_peak_location": 0.5733406592801372,
+      "coefficients": [
+        0.6990869931844871,
+        0.370306484021702
+      ],
+      "rmse": 0.18957783550087923,
+      "max_abs_error": 0.4062195227930493,
+      "positive_half_min": -0.005327390581369433,
+      "positive_half_wrong_sign_fraction": 0.10701070107010702
+    },
+    {
+      "epsilon": 0.5,
+      "modes": 4,
+      "kv_product_equivalents": 8,
+      "scale": 2.8392578766363425,
+      "target_peak_location": 0.5733406592801372,
+      "coefficients": [
+        0.6990869931844871,
+        0.370306484021702,
+        0.23421710512024246,
+        0.09564243351784038
+      ],
+      "rmse": 0.06275979645697356,
+      "max_abs_error": 0.1356322537523177,
+      "positive_half_min": 8.751083532663724e-05,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.5,
+      "modes": 8,
+      "kv_product_equivalents": 16,
+      "scale": 2.8392578766363425,
+      "target_peak_location": 0.5733406592801372,
+      "coefficients": [
+        0.6990869931844871,
+        0.370306484021702,
+        0.23421710512024246,
+        0.09564243351784038,
+        0.07586767475284269,
+        0.022027251950521017,
+        0.02948136389372233,
+        0.0016700859284373589
+      ],
+      "rmse": 0.019556275618297782,
+      "max_abs_error": 0.11647282918014543,
+      "positive_half_min": 0.00022579855776024688,
+      "positive_half_wrong_sign_fraction": 0.0
+    },
+    {
+      "epsilon": 0.5,
+      "modes": 16,
+      "kv_product_equivalents": 32,
+      "scale": 2.8392578766363425,
+      "target_peak_location": 0.5733406592801372,
+      "coefficients": [
+        0.6990869931844871,
+        0.370306484021702,
+        0.23421710512024246,
+        0.09564243351784038,
+        0.07586767475284269,
+        0.022027251950521017,
+        0.02948136389372233,
+        0.0016700859284373589,
+        0.014306233365668783,
+        -0.003807662254578902,
+        0.00873002222969899,
+        -0.004955546834900741,
+        0.006360300957854107,
+        -0.004869283966127697,
+        0.00515757128794169,
+        -0.004479421185520812
+      ],
+      "rmse": 0.012925767317195825,
+      "max_abs_error": 0.11647282918014532,
+      "positive_half_min": 0.0004212735174440024,
+      "positive_half_wrong_sign_fraction": 0.0
+    }
+  ]
+}

@@ -1,0 +1,67 @@
+{
+  "kind": "isolated preflight; timings include concurrent existing training",
+  "variant": "phase_local_warp_exp_current_only",
+  "batch": 128,
+  "hidden": 832,
+  "heads": 8,
+  "blocks": 8,
+  "amp": "bfloat16",
+  "compile": true,
+  "activation_checkpoint": true,
+  "steps": [
+    {
+      "step": 1,
+      "elapsed": 53.64367811474949,
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.489133358001709,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 0.0,
+      "_count_raw": 0.0
+    },
+    {
+      "step": 2,
+      "elapsed": 4.092175722122192,
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.490058422088623,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 5.0000000000000004e-08,
+      "_count_raw": 0.0
+    },
+    {
+      "step": 3,
+      "elapsed": 0.24023306462913752,
+      "accuracy": 0.0,
+      "count": 0.0,
+      "exact_accuracy": 0.0,
+      "lm_loss": 2.4900400638580322,
+      "q_halt_accuracy": 0.0,
+      "q_halt_loss": 0.006715297698974609,
+      "steps": 0.0,
+      "lr": 1.0000000000000001e-07,
+      "_count_raw": 0.0
+    }
+  ],
+  "phase_gradients": [
+    {
+      "model.inner.layers.0.phase_warp.projection.weight": 0.04183349013328552
+    },
+    {
+      "model.inner.layers.0.phase_warp.projection.weight": 0.04019344225525856
+    },
+    {
+      "model.inner.layers.0.phase_warp.projection.weight": 0.04018864780664444
+    }
+  ],
+  "parameters": 8542571,
+  "phase_branch_parameters": 1664,
+  "peak_allocated_mib": 2057.88232421875,
+  "projection_weight_norm": 4.6089139686955605e-06
+}

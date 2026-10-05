@@ -64,17 +64,19 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--out", required=True)
     ap.add_argument("--config", help="Overrides to the original top-level CFG")
-    ap.add_argument("--steps", type=int, default=6000)
+    ap.add_argument("--steps", type=int, default=6000, help="Optimizer-step limit; 0 uses the full configured epoch schedule")
     ap.add_argument("--diagnostic-every", type=int, default=64)
     ap.add_argument("--save-every", type=int, default=500)
     ap.add_argument("--keep-last", type=int, default=20)
     ap.add_argument("--variant", choices=VARIANTS, default="original")
     args = ap.parse_args()
+    if args.steps < 0:
+        ap.error("--steps must be nonnegative")
     out = Path(args.out).resolve()
     out.mkdir(parents=True, exist_ok=True)
     cfg = dict(t.CFG)
     cfg.update(data_npz=str(Path("data/sudoku_lt_1k.npz").resolve()),
-               out_dir=str(out), max_steps=args.steps, max_hours=None,
+               out_dir=str(out), max_steps=args.steps or None, max_hours=None,
                run_selftests=False, num_processes=1, log_every=16,
                save_every_steps=args.save_every, keep_last=args.keep_last, milestone_every=0)
     if args.config:
@@ -140,7 +142,7 @@ def main():
         kernel = Path(__file__).with_name("unit_phase_stdp.py").read_bytes()
         metadata["kernel_sha256"] = hashlib.sha256(kernel).hexdigest()
         (out / "unit_phase_stdp_snapshot.py").write_bytes(kernel)
-    elif args.variant in ("phase_current_only", "phase_exp_current_only"):
+    elif args.variant in ("phase_current_only", "phase_exp_current_only", "phase_puzzle_exp_current_only", "phase_channel_exp_current_only", "phase_channel_gram_exp_current_only", "phase_local_warp_exp_current_only"):
         metadata.update(
             write_equation="G_ij=mean_tokens(V_i*RoPE(K)_j*sin(phiV_i-phiK_j))",
             read_equation="RoPE(Q) @ G.T (column convention: Gq)",
@@ -157,7 +159,7 @@ def main():
             recurrent_memory=False, eligibility_traces=False, interpolation=False,
             carry_matrix="current G for diagnostics only; ignored on the next step",
             parameter_note="Original initialization and unused trace parameters retained; theta parameters excluded from decay by existing optimizer rule.")
-        if args.variant == "phase_exp_current_only":
+        if args.variant in ("phase_exp_current_only", "phase_puzzle_exp_current_only", "phase_channel_exp_current_only", "phase_channel_gram_exp_current_only", "phase_local_warp_exp_current_only"):
             metadata.update(
                 write_equation="G=(V.T @ RoPE(K)/T) * L(phiV_i-phiK_j)",
                 window="L(delta)=sign(delta)*exp(-abs(delta)/tau); exact, no Fourier approximation",
@@ -166,6 +168,81 @@ def main():
                 zero_lag_value=0.0, phase_difference_wrap=False,
                 phase_gradient="ordinary autodiff; sign derivative zero; envelope derivative away from zero; no surrogate",
                 distinction="Uses a phase-difference kernel on the real KV product, not the imaginary part of a single complex outer product.")
+        if args.variant == "phase_puzzle_exp_current_only":
+            metadata.update(
+                phase_shape="independent K/V [batch,heads,head_dim] per layer and recurrence",
+                phase_shared_over="tokens within each puzzle only",
+                phase_summary="c=RMSNorm(mean_tokens(hidden+input_injection)); FP32; eps=1e-5; affine=False",
+                phase_parameterization="phi=(pi/2)*tanh(theta_raw+W_role*c); independent K/V projections",
+                phase_projection_initialization="zero; bias=False; baseline forward recovered exactly initially",
+                phase_initialization="offsets use baseline uniform angles [-pi/4,pi/4] in raw tanh coordinates; projection weights zero",
+                phase_projection_dtype="FP32; outside BF16 autocast",
+                phase_projection_weight_decay=cfg["weight_decay"],
+                phase_weight_decay="theta offsets: 0; projection matrices: configured weight_decay",
+                phase_limit=math.pi/2,
+                summary_normalization=dict(eps=1e-5, affine=False, accumulation_dtype="float32", count=1),
+                write_factorization="Window is shared over tokens, so it commutes exactly with their reduction; one KV GEMM",
+                within_segment_gradient="all 8 recurrent blocks; activation recomputation only",
+                segment_boundary="detach carry after each optimizer step; sample retained for 16 segments",
+                parameter_note="Original model and theta initialization retained; two zero-initialized hidden-to-hidden phase projections added",
+                comparison_note="Same signed exponential as fixed-phase baseline; puzzle-state conditioning and its summary normalization added",
+                summary_limitation="mean pooling does not independently encode each token's phase or guarantee a sufficient puzzle statistic")
+        if args.variant in ("phase_channel_exp_current_only", "phase_channel_gram_exp_current_only"):
+            metadata.update(
+                phase_shape="independent K/V [batch,heads,head_dim] per layer and recurrence",
+                phase_shared_over="tokens within each puzzle only",
+                phase_input="Z=concat(RoPE(K).T,V.T) along channel rows; [batch,heads,2*head_dim,tokens]",
+                phase_profile_encoder="shared learned Linear(tokens,16,bias=False), preserving ordered spatial profiles; plus [heads,2*head_dim,16] channel/role embeddings",
+                phase_attention="one joint K/V channel self-attention per existing head; softmax(Qp Kp.T / sqrt(16)); no cross-head or cross-puzzle mixing, no dropout",
+                phase_latent_dim=16, phase_ffn_expansion=4, phase_ffn_activation="GELU",
+                phase_branch_equation="u=RMSNorm(z+out(softmax(QpKp.T/sqrt(16))Vp)); y=RMSNorm(u+down(GELU(up(u)))); correction=readout(y)",
+                phase_parameterization="phi_role=(pi/2)*tanh(theta_role+correction_role); one scalar per K/V channel",
+                phase_initialization="original theta offsets retained; scalar readout weight zero; all other new linear layers use default initialization; channel embeddings normal std=0.02",
+                phase_initial_gradient="readout receives gradients immediately; encoder/attention/FFN gradients become available after its first nonzero-LR update",
+                phase_projection_dtype="FP32 outside BF16 autocast; residual norm mean squares always FP32",
+                phase_weight_decay="theta offsets: 0; phase branch matrices/embeddings: configured weight_decay",
+                phase_limit=math.pi/2,
+                phase_branch_normalization=dict(eps=1e-5, affine=False, accumulation_dtype="float32", count=2, axis="latent channels of each K/V channel token"),
+                write_factorization="All phase outputs remain token-shared; exact signed exponential after one KV GEMM, including full gradient through K/V-dependent phases",
+                within_segment_gradient="all 8 recurrent blocks; activation recomputation only",
+                segment_boundary="detach carry after each optimizer step; sample retained for 16 segments",
+                parameter_note="Baseline initialization preserved; joint channel attention replaces global mean conditioning; no phase state accumulator",
+                comparison_note="Same exponential window and main residual norms; phase generator changes to joint K/V channel attention",
+                architectural_source="https://arxiv.org/abs/2106.09681 (channel attention precedent; this phase readout is a new experiment)")
+        if args.variant == "phase_channel_gram_exp_current_only":
+            metadata.update(
+                phase_profile_encoder="none; full T-dimensional profiles enter Z Z.T directly; no learned token-slot weights",
+                phase_attention="A=softmax(Z Z.T / T); joint K/V channel coactivity within each existing head; no learned phase Q/K projections or score normalization",
+                phase_value="W_value(E), where E is learned [heads,2*head_dim,16] channel/role identity; values do not mix spatial slots",
+                phase_branch_equation="u=RMSNorm(E+out(A@W_value(E))); y=RMSNorm(u+down(GELU(up(u)))); correction=readout(y)",
+                phase_latent_note="16 is the channel-message width after full-profile comparison, not an 81-to-16 activity projection",
+                phase_initial_gradient="readout receives gradients immediately; value/embedding/FFN and activity-score gradients become available after its first nonzero-LR update",
+                position_invariance="Common token permutations of already-RoPE-encoded K/V preserve phases; no claim of full Sudoku-transform invariance because spatial RoPE is retained",
+                parameter_note="Baseline initialization preserved; phase Q/K and token-to-latent projection removed; value path uses channel identities; no phase state accumulator",
+                comparison_note="Tests removal of early spatial compression and additional absolute slot mixing together; activity-based Q/K scores and channel-identity values both differ from the previous run; not a single-variable width ablation")
+        if args.variant == "phase_local_warp_exp_current_only":
+            metadata.update(
+                write_equation="G_ij=mean_n(V_ni*RoPE(K)_nj*L(phiV_ni-phiK_nj)); exact two-GEMM factorization using shared base-order masks",
+                phase_shape="independent token states [batch,heads,tokens,head_dim] for K/V; common increasing warp per token/head",
+                phase_shared_over="warp shared between K/V roles and their channels within one token/head; phases not shared across tokens",
+                phase_input="concat(RoPE(K_n),V_n) per token/head, using unchanged main K/V projections",
+                phase_parameterization="base=(pi/2)*tanh(theta_raw); phi_role[n,c]=F_n(base_role[c]); F_n increasing piecewise-linear map on [-pi/2,pi/2]",
+                phase_intervals=8,
+                phase_interval_lengths="pi*softmax(Linear(2*head_dim,8,bias=False)(concat(RoPE(K_n),V_n))); learned projection shared across heads and tokens",
+                phase_implementation="interpolate knot displacements relative to identity; both endpoint displacements zero; FP32 outside BF16 autocast",
+                phase_initialization="original baseline theta initialization retained; local projection zero; initial phases exactly baseline; write differs only by GEMM floating-point reassociation",
+                phase_initial_gradient="local projection receives nonzero gradients immediately; first optimizer step LR=0 as in the baseline",
+                phase_order="K/V pair signs determined by bounded baseline phases; input-dependent warp preserves this order; baseline order may change during parameter learning",
+                phase_sign_numerics="reuse base-order masks instead of reclassifying numerically near-equal warped phases; equal bounded baseline phases have exact zero write",
+                phase_limit=math.pi/2,
+                phase_weight_decay="theta offsets: 0; local projection: configured weight_decay",
+                phase_branch_normalization="none: single linear local head, no phase attention or phase FFN; main block retains both residual RMSNorms",
+                write_factorization="M_plus*((V*exp(-phiV)).T@(Krot*exp(phiK)))/T - M_minus*((V*exp(phiV)).T@(Krot*exp(-phiK)))/T; tau=1",
+                write_locality="given current-block hidden rows, each token contribution depends only on its own row; contextual information in those rows is retained",
+                within_segment_gradient="all 8 recurrent blocks; activation recomputation only",
+                segment_boundary="detach carry after each optimizer step; sample retained for 16 segments",
+                parameter_note="Baseline initialization preserved; 8*(2*head_dim)=1664 additional parameters per layer; no phase state accumulator",
+                comparison_note="Changes phase scope to token-local and preserves base ordering; state-dependent order reversal is excluded; not a pure change of generator width")
     elif args.variant == "current_only_urm_norm":
         metadata.update(
             read_equation="RoPE(Q) @ (V.T @ RoPE(K) / T).T; raw Q/K",
@@ -250,12 +327,40 @@ def main():
               "sign(sin(delta))*exp(-delta^2), exact tie=0; no phase/activity unit norm; "
               "two FP32 post-residual RMSNorms. Generic KV configuration fields below "
               "are inherited and do not describe this variant's memory equation.", flush=True)
+    elif args.variant == "phase_puzzle_exp_current_only":
+        print("[RESEARCH] Actual variant: puzzle-state-dependent K/V channel phases, "
+              "shared over tokens and recomputed each block from RMSNorm(mean(injected hidden)); "
+              "zero-initialized phase projections; sign(delta)*exp(-abs(delta)), tau=1, tie=0; "
+              "current G only, one KV GEMM; two FP32 post-residual RMSNorms plus the summary norm. "
+              "Generic KV memory/trace/Phi descriptions below are inherited; see protocol.json.", flush=True)
+    elif args.variant == "phase_local_warp_exp_current_only":
+        print("[RESEARCH] Actual variant: token-local order-preserving K/V phase warp; "
+              "8 positive phase-axis intervals from local concat(RoPE(K),V); identity initialization; "
+              "sign(delta)*exp(-abs(delta)), tau=1, equal base phases contribute zero; "
+              "two KV GEMMs, current G only; no global phase attention or phase accumulator. "
+              "Two FP32 post-residual RMSNorms in the main block. "
+              "Generic KV memory/trace/Phi descriptions below are inherited; see protocol.json.", flush=True)
+    elif args.variant == "phase_channel_gram_exp_current_only":
+        print("[RESEARCH] Actual variant: full-profile joint K/V channel coactivity attention; "
+              "softmax(Z Z.T / T), no token-axis compression or learned spatial-slot weights; "
+              "16-wide channel-identity values, zero-initialized scalar phase readout; "
+              "sign(delta)*exp(-abs(delta)), tau=1, tie=0; current G only, one KV GEMM. "
+              "Two FP32 post-residual RMSNorms in the main block and two in the phase branch. "
+              "Generic KV memory/trace/Phi descriptions below are inherited; see protocol.json.", flush=True)
+    elif args.variant == "phase_channel_exp_current_only":
+        print("[RESEARCH] Actual variant: joint K/V channel attention on ordered spatial profiles; "
+              "latent width 16, one phase per channel shared over tokens; zero-initialized scalar readout; "
+              "sign(delta)*exp(-abs(delta)), tau=1, tie=0; current G only, one KV GEMM. "
+              "Two FP32 post-residual RMSNorms in the main block and two in the phase branch. "
+              "Generic KV memory/trace/Phi descriptions below are inherited; see protocol.json.", flush=True)
     t.main(cfg)
     latest = t.find_latest_checkpoint(str(out))
     actual_step = int(Path(latest).stem.removeprefix("step_")) if latest else None
-    status = "completed" if actual_step == args.steps else "stopped"
+    limit = cfg["max_steps"]
+    status = ("stopped" if t._STOP_REQUESTED else "finished" if limit is None
+              else "completed" if actual_step == limit else "stopped")
     (out / f"{status}.json").write_text(json.dumps(dict(
-        requested_steps=args.steps, actual_step=actual_step,
+        requested_steps=limit, actual_step=actual_step,
         elapsed=time.monotonic()-started)))
 
 

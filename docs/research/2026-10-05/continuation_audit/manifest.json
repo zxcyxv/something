@@ -1,0 +1,66 @@
+{
+  "artifact_checks.json": {
+    "bytes": 205,
+    "sha256": "544b4f947c1b1656e5db6fe7899e75d03af5ef14f1240d8728e8ae4e08f4d684"
+  },
+  "config.json": {
+    "bytes": 2780,
+    "sha256": "e461855c0831c79321075bfdc71c91c111fde29cc6ec63738b15dc7b7224d999"
+  },
+  "eval_history.json": {
+    "bytes": 4829,
+    "sha256": "9a092b5a07fa6e9e0f3c75fb4cbeaee14ac65625a00d63c2f33477f89455b9e5"
+  },
+  "eval_lines.log": {
+    "bytes": 1636,
+    "sha256": "a07fe238210e2d156898d944c5986cefc207b67ce1cea062f1d5bd3cafe150ab"
+  },
+  "learning_curves.png": {
+    "bytes": 172330,
+    "sha256": "754a0c5ad955bf1d3ec4a1527f94b50b244b15067ad0fe6b2d9e954ea848df36"
+  },
+  "learning_curves.svg": {
+    "bytes": 184441,
+    "sha256": "844b026b587749301795a223fdfc826c817c3fd05f89dc35f8b4d02b53c09fd7"
+  },
+  "optimizer_groups.json": {
+    "bytes": 4909,
+    "sha256": "cf94aab21f5d2494aaf1c333350963dad0f5b72a1252a065c879046ee7924893"
+  },
+  "protocol.json": {
+    "bytes": 1756,
+    "sha256": "06053b894527a9704faec096bb9c5e273c6c01bb69a10ee78b2709158edff2c4"
+  },
+  "raw_vs_ema_step27342_20261005T090014Z/metadata.json": {
+    "bytes": 5719,
+    "sha256": "a9fbee4f7108ccf98a2ea63d8eb30f60ccdf6cd59e85ee275d648bf4b7030103"
+  },
+  "raw_vs_ema_step27342_20261005T090014Z/results.json": {
+    "bytes": 776,
+    "sha256": "b0cea2cdb1af869e5a07e8433dfb58e1c50b4f8e7ce9aef224b06264b658f352"
+  },
+  "raw_vs_ema_step42966_20261005T093601Z/metadata.json": {
+    "bytes": 5719,
+    "sha256": "bd90aa3a570c3d073f7e0e638f3be358f0672e148be359e725052f1e50c02ddb"
+  },
+  "raw_vs_ema_step42966_20261005T093601Z/results.json": {
+    "bytes": 777,
+    "sha256": "fd90af281a95cf7477ef724219c69c97f1265d1dca7b4a8c2619ef622fad0d80"
+  },
+  "regression_tests.log": {
+    "bytes": 8485,
+    "sha256": "2d9311d8269d78042fbc490cf56591db3be321e8720b9e9556b5a840a7d58e55"
+  },
+  "resume_status.json": {
+    "bytes": 3255,
+    "sha256": "40e51ca427ce538da3b10f4160e0104246254b9c5a1de3077f6fbd61be8c3450"
+  },
+  "summary.json": {
+    "bytes": 3373,
+    "sha256": "31df74e014bc35f72e3fdb396798566069ea012bb4a94ef74aee37d786e97503"
+  },
+  "train_terminal_metrics.csv": {
+    "bytes": 331716,
+    "sha256": "3a3f0672e8307ec1f67c694046c74319b318c7c23890708af450aaae5931516f"
+  }
+}

@@ -1,0 +1,54 @@
+{
+  "requested_scope": "Checkpoints from today's phase-model experiments; preserve logs/config/source snapshots",
+  "deleted_utc": "2026-10-05T04:57:11.337184+00:00",
+  "files": [
+    {
+      "path": "runs/kv_phase_exp_current_fresh_20261005/step_17577.pt",
+      "bytes": 249759275,
+      "modified_utc": "2026-10-05T02:14:17.734886+00:00"
+    },
+    {
+      "path": "runs/kv_phase_exp_current_fresh_20261005/step_18000.pt",
+      "bytes": 249759275,
+      "modified_utc": "2026-10-05T02:14:57.952887+00:00"
+    },
+    {
+      "path": "runs/kv_phase_exp_current_fresh_20261005/step_18300.pt",
+      "bytes": 249759275,
+      "modified_utc": "2026-10-05T02:15:21.372887+00:00"
+    },
+    {
+      "path": "runs/kv_phase_puzzle_exp_fresh_20261005/step_79000.pt",
+      "bytes": 277451401,
+      "modified_utc": "2026-10-05T04:09:03.613760+00:00"
+    },
+    {
+      "path": "runs/kv_phase_puzzle_exp_fresh_20261005/step_80000.pt",
+      "bytes": 277451401,
+      "modified_utc": "2026-10-05T04:10:31.320771+00:00"
+    },
+    {
+      "path": "runs/kv_phase_puzzle_exp_fresh_20261005/step_80050.pt",
+      "bytes": 277451401,
+      "modified_utc": "2026-10-05T04:10:35.969772+00:00"
+    },
+    {
+      "path": "runs/kv_phase_channel_exp_fresh_20261005/step_18000.pt",
+      "bytes": 250390495,
+      "modified_utc": "2026-10-05T04:52:11.805856+00:00"
+    },
+    {
+      "path": "runs/kv_phase_channel_exp_fresh_20261005/step_19000.pt",
+      "bytes": 250390495,
+      "modified_utc": "2026-10-05T04:54:22.708863+00:00"
+    },
+    {
+      "path": "runs/kv_phase_channel_exp_fresh_20261005/step_19450.pt",
+      "bytes": 250390495,
+      "modified_utc": "2026-10-05T04:55:26.607867+00:00"
+    }
+  ],
+  "total_files": 9,
+  "total_bytes": 2332803513,
+  "deletion_verified": true
+}
