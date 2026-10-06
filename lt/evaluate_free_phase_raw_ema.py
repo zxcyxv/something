@@ -46,6 +46,12 @@ def main():
     assert shadow and set(states['raw']) == set(states['ema'])
     assert all(torch.equal(states['ema'][key], value) for key, value in shadow.items())
     common_keys = set(states['raw']) - set(shadow)
+    # Tied weights appear under a second state_dict name (e.g. k_proj.weight for a
+    # shared q_proj); those aliases carry the EMA value, not the raw one.
+    aliases = {key for key in common_keys
+               if any(states['ema'][key].shape == value.shape and torch.equal(states['ema'][key], value)
+                      for value in shadow.values())}
+    common_keys -= aliases
     assert all(torch.equal(states['raw'][key], states['ema'][key]) for key in common_keys)
     step = int(ck['step'])
     del ck, shadow
@@ -67,7 +73,8 @@ def main():
     t.KVSTDPInner = model_class(protocol['window'], protocol['phase_dynamic'],
                                protocol['modes'], protocol['epsilon'], protocol['generator'],
                                protocol.get('feature_precision', 'float32'),
-                               protocol.get('window_scale_factor', 1.0))
+                               protocol.get('window_scale_factor', 1.0),
+                               protocol.get('tie_qk', False), protocol.get('tie_vo', False))
     model_cfg = dict(cfg, batch_size=cfg['global_batch_size'],
                      seq_len=cfg['grid'] ** 2, num_puzzle_identifiers=1)
     with torch.device(device):

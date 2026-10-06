@@ -22,8 +22,18 @@ from .biexponential_phase_window import window as biexp_window, split_write as b
 from . import tanhsech_phase_window as tanhsech
 
 
+class TransposedLinear(torch.nn.Module):
+    """Output projection tied to the value projection: out(x) = x @ W_v."""
+    def __init__(self, source):
+        super().__init__()
+        self.source = source
+
+    def forward(self, x):
+        return torch.nn.functional.linear(x, self.source.weight.t())
+
+
 def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator='dense', feature_precision='float32',
-                window_scale=1.0):
+                window_scale=1.0, tie_qk=False, tie_vo=False):
     class LocalFreePhaseInner(ExponentialPhaseCurrentReadInner):
         def __init__(self, config):
             if config.kv_write_reduction != 'mean':
@@ -45,6 +55,13 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                         layer.phase_local_gain = torch.nn.Parameter(torch.zeros(self.H, 2 * self.dh))
                     else:
                         raise ValueError(generator)
+            # Weight tying is applied after every original draw, so the remaining
+            # parameters keep their original initial values.
+            for layer in self.layers:
+                if tie_qk:
+                    layer.q_proj = layer.k_proj
+                if tie_vo:
+                    layer.out_proj = TransposedLinear(layer.v_proj)
 
         def phases(self, layer, rotated_key=None, value=None):
             if not dynamic:
@@ -65,6 +82,8 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 return biexp_window(delta)
             if window == 'tanhsech':
                 return window_scale * tanhsech.window(delta)
+            if window == 'hebbian':
+                return torch.ones_like(delta)
             return sine_window(delta, self.window_frequencies, self.window_coefficients)
 
         def memory_step(self, layer, q, k, v, memory=None, e_k=None, e_v=None, fresh=None):
@@ -73,6 +92,10 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 q, k, v = (x.to(dtype) for x in (q, k, v))
                 tables = self.rope_tables(layer)
                 qr, kr = (self.apply_rope(x, layer, tables) for x in (q, k))
+                if window == 'hebbian':
+                    # Plain current KV outer product: no window, phases unused.
+                    current = v.transpose(-1, -2) @ kr / k.shape[-2]
+                    return qr @ current.transpose(-1, -2), current, None, None
                 pk, pv = self.phases(layer, kr, v)
                 if not dynamic:
                     delta = pv[:, :, None] - pk[:, None, :]
@@ -92,6 +115,17 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                     current = operator(kr, v, pk, pv, self.window_frequencies, self.window_coefficients)
                 return qr @ current.transpose(-1, -2), current, None, None
     return LocalFreePhaseInner
+
+
+def exclude_phase_gain_from_decay():
+    """Put the token-local phase gain/projection in the no-decay group."""
+    if getattr(t._is_no_decay, 'phase_local_excluded', False):
+        return
+    original = t._is_no_decay
+    def rule(name, p, *args, **kwargs):
+        return 'phase_local' in name or original(name, p, *args, **kwargs)
+    rule.phase_local_excluded = True
+    t._is_no_decay = rule
 
 
 def configuration():
@@ -148,7 +182,7 @@ def preflight(cfg, out, steps):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--window', choices=('fourier','exponential','biexponential','tanhsech'), default='fourier')
+    ap.add_argument('--window', choices=('fourier','exponential','biexponential','tanhsech','hebbian'), default='fourier')
     ap.add_argument('--fixed', action='store_true')
     ap.add_argument('--modes', type=int, default=8)
     ap.add_argument('--epsilon', type=float, default=.35)
@@ -157,6 +191,10 @@ def main():
     ap.add_argument('--feature-precision', choices=('float32','bfloat16'), default='float32')
     ap.add_argument('--window-scale', type=float, default=1.0,
                     help='constant multiplying the tanhsech window; 2 gives peak 1 and slope 2 at the origin')
+    ap.add_argument('--tie-qk', action='store_true', help='W_q = W_k (one shared projection)')
+    ap.add_argument('--tie-vo', action='store_true', help='W_o = W_v^T (output tied to value projection)')
+    ap.add_argument('--phase-gain-no-decay', action='store_true',
+                    help='exclude phase_local parameters from weight decay')
     ap.add_argument('--steps', type=int, default=3008, help='absolute stopping step; 0 runs the full epoch schedule')
     ap.add_argument('--save-every', type=int, default=0, help='periodic checkpoint interval in steps; 0 saves only at eval boundaries')
     ap.add_argument('--preflight', action='store_true')
@@ -174,10 +212,18 @@ def main():
     name = f"{'fixed' if opt.fixed else 'local_free'}_{opt.window}_r{opt.modes}_e{opt.epsilon}_{opt.generator}_{opt.feature_precision}"
     if opt.window_scale != 1:
         name += f'_x{opt.window_scale:g}'
+    if opt.tie_qk:
+        name += '_tieqk'
+    if opt.tie_vo:
+        name += '_tievo'
+    if opt.phase_gain_no_decay:
+        name += '_gainwd0'
+        exclude_phase_gain_from_decay()
+    cfg.update(phase_gain_no_decay=opt.phase_gain_no_decay)
     cfg.update(out_dir=str(out), max_steps=opt.steps or None, max_hours=None, save_every_steps=opt.save_every, research_variant=name,
                research_matmul_precision=opt.precision)
     t.KVSTDPInner = model_class(opt.window, not opt.fixed, opt.modes, opt.epsilon, opt.generator, opt.feature_precision,
-                                opt.window_scale)
+                                opt.window_scale, opt.tie_qk, opt.tie_vo)
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + name
     protocol = dict(variant=name, window=opt.window, modes=opt.modes, epsilon=opt.epsilon, generator=opt.generator,
                     precision=opt.precision, feature_precision=opt.feature_precision, torch=torch.__version__, gpu=torch.cuda.get_device_name(),
@@ -200,6 +246,10 @@ def main():
     if opt.window == 'biexponential':
         protocol.update(window_note='C1 signed difference of exponentials, slow=1, fast=0.1; normalized peak=1. Exact mathematical window and ordinary derivative at zero; not the discontinuous original.',
                         phase_zero_derivative='C*(1/fast-1/slow), true derivative at zero; no surrogate')
+    protocol.update(tie_qk=opt.tie_qk, tie_vo=opt.tie_vo)
+    protocol.update(phase_gain_weight_decay=0.0 if opt.phase_gain_no_decay else 'trainer default (1.0)')
+    if opt.window == 'hebbian':
+        protocol.update(window_note='No STDP window: G = mean_n V_n RoPE(K_n)^T. Phase parameters exist but receive no gradient.')
     if opt.window == 'tanhsech':
         protocol.update(window_note='Exact L(d)=tanh(d)sech(d): odd, slope 1 at 0, peak 1/2 at asinh(1), tail 2exp(-|d|). '
                                     'Fused Triton pair kernel (FP32, rcp.approx) on CUDA; direct pairs on CPU/FP64. No surrogate, no feature approximation.',

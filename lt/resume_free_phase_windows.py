@@ -18,7 +18,7 @@ import time
 import torch
 
 from . import train as t
-from .experiment_free_phase_windows import model_class
+from .experiment_free_phase_windows import model_class, exclude_phase_gain_from_decay
 from .kv_stability import ORIGINAL_MODEL_ID
 
 
@@ -53,11 +53,14 @@ def continue_run(run, *, steps=0, save_every=1000, keep_last=3):
     if not Path(cfg['data_npz']).is_file():
         cfg['data_npz'] = str(Path(__file__).resolve().parents[1] / 'data/sudoku_lt_1k.npz')
     t.validate_run_cfg(cfg)
+    if cfg.get('phase_gain_no_decay'):
+        exclude_phase_gain_from_decay()
     torch.set_num_threads(2)
     torch.set_float32_matmul_precision(protocol['precision'])
     t.KVSTDPInner = model_class(protocol['window'], protocol['phase_dynamic'], protocol['modes'],
                                protocol['epsilon'], protocol['generator'], protocol.get('feature_precision', 'float32'),
-                               protocol.get('window_scale_factor', 1.0))
+                               protocol.get('window_scale_factor', 1.0),
+                               protocol.get('tie_qk', False), protocol.get('tie_vo', False))
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + c['research_variant']
 
     session = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
