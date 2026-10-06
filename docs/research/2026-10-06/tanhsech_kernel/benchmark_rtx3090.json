@@ -1,0 +1,201 @@
+{
+  "protocol": {
+    "gpu": "NVIDIA GeForce RTX 3090",
+    "torch": "2.11.0+cu128",
+    "batch": 128,
+    "heads": 8,
+    "tokens": 81,
+    "channels": 104,
+    "compiled": "fullgraph",
+    "matmul_precision": "highest",
+    "timing": "CUDA events, forward + full backward of write+read, 5 rounds x 15 repeats",
+    "scope": "excludes phase generator, projections, FFN, norms and optimizer"
+  },
+  "tile_sweep": [
+    {
+      "forward_block": [
+        16,
+        128,
+        1
+      ],
+      "backward_block": [
+        32,
+        32,
+        1
+      ],
+      "forward_backward_median_ms": 7.215445454915365,
+      "rounds_ms": [
+        7.170662434895833,
+        7.256746419270834,
+        7.226447041829427,
+        7.201587422688802,
+        7.215445454915365
+      ],
+      "extra_peak_mib": 535.8447265625,
+      "process_peak_mib": 716.626953125
+    },
+    {
+      "forward_block": [
+        16,
+        128,
+        1
+      ],
+      "backward_block": [
+        64,
+        16,
+        2
+      ],
+      "forward_backward_median_ms": 7.2165374755859375,
+      "rounds_ms": [
+        7.175440979003906,
+        7.246711222330729,
+        7.220906575520833,
+        7.199675496419271,
+        7.2165374755859375
+      ],
+      "extra_peak_mib": 535.8447265625,
+      "process_peak_mib": 716.626953125
+    },
+    {
+      "forward_block": [
+        16,
+        128,
+        2
+      ],
+      "backward_block": [
+        32,
+        32,
+        4
+      ],
+      "forward_backward_median_ms": 7.2269953409830725,
+      "rounds_ms": [
+        7.199471028645833,
+        7.240294392903646,
+        7.2269953409830725,
+        7.212578328450521,
+        7.234764607747396
+      ],
+      "extra_peak_mib": 535.8447265625,
+      "process_peak_mib": 716.626953125
+    }
+  ],
+  "rows": [
+    {
+      "name": "fixed_exp (baseline, shared phases)",
+      "forward_backward_median_ms": 2.1324459075927735,
+      "rounds_ms": [
+        2.087511444091797,
+        2.130739212036133,
+        2.13306032816569,
+        2.1334014892578126,
+        2.1324459075927735
+      ],
+      "extra_peak_mib": 249.0322265625,
+      "process_peak_mib": 429.814453125
+    },
+    {
+      "name": "sine4 eps0.5 FP32 (trained model)",
+      "forward_backward_median_ms": 8.016204833984375,
+      "rounds_ms": [
+        8.002355448404948,
+        8.016204833984375,
+        8.012114969889323,
+        8.016285705566407,
+        8.017578633626302
+      ],
+      "extra_peak_mib": 834.25,
+      "process_peak_mib": 1015.0322265625,
+      "correctness_vs_fp64": {
+        "output_relative_l2": 4.464665020065269e-07,
+        "gradient_relative_l2": {
+          "Q": 4.412367714652884e-07,
+          "K": 2.498547781623712e-07,
+          "V": 2.473127294244419e-07,
+          "phaseK": 2.5197153159715875e-07,
+          "phaseV": 2.4612030783082475e-07
+        }
+      }
+    },
+    {
+      "name": "sine4 eps0.5 BF16 features",
+      "forward_backward_median_ms": 4.831573486328125,
+      "rounds_ms": [
+        4.808157857259115,
+        4.833553059895833,
+        4.833006795247396,
+        4.827613830566406,
+        4.831573486328125
+      ],
+      "extra_peak_mib": 758.7197265625,
+      "process_peak_mib": 939.501953125,
+      "correctness_vs_fp64": {
+        "output_relative_l2": 0.0021545055428134827,
+        "gradient_relative_l2": {
+          "Q": 0.002131363604590678,
+          "K": 0.002258606203527832,
+          "V": 0.0021937097191545318,
+          "phaseK": 0.0021658130962004408,
+          "phaseV": 0.0021724407885908154
+        }
+      }
+    },
+    {
+      "name": "tanhsech direct pairs (torch.compile)",
+      "forward_backward_median_ms": 20.31056111653646,
+      "rounds_ms": [
+        20.260795084635415,
+        20.270625813802084,
+        20.49459431966146,
+        20.450372314453126,
+        20.31056111653646
+      ],
+      "extra_peak_mib": 3661.9384765625,
+      "process_peak_mib": 3842.720703125,
+      "correctness_vs_fp64": {
+        "output_relative_l2": 2.3208345509484787e-07,
+        "gradient_relative_l2": {
+          "Q": 2.2845305539469118e-07,
+          "K": 1.9616262090356295e-07,
+          "V": 2.2061576976443895e-07,
+          "phaseK": 2.09182440882289e-07,
+          "phaseV": 2.013981606728166e-07
+        }
+      }
+    },
+    {
+      "name": "tanhsech fused Triton (exact)",
+      "forward_backward_median_ms": 7.238519287109375,
+      "rounds_ms": [
+        7.325013224283854,
+        7.263846333821615,
+        7.215022786458333,
+        7.233740743001302,
+        7.238519287109375
+      ],
+      "extra_peak_mib": 535.8447265625,
+      "process_peak_mib": 716.626953125,
+      "correctness_vs_fp64": {
+        "output_relative_l2": 2.7644787676073844e-07,
+        "gradient_relative_l2": {
+          "Q": 2.744937017906192e-07,
+          "K": 2.784052431286154e-07,
+          "V": 2.723443741520463e-07,
+          "phaseK": 3.7167040540603533e-07,
+          "phaseV": 3.5392137813427474e-07
+        }
+      }
+    }
+  ],
+  "chosen_blocks": {
+    "forward": [
+      16,
+      128,
+      1
+    ],
+    "backward": [
+      32,
+      32,
+      1
+    ]
+  }
+}

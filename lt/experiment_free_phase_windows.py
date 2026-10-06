@@ -19,9 +19,11 @@ from . import train as t
 from .kv_stability import ExponentialPhaseCurrentReadInner, ORIGINAL_MODEL_ID
 from .research_free_phase_windows import DEST, manual_feature_write, bf16_feature_write, sine_window
 from .biexponential_phase_window import window as biexp_window, split_write as biexp_write
+from . import tanhsech_phase_window as tanhsech
 
 
-def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator='dense', feature_precision='float32'):
+def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator='dense', feature_precision='float32',
+                window_scale=1.0):
     class LocalFreePhaseInner(ExponentialPhaseCurrentReadInner):
         def __init__(self, config):
             if config.kv_write_reduction != 'mean':
@@ -61,6 +63,8 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 return delta.sign() * (-delta.abs()).exp()
             if window == 'biexponential':
                 return biexp_window(delta)
+            if window == 'tanhsech':
+                return window_scale * tanhsech.window(delta)
             return sine_window(delta, self.window_frequencies, self.window_coefficients)
 
         def memory_step(self, layer, q, k, v, memory=None, e_k=None, e_v=None, fresh=None):
@@ -81,6 +85,8 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                                           torch.where(right, -vp[..., :, None] * km[..., None, :], 0.)).mean(-3)
                 elif window == 'biexponential':
                     current = biexp_write(kr,v,pk,pv)
+                elif window == 'tanhsech':
+                    current = window_scale * tanhsech.write(kr, v, pk, pv)
                 else:
                     operator = bf16_feature_write if feature_precision == 'bfloat16' else manual_feature_write
                     current = operator(kr, v, pk, pv, self.window_frequencies, self.window_coefficients)
@@ -142,14 +148,17 @@ def preflight(cfg, out, steps):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--window', choices=('fourier','exponential','biexponential'), default='fourier')
+    ap.add_argument('--window', choices=('fourier','exponential','biexponential','tanhsech'), default='fourier')
     ap.add_argument('--fixed', action='store_true')
     ap.add_argument('--modes', type=int, default=8)
     ap.add_argument('--epsilon', type=float, default=.35)
     ap.add_argument('--precision', choices=('highest','high'), default='highest')
     ap.add_argument('--generator', choices=('dense','diagonal'), default='dense')
     ap.add_argument('--feature-precision', choices=('float32','bfloat16'), default='float32')
-    ap.add_argument('--steps', type=int, default=3008)
+    ap.add_argument('--window-scale', type=float, default=1.0,
+                    help='constant multiplying the tanhsech window; 2 gives peak 1 and slope 2 at the origin')
+    ap.add_argument('--steps', type=int, default=3008, help='absolute stopping step; 0 runs the full epoch schedule')
+    ap.add_argument('--save-every', type=int, default=0, help='periodic checkpoint interval in steps; 0 saves only at eval boundaries')
     ap.add_argument('--preflight', action='store_true')
     ap.add_argument('--out', type=Path, required=True)
     opt = ap.parse_args()
@@ -160,10 +169,15 @@ def main():
         raise RuntimeError('Use a new output directory; this entry point never silently resumes.')
     out.mkdir(parents=True, exist_ok=True)
     cfg = configuration()
+    if opt.window_scale != 1 and opt.window != 'tanhsech':
+        raise ValueError('--window-scale applies only to the tanhsech window')
     name = f"{'fixed' if opt.fixed else 'local_free'}_{opt.window}_r{opt.modes}_e{opt.epsilon}_{opt.generator}_{opt.feature_precision}"
-    cfg.update(out_dir=str(out), max_steps=opt.steps, max_hours=None, research_variant=name,
+    if opt.window_scale != 1:
+        name += f'_x{opt.window_scale:g}'
+    cfg.update(out_dir=str(out), max_steps=opt.steps or None, max_hours=None, save_every_steps=opt.save_every, research_variant=name,
                research_matmul_precision=opt.precision)
-    t.KVSTDPInner = model_class(opt.window, not opt.fixed, opt.modes, opt.epsilon, opt.generator, opt.feature_precision)
+    t.KVSTDPInner = model_class(opt.window, not opt.fixed, opt.modes, opt.epsilon, opt.generator, opt.feature_precision,
+                                opt.window_scale)
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + name
     protocol = dict(variant=name, window=opt.window, modes=opt.modes, epsilon=opt.epsilon, generator=opt.generator,
                     precision=opt.precision, feature_precision=opt.feature_precision, torch=torch.__version__, gpu=torch.cuda.get_device_name(),
@@ -174,8 +188,10 @@ def main():
                     write='G_ij=mean_n V_ni K_nj L(phiV_ni-phiK_nj); read=RoPE(Q)@G.T',
                     normalization='RMSNorm immediately after each attention/FFN residual; FP32 mean square, eps1e-5, no affine; count=2',
                     window_note='Fourier is exact for its chosen bounded-domain surrogate; not the original exponential. Frozen frequencies and coefficients.',
-                    scope='Short controlled research experiment; max_steps applies only to this new diagnostic run',
-                    checkpoints='No periodic step saves; trainer saves at evaluation boundaries and terminal; keep_last=3; all step logs retained',
+                    scope=('Short controlled research experiment; max_steps applies only to this new diagnostic run' if opt.steps
+                           else 'Full epoch schedule (max_steps=None)'),
+                    checkpoints=(f'Periodic saves every {opt.save_every} steps plus' if opt.save_every else 'No periodic step saves;')
+                                + ' trainer saves at evaluation boundaries and terminal; keep_last=3; all step logs retained',
                     original_training='local_warp_exp stopped by user at step 30550; not resumed')
     if opt.generator == 'diagonal':
         protocol.update(phase='phiK=(pi/2)*tanh(thetaK+aK*RoPE(K_n)); phiV=(pi/2)*tanh(thetaV+aV*V_n)',
@@ -184,8 +200,15 @@ def main():
     if opt.window == 'biexponential':
         protocol.update(window_note='C1 signed difference of exponentials, slow=1, fast=0.1; normalized peak=1. Exact mathematical window and ordinary derivative at zero; not the discontinuous original.',
                         phase_zero_derivative='C*(1/fast-1/slow), true derivative at zero; no surrogate')
+    if opt.window == 'tanhsech':
+        protocol.update(window_note='Exact L(d)=tanh(d)sech(d): odd, slope 1 at 0, peak 1/2 at asinh(1), tail 2exp(-|d|). '
+                                    'Fused Triton pair kernel (FP32, rcp.approx) on CUDA; direct pairs on CPU/FP64. No surrogate, no feature approximation.',
+                        window_scale_factor=opt.window_scale,
+                        window_scale=(f'L multiplied by {opt.window_scale:g}: peak {opt.window_scale/2:g}, slope {opt.window_scale:g} at 0; '
+                                      'the sine-4 control peaks near 1.03 with slope 3.11.'))
     for module in (Path(__file__), Path(__file__).with_name('research_free_phase_windows.py'),
                    Path(__file__).with_name('biexponential_phase_window.py'),
+                   Path(__file__).with_name('tanhsech_phase_window.py'),
                    Path(__file__).with_name('kv_stability.py'), Path(t.__file__)):
         content = module.read_bytes()
         (out / module.name).write_bytes(content)

@@ -16,7 +16,7 @@ class FreePhaseTests(unittest.TestCase):
         torch.manual_seed(409)
 
     def test_original_initialization_and_fixed_window_control(self):
-        for window in ('exponential', 'fourier', 'biexponential'):
+        for window in ('exponential', 'fourier', 'biexponential', 'tanhsech'):
             torch.manual_seed(14)
             fixed = model_class(window, False)(config()).double()
             torch.manual_seed(14)
@@ -53,7 +53,7 @@ class FreePhaseTests(unittest.TestCase):
             torch.testing.assert_close(a[:,:,1:],b[:,:,1:],rtol=0,atol=0)
 
     def test_dense_window_placement_and_all_parameter_gradients(self):
-        for window in ('exponential', 'fourier', 'biexponential'):
+        for window in ('exponential', 'fourier', 'biexponential', 'tanhsech'):
             inner = model_class(window)(config()).double()
             layer = inner.layers[0]
             with torch.no_grad():
@@ -75,7 +75,7 @@ class FreePhaseTests(unittest.TestCase):
                 torch.testing.assert_close(x,y,rtol=1e-10,atol=1e-10)
 
     def test_actual_forward_has_two_correct_residual_norms(self):
-        for window in ('exponential', 'fourier', 'biexponential'):
+        for window in ('exponential', 'fourier', 'biexponential', 'tanhsech'):
             inner = model_class(window)(config())
             layer = inner.layers[0]
             h = torch.randn(2,9,16)

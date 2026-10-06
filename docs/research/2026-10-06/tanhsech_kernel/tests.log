@@ -1,0 +1,7 @@
+/venv/main/lib/python3.12/site-packages/torch/jit/_script.py:365: DeprecationWarning: `torch.jit.script_method` is deprecated. Please switch to `torch.compile` or `torch.export`.
+  warnings.warn(
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 2.717s
+
+OK

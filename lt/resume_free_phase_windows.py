@@ -56,7 +56,8 @@ def continue_run(run, *, steps=0, save_every=1000, keep_last=3):
     torch.set_num_threads(2)
     torch.set_float32_matmul_precision(protocol['precision'])
     t.KVSTDPInner = model_class(protocol['window'], protocol['phase_dynamic'], protocol['modes'],
-                               protocol['epsilon'], protocol['generator'], protocol.get('feature_precision', 'float32'))
+                               protocol['epsilon'], protocol['generator'], protocol.get('feature_precision', 'float32'),
+                               protocol.get('window_scale_factor', 1.0))
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + c['research_variant']
 
     session = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
@@ -69,6 +70,7 @@ def continue_run(run, *, steps=0, save_every=1000, keep_last=3):
     source_hashes = {}
     for module in (Path(__file__), Path(__file__).with_name('experiment_free_phase_windows.py'),
                    Path(__file__).with_name('research_free_phase_windows.py'),
+                   Path(__file__).with_name('tanhsech_phase_window.py'),
                    Path(__file__).with_name('kv_stability.py'), Path(t.__file__)):
         content = module.read_bytes()
         (archive / module.name).write_bytes(content)
