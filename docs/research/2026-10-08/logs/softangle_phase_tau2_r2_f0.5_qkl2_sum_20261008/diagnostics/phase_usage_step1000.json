@@ -1,0 +1,49 @@
+{
+  "step": 1000,
+  "puzzles": 128,
+  "ablation": {
+    "normal": {
+      "accuracy": 0.39293980598449707,
+      "exact": 0,
+      "lm_loss": 1.656381732923688
+    },
+    "shuffle": {
+      "accuracy": 0.387249231338501,
+      "exact": 0,
+      "lm_loss": 1.6491898483075886
+    },
+    "channel_mean": {
+      "accuracy": 0.3885030746459961,
+      "exact": 0,
+      "lm_loss": 1.6486486868700183
+    }
+  },
+  "k_pair_rel_magnitude_quantiles": [
+    0.277,
+    0.46,
+    0.729,
+    1.09,
+    1.488
+  ],
+  "write_mass_by_k_magnitude": {
+    "[0,0.5)": {
+      "pair_fraction": 0.2886025011539459,
+      "write_mass_fraction": 0.07324239611625671
+    },
+    "[0.5,1)": {
+      "pair_fraction": 0.4092399775981903,
+      "write_mass_fraction": 0.344001829624176
+    },
+    "[1,1.5)": {
+      "pair_fraction": 0.20470160245895386,
+      "write_mass_fraction": 0.32019150257110596
+    },
+    "[1.5,99)": {
+      "pair_fraction": 0.0974559336900711,
+      "write_mass_fraction": 0.2625642418861389
+    }
+  },
+  "window_mean": 0.0009736857609823346,
+  "window_abs_mean": 0.3843849301338196,
+  "window_positive_fraction": 0.5009160041809082
+}

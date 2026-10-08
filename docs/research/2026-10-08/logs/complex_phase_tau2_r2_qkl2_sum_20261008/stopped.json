@@ -1,0 +1,3 @@
+{"stopped_by": "agent SIGTERM after diagnosing a design error (user was told afterwards)",
+ "last_step": "see console.log.gz",
+ "reason": "Real PxP G built from |v||k| W(phiV-phiK) discards the K phase, so the read G*q never compares the phase of q with the phase of k; RoPE position lives entirely in that phase, so token matching and position were both lost. Train accuracy stalled at 51-58% and loss rose after warmup (2k steps)."}

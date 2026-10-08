@@ -1,0 +1,2 @@
+{"stopped_by": "agent SIGTERM at ~3k steps (autonomous session)",
+ "reason": "torch.compile (2.11) produced a wrong backward for the algebraic unit phasor z*rsqrt(|z|^2+eps) under activation checkpointing: eager vs compiled gradient cosine ~0 while losses matched. Eager training of the same model tracks pairangle. Fixed by computing the direction via atan2 -> cos/sin (softangle v3). Loss stuck ~2.0, eval 1953 38.9%/0."}

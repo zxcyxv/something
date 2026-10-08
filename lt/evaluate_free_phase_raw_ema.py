@@ -74,7 +74,10 @@ def main():
                                protocol['modes'], protocol['epsilon'], protocol['generator'],
                                protocol.get('feature_precision', 'float32'),
                                protocol.get('window_scale_factor', 1.0),
-                               protocol.get('tie_qk', False), protocol.get('tie_vo', False))
+                               protocol.get('tie_qk', False), protocol.get('tie_vo', False),
+                               protocol.get('qk_l2', False), protocol.get('write_sum', False),
+                               protocol.get('tau_phi', 2.0), protocol.get('phase_floor', 0.5), protocol.get('v_norm', 'none'),
+                               protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0))
     model_cfg = dict(cfg, batch_size=cfg['global_batch_size'],
                      seq_len=cfg['grid'] ** 2, num_puzzle_identifiers=1)
     with torch.device(device):

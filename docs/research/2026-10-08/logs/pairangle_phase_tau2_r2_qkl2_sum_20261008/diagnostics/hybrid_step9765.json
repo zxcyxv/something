@@ -1,0 +1,43 @@
+{
+  "step": 9765,
+  "checkpoint": "runs/pairangle_phase_tau2_r2_qkl2_sum_20261008/step_9765.pt",
+  "puzzles": 2048,
+  "results": {
+    "raw": {
+      "accuracy": 0.6287314519286156,
+      "exact": 67,
+      "count": 2048,
+      "lm_loss": 1.0268288486076174
+    },
+    "ema": {
+      "accuracy": 0.6421260237693787,
+      "exact": 38,
+      "count": 2048,
+      "lm_loss": 0.9172742054684019
+    },
+    "ema, qkv raw": {
+      "accuracy": 0.6335660181939602,
+      "exact": 43,
+      "count": 2048,
+      "lm_loss": 0.9629024041550049
+    },
+    "raw, qkv ema": {
+      "accuracy": 0.6525667980313301,
+      "exact": 109,
+      "count": 2048,
+      "lm_loss": 0.8938743901830217
+    },
+    "ema, kv raw": {
+      "accuracy": 0.6474669724702835,
+      "exact": 54,
+      "count": 2048,
+      "lm_loss": 0.9135306738238619
+    },
+    "raw, kv ema": {
+      "accuracy": 0.6402874290943146,
+      "exact": 80,
+      "count": 2048,
+      "lm_loss": 0.9449817635330867
+    }
+  }
+}

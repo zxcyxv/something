@@ -1,0 +1,20 @@
+{
+  "commit": "fda081094e8ca96bda773154eb619f3e536f97a7",
+  "trainer_sha256": "82d4568f94cf95d30f116d4b9942224cddf10ee34f58e4564a6f53515c516b6b",
+  "torch": "2.11.0+cu128",
+  "gpu": "NVIDIA GeForce RTX 4090",
+  "variant": "current_only",
+  "protocol": "original CFG; same data/seed/batch/depth/optimizer; explicit model control only",
+  "selftest_note": "Original selftest fails bitwise resume equality for q_proj on CPU (max difference 7.45e-9, both finite); not altered.",
+  "read_equation": "RoPE(Q_r) @ (V_r.T @ RoPE(K_r) / T).T",
+  "qk_normalization": "Q and K independently: x / (L2_norm(x) + eps), per token/head, FP32 before RoPE",
+  "normalization_eps": 0.0001,
+  "unchanged": "V/output projections, token mean reduction, optimizer/weight decay, data, seed and recurrent depth",
+  "recurrent_memory": false,
+  "eligibility_traces": false,
+  "interpolation": false,
+  "current_read_coefficient": 1.0,
+  "carry_matrix": "Current KV product for interface compatibility/diagnostics; never read by subsequent blocks.",
+  "parameter_note": "Original initialization retained, including unused trace coefficients; no read gates.",
+  "primary_criterion": "Training loss/accuracy and whether sustained deterioration returns; EMA test performance is secondary."
+}

@@ -60,7 +60,10 @@ def continue_run(run, *, steps=0, save_every=1000, keep_last=3):
     t.KVSTDPInner = model_class(protocol['window'], protocol['phase_dynamic'], protocol['modes'],
                                protocol['epsilon'], protocol['generator'], protocol.get('feature_precision', 'float32'),
                                protocol.get('window_scale_factor', 1.0),
-                               protocol.get('tie_qk', False), protocol.get('tie_vo', False))
+                               protocol.get('tie_qk', False), protocol.get('tie_vo', False),
+                               protocol.get('qk_l2', False), protocol.get('write_sum', False),
+                               protocol.get('tau_phi', 2.0), protocol.get('phase_floor', 0.5), protocol.get('v_norm', 'none'),
+                               protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0))
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + c['research_variant']
 
     session = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')

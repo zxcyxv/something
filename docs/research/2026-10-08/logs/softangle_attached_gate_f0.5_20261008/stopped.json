@@ -1,0 +1,2 @@
+{"stopped_by": "agent SIGTERM at ~1.4k steps (autonomous session)",
+ "reason": "Attached coherence gate rho = |v|/sqrt(|v|^2+(0.5 rms)^2) rewarded concentrating V energy into few channels: at step 1000 v rms 18-25, read rms 73-110 vs hidden rms 1, b_down norm collapsed to 2.0, loss stuck at 2.28 (clues not even copied). Fixed by detaching rho (softangle v2)."}
