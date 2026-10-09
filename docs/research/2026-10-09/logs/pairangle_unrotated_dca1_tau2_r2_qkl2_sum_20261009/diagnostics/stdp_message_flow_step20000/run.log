@@ -1,0 +1,17 @@
+batch 1: solved 36 (total 36) 29s check 6.36e-07
+batch 2: solved 41 (total 77) 61s check 6.36e-07
+batch 3: solved 22 (total 99) 80s check 6.44e-07
+batch 4: solved 30 (total 129) 103s check 6.44e-07
+batch 5: solved 10 (total 139) 113s check 6.44e-07
+batch 6: solved 28 (total 167) 133s check 6.44e-07
+batch 7: solved 18 (total 185) 149s check 6.44e-07
+batch 8: solved 1 (total 186) 154s check 6.90e-07
+batch 9: solved 25 (total 211) 176s check 6.90e-07
+batch 10: solved 45 (total 256) 213s check 6.90e-07
+batch 11: solved 29 (total 285) 238s check 6.91e-07
+batch 12: solved 17 (total 302) 253s check 6.91e-07
+batch 13: solved 33 (total 335) 278s check 6.91e-07
+batch 14: solved 29 (total 364) 300s check 6.91e-07
+batch 15: solved 32 (total 396) 324s check 6.91e-07
+batch 16: solved 22 (total 418) 342s check 6.91e-07
+WROTE /workspace/something/runs/pairangle_unrotated_dca1_tau2_r2_qkl2_sum_20261009/diagnostics/stdp_message_flow_step20000 (343s)

@@ -28,7 +28,7 @@ def write_json(path, value):
     temporary.replace(path)
 
 
-def continue_run(run, *, steps=0, save_every=1000, keep_last=3):
+def continue_run(run, *, steps=0, save_every=1000, keep_last=3, boundary_save=True):
     protocol = json.loads((run / 'protocol.json').read_text())
     checkpoint = t.find_latest_checkpoint(str(run))
     if checkpoint is None:
@@ -49,7 +49,8 @@ def continue_run(run, *, steps=0, save_every=1000, keep_last=3):
     elapsed_before = last.get('elapsed', 0.)
     cfg.update(out_dir=str(run), resume_from=str(Path(checkpoint).resolve()), require_resume=True,
                init_from=None, max_steps=steps or None, max_hours=None,
-               save_every_steps=save_every, keep_last=keep_last, milestone_every=0)
+               save_every_steps=save_every, keep_last=keep_last, milestone_every=0,
+               save_at_boundary=boundary_save)
     if not Path(cfg['data_npz']).is_file():
         cfg['data_npz'] = str(Path(__file__).resolve().parents[1] / 'data/sudoku_lt_1k.npz')
     t.validate_run_cfg(cfg)
@@ -63,7 +64,10 @@ def continue_run(run, *, steps=0, save_every=1000, keep_last=3):
                                protocol.get('tie_qk', False), protocol.get('tie_vo', False),
                                protocol.get('qk_l2', False), protocol.get('write_sum', False),
                                protocol.get('tau_phi', 2.0), protocol.get('phase_floor', 0.5), protocol.get('v_norm', 'none'),
-                               protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0))
+                               protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0),
+                               protocol.get('phase_frame', 'rotated'),
+                               protocol.get('dc_hebbian', False),
+                               protocol.get('dc_alpha_init', 0.0))
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + c['research_variant']
 
     session = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')
@@ -150,13 +154,16 @@ def main():
     parser.add_argument('--steps', type=int, default=0, help='Absolute stopping step; 0 removes the research step cap')
     parser.add_argument('--save-every', type=int, default=1000)
     parser.add_argument('--keep-last', type=int, default=3)
+    parser.add_argument('--no-boundary-save', action='store_true',
+                        help='skip the checkpoint at every data-epoch boundary; keep only --save-every and the final/stop save')
     args = parser.parse_args()
     if args.steps < 0 or args.save_every < 1 or args.keep_last < 1:
         parser.error('steps must be nonnegative; save-every and keep-last must be positive')
     run = args.run.resolve(strict=True)
     with (run / '.resume.lock').open('a') as lock:
         fcntl.flock(lock, fcntl.LOCK_EX | fcntl.LOCK_NB)
-        continue_run(run, steps=args.steps, save_every=args.save_every, keep_last=args.keep_last)
+        continue_run(run, steps=args.steps, save_every=args.save_every, keep_last=args.keep_last,
+                     boundary_save=not args.no_boundary_save)
 
 
 if __name__ == '__main__':

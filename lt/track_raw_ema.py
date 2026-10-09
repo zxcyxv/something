@@ -27,22 +27,30 @@ def main():
     ap.add_argument('--run', type=Path, required=True)
     ap.add_argument('--min-step', type=int, default=0)
     ap.add_argument('--poll', type=float, default=20.)
+    ap.add_argument('--keep-every', type=int, default=0,
+                    help='keep a hard link of checkpoints whose step is a multiple of this in <run>/raw_ema_kept (0: keep none)')
     opt = ap.parse_args()
     run = opt.run.resolve(strict=True)
     hold = run / 'raw_ema_hold'
     hold.mkdir(exist_ok=True)
+    kept = run / 'raw_ema_kept'
+    if opt.keep_every:
+        kept.mkdir(exist_ok=True)
     track = run / 'raw_ema_track.jsonl'
     done = {json.loads(line)['step'] for line in track.read_text().splitlines()} if track.exists() else set()
     while True:
         pending = sorted((p for p in run.glob('step_*.pt') if step_of(p) >= opt.min_step and step_of(p) not in done),
                          key=step_of)
+        for path in pending:                       # hold every pending checkpoint first
+            try:
+                if not (hold / path.name).exists():
+                    os.link(path, hold / path.name)
+            except FileNotFoundError:
+                pass                               # removed by retention before we could hold it
         for path in pending:
             link = hold / path.name
-            try:
-                if not link.exists():
-                    os.link(path, link)
-            except FileNotFoundError:
-                continue  # removed by retention before we could hold it
+            if not link.exists():
+                continue
             step = step_of(path)
             started = time.monotonic()
             result = subprocess.run([sys.executable, '-u', '-m', 'lt.evaluate_free_phase_raw_ema',
@@ -61,7 +69,10 @@ def main():
             with track.open('a') as stream:
                 stream.write(json.dumps(row) + '\n')
             print('TRACKED', json.dumps(row), flush=True)
-            link.unlink(missing_ok=True)
+            if opt.keep_every and step % opt.keep_every == 0:
+                os.replace(link, kept / path.name)
+            else:
+                link.unlink(missing_ok=True)
             done.add(step)
         if (run / 'finished.json').exists() and not pending:
             status = json.loads((run / 'finished.json').read_text())

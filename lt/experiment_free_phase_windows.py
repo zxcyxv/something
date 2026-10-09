@@ -51,9 +51,15 @@ def periodized_tanhsech(tau_phi, modes):
 
 def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator='dense', feature_precision='float32',
                 window_scale=1.0, tie_qk=False, tie_vo=False, qk_l2=False, write_sum=False, tau_phi=2.0,
-                phase_floor=0.5, v_norm='none', tie_all=False, phase_kappa=1.0, phase_omega=0.0):
+                phase_floor=0.5, v_norm='none', tie_all=False, phase_kappa=1.0, phase_omega=0.0, phase_frame='rotated', dc_hebbian=False, dc_alpha_init=0.0):
     if v_norm not in ('none', 'unit', 'unit_gain'):
         raise ValueError(v_norm)
+    if phase_frame not in ('rotated', 'unrotated'):
+        raise ValueError(phase_frame)
+    if phase_frame != 'rotated' and window != 'pairangle':
+        raise ValueError('phase_frame applies only to the pairangle window')
+    if dc_hebbian and window != 'pairangle':
+        raise ValueError('dc_hebbian applies only to the pairangle window')
     if window == 'relaxphase':
         # Relaxed phase state per complex channel, advanced by its own activity across the
         # recurrence (fixed rule, no learned map). The window reads phase *history*, never
@@ -105,6 +111,13 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 # to sqrt(dh) so the write keeps its initial scale (|v| ~ sqrt(dh) at init).
                 for layer in self.layers:
                     layer.v_gain_raw = torch.nn.Parameter(torch.full((self.H,), float(t.inv_softplus(math.sqrt(self.dh)))))
+            if dc_hebbian:
+                # General STDP window c0 + alpha_h * W(delta) with c0 = 1: the DC Fourier term of
+                # the periodized window is its net integral (the rate-Hebbian part), the sine
+                # terms are the timing part. alpha_h per head, unbounded; zero init is B-only
+                # (the phase path then gets no gradient), init 1 gives the window 1 + W.
+                for layer in self.layers:
+                    layer.stdp_alpha = torch.nn.Parameter(torch.full((self.H,), float(dc_alpha_init)))
             # Weight tying is applied after every original draw, so the remaining
             # parameters keep their original initial values.
             for layer in self.layers:
@@ -117,15 +130,17 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 if tie_vo:
                     layer.out_proj = TransposedLinear(layer.v_proj)
 
-        def phases(self, layer, rotated_key=None, value=None):
+        def phases(self, layer, rotated_key=None, value=None, key=None):
             if window == 'pairangle':
                 # Per-token phase of each RoPE pair (complex channel), shared by its two
-                # real components. K is the unit-L2 rotated address, so its angle carries
-                # theta_j*pos_n; V is the unnormalized value.
+                # real components. 'rotated': angle of the unit-L2 rotated address, which
+                # carries theta_j*pos_n. 'unrotated': angle of the address before RoPE, so
+                # the window is a per-pair scalar of content only and commutes with the
+                # rotation; the read stays a function of pos_t - pos_n.
                 def angle(x):
                     pair = x.reshape(*x.shape[:-1], self.dh // 2, 2)
                     return torch.atan2(pair[..., 1], pair[..., 0]).repeat_interleave(2, -1)
-                return angle(rotated_key), angle(value)
+                return angle(key if phase_frame == 'unrotated' else rotated_key), angle(value)
             if not dynamic:
                 return super().phases(layer)
             dtype = torch.float64 if rotated_key.dtype == torch.float64 else torch.float32
@@ -168,7 +183,7 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 if window == 'complex':
                     current = self.complex_write(kr, v)
                     return self.complex_read(qr, current), current, None, None
-                current = self.window_write(layer, kr, v)
+                current = self.window_write(layer, kr, v, k)
                 if write_sum:
                     # Every write path is a token mean; restore the token sum (x T=81).
                     current = current * k.shape[-2]
@@ -281,14 +296,18 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                     bx, by = bx * wx - by * wy, bx * wy + by * wx
             return current / kr.shape[-2]
 
-        def window_write(self, layer, kr, v):
+        def window_write(self, layer, kr, v, k=None):
                 if window == 'hebbian':
                     # Plain current KV outer product: no window, phases unused.
                     return v.transpose(-1, -2) @ kr / kr.shape[-2]
-                pk, pv = self.phases(layer, kr, v)
+                pk, pv = self.phases(layer, kr, v, k)
                 if window == 'pairangle':
                     # G_ab = mean_n V_na K_nb W(phi_pair(a),n - phi_pair(b),n), W = sum_r c_r sin(r d).
-                    return manual_feature_write(kr, v, pk, pv, self.window_frequencies, self.window_coefficients)
+                    timing = manual_feature_write(kr, v, pk, pv, self.window_frequencies, self.window_coefficients)
+                    if dc_hebbian:
+                        alpha = layer.stdp_alpha.to(timing.dtype)[None, :, None, None]
+                        return v.transpose(-1, -2) @ kr / kr.shape[-2] + alpha * timing
+                    return timing
                 if window == 'softangle':
                     return self.soft_angle_write(kr, v)
                 if not dynamic:
@@ -380,6 +399,11 @@ def main():
     ap.add_argument('--tie-all', action='store_true', help='K = V = Q = one shared projection')
     ap.add_argument('--phase-kappa', type=float, default=1.0, help='relaxphase: phase advance per block per unit pair magnitude (rad)')
     ap.add_argument('--phase-omega', type=float, default=0.0, help='relaxphase: common phase advance per block (rad); cancels in same-block pairs')
+    ap.add_argument('--phase-frame', choices=('rotated', 'unrotated'), default='rotated',
+                    help='pairangle: K phase from the RoPE-rotated address (includes theta*pos_n) or the address before RoPE')
+    ap.add_argument('--dc-hebbian', action='store_true',
+                    help='pairangle: window 1 + alpha_h * W(delta), alpha_h learned per head (zero init = B-only)')
+    ap.add_argument('--dc-alpha-init', type=float, default=0.0, help='dc-hebbian: initial alpha_h')
     ap.add_argument('--v-norm', choices=('none', 'unit', 'unit_gain'), default='none',
                     help='value normalisation per token/head: unit, or unit times a learned per-head gain (init sqrt(dh))')
     ap.add_argument('--phase-floor', type=float, default=0.5,
@@ -425,6 +449,10 @@ def main():
         name = f'relaxphase_tau{opt.tau_phi:g}_r{opt.modes}_k{opt.phase_kappa:g}_w{opt.phase_omega:g}'
     if opt.window == 'hebbian' and opt.tie_all:
         name = 'hebbian'
+    if opt.phase_frame != 'rotated':
+        name += '_' + opt.phase_frame
+    if opt.dc_hebbian:
+        name += '_dc' + (f'a{opt.dc_alpha_init:g}' if opt.dc_alpha_init else '')
     if opt.tie_all:
         name += '_tieall'
     if opt.window_scale != 1:
@@ -447,7 +475,7 @@ def main():
                research_matmul_precision=opt.precision)
     t.KVSTDPInner = model_class(opt.window, not opt.fixed, opt.modes, opt.epsilon, opt.generator, opt.feature_precision,
                                 opt.window_scale, opt.tie_qk, opt.tie_vo, opt.qk_l2, opt.write_sum, opt.tau_phi,
-                                opt.phase_floor, opt.v_norm, opt.tie_all, opt.phase_kappa, opt.phase_omega)
+                                opt.phase_floor, opt.v_norm, opt.tie_all, opt.phase_kappa, opt.phase_omega, opt.phase_frame, opt.dc_hebbian, opt.dc_alpha_init)
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + name
     protocol = dict(variant=name, window=opt.window, modes=opt.modes, epsilon=opt.epsilon, generator=opt.generator,
                     precision=opt.precision, feature_precision=opt.feature_precision, torch=torch.__version__, gpu=torch.cuda.get_device_name(),
@@ -527,6 +555,19 @@ def main():
             read='RoPE(Q) @ G.T unchanged (q/k phase match kept inside the Hebbian product)',
             interpretation='phase-locked oscillators at a common frequency; omega enters only through tau_phi',
             baseline='2026-10-08 B-only + QK L2 + token sum (same seed/harness); 2026-10-06 tanhsech diagonal differs only in the phase source and window periodization')
+        if opt.phase_frame == 'unrotated':
+            protocol.update(
+                phase='phi_n,pair(a) = atan2 of the pair of the unit-L2 K address BEFORE RoPE (no theta*pos_n) for K components; atan2 of the V pair for V components; both components of a pair share the phase',
+                position_invariance='the window is a per-pair scalar of content only, so it commutes with the RoPE rotation; the read depends on positions only through pos_t - pos_n, as in B-only',
+                baseline='2026-10-08 pairangle (identical except phase_frame=rotated) and B-only + QK L2 + token sum (same seed/harness)')
+    protocol.update(phase_frame=opt.phase_frame, dc_hebbian=opt.dc_hebbian, dc_alpha_init=opt.dc_alpha_init)
+    if opt.dc_hebbian:
+        protocol.update(
+            write='G_ab = sum_n V_na K_nb (1 + alpha_h W(phiV_n,a - phiK_n,b)) = G_hebbian + alpha_h G_pairangle; token sum (no 1/T)',
+            window_general='general STDP window c0 + alpha_h W: c0 = net integral of the time window (rate-Hebbian term, Kempter et al. 1999), '
+                           'W = odd timing part; c0 fixed to 1 (scale absorbed by V/out_proj), alpha_h learned per head, unbounded; init alpha_h = ' + f'{opt.dc_alpha_init:g}' + (' (step 0 equals B-only)' if opt.dc_alpha_init == 0 else ''),
+            alpha_weight_decay='none (1-D parameter)',
+            baseline='2026-10-09 pairangle unrotated (alpha -> window only) and 2026-10-08 B-only + QK L2 + token sum (alpha = 0)')
     if opt.qk_l2 or opt.write_sum:
         protocol.update(write=('G_ij=' + ('sum' if opt.write_sum else 'mean') + '_n V_ni K_nj L(phiV_ni-phiK_nj); read=RoPE(Q)@G.T'
                                + ('; Q,K = x/(||x||_2+eps) per token/head before RoPE, eps=config eps' if opt.qk_l2 else '')))

@@ -2260,7 +2260,8 @@ def main(cfg):
                     break                         # Save FIRST; skip expensive final evaluation.
                 due_save = cfg["save_every_steps"] and ts.step%cfg["save_every_steps"]==0
                 due_milestone = cfg["milestone_every"] and ts.step%cfg["milestone_every"]==0
-                if boundary or due_save:
+                # save_at_boundary=False keeps only the periodic saves (and the final/stop save) for long runs.
+                if (boundary and cfg.get("save_at_boundary",True)) or due_save:
                     save_training_checkpoint(out_dir,ts,base,optimizers,ema,cfg,rank,ws,device)
                 if boundary:
                     evaluate(base,te_x,te_y,cfg,rank,ws,device,ts.step,ema,deadline)

@@ -1,0 +1,91 @@
+{
+  "session": "20261009T074647707371Z",
+  "pid": 12095,
+  "status": "running",
+  "checkpoint": "/workspace/something/runs/pairangle_unrotated_dca1_tau2_r2_qkl2_sum_20261009/step_20000.pt",
+  "start_step": 20000,
+  "next_iter": 10,
+  "consumed_batches": 470,
+  "model_id": "lt-kv-stdp-fast-weight-v1:research-pairangle_phase_tau2_r2_unrotated_dca1_qkl2_sum",
+  "max_steps": null,
+  "max_hours": null,
+  "epochs": 50000,
+  "keep_last": 25,
+  "save_every_steps": 1000,
+  "phase_protocol": {
+    "variant": "pairangle_phase_tau2_r2_unrotated_dca1_qkl2_sum",
+    "window": "pairangle",
+    "modes": 2,
+    "epsilon": 0.35,
+    "generator": "dense",
+    "precision": "highest",
+    "feature_precision": "float32",
+    "torch": "2.11.0+cu128",
+    "gpu": "NVIDIA GeForce RTX 4090",
+    "phase": "phi_n,pair(a) = atan2 of the pair of the unit-L2 K address BEFORE RoPE (no theta*pos_n) for K components; atan2 of the V pair for V components; both components of a pair share the phase",
+    "phase_input": "the address direction itself; no phase parameters (theta_k_raw/theta_v_raw allocated but unused, no gradient)",
+    "phase_dynamic": true,
+    "ordering": "free; phase on the circle (2pi-periodic)",
+    "phase_initialization": "same original theta and other parameter draws; zero correction",
+    "write": "G_ij=sum_n V_ni K_nj L(phiV_ni-phiK_nj); read=RoPE(Q)@G.T; Q,K = x/(||x||_2+eps) per token/head before RoPE, eps=config eps",
+    "normalization": "RMSNorm immediately after each attention/FFN residual; FP32 mean square, eps1e-5, no affine; count=2",
+    "window_note": "2pi-periodized tanh*sech: W(d) = s * sum_r b_r sin(r d), b_r = tau_phi^2 r sech(pi r tau_phi/2); s sets peak 1. Computed with the verified feature-write operator (R sin/cos feature GEMMs).",
+    "scope": "Short controlled research experiment; max_steps applies only to this new diagnostic run",
+    "checkpoints": "Periodic saves every 1000 steps plus trainer saves at evaluation boundaries and terminal; keep_last=25; all step logs retained",
+    "original_training": "local_warp_exp stopped by user at step 30550; not resumed",
+    "tie_qk": false,
+    "tie_vo": false,
+    "qk_l2": true,
+    "write_sum": true,
+    "v_norm": "none",
+    "v_norm_note": "V unnormalized",
+    "tie_all": false,
+    "tau_phi": 2.0,
+    "window_coefficients": [
+      0.9857296165734425,
+      0.08535327631449735
+    ],
+    "window_scale_factor": 2.8566329144042717,
+    "read": "RoPE(Q) @ G.T unchanged (q/k phase match kept inside the Hebbian product)",
+    "interpretation": "phase-locked oscillators at a common frequency; omega enters only through tau_phi",
+    "baseline": "2026-10-09 pairangle unrotated (alpha -> window only) and 2026-10-08 B-only + QK L2 + token sum (alpha = 0)",
+    "position_invariance": "the window is a per-pair scalar of content only, so it commutes with the RoPE rotation; the read depends on positions only through pos_t - pos_n, as in B-only",
+    "phase_frame": "unrotated",
+    "dc_hebbian": true,
+    "dc_alpha_init": 1.0,
+    "window_general": "general STDP window c0 + alpha_h W: c0 = net integral of the time window (rate-Hebbian term, Kempter et al. 1999), W = odd timing part; c0 fixed to 1 (scale absorbed by V/out_proj), alpha_h learned per head, unbounded; init alpha_h = 1",
+    "alpha_weight_decay": "none (1-D parameter)",
+    "phase_gain_weight_decay": "trainer default (1.0)",
+    "experiment_free_phase_windows.py_sha256": "956b2c9b9de40a0ee0f9963c7db7748441b62a6751b311147cd6673600b47361",
+    "research_free_phase_windows.py_sha256": "d919f03ac05d73751d38a07cb723052709b0ce8ea19239848c5a1c109bb602bb",
+    "biexponential_phase_window.py_sha256": "969adb38b333083f991514da480206271f7d4a50c44a0099d5b93931c02f7b55",
+    "tanhsech_phase_window.py_sha256": "611d673e1b5f060634d9a7f5fb9893d7355879c2612689ce7b21540af37dd371",
+    "kv_stability.py_sha256": "ec16505bb7faf5ce488209968db01c3e9f6594499bed6b5f20c7ecbd2907a323",
+    "train.py_sha256": "82d4568f94cf95d30f116d4b9942224cddf10ee34f58e4564a6f53515c516b6b",
+    "shape_study_sha256": "2b038e33715c40de6bb669a58e18e76771b997ee8372f04c89e7b68d778d14ff"
+  },
+  "source_sha256": {
+    "resume_free_phase_windows.py": "4115a26a792dae837adbc52a92a6945741d63be5e781687d46865114d5b218d6",
+    "experiment_free_phase_windows.py": "956b2c9b9de40a0ee0f9963c7db7748441b62a6751b311147cd6673600b47361",
+    "research_free_phase_windows.py": "d919f03ac05d73751d38a07cb723052709b0ce8ea19239848c5a1c109bb602bb",
+    "tanhsech_phase_window.py": "611d673e1b5f060634d9a7f5fb9893d7355879c2612689ce7b21540af37dd371",
+    "kv_stability.py": "ec16505bb7faf5ce488209968db01c3e9f6594499bed6b5f20c7ecbd2907a323",
+    "train.py": "82d4568f94cf95d30f116d4b9942224cddf10ee34f58e4564a6f53515c516b6b"
+  },
+  "recipe_changes": {
+    "resume_from": [
+      null,
+      "/workspace/something/runs/pairangle_unrotated_dca1_tau2_r2_qkl2_sum_20261009/step_20000.pt"
+    ],
+    "require_resume": [
+      false,
+      true
+    ],
+    "max_steps": [
+      20000,
+      null
+    ]
+  },
+  "restore_verified": true,
+  "restored": "raw weights and EMA exact equality; trainer restored optimizer, carry, RNG and data cursor"
+}

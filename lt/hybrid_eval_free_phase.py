@@ -18,6 +18,14 @@ GROUPS = {
     'kv': lambda n: any(s in n for s in ('k_proj', 'v_proj')),
     'qk': lambda n: any(s in n for s in ('q_proj', 'k_proj')),
     'attn': lambda n: any(s in n for s in ('q_proj', 'k_proj', 'v_proj', 'out_proj')),
+    'q': lambda n: 'q_proj' in n,
+    'k': lambda n: 'k_proj' in n,
+    'v': lambda n: 'v_proj' in n,
+    'o': lambda n: 'out_proj' in n,
+    'ffn': lambda n: any(s in n for s in ('b_gate_up', 'b_down')),
+    'io': lambda n: any(s in n for s in ('embed', 'w_cls')),
+    'theta': lambda n: n.endswith('.theta'),
+    'alpha': lambda n: 'stdp_alpha' in n,
 }
 
 
@@ -38,7 +46,10 @@ def main():
                                protocol.get('window_scale_factor', 1.0), protocol.get('tie_qk', False),
                                protocol.get('tie_vo', False), protocol.get('qk_l2', False),
                                protocol.get('write_sum', False), protocol.get('tau_phi', 2.0), protocol.get('phase_floor', 0.5), protocol.get('v_norm', 'none'),
-                               protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0))
+                               protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0),
+                               protocol.get('phase_frame', 'rotated'),
+                               protocol.get('dc_hebbian', False),
+                               protocol.get('dc_alpha_init', 0.0))
     torch.set_num_threads(2)
     torch.set_float32_matmul_precision(protocol['precision'])
     device = torch.device('cuda')
@@ -71,7 +82,7 @@ def main():
         pred = GROUPS[g]
         run_case(f'ema, {g} raw', lambda n, pred=pred: not pred(n))
         run_case(f'raw, {g} ema', pred)
-    out = run / 'diagnostics' / f"hybrid_step{int(ck['step'])}.json"
+    out = run / 'diagnostics' / f"hybrid_step{int(ck['step'])}_{len(tx)}.json"
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(dict(step=int(ck['step']), checkpoint=str(opt.checkpoint), puzzles=len(tx),
                                    results=results), indent=2) + '\n')

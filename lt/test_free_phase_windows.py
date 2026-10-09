@@ -220,6 +220,79 @@ class FreePhaseTests(unittest.TestCase):
             return inner.memory_step(layer, q, k, v)[0]
         self.assertTrue(torch.autograd.gradcheck(f, tuple(z.clone().requires_grad_(True) for z in (q, k, v)), eps=1e-6, atol=1e-6))
 
+    def test_pairangle_unrotated_phase_is_content_only_and_shift_invariant(self):
+        torch.manual_seed(5)
+        rotated = model_class('pairangle', modes=2, qk_l2=True, write_sum=True)(config()).double()
+        torch.manual_seed(5)
+        inner = model_class('pairangle', modes=2, qk_l2=True, write_sum=True, phase_frame='unrotated')(config()).double()
+        for name, value in rotated.state_dict().items():
+            torch.testing.assert_close(inner.state_dict()[name], value, rtol=0, atol=0)
+        layer = inner.layers[0]
+        q, k, v = [torch.randn(2, 2, 9, 8, dtype=torch.float64) * 2 for _ in range(3)]
+        read, G = inner.memory_step(layer, q, k, v)[:2]
+        unit = lambda z: z / (z.norm(dim=-1, keepdim=True) + inner.config.eps)
+        qr, kr = (inner.apply_rope(unit(z), layer) for z in (q, k))
+        P = inner.dh // 2
+        ang = lambda z: torch.atan2(z.reshape(*z.shape[:-1], P, 2)[..., 1], z.reshape(*z.shape[:-1], P, 2)[..., 0]).repeat_interleave(2, -1)
+        delta = ang(v)[..., :, None] - ang(unit(k))[..., None, :]
+        c = inner.window_coefficients.double()
+        G_ref = (v[..., :, None] * kr[..., None, :] * sum(c[r - 1] * torch.sin(r * delta) for r in range(1, 3))).sum(-3)
+        torch.testing.assert_close(G, G_ref, rtol=1e-9, atol=1e-9)
+        torch.testing.assert_close(read, qr @ G_ref.transpose(-1, -2), rtol=1e-9, atol=1e-9)
+        # A common shift of every token position leaves the read unchanged only when the
+        # window phase carries no position.
+        def shifted(model):
+            before = model.memory_step(model.layers[0], q, k, v)[0]
+            model.pos_u += 3.
+            model.pos_w -= 2.
+            after = model.memory_step(model.layers[0], q, k, v)[0]
+            model.pos_u -= 3.
+            model.pos_w += 2.
+            return float((after - before).detach().norm() / before.detach().norm())
+        self.assertLess(shifted(inner), 1e-10)
+        self.assertGreater(shifted(rotated), 1e-2)
+        def f(q, k, v):
+            return inner.memory_step(layer, q, k, v)[0]
+        self.assertTrue(torch.autograd.gradcheck(f, tuple(z.clone().requires_grad_(True) for z in (q, k, v)), eps=1e-6, atol=1e-6))
+
+    def test_pairangle_dc_window_is_hebbian_plus_alpha_timing(self):
+        torch.manual_seed(5)
+        hebb = model_class('hebbian', generator='diagonal', qk_l2=True, write_sum=True)(config()).double()
+        torch.manual_seed(5)
+        timing = model_class('pairangle', modes=2, qk_l2=True, write_sum=True, phase_frame='unrotated')(config()).double()
+        torch.manual_seed(5)
+        inner = model_class('pairangle', modes=2, qk_l2=True, write_sum=True, phase_frame='unrotated',
+                            dc_hebbian=True)(config()).double()
+        for name, value in hebb.state_dict().items():
+            if 'phase_local' not in name:
+                torch.testing.assert_close(inner.state_dict()[name], value, rtol=0, atol=0)
+        self.assertEqual(inner.layers[0].stdp_alpha.shape, (inner.H,))
+        q, k, v = [torch.randn(2, 2, 9, 8, dtype=torch.float64) * 2 for _ in range(3)]
+        step = lambda m: m.memory_step(m.layers[0], q, k, v)[:2]
+        r0, g0 = step(inner)
+        rh, gh = step(hebb)
+        torch.testing.assert_close(g0, gh, rtol=1e-12, atol=1e-12)
+        torch.testing.assert_close(r0, rh, rtol=1e-12, atol=1e-12)
+        with torch.no_grad():
+            inner.layers[0].stdp_alpha.copy_(torch.tensor([0.7, -1.3], dtype=torch.float64))
+        _, g = step(inner)
+        _, gt = step(timing)
+        alpha = inner.layers[0].stdp_alpha[None, :, None, None]
+        torch.testing.assert_close(g, gh + alpha * gt, rtol=1e-10, atol=1e-10)
+        args = tuple(z.clone().requires_grad_(True) for z in (q, k, v))
+        a = torch.tensor([0.7, -1.3], dtype=torch.float64, requires_grad=True)
+        layer = inner.layers[0]
+        def g_fn(q, k, v, a):
+            saved = layer.stdp_alpha
+            del layer.stdp_alpha
+            layer.stdp_alpha = a
+            try:
+                return inner.memory_step(layer, q, k, v)[0]
+            finally:
+                del layer.stdp_alpha
+                layer.stdp_alpha = saved
+        self.assertTrue(torch.autograd.gradcheck(g_fn, args + (a,), eps=1e-6, atol=1e-6))
+
     def test_softangle_window_matches_direct_pairs_and_fades_weak_channels(self):
         import math
         torch.manual_seed(5)

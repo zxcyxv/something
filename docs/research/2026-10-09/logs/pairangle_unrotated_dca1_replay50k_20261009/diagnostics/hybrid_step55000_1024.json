@@ -1,0 +1,115 @@
+{
+  "step": 55000,
+  "checkpoint": "runs/pairangle_unrotated_dca1_replay50k_20261009/raw_ema_kept/step_55000.pt",
+  "puzzles": 1024,
+  "results": {
+    "raw": {
+      "accuracy": 0.7636357173323631,
+      "exact": 324,
+      "count": 1024,
+      "lm_loss": 0.580599095758722
+    },
+    "ema": {
+      "accuracy": 0.7357976585626602,
+      "exact": 148,
+      "count": 1024,
+      "lm_loss": 0.7262424907701825
+    },
+    "ema, q raw": {
+      "accuracy": 0.7917510718107224,
+      "exact": 341,
+      "count": 1024,
+      "lm_loss": 0.5449565969522249
+    },
+    "raw, q ema": {
+      "accuracy": 0.7735821902751923,
+      "exact": 360,
+      "count": 1024,
+      "lm_loss": 0.5499632433482015
+    },
+    "ema, k raw": {
+      "accuracy": 0.7980806529521942,
+      "exact": 397,
+      "count": 1024,
+      "lm_loss": 0.5178816092341125
+    },
+    "raw, k ema": {
+      "accuracy": 0.7671079263091087,
+      "exact": 336,
+      "count": 1024,
+      "lm_loss": 0.5722543865757116
+    },
+    "ema, v raw": {
+      "accuracy": 0.6811945363879204,
+      "exact": 65,
+      "count": 1024,
+      "lm_loss": 0.8972017579137201
+    },
+    "raw, v ema": {
+      "accuracy": 0.7779345139861107,
+      "exact": 377,
+      "count": 1024,
+      "lm_loss": 0.5461862723645158
+    },
+    "ema, o raw": {
+      "accuracy": 0.8022762387990952,
+      "exact": 416,
+      "count": 1024,
+      "lm_loss": 0.5112858702611327
+    },
+    "raw, o ema": {
+      "accuracy": 0.7736665830016136,
+      "exact": 363,
+      "count": 1024,
+      "lm_loss": 0.5519100712036199
+    },
+    "ema, ffn raw": {
+      "accuracy": 0.7933907359838486,
+      "exact": 415,
+      "count": 1024,
+      "lm_loss": 0.5277370103875889
+    },
+    "raw, ffn ema": {
+      "accuracy": 0.7874469608068466,
+      "exact": 381,
+      "count": 1024,
+      "lm_loss": 0.5311181331890651
+    },
+    "ema, io raw": {
+      "accuracy": 0.8134042248129845,
+      "exact": 449,
+      "count": 1024,
+      "lm_loss": 0.4730354388649973
+    },
+    "raw, io ema": {
+      "accuracy": 0.7641420811414719,
+      "exact": 321,
+      "count": 1024,
+      "lm_loss": 0.5931407602127536
+    },
+    "ema, theta raw": {
+      "accuracy": 0.7351707518100739,
+      "exact": 140,
+      "count": 1024,
+      "lm_loss": 0.7318354434759284
+    },
+    "raw, theta ema": {
+      "accuracy": 0.7646846100687981,
+      "exact": 328,
+      "count": 1024,
+      "lm_loss": 0.5774431464045265
+    },
+    "ema, alpha raw": {
+      "accuracy": 0.7319275811314583,
+      "exact": 145,
+      "count": 1024,
+      "lm_loss": 0.7415431649669795
+    },
+    "raw, alpha ema": {
+      "accuracy": 0.7630208358168602,
+      "exact": 324,
+      "count": 1024,
+      "lm_loss": 0.5815307480455236
+    }
+  }
+}

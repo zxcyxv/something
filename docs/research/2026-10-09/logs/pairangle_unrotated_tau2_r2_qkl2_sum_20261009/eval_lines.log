@@ -1,0 +1,11 @@
+[EVAL] step 1953 blocks/seg 0+8 acc 0.5315 exact 0/2048
+[EVAL] step 3906 blocks/seg 0+8 acc 0.6399 exact 57/2048
+[EVAL] step 5859 blocks/seg 0+8 acc 0.6554 exact 175/2048
+[EVAL] step 7812 blocks/seg 0+8 acc 0.6663 exact 244/2048
+[EVAL] step 9765 blocks/seg 0+8 acc 0.6712 exact 256/2048
+[EVAL] step 11718 blocks/seg 0+8 acc 0.6703 exact 256/2048
+[EVAL] step 13671 blocks/seg 0+8 acc 0.6798 exact 309/2048
+[EVAL] step 15624 blocks/seg 0+8 acc 0.6855 exact 310/2048
+[EVAL] step 17577 blocks/seg 0+8 acc 0.6868 exact 285/2048
+[EVAL] step 19530 blocks/seg 0+8 acc 0.6932 exact 326/2048
+[EVAL] step 20000 blocks/seg 0+8 acc 0.6969 exact 364/2048

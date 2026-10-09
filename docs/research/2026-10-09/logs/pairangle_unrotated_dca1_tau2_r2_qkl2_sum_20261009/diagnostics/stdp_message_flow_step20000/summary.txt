@@ -1,0 +1,111 @@
+puzzles 418 | read reconstruction check 6.9e-07 | alpha [1.09, 1.11, 1.16, 1.15, 1.2, 1.2, 1.26, 1.16]
+
+[1] message gain kappa (energy weighted) and share of message energy strengthened (kappa > 1)
+    rows: phase / relation / target state; columns: source state
+  seg1    peer  target open      given: 1.250 (0.88)  committed: 0.792 (0.21)  open_correct: 0.627 (0.03)  open_wrong: 0.606 (0.03)
+  seg1    peer  target committed given: 1.276 (0.90)  committed: 0.905 (0.37)  open_correct: 0.669 (0.05)  open_wrong: 0.667 (0.05)
+  seg1    other target open      given: 1.096 (0.65)  committed: 0.706 (0.12)  open_correct: 0.608 (0.03)  open_wrong: 0.617 (0.02)
+  seg1    other target committed given: 1.157 (0.73)  committed: 0.791 (0.22)  open_correct: 0.611 (0.04)  open_wrong: 0.613 (0.04)
+  solving peer  target open      given: 1.308 (0.91)  committed: 1.019 (0.56)  open_correct: 0.904 (0.31)  open_wrong: 0.880 (0.26)
+  solving peer  target committed given: 1.300 (0.92)  committed: 1.024 (0.57)  open_correct: 0.900 (0.30)  open_wrong: 0.874 (0.25)
+  solving other target open      given: 1.196 (0.79)  committed: 0.890 (0.35)  open_correct: 0.810 (0.22)  open_wrong: 0.793 (0.19)
+  solving other target committed given: 1.191 (0.78)  committed: 0.890 (0.35)  open_correct: 0.783 (0.19)  open_wrong: 0.766 (0.16)
+  solved  peer  target open      given: 1.317 (0.91)  committed: 1.049 (0.60)  open_correct: nan (nan)  open_wrong: 0.885 (0.23)
+  solved  peer  target committed given: 1.233 (0.92)  committed: 1.234 (0.93)  open_correct: nan (nan)  open_wrong: 0.872 (0.22)
+  solved  other target open      given: 1.203 (0.80)  committed: 0.934 (0.42)  open_correct: nan (nan)  open_wrong: 0.851 (0.23)
+  solved  other target committed given: 1.079 (0.61)  committed: 1.129 (0.68)  open_correct: nan (nan)  open_wrong: 0.777 (0.15)
+
+[2] per pair, peer messages: elimination of the source digit at the target (negative = eliminates), H vs S
+  seg1    target open      given: H -1.4720 S -1.1287  committed: H -0.7300 S -0.2964  open_correct: H -0.4771 S -0.1625  open_wrong: H -0.3189 S -0.1137
+  seg1    target committed given: H -1.2764 S -0.9607  committed: H -0.5614 S -0.1946  open_correct: H -0.3685 S -0.0610  open_wrong: H -0.4102 S -0.1098
+  solving target open      given: H -1.2425 S -0.9240  committed: H -0.7060 S -0.3323  open_correct: H -0.7066 S -0.3266  open_wrong: H -0.7172 S -0.3439
+  solving target committed given: H -0.8756 S -0.6246  committed: H -0.4847 S -0.1985  open_correct: H -0.3087 S -0.0653  open_wrong: H -0.2968 S -0.0655
+  solved  target open      given: H -1.0431 S -0.7902  committed: H -0.7536 S -0.4256  open_correct: H +nan S +nan  open_wrong: H -0.6932 S -0.3125
+  solved  target committed given: H -0.1350 S -0.1209  committed: H +0.0442 S -0.0108  open_correct: H +nan S +nan  open_wrong: H -0.2158 S -0.0482
+    support of the target answer per pair (peer): 
+  seg1    target open      given: H +0.0901 S +0.0969  committed: H +0.1032 S +0.0991  open_correct: H +0.0486 S +0.0596  open_wrong: H -0.0694 S -0.0329
+  solving target open      given: H +0.0394 S -0.0033  committed: H +0.1433 S +0.0812  open_correct: H +0.1777 S +0.1254  open_wrong: H -0.2782 S -0.2387
+  solved  target open      given: H -0.0934 S -0.0877  committed: H +0.0794 S +0.1003  open_correct: H +nan S +nan  open_wrong: H -0.4932 S -0.2710
+
+[3] aligned to the block where a source cell becomes committed (0 = first block reading it committed)
+    offset: kappa of its messages to empty peers | elimination per pair H, S
+  -16  kappa 0.824 | elim H -0.4649 S -0.1702
+  -14  kappa 0.821 | elim H -0.4594 S -0.1699
+  -12  kappa 0.820 | elim H -0.4612 S -0.1713
+  -10  kappa 0.815 | elim H -0.4597 S -0.1705
+   -8  kappa 0.806 | elim H -0.4542 S -0.1666
+   -6  kappa 0.823 | elim H -0.4980 S -0.1774
+   -4  kappa 0.838 | elim H -0.4912 S -0.1726
+   -3  kappa 0.844 | elim H -0.4710 S -0.1618
+   -2  kappa 0.847 | elim H -0.4320 S -0.1409
+   -1  kappa 0.848 | elim H -0.3683 S -0.1018
+   +0  kappa 0.873 | elim H -0.4666 S -0.1943
+   +1  kappa 0.926 | elim H -0.5146 S -0.2290
+   +2  kappa 0.977 | elim H -0.5006 S -0.2109
+   +3  kappa 1.010 | elim H -0.4576 S -0.1789
+   +4  kappa 1.025 | elim H -0.4044 S -0.1531
+   +6  kappa 1.063 | elim H -0.3076 S -0.1231
+   +8  kappa 1.118 | elim H -0.2335 S -0.0990
+  +10  kappa 1.145 | elim H -0.1796 S -0.0817
+  +12  kappa 1.164 | elim H -0.1421 S -0.0721
+  +14  kappa 1.184 | elim H -0.1060 S -0.0637
+  +16  kappa 1.198 | elim H -0.0808 S -0.0589
+
+[4] aligned to the block where a target cell becomes committed: per target, sums over its peers
+    offset: support of its answer H, S | elimination from settled peers H, S | from open peers H, S
+  -16  support H +0.674 S +0.280 | settled H -12.504 S -8.123 | open H -4.386 S -1.908
+  -14  support H +0.632 S +0.277 | settled H -12.504 S -8.096 | open H -4.217 S -1.818
+  -12  support H +0.637 S +0.290 | settled H -12.759 S -8.234 | open H -4.125 S -1.780
+  -10  support H +0.643 S +0.303 | settled H -12.965 S -8.355 | open H -3.998 S -1.721
+   -8  support H +0.603 S +0.314 | settled H -13.311 S -8.580 | open H -3.820 S -1.645
+   -6  support H +0.483 S +0.187 | settled H -14.356 S -9.070 | open H -3.913 S -1.659
+   -4  support H +0.228 S +0.069 | settled H -14.994 S -9.392 | open H -3.610 S -1.599
+   -3  support H +0.145 S +0.004 | settled H -15.333 S -9.590 | open H -3.366 S -1.523
+   -2  support H +0.180 S +0.025 | settled H -15.668 S -9.811 | open H -2.970 S -1.345
+   -1  support H +0.445 S +0.223 | settled H -16.002 S -10.110 | open H -2.404 S -1.050
+   +0  support H +0.773 S -0.014 | settled H -15.876 S -10.043 | open H -1.939 S -0.845
+   +1  support H +1.049 S -0.149 | settled H -15.232 S -9.560 | open H -1.518 S -0.625
+   +2  support H +1.754 S -0.690 | settled H -13.877 S -8.434 | open H -1.192 S -0.458
+   +3  support H +2.600 S -0.698 | settled H -12.306 S -7.218 | open H -0.957 S -0.341
+   +4  support H +3.299 S -0.179 | settled H -11.061 S -6.382 | open H -0.800 S -0.280
+   +6  support H +3.413 S +0.815 | settled H -9.246 S -5.457 | open H -0.601 S -0.211
+   +8  support H +2.800 S +0.954 | settled H -7.226 S -4.376 | open H -0.473 S -0.165
+  +10  support H +2.324 S +1.265 | settled H -5.876 S -3.707 | open H -0.374 S -0.129
+  +12  support H +1.830 S +1.551 | settled H -4.917 S -3.279 | open H -0.295 S -0.099
+  +14  support H +1.305 S +1.777 | settled H -3.902 S -2.793 | open H -0.243 S -0.085
+  +16  support H +0.910 S +2.028 | settled H -3.219 S -2.514 | open H -0.191 S -0.063
+
+[5] lags of the spike pairs carrying peer messages (weight = share in the messages), per 30 degrees, delta = phiV - phiK
+    bins: -180 -150 -120 -90 -60 -30 +0 +30 +60 +90 +120 +150   | strengthening share
+  seg1    given        0.05 0.07 0.09 0.09 0.08 0.06 0.06 0.10 0.16 0.14 0.07 0.04   | 0.568
+  seg1    committed    0.04 0.08 0.15 0.16 0.10 0.05 0.04 0.06 0.13 0.11 0.05 0.03   | 0.463
+  seg1    open_correct 0.04 0.09 0.17 0.19 0.12 0.06 0.04 0.05 0.09 0.07 0.04 0.03   | 0.410
+  seg1    open_wrong   0.05 0.09 0.17 0.19 0.12 0.06 0.05 0.05 0.08 0.07 0.04 0.03   | 0.406
+  solving given        0.05 0.06 0.08 0.09 0.07 0.05 0.06 0.10 0.17 0.15 0.07 0.04   | 0.579
+  solving committed    0.04 0.08 0.13 0.13 0.08 0.05 0.05 0.07 0.15 0.13 0.05 0.04   | 0.506
+  solving open_correct 0.04 0.08 0.14 0.15 0.09 0.05 0.04 0.07 0.13 0.11 0.05 0.03   | 0.475
+  solving open_wrong   0.04 0.08 0.14 0.16 0.10 0.05 0.04 0.07 0.13 0.11 0.05 0.03   | 0.469
+  solved  given        0.04 0.07 0.11 0.13 0.09 0.05 0.04 0.07 0.17 0.15 0.05 0.03   | 0.549
+  solved  committed    0.04 0.07 0.10 0.12 0.08 0.05 0.04 0.07 0.19 0.16 0.04 0.03   | 0.549
+  solved  open_wrong   0.04 0.08 0.14 0.16 0.10 0.06 0.05 0.07 0.13 0.11 0.05 0.03   | 0.468
+
+[6] synapses (head, post A <- pre B) carrying the most peer-message weight during solving;
+    alpha*W averaged over their message weight, by source state (solving | solved)
+  h6 A 6<-B13 share 0.0029  given +0.70|+0.66  committed +0.74|+0.67  open_correct +0.63|+nan  open_wrong +0.65|+0.63
+  h6 A 3<-B13 share 0.0028  given +0.76|+0.70  committed +0.79|+0.80  open_correct +0.84|+nan  open_wrong +0.84|+0.91
+  h6 A43<-B13 share 0.0025  given +0.86|+0.94  committed +0.78|+0.96  open_correct +0.79|+nan  open_wrong +0.70|+0.72
+  h6 A51<-B13 share 0.0025  given +0.81|+0.57  committed +0.79|+0.71  open_correct +0.75|+nan  open_wrong +0.83|+0.83
+  h6 A 3<-B 5 share 0.0025  given +0.85|+0.74  committed +0.85|+0.83  open_correct +0.91|+nan  open_wrong +0.90|+0.98
+  h6 A 6<-B 5 share 0.0024  given +0.72|+0.68  committed +0.80|+0.71  open_correct +0.67|+nan  open_wrong +0.67|+0.65
+  h6 A26<-B13 share 0.0024  given +0.88|+0.85  committed +0.76|+0.80  open_correct +0.77|+nan  open_wrong +0.72|+0.79
+  h6 A 6<-B28 share 0.0022  given +0.71|+0.66  committed +0.76|+0.69  open_correct +0.64|+nan  open_wrong +0.65|+0.64
+  all synapses (solving): given +0.218  committed -0.001  open_correct -0.105  open_wrong -0.126
+  per head (solving), alpha*W by source state given/committed/open_ok/open_wrong:
+    h0 share 0.091 -0.134 -0.261 -0.261 -0.264
+    h1 share 0.007 -0.272 -0.284 -0.281 -0.282
+    h2 share 0.296 +0.032 -0.224 -0.328 -0.348
+    h3 share 0.008 -0.639 -0.631 -0.644 -0.647
+    h4 share 0.010 -0.701 -0.710 -0.726 -0.730
+    h5 share 0.004 -0.440 -0.455 -0.461 -0.465
+    h6 share 0.496 +0.559 +0.282 +0.184 +0.161
+    h7 share 0.089 -0.429 -0.441 -0.444 -0.443

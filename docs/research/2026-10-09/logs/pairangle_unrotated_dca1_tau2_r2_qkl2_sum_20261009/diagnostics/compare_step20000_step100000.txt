@@ -1,0 +1,57 @@
+solved: 20000 418/2048  |  100000 1286/2048
+alpha 20000: [1.09, 1.11, 1.16, 1.15, 1.2, 1.2, 1.26, 1.16]
+alpha 100000: [1.4, 1.27, 1.25, 1.27, 1.27, 1.25, 1.86, 1.37]
+
+[1] STDP readout (co-firing weighted): LTP | gain<0 | |aGs|/|Gh| | cos(Gs,Gh) | flip
+  solved    seg 1   20000: 0.311 0.305 0.983 -0.346 0.100   |   100000: 0.342 0.360 1.104 -0.224 0.103
+  solved    seg16   20000: 0.400 0.241 1.035 -0.255 0.065   |   100000: 0.404 0.317 1.114 -0.230 0.001
+  unsolved  seg 1   20000: 0.308 0.307 0.989 -0.345 0.100   |   100000: 0.343 0.359 1.112 -0.215 0.104
+  unsolved  seg16   20000: 0.301 0.304 1.023 -0.477 0.029   |   100000: 0.310 0.385 1.164 -0.294 0.028
+
+[2] empty-cell accuracy per segment (solved / unsolved)
+  20000: solved 0.72 0.85 0.91 0.94 0.96 0.97 0.98 0.98 ... 1.00 | unsolved 0.48 0.48 0.48 0.48 ... 0.48
+  100000: solved 0.66 0.80 0.88 0.92 0.94 0.96 0.97 0.97 ... 1.00 | unsolved 0.50 0.49 0.48 0.48 ... 0.48
+
+[3] per-cell STDP residual beyond the best channel-pair mask, |res|/|G_S| (segments 1,2,4,8,16)
+  20000: solved 0.46 0.50 0.56 0.60 0.61 | unsolved 0.45 0.47 0.47 0.46 0.46
+  100000: solved 0.54 0.51 0.45 0.44 0.43 | unsolved 0.55 0.55 0.55 0.55 0.54
+
+[4] message gain kappa, peer messages to open targets, by source state (seg1 | solving | solved)
+  20000 (418 puzzles): 1.250 0.792 0.627 0.606  |  1.308 1.019 0.904 0.880  |  1.317 1.049 nan 0.885   [given / committed / open_correct / open_wrong]
+  100000 (1286 puzzles): 1.119 0.780 0.703 0.709  |  1.174 0.865 0.757 0.762  |  1.200 0.898 nan 0.767   [given / committed / open_correct / open_wrong]
+
+[5] kappa aligned to the block where a source becomes committed
+  20000: -16:0.824  -8:0.806  -2:0.847  +0:0.873  +1:0.926  +2:0.977  +3:1.010  +4:1.025  +8:1.118  +16:1.198
+  100000: -16:0.754  -8:0.745  -2:0.746  +0:0.769  +1:0.817  +2:0.861  +3:0.898  +4:0.942  +8:1.111  +16:1.294
+
+[6] elimination pressure on a target before it commits (settled peers H, S | open peers H, S), offsets -16, -1
+  20000 -16: settled H -12.50 S -8.12 | open H -4.39 S -1.91
+  20000 -1: settled H -16.00 S -10.11 | open H -2.40 S -1.05
+  100000 -16: settled H -12.59 S -10.21 | open H -6.42 S -2.89
+  100000 -1: settled H -16.76 S -12.68 | open H -3.50 S -1.63
+
+[7] lags carrying peer messages: strengthening share by source state (solving)
+  20000: given 0.579  committed 0.506  open_correct 0.475  open_wrong 0.469
+  100000: given 0.536  committed 0.475  open_correct 0.454  open_wrong 0.453
+
+[8] per head alpha*W by source state (solving), with message-weight share
+  20000:
+    h0 share 0.091 -0.134 -0.261 -0.261 -0.264
+    h1 share 0.007 -0.272 -0.284 -0.281 -0.282
+    h2 share 0.296 +0.032 -0.224 -0.328 -0.348
+    h3 share 0.008 -0.639 -0.631 -0.644 -0.647
+    h4 share 0.010 -0.701 -0.710 -0.726 -0.730
+    h5 share 0.004 -0.440 -0.455 -0.461 -0.465
+    h6 share 0.496 +0.559 +0.282 +0.184 +0.161
+    h7 share 0.089 -0.429 -0.441 -0.444 -0.443
+  100000:
+    h0 share 0.282 -0.259 -0.534 -0.572 -0.568
+    h1 share 0.003 -0.530 -0.491 -0.508 -0.499
+    h2 share 0.232 -0.148 -0.351 -0.401 -0.393
+    h3 share 0.003 -0.440 -0.475 -0.473 -0.466
+    h4 share 0.005 -0.507 -0.518 -0.540 -0.533
+    h5 share 0.003 -0.454 -0.450 -0.450 -0.440
+    h6 share 0.422 +0.707 +0.422 +0.323 +0.324
+    h7 share 0.051 -0.666 -0.558 -0.561 -0.558
+  20000: weighted mean (given - open) alpha*W over synapses with share >= 0.05%: +0.292; weight with contrast > 0.3: 0.28
+  100000: weighted mean (given - open) alpha*W over synapses with share >= 0.05%: +0.231; weight with contrast > 0.3: 0.30

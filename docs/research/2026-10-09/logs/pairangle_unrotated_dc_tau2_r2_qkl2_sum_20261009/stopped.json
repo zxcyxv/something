@@ -1,0 +1,1 @@
+{"stopped_by": "agent SIGTERM at step 3900 on user request", "reason": "alpha (zero init) stayed within |alpha|<=0.014 for 3,000 steps with mixed signs across heads; the STDP branch never opened (phase path gets no gradient at alpha=0). Restarted with alpha init 1."}

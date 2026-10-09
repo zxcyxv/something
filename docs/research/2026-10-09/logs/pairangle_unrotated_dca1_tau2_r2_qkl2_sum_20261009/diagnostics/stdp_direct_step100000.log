@@ -1,0 +1,18 @@
+OFFICIAL count 2048 acc 0.8655 exact 1286  (29s)
+PROBE batch 1 puzzles 128/2048 60s
+PROBE batch 2 puzzles 256/2048 121s
+PROBE batch 3 puzzles 384/2048 179s
+PROBE batch 4 puzzles 512/2048 239s
+PROBE batch 5 puzzles 640/2048 300s
+PROBE batch 6 puzzles 768/2048 358s
+PROBE batch 7 puzzles 896/2048 417s
+PROBE batch 8 puzzles 1024/2048 477s
+PROBE batch 9 puzzles 1152/2048 537s
+PROBE batch 10 puzzles 1280/2048 597s
+PROBE batch 11 puzzles 1408/2048 656s
+PROBE batch 12 puzzles 1536/2048 715s
+PROBE batch 13 puzzles 1664/2048 775s
+PROBE batch 14 puzzles 1792/2048 835s
+PROBE batch 15 puzzles 1920/2048 894s
+PROBE batch 16 puzzles 2048/2048 954s
+WROTE /workspace/something/runs/pairangle_unrotated_dca1_tau2_r2_qkl2_sum_20261009/diagnostics/stdp_direct_step100000.json (983s)

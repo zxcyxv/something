@@ -1,0 +1,79 @@
+puzzles 2048 solved 418 | official {'count': 2048.0, 'accuracy': 1462.8148193359375, 'exact': 418.0} | mismatch 0 | checks {'current': 3.734908204933163e-07, 'read': 6.162902650430624e-07, 'readS': 4.373569311155734e-07} | readout agreement 0.99919
+alpha [1.088, 1.108, 1.164, 1.153, 1.197, 1.196, 1.26, 1.156] | uniform-phase reference {'abs_alphaW': 0.731, 'gain_neg': 0.163, 'gain_lt_05': 0.353, 'gain_gt_15': 0.353}
+
+[1] timing / LTP-LTD (co-firing weighted)            seg  LTP (null)      |aW| (null)   g<0    g<.5   g>1.5  R (null)
+  solved      1  0.311 (0.335)  0.800 (0.794)  0.305  0.560  0.213  0.648 (0.585)
+  solved     16  0.400 (0.418)  0.782 (0.780)  0.241  0.465  0.284  0.461 (0.391)
+  unsolved    1  0.308 (0.332)  0.801 (0.795)  0.307  0.563  0.210  0.655 (0.593)
+  unsolved   16  0.301 (0.327)  0.797 (0.792)  0.304  0.566  0.203  0.547 (0.477)
+  init        1  0.501 (0.501)  0.627 (0.627)  0.000  0.325  0.329  0.681 (0.512)
+  init       16  0.502 (0.502)  0.627 (0.627)  0.000  0.325  0.329  0.661 (0.469)
+
+[2] matrices                 seg  |aGs|/|Gh|  |a read_S|/|read_H|  cos(Gs,Gh)  a*pot   flip   dGs
+  solved      1  0.983  1.002  -0.346  -0.335  0.100  0.497
+  solved     16  1.035  1.062  -0.255  -0.235  0.065  0.409
+  unsolved    1  0.989  1.000  -0.345  -0.338  0.100  0.503
+  unsolved   16  1.023  0.995  -0.477  -0.470  0.029  0.195
+  init        1  0.725  0.720  -0.022  -0.016  0.049  0.276
+  init       16  0.733  0.712  -0.026  -0.020  0.001  0.003
+
+[3] dynamics per segment: empty-correct | LTP | g<0 | cos | read ratio | flip | dGs   (solved / unsolved)
+   1  0.720 0.311 0.305 -0.346 1.002 0.100 0.497  |  0.482 0.308 0.307 -0.345 1.000 0.100 0.503
+   2  0.851 0.309 0.301 -0.461 1.008 0.031 0.202  |  0.484 0.300 0.305 -0.478 0.998 0.031 0.215
+   3  0.915 0.324 0.290 -0.438 1.005 0.028 0.187  |  0.483 0.301 0.304 -0.475 0.995 0.030 0.206
+   4  0.944 0.350 0.273 -0.384 1.023 0.035 0.222  |  0.484 0.301 0.304 -0.476 0.995 0.029 0.200
+   5  0.962 0.370 0.260 -0.336 1.041 0.040 0.257  |  0.482 0.301 0.304 -0.476 0.995 0.029 0.197
+   6  0.971 0.382 0.252 -0.304 1.051 0.049 0.313  |  0.482 0.301 0.304 -0.476 0.994 0.029 0.195
+   7  0.976 0.387 0.249 -0.291 1.052 0.056 0.358  |  0.484 0.301 0.303 -0.476 0.994 0.028 0.194
+   8  0.983 0.390 0.247 -0.282 1.053 0.060 0.382  |  0.481 0.301 0.304 -0.476 0.994 0.028 0.193
+   9  0.988 0.392 0.246 -0.276 1.054 0.063 0.396  |  0.480 0.301 0.304 -0.476 0.994 0.028 0.193
+  10  0.990 0.395 0.244 -0.269 1.057 0.064 0.401  |  0.481 0.301 0.304 -0.477 0.994 0.028 0.194
+  11  0.994 0.396 0.243 -0.265 1.059 0.063 0.402  |  0.481 0.301 0.304 -0.477 0.994 0.028 0.194
+  12  0.995 0.397 0.243 -0.262 1.059 0.064 0.406  |  0.481 0.301 0.304 -0.477 0.994 0.028 0.194
+  13  0.997 0.398 0.242 -0.260 1.060 0.064 0.406  |  0.483 0.301 0.304 -0.477 0.994 0.028 0.194
+  14  0.999 0.399 0.242 -0.258 1.061 0.064 0.406  |  0.480 0.301 0.304 -0.477 0.994 0.028 0.194
+  15  1.000 0.399 0.242 -0.257 1.061 0.064 0.409  |  0.482 0.301 0.304 -0.477 0.994 0.029 0.195
+  16  1.000 0.400 0.241 -0.255 1.062 0.065 0.409  |  0.481 0.301 0.304 -0.477 0.995 0.029 0.195
+
+[4] per head, seg 16 solved: alpha  LTP (null)  g<0  R (null)  |aGs|/|Gh|  cos
+  h0 1.088  0.428 (0.438)  0.153  0.535 (0.466)  0.841  -0.392
+  h1 1.108  0.426 (0.439)  0.163  0.458 (0.390)  0.775  -0.205
+  h2 1.164  0.421 (0.433)  0.268  0.446 (0.365)  1.064  -0.274
+  h3 1.153  0.330 (0.356)  0.256  0.517 (0.440)  0.884  -0.537
+  h4 1.197  0.354 (0.378)  0.279  0.523 (0.459)  0.871  0.034
+  h5 1.196  0.397 (0.413)  0.232  0.453 (0.379)  0.863  -0.318
+  h6 1.260  0.494 (0.494)  0.269  0.311 (0.270)  1.986  -0.034
+  h7 1.156  0.303 (0.358)  0.270  0.524 (0.426)  0.996  -0.316
+
+[5] read share by source class (targets = empty cells), Hebbian vs STDP; enrichment = share / source fraction
+  solved    seg 1 self: H +0.139 S +0.196 (frac 0.012, enr H +11.26 S +15.90)  peer_given: H +0.275 S +0.567 (frac 0.083, enr H +3.32 S +6.86)  peer_empty: H +0.565 S +0.824 (frac 0.164, enr H +3.44 S +5.02)  other_given: H +0.111 S -0.131 (frac 0.240, enr H +0.46 S -0.55)  other_empty: H -0.090 S -0.457 (frac 0.501, enr H -0.18 S -0.91)
+  solved    seg16 self: H +0.045 S -0.024 (frac 0.012, enr H +3.65 S -1.92)  peer_given: H +0.222 S +0.050 (frac 0.083, enr H +2.68 S +0.60)  peer_empty: H +0.365 S +0.039 (frac 0.164, enr H +2.22 S +0.24)  other_given: H +0.161 S +0.305 (frac 0.240, enr H +0.67 S +1.27)  other_empty: H +0.208 S +0.629 (frac 0.501, enr H +0.41 S +1.26)
+  unsolved  seg 1 self: H +0.157 S +0.203 (frac 0.012, enr H +12.70 S +16.45)  peer_given: H +0.255 S +0.578 (frac 0.078, enr H +3.25 S +7.38)  peer_empty: H +0.614 S +0.842 (frac 0.169, enr H +3.64 S +5.00)  other_given: H +0.083 S -0.151 (frac 0.230, enr H +0.36 S -0.66)  other_empty: H -0.109 S -0.472 (frac 0.511, enr H -0.21 S -0.92)
+  unsolved  seg16 self: H +0.134 S +0.173 (frac 0.012, enr H +10.83 S +14.01)  peer_given: H +0.253 S +0.529 (frac 0.078, enr H +3.23 S +6.75)  peer_empty: H +0.512 S +0.712 (frac 0.169, enr H +3.04 S +4.22)  other_given: H +0.110 S -0.073 (frac 0.230, enr H +0.48 S -0.32)  other_empty: H -0.008 S -0.341 (frac 0.511, enr H -0.02 S -0.67)
+
+[6] last block, first-order logit effect of source n on cell t (empty targets)
+    e = dlogit[digit of n] - mean dlogit[digits]   (negative = eliminates the source digit)
+  solved    per pair  peer_given: H -0.1166 S -0.1097  peer_empty: H +0.0542 S -0.0109  other_given: H +0.0412 S +0.0443  other_empty: H -0.0024 S -0.0037
+  solved    peer pressure per target  given: H -0.781 S -0.735   empty: H +0.721 S -0.145
+  solved    support of the correct digit per target  self: H -1.551 S -0.916  peer_given: H -1.007 S +0.535  peer_empty: H +0.345 S +2.157  other_given: H -1.000 S -1.304  other_empty: H -1.629 S -3.194
+  unsolved  per pair  peer_given: H -1.2346 S -0.8968  peer_empty: H -0.5568 S -0.2015  other_given: H +0.6163 S +0.5429  other_empty: H +0.1689 S +0.0738
+  unsolved  peer pressure per target  given: H -7.833 S -5.690   empty: H -7.603 S -2.751
+  unsolved  support of the correct digit per target  self: H -1.708 S -1.526  peer_given: H +0.011 S -0.502  peer_empty: H +1.306 S -0.425  other_given: H -0.019 S +0.960  other_empty: H -0.676 S +1.135
+
+[7] shared fraction across puzzles |mean|^2 / mean|.|^2 (head mean), last block of segment
+  solved    seg 1  G_S 0.563  G_H 0.465  polarity 0.958
+  solved    seg 4  G_S 0.488  G_H 0.326  polarity 0.751
+  solved    seg 8  G_S 0.556  G_H 0.399  polarity 0.854
+  solved    seg16  G_S 0.598  G_H 0.450  polarity 0.951
+  unsolved  seg 1  G_S 0.559  G_H 0.472  polarity 0.949
+  unsolved  seg 4  G_S 0.544  G_H 0.440  polarity 0.936
+  unsolved  seg 8  G_S 0.547  G_H 0.444  polarity 0.936
+  unsolved  seg16  G_S 0.549  G_H 0.448  polarity 0.936
+  init      seg 1..16 G_S [0.722, 0.72, 0.72, 0.72]  G_H [0.678, 0.677, 0.677, 0.677]
+
+[8] co-firing weighted delta distribution (degrees, all heads), share per 30 deg
+  solved    seg 1 0.075 0.116 0.161 0.154 0.110 0.073 0.055 0.050 0.051 0.050 0.050 0.056
+  solved    seg16 0.079 0.102 0.120 0.123 0.100 0.076 0.062 0.061 0.074 0.072 0.063 0.067
+  unsolved  seg 1 0.075 0.116 0.162 0.156 0.110 0.073 0.055 0.049 0.050 0.050 0.049 0.055
+  unsolved  seg16 0.078 0.121 0.160 0.154 0.112 0.075 0.054 0.047 0.049 0.048 0.047 0.055
+  bins: -180..-150 -150..-120 -120..-90 -90..-60 -60..-30 -30..0 0..30 30..60 60..90 90..120 120..150 150..180
