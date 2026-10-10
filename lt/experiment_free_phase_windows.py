@@ -467,6 +467,8 @@ def main():
                     help='exclude phase_local parameters from weight decay')
     ap.add_argument('--steps', type=int, default=3008, help='absolute stopping step; 0 runs the full epoch schedule')
     ap.add_argument('--save-every', type=int, default=0, help='periodic checkpoint interval in steps; 0 saves only at eval boundaries')
+    ap.add_argument('--nograd-fixed', type=int, default=0,
+                    help='blocks run without gradient at the start of every segment (URM-style), before the graded blocks')
     ap.add_argument('--no-boundary-save', action='store_true', help='save only every --save-every steps and at stop')
     ap.add_argument('--no-activation-checkpoint', action='store_true',
                     help='keep block activations instead of recomputing them (same values, more memory)')
@@ -501,6 +503,8 @@ def main():
         name += '_' + opt.boundary_ffn
     if opt.window == 'pairangle' and opt.feature_precision == 'bfloat16':
         name += '_bf16'
+    if opt.nograd_fixed:
+        name += f'_ng{opt.nograd_fixed}'
     if opt.tie_all:
         name += '_tieall'
     if opt.window_scale != 1:
@@ -521,6 +525,8 @@ def main():
     cfg.update(phase_gain_no_decay=opt.phase_gain_no_decay)
     if opt.no_boundary_save:
         cfg['save_at_boundary'] = False
+    if opt.nograd_fixed:
+        cfg['nograd_fixed'] = opt.nograd_fixed
     if opt.no_activation_checkpoint:
         cfg['activation_checkpoint'] = False
     cfg.update(out_dir=str(out), max_steps=opt.steps or None, max_hours=None, save_every_steps=opt.save_every, research_variant=name,
