@@ -293,6 +293,27 @@ class FreePhaseTests(unittest.TestCase):
                 layer.stdp_alpha = saved
         self.assertTrue(torch.autograd.gradcheck(g_fn, args + (a,), eps=1e-6, atol=1e-6))
 
+    def test_swiglu_boundary_changes_only_the_gate(self):
+        kw = dict(modes=2, qk_l2=True, write_sum=True, phase_frame='unrotated', dc_hebbian=True, dc_alpha_init=1.0)
+        torch.manual_seed(6)
+        bil = model_class('pairangle', **kw)(config()).double()
+        torch.manual_seed(6)
+        swi = model_class('pairangle', boundary_ffn='swiglu', **kw)(config()).double()
+        for name, value in bil.state_dict().items():
+            torch.testing.assert_close(swi.state_dict()[name], value, rtol=0, atol=0)
+        layer = bil.layers[0]
+        with torch.no_grad():
+            for m in (bil, swi):
+                torch.nn.init.normal_(m.layers[0].b_down.weight, std=0.1)
+        h = torch.randn(2, 9, bil.config.hidden_size, dtype=torch.float64) * 3
+        x = bil.phi(h)
+        g, u = layer.b_gate_up(x).chunk(2, dim=-1)
+        torch.testing.assert_close(bil.boundary(layer, h), x + layer.b_down(0.5 * g * u))
+        torch.testing.assert_close(swi.boundary(swi.layers[0], h),
+                                   x + swi.layers[0].b_down(torch.nn.functional.silu(g) * u))
+        with self.assertRaises(ValueError):
+            model_class('pairangle', boundary_ffn='gelu')
+
     def test_softangle_window_matches_direct_pairs_and_fades_weak_channels(self):
         import math
         torch.manual_seed(5)

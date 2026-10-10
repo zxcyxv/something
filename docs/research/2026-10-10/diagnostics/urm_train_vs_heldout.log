@@ -1,0 +1,9 @@
+[EVAL] step 20000 blocks/seg 0+8 acc 0.7251 exact 219/1000
+URM step 20000 EMA train: exact 219/1000 acc 72.5%
+[EVAL] step 20000 blocks/seg 0+8 acc 0.7220 exact 206/1000
+URM step 20000 EMA held_out: exact 206/1000 acc 72.2%
+[EVAL] step 50000 blocks/seg 0+8 acc 0.8391 exact 527/1000
+URM step 50000 EMA train: exact 527/1000 acc 83.9%
+[EVAL] step 50000 blocks/seg 0+8 acc 0.7976 exact 438/1000
+URM step 50000 EMA held_out: exact 438/1000 acc 79.8%
+DONE

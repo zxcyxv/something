@@ -21,6 +21,7 @@ from .kv_stability import ExponentialPhaseCurrentReadInner, ORIGINAL_MODEL_ID
 from .research_free_phase_windows import DEST, manual_feature_write, bf16_feature_write, two_feature_write, sine_window
 from .biexponential_phase_window import window as biexp_window, split_write as biexp_write
 from . import tanhsech_phase_window as tanhsech
+from .pairangle_fused import pairangle_attention
 
 
 class TransposedLinear(torch.nn.Module):
@@ -51,7 +52,13 @@ def periodized_tanhsech(tau_phi, modes):
 
 def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator='dense', feature_precision='float32',
                 window_scale=1.0, tie_qk=False, tie_vo=False, qk_l2=False, write_sum=False, tau_phi=2.0,
-                phase_floor=0.5, v_norm='none', tie_all=False, phase_kappa=1.0, phase_omega=0.0, phase_frame='rotated', dc_hebbian=False, dc_alpha_init=0.0):
+                phase_floor=0.5, v_norm='none', tie_all=False, phase_kappa=1.0, phase_omega=0.0, phase_frame='rotated', dc_hebbian=False, dc_alpha_init=0.0, boundary_ffn='bilinear', kernel='torch'):
+    if boundary_ffn not in ('bilinear', 'swiglu'):
+        raise ValueError(boundary_ffn)
+    if kernel not in ('torch', 'triton'):
+        raise ValueError(kernel)
+    if kernel == 'triton' and not (window == 'pairangle' and qk_l2 and write_sum and v_norm == 'none'):
+        raise ValueError('The fused kernel covers the pairangle window with QK L2, token-sum writes and raw V.')
     if v_norm not in ('none', 'unit', 'unit_gain'):
         raise ValueError(v_norm)
     if phase_frame not in ('rotated', 'unrotated'):
@@ -78,6 +85,11 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
         dynamic = False
         if not (qk_l2 and write_sum):
             raise ValueError('Address-angle phase windows are defined on unit Q/K addresses with token-sum writes.')
+    pairangle_bf16 = window == 'pairangle' and feature_precision == 'bfloat16'
+    def gemm(a, b):
+        if pairangle_bf16 and a.dtype == torch.float32:
+            return (a.to(torch.bfloat16) @ b.to(torch.bfloat16)).float()
+        return a @ b
     class LocalFreePhaseInner(ExponentialPhaseCurrentReadInner):
         def __init__(self, config):
             if config.kv_write_reduction != 'mean':
@@ -130,6 +142,15 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 if tie_vo:
                     layer.out_proj = TransposedLinear(layer.v_proj)
 
+        def boundary(self, layer, hidden):
+            if boundary_ffn == 'bilinear':
+                return super().boundary(layer, hidden)
+            # SwiGLU control: same RMSNorm input and b_gate_up/b_down weights (same draws,
+            # zero-initialized b_down); only the gate changes from g/2 to silu(g).
+            hidden = self.phi(hidden)
+            g, u = layer.b_gate_up(hidden).chunk(2, dim=-1)
+            return hidden + layer.b_down(torch.nn.functional.silu(g) * u)
+
         def phases(self, layer, rotated_key=None, value=None, key=None):
             if window == 'pairangle':
                 # Per-token phase of each RoPE pair (complex channel), shared by its two
@@ -164,6 +185,19 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
             return sine_window(delta, self.window_frequencies, self.window_coefficients)
 
         def memory_step(self, layer, q, k, v, memory=None, e_k=None, e_v=None, fresh=None):
+            if kernel == 'triton' and q.is_cuda and q.dtype != torch.float64:
+                # Fused L2 norm + RoPE + pairangle write + read (lt/pairangle_fused.py); same
+                # function as the torch path below, without materializing feature tensors.
+                if self.config.rope_type != 'learned_2d':
+                    raise ValueError('The fused kernel takes learned 2D RoPE angles.')
+                with torch.autocast(device_type=q.device.type, enabled=False):
+                    angles = (layer.theta[..., 0, None] * self.pos_u
+                              + layer.theta[..., 1, None] * self.pos_w).transpose(-1, -2)
+                    alpha = layer.stdp_alpha if dc_hebbian else torch.ones(self.H, device=q.device)
+                    read, current = pairangle_attention(q, k, v, angles, alpha, self.window_coefficients,
+                                                        self.config.eps, dc_hebbian, pairangle_bf16,
+                                                        phase_frame == 'rotated')
+                return read, current, None, None
             with torch.autocast(device_type=q.device.type, enabled=False):
                 dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
                 q, k, v = (x.to(dtype) for x in (q, k, v))
@@ -187,7 +221,7 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 if write_sum:
                     # Every write path is a token mean; restore the token sum (x T=81).
                     current = current * k.shape[-2]
-                return qr @ current.transpose(-1, -2), current, None, None
+                return gemm(qr, current.transpose(-1, -2)), current, None, None
 
         def complex_write(self, kr, v):
             """G_ij = sum_n |v_ni| |k_nj| W(arg v_ni - arg k_nj), W = sum_r c_r sin(r delta).
@@ -303,10 +337,13 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 pk, pv = self.phases(layer, kr, v, k)
                 if window == 'pairangle':
                     # G_ab = mean_n V_na K_nb W(phi_pair(a),n - phi_pair(b),n), W = sum_r c_r sin(r d).
-                    timing = manual_feature_write(kr, v, pk, pv, self.window_frequencies, self.window_coefficients)
+                    # feature_precision='bfloat16': BF16 GEMM operands (Hebbian, timing, read),
+                    # FP32 outputs; norms, atan2 and sin/cos stay FP32.
+                    write = bf16_feature_write if pairangle_bf16 else manual_feature_write
+                    timing = write(kr, v, pk, pv, self.window_frequencies, self.window_coefficients)
                     if dc_hebbian:
                         alpha = layer.stdp_alpha.to(timing.dtype)[None, :, None, None]
-                        return v.transpose(-1, -2) @ kr / kr.shape[-2] + alpha * timing
+                        return gemm(v.transpose(-1, -2), kr) / kr.shape[-2] + alpha * timing
                     return timing
                 if window == 'softangle':
                     return self.soft_angle_write(kr, v)
@@ -404,6 +441,10 @@ def main():
     ap.add_argument('--dc-hebbian', action='store_true',
                     help='pairangle: window 1 + alpha_h * W(delta), alpha_h learned per head (zero init = B-only)')
     ap.add_argument('--dc-alpha-init', type=float, default=0.0, help='dc-hebbian: initial alpha_h')
+    ap.add_argument('--kernel', choices=('torch', 'triton'), default='torch',
+                    help='pairangle: torch ops (default) or the fused Triton write+read kernel')
+    ap.add_argument('--boundary-ffn', choices=('bilinear', 'swiglu'), default='bilinear',
+                    help='FFN after the attention RMSNorm: h + D(g/2 * u) (default) or h + D(silu(g) * u)')
     ap.add_argument('--v-norm', choices=('none', 'unit', 'unit_gain'), default='none',
                     help='value normalisation per token/head: unit, or unit times a learned per-head gain (init sqrt(dh))')
     ap.add_argument('--phase-floor', type=float, default=0.5,
@@ -426,6 +467,9 @@ def main():
                     help='exclude phase_local parameters from weight decay')
     ap.add_argument('--steps', type=int, default=3008, help='absolute stopping step; 0 runs the full epoch schedule')
     ap.add_argument('--save-every', type=int, default=0, help='periodic checkpoint interval in steps; 0 saves only at eval boundaries')
+    ap.add_argument('--no-boundary-save', action='store_true', help='save only every --save-every steps and at stop')
+    ap.add_argument('--no-activation-checkpoint', action='store_true',
+                    help='keep block activations instead of recomputing them (same values, more memory)')
     ap.add_argument('--preflight', action='store_true')
     ap.add_argument('--out', type=Path, required=True)
     opt = ap.parse_args()
@@ -453,6 +497,10 @@ def main():
         name += '_' + opt.phase_frame
     if opt.dc_hebbian:
         name += '_dc' + (f'a{opt.dc_alpha_init:g}' if opt.dc_alpha_init else '')
+    if opt.boundary_ffn != 'bilinear':
+        name += '_' + opt.boundary_ffn
+    if opt.window == 'pairangle' and opt.feature_precision == 'bfloat16':
+        name += '_bf16'
     if opt.tie_all:
         name += '_tieall'
     if opt.window_scale != 1:
@@ -471,11 +519,15 @@ def main():
         name += '_gainwd0'
         exclude_phase_gain_from_decay()
     cfg.update(phase_gain_no_decay=opt.phase_gain_no_decay)
+    if opt.no_boundary_save:
+        cfg['save_at_boundary'] = False
+    if opt.no_activation_checkpoint:
+        cfg['activation_checkpoint'] = False
     cfg.update(out_dir=str(out), max_steps=opt.steps or None, max_hours=None, save_every_steps=opt.save_every, research_variant=name,
                research_matmul_precision=opt.precision)
     t.KVSTDPInner = model_class(opt.window, not opt.fixed, opt.modes, opt.epsilon, opt.generator, opt.feature_precision,
                                 opt.window_scale, opt.tie_qk, opt.tie_vo, opt.qk_l2, opt.write_sum, opt.tau_phi,
-                                opt.phase_floor, opt.v_norm, opt.tie_all, opt.phase_kappa, opt.phase_omega, opt.phase_frame, opt.dc_hebbian, opt.dc_alpha_init)
+                                opt.phase_floor, opt.v_norm, opt.tie_all, opt.phase_kappa, opt.phase_omega, opt.phase_frame, opt.dc_hebbian, opt.dc_alpha_init, opt.boundary_ffn, opt.kernel)
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + name
     protocol = dict(variant=name, window=opt.window, modes=opt.modes, epsilon=opt.epsilon, generator=opt.generator,
                     precision=opt.precision, feature_precision=opt.feature_precision, torch=torch.__version__, gpu=torch.cuda.get_device_name(),
@@ -560,7 +612,7 @@ def main():
                 phase='phi_n,pair(a) = atan2 of the pair of the unit-L2 K address BEFORE RoPE (no theta*pos_n) for K components; atan2 of the V pair for V components; both components of a pair share the phase',
                 position_invariance='the window is a per-pair scalar of content only, so it commutes with the RoPE rotation; the read depends on positions only through pos_t - pos_n, as in B-only',
                 baseline='2026-10-08 pairangle (identical except phase_frame=rotated) and B-only + QK L2 + token sum (same seed/harness)')
-    protocol.update(phase_frame=opt.phase_frame, dc_hebbian=opt.dc_hebbian, dc_alpha_init=opt.dc_alpha_init)
+    protocol.update(phase_frame=opt.phase_frame, dc_hebbian=opt.dc_hebbian, dc_alpha_init=opt.dc_alpha_init, boundary_ffn=opt.boundary_ffn, kernel=opt.kernel)
     if opt.dc_hebbian:
         protocol.update(
             write='G_ab = sum_n V_na K_nb (1 + alpha_h W(phiV_n,a - phiK_n,b)) = G_hebbian + alpha_h G_pairangle; token sum (no 1/T)',

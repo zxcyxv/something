@@ -1,0 +1,98 @@
+{
+  "step": 20000,
+  "weights": "ema",
+  "n": 1000,
+  "rows": [
+    {
+      "condition": "alpha x1",
+      "train": {
+        "acc": 0.7215802536010743,
+        "exact": 194,
+        "n": 1000
+      },
+      "held_out": {
+        "acc": 0.7146172790527344,
+        "exact": 182,
+        "n": 1000
+      }
+    },
+    {
+      "condition": "alpha x0.75",
+      "train": {
+        "acc": 0.7112345733642578,
+        "exact": 152,
+        "n": 1000
+      },
+      "held_out": {
+        "acc": 0.7010740737915039,
+        "exact": 146,
+        "n": 1000
+      }
+    },
+    {
+      "condition": "alpha x0.5",
+      "train": {
+        "acc": 0.6840000076293945,
+        "exact": 59,
+        "n": 1000
+      },
+      "held_out": {
+        "acc": 0.6765679168701172,
+        "exact": 51,
+        "n": 1000
+      }
+    },
+    {
+      "condition": "alpha x0.25",
+      "train": {
+        "acc": 0.6207407569885254,
+        "exact": 8,
+        "n": 1000
+      },
+      "held_out": {
+        "acc": 0.6186790313720704,
+        "exact": 2,
+        "n": 1000
+      }
+    },
+    {
+      "condition": "alpha x0",
+      "train": {
+        "acc": 0.5171604995727539,
+        "exact": 0,
+        "n": 1000
+      },
+      "held_out": {
+        "acc": 0.5139259414672852,
+        "exact": 0,
+        "n": 1000
+      }
+    },
+    {
+      "condition": "no 2nd harmonic",
+      "train": {
+        "acc": 0.7229382629394532,
+        "exact": 191,
+        "n": 1000
+      },
+      "held_out": {
+        "acc": 0.7130123672485351,
+        "exact": 180,
+        "n": 1000
+      }
+    },
+    {
+      "condition": "phases shuffled across cells",
+      "train": {
+        "acc": 0.48964198684692384,
+        "exact": 0,
+        "n": 1000
+      },
+      "held_out": {
+        "acc": 0.49211112976074217,
+        "exact": 0,
+        "n": 1000
+      }
+    }
+  ]
+}

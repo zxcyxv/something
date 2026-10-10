@@ -26,6 +26,8 @@ def main():
     ap.add_argument('--segments', type=int, default=128)
     ap.add_argument('--n', type=int, nargs='+', default=[512, 2048])
     ap.add_argument('--weights', nargs='+', default=['ema', 'raw'], choices=('ema', 'raw'))
+    ap.add_argument('--split', choices=('held_out', 'train'), default='held_out',
+                    help="'train': the original (unaugmented) training puzzles instead of held-out")
     opt = ap.parse_args()
     run = opt.run.resolve(strict=True)
     ck = torch.load(opt.checkpoint, map_location='cpu', weights_only=False)
@@ -37,7 +39,9 @@ def main():
     device = torch.device('cuda')
     t._resolve_precision(cfg, device)
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + c['research_variant']
-    _, _, x, y, _, _ = t.load_data(cfg)
+    tr_x, tr_y, x, y, _, _ = t.load_data(cfg)
+    if opt.split == 'train':
+        x, y = tr_x, tr_y
     step = int(ck['step'])
     base = make_model(protocol, cfg, device)
     states = dict(ema=ck['model_state_dict'], raw=ck['raw_model_state_dict'])
@@ -45,7 +49,8 @@ def main():
     for weights in opt.weights:
         base.load_state_dict(states[weights], strict=True)
         for n in opt.n:
-            out = out_dir / f'extrap_step{step}_{weights}_n{n}_seg{opt.segments}.txt'
+            tag = '' if opt.split == 'held_out' else '_train'
+            out = out_dir / f'extrap_step{step}_{weights}{tag}_n{n}_seg{opt.segments}.txt'
             t.extrapolate(base, x, y, dict(cfg, milestone_extrap_n=n), 0, 1, device, step, None, opt.segments, out)
             print(f'WROTE {out} ({weights})', flush=True)
 

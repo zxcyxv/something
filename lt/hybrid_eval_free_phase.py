@@ -49,7 +49,9 @@ def main():
                                protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0),
                                protocol.get('phase_frame', 'rotated'),
                                protocol.get('dc_hebbian', False),
-                               protocol.get('dc_alpha_init', 0.0))
+                               protocol.get('dc_alpha_init', 0.0),
+                               protocol.get('boundary_ffn', 'bilinear'),
+                               protocol.get('kernel', 'torch'))
     torch.set_num_threads(2)
     torch.set_float32_matmul_precision(protocol['precision'])
     device = torch.device('cuda')

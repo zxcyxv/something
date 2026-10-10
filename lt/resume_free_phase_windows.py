@@ -67,7 +67,9 @@ def continue_run(run, *, steps=0, save_every=1000, keep_last=3, boundary_save=Tr
                                protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0),
                                protocol.get('phase_frame', 'rotated'),
                                protocol.get('dc_hebbian', False),
-                               protocol.get('dc_alpha_init', 0.0))
+                               protocol.get('dc_alpha_init', 0.0),
+                               protocol.get('boundary_ffn', 'bilinear'),
+                               protocol.get('kernel', 'torch'))
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + c['research_variant']
 
     session = datetime.now(timezone.utc).strftime('%Y%m%dT%H%M%S%fZ')

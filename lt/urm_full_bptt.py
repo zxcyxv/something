@@ -78,10 +78,10 @@ class URMSwiGLUFullBPTTInner(URMFullBPTTInner):
             layer.mlp = plain
 
 
-def install(ffn="convswiglu"):
+def install(ffn="convswiglu", layers=2):
     if ffn not in ("convswiglu", "swiglu"):
         raise ValueError(f"Unknown URM FFN: {ffn}")
     t.LT_Inner = URMSwiGLUFullBPTTInner if ffn == "swiglu" else URMFullBPTTInner
     suffix = "-swiglu" if ffn == "swiglu" else ""
-    t.model_id_of=lambda cfg:('urm-c14e55f-segment-bptt-2layers-8iterations-loops'
+    t.model_id_of=lambda cfg:(f'urm-c14e55f-segment-bptt-{layers}layers-8iterations-loops'
                               + str(cfg.get('loops',16)) + '-v2' + suffix)

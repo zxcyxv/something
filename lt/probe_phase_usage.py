@@ -30,7 +30,9 @@ def build(run, checkpoint, batch_size, device):
                                protocol.get('tie_all', False), protocol.get('phase_kappa', 1.0), protocol.get('phase_omega', 0.0),
                                protocol.get('phase_frame', 'rotated'),
                                protocol.get('dc_hebbian', False),
-                               protocol.get('dc_alpha_init', 0.0))
+                               protocol.get('dc_alpha_init', 0.0),
+                               protocol.get('boundary_ffn', 'bilinear'),
+                               protocol.get('kernel', 'torch'))
     t._resolve_precision(cfg, device)
     if not Path(cfg['data_npz']).is_file():
         cfg['data_npz'] = str(Path(__file__).resolve().parents[1] / 'data/sudoku_lt_1k.npz')

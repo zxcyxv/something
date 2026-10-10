@@ -1,0 +1,31 @@
+[EVAL] step 50000 blocks/seg 0+8 acc 0.8724 exact 647/1000
+[EVAL] step 50000 blocks/seg 0+8 acc 0.8092 exact 483/1000
+{"condition": "alpha x1", "train": {"acc": 0.8724197616577148, "exact": 647, "n": 1000}, "held_out": {"acc": 0.8092469329833984, "exact": 483, "n": 1000}}
+[EVAL] step 50000 blocks/seg 0+8 acc 0.8717 exact 628/1000
+[EVAL] step 50000 blocks/seg 0+8 acc 0.8093 exact 463/1000
+{"condition": "alpha x0.75", "train": {"acc": 0.871716049194336, "exact": 628, "n": 1000}, "held_out": {"acc": 0.8092963027954102, "exact": 463, "n": 1000}}
+[EVAL] step 50000 blocks/seg 0+8 acc 0.7467 exact 38/1000
+[EVAL] step 50000 blocks/seg 0+8 acc 0.7146 exact 33/1000
+{"condition": "alpha x0.5", "train": {"acc": 0.7467407608032226, "exact": 38, "n": 1000}, "held_out": {"acc": 0.714629638671875, "exact": 33, "n": 1000}}
+[EVAL] step 50000 blocks/seg 0+8 acc 0.5311 exact 0/1000
+[EVAL] step 50000 blocks/seg 0+8 acc 0.5303 exact 0/1000
+{"condition": "alpha x0.25", "train": {"acc": 0.531074073791504, "exact": 0, "n": 1000}, "held_out": {"acc": 0.5302716217041016, "exact": 0, "n": 1000}}
+[EVAL] step 50000 blocks/seg 0+8 acc 0.3118 exact 0/1000
+[EVAL] step 50000 blocks/seg 0+8 acc 0.3143 exact 0/1000
+{"condition": "alpha x0", "train": {"acc": 0.31176543617248537, "exact": 0, "n": 1000}, "held_out": {"acc": 0.31428395462036135, "exact": 0, "n": 1000}}
+[EVAL] step 50000 blocks/seg 0+8 acc 0.8759 exact 659/1000
+[EVAL] step 50000 blocks/seg 0+8 acc 0.8135 exact 493/1000
+{"condition": "no 2nd harmonic", "train": {"acc": 0.8759012451171875, "exact": 659, "n": 1000}, "held_out": {"acc": 0.8134938354492187, "exact": 493, "n": 1000}}
+[EVAL] step 50000 blocks/seg 0+8 acc 0.4334 exact 0/1000
+[EVAL] step 50000 blocks/seg 0+8 acc 0.4337 exact 0/1000
+{"condition": "phases shuffled across cells", "train": {"acc": 0.43343210220336914, "exact": 0, "n": 1000}, "held_out": {"acc": 0.4337407379150391, "exact": 0, "n": 1000}}
+
+step 50000 (ema); exact solved / 1000, cell accuracy; drop relative to alpha x1
+condition                                   train         held-out   train drop  held-out drop
+alpha x1                           647 ( 87.2%)   483 ( 80.9%)         0.0%           0.0%
+alpha x0.75                        628 ( 87.2%)   463 ( 80.9%)         2.9%           4.1%
+alpha x0.5                          38 ( 74.7%)    33 ( 71.5%)        94.1%          93.2%
+alpha x0.25                          0 ( 53.1%)     0 ( 53.0%)       100.0%         100.0%
+alpha x0                             0 ( 31.2%)     0 ( 31.4%)       100.0%         100.0%
+no 2nd harmonic                    659 ( 87.6%)   493 ( 81.3%)        -1.9%          -2.1%
+phases shuffled across cells         0 ( 43.3%)     0 ( 43.4%)       100.0%         100.0%
