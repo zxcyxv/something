@@ -57,6 +57,19 @@ def _ldT(ptr, base, st, t, p, T, P, PAR):
 
 
 @triton.jit
+def _ldp(ptr, base, st, t, p, T, P):
+    """[BT, BP] FP32 tile of a [.., T, P] tensor (one value per pair) for tokens t."""
+    m = (t[:, None] < T) & (p[None, :] < P)
+    return tl.load(ptr + base + t[:, None] * st + p[None, :], mask=m, other=0.).to(tl.float32)
+
+
+@triton.jit
+def _stp(ptr, base, st, t, p, T, P, x):
+    m = (t[:, None] < T) & (p[None, :] < P)
+    tl.store(ptr + base + t[:, None] * st + p[None, :], x, mask=m)
+
+
+@triton.jit
 def _st(ptr, base, st, t, p, T, P, PAR, x):
     m = (t[:, None] < T) & (p[None, :] < P)
     tl.store(ptr + base + t[:, None] * st + 2 * p[None, :] + PAR, x, mask=m)
@@ -113,21 +126,26 @@ def _gstT(G, gbase, p, P, D, ROW, COL, x):
 
 
 @triton.jit
-def _fwd_kernel(Q, K, V, ANG, ALPHA, COEF, READ, G,
-                sqb, sqh, sqt, skb, skh, skt, svb, svh, svt, srb, srh, srt,
+def _fwd_kernel(Q, K, V, ANG, ALPHA, COEF, READ, G, ZK, ZV, LAM,
+                sqb, sqh, sqt, skb, skh, skt, svb, svh, svt, srb, srh, srt, szb, szh, szt, slb, slh, slt,
                 H, T, D, P, eps,
                 R: tl.constexpr, HEBB: tl.constexpr, BF16: tl.constexpr, ROTATED: tl.constexpr,
-                BT: tl.constexpr, BP: tl.constexpr):
+                TRACE: tl.constexpr, OFFSET: tl.constexpr, BT: tl.constexpr, BP: tl.constexpr):
     """Program (batch*head, row parity x): G[a_x, :] and read[:, a_x].
 
     Accumulates U_y[b, a] = G[a_x, b_y] = sum_n B[n, b_y] A[n, a_x] with the key side
     loaded transposed, so read_x = qr_e U_e + qr_o U_o needs no transpose.
+    TRACE: the timing features read the given phasor traces ZK, ZV ([..., D], (re, im) per
+    pair) instead of the unit phasors of k and v; the Hebbian carrier stays k and v.
+    OFFSET: the V phase of each pair is shifted by LAM ([..., T, P] angles): phiV -> phiV + lam.
     """
     bh = tl.program_id(0)
     X = tl.program_id(1)
     b, h = bh // H, bh % H
     alpha = tl.load(ALPHA + h)
     qb, kb, vb, rb = b * sqb + h * sqh, b * skb + h * skh, b * svb + h * svh, b * srb + h * srh
+    zb = b * szb + h * szh
+    lb = b * slb + h * slh
     p = tl.arange(0, BP)
     tt = tl.arange(0, BT)
     ue = tl.zeros((BP, BP), dtype=tl.float32)
@@ -137,12 +155,23 @@ def _fwd_kernel(Q, K, V, ANG, ALPHA, COEF, READ, G,
         ve = _ld(V, vb, svt, t, p, T, P, 0)
         vo = _ld(V, vb, svt, t, p, T, P, 1)
         vx = ve + (vo - ve) * X
-        cv, sv, _ = _unit(ve, vo)
+        if TRACE:
+            cv = _ld(ZV, zb, szt, t, p, T, P, 0)
+            sv = _ld(ZV, zb, szt, t, p, T, P, 1)
+        else:
+            cv, sv, _ = _unit(ve, vo)
+            if OFFSET:
+                lam = _ldp(LAM, lb, slt, t, p, T, P)
+                cl, sl = tl.cos(lam), tl.sin(lam)
+                cv, sv = cv * cl - sv * sl, cv * sl + sv * cl
         k_e = _ldT(K, kb, skt, t, p, T, P, 0)
         k_o = _ldT(K, kb, skt, t, p, T, P, 1)
         ca, sa = _angles(ANG, h, t, p, T, P, True)
         ke, ko = _norm_rope(k_e, k_o, ca, sa, eps, 0)
-        if ROTATED:
+        if TRACE:
+            ck = _ldT(ZK, zb, szt, t, p, T, P, 0)
+            sk = _ldT(ZK, zb, szt, t, p, T, P, 1)
+        elif ROTATED:
             ck, sk, _ = _unit(ke, ko)
         else:
             ck, sk, _ = _unit(k_e, k_o)
@@ -232,15 +261,19 @@ def _bwd_q_kernel(DR, Q, ANG, G, DQ, DANG, sdb, sdh, sdt, sqb, sqh, sqt, sob, so
 
 
 @triton.jit
-def _bwd_v_kernel(DG, K, V, ANG, ALPHA, COEF, DV, DALPHA,
-                  skb, skh, skt, svb, svh, svt, sob, soh, sot, H, T, D, P, eps,
+def _bwd_v_kernel(DG, K, V, ANG, ALPHA, COEF, DV, DALPHA, ZK, ZV, DZV, LAM, DLAM,
+                  skb, skh, skt, svb, svh, svt, sob, soh, sot, szb, szh, szt, slb, slh, slt, H, T, D, P, eps,
                   R: tl.constexpr, HEBB: tl.constexpr, BF16: tl.constexpr, ROTATED: tl.constexpr,
-                  BT: tl.constexpr, BP: tl.constexpr):
-    """Value side: dA_x = B_e dG_xe^T + B_o dG_xo^T; A_s = c v sin(r phiV), A_c = -c v cos(r phiV)."""
+                  TRACE: tl.constexpr, OFFSET: tl.constexpr, BT: tl.constexpr, BP: tl.constexpr):
+    """Value side: dA_x = B_e dG_xe^T + B_o dG_xo^T; A_s = c v sin(r phiV), A_c = -c v cos(r phiV).
+    TRACE (R = 1): A_s = c v Im zV, A_c = -c v Re zV; the phase path becomes dZV (DZV output).
+    OFFSET: phiV -> phiV + lam; d lam equals the V phase-path gradient (DLAM output, per pair)."""
     bh = tl.program_id(0)
     b, h = bh // H, bh % H
     alpha = tl.load(ALPHA + h)
     kb, vb = b * skb + h * skh, b * svb + h * svh
+    zb = b * szb + h * szh
+    lb = b * slb + h * slh
     gbase = bh * D * D
     p = tl.arange(0, BP)
     tt = tl.arange(0, BT)
@@ -257,11 +290,21 @@ def _bwd_v_kernel(DG, K, V, ANG, ALPHA, COEF, DV, DALPHA,
         k_o = _ld(K, kb, skt, t, p, T, P, 1)
         ca, sa = _angles(ANG, h, t, p, T, P, False)
         ke, ko = _norm_rope(k_e, k_o, ca, sa, eps, 1)
-        cv, sv, iv = _unit(ve, vo)
-        if ROTATED:
-            ck, sk, _ = _unit(ke, ko)
+        if TRACE:
+            cv = _ld(ZV, zb, szt, t, p, T, P, 0)
+            sv = _ld(ZV, zb, szt, t, p, T, P, 1)
+            ck = _ld(ZK, zb, szt, t, p, T, P, 0)
+            sk = _ld(ZK, zb, szt, t, p, T, P, 1)
         else:
-            ck, sk, _ = _unit(k_e, k_o)
+            cv, sv, iv = _unit(ve, vo)
+            if OFFSET:
+                lam = _ldp(LAM, lb, slt, t, p, T, P)
+                cl, sl = tl.cos(lam), tl.sin(lam)
+                cv, sv = cv * cl - sv * sl, cv * sl + sv * cl
+            if ROTATED:
+                ck, sk, _ = _unit(ke, ko)
+            else:
+                ck, sk, _ = _unit(k_e, k_o)
         if HEBB:
             dve = _dot(ke, tee, BF16) + _dot(ko, teo, BF16)
             dvo = _dot(ke, toe, BF16) + _dot(ko, too, BF16)
@@ -269,6 +312,8 @@ def _bwd_v_kernel(DG, K, V, ANG, ALPHA, COEF, DV, DALPHA,
             dve = tl.zeros((BT, BP), dtype=tl.float32)
             dvo = tl.zeros((BT, BP), dtype=tl.float32)
         gpv = tl.zeros((BT, BP), dtype=tl.float32)
+        dzc = tl.zeros((BT, BP), dtype=tl.float32)
+        dzs = tl.zeros((BT, BP), dtype=tl.float32)
         crv, srv, crk, srk = cv, sv, ck, sk
         for r in tl.static_range(R):
             cf = tl.load(COEF + r)
@@ -280,27 +325,43 @@ def _bwd_v_kernel(DG, K, V, ANG, ALPHA, COEF, DV, DALPHA,
             dac_o = _dot(ke * srk, toe, BF16) + _dot(ko * srk, too, BF16)
             dve += c * (das_e * srv - dac_e * crv)
             dvo += c * (das_o * srv - dac_o * crv)
-            gpv += (c * rr) * ((das_e * ve + das_o * vo) * crv + (dac_e * ve + dac_o * vo) * srv)
+            if TRACE:
+                # A_s = c v Im zV, A_c = -c v Re zV  (R = 1)
+                dzs += c * (das_e * ve + das_o * vo)
+                dzc -= c * (dac_e * ve + dac_o * vo)
+            else:
+                gpv += (c * rr) * ((das_e * ve + das_o * vo) * crv + (dac_e * ve + dac_o * vo) * srv)
             dal += cf * tl.sum(ve * (das_e * srv - dac_e * crv) + vo * (das_o * srv - dac_o * crv))
             crv, srv = crv * cv - srv * sv, srv * cv + crv * sv
             crk, srk = crk * ck - srk * sk, srk * ck + crk * sk
-        # phi = atan2(o, e):  d phi/d e = -o / rho^2,  d phi/d o = e / rho^2
-        _st(DV, b * sob + h * soh, sot, t, p, T, P, 0, dve - vo * iv * gpv)
-        _st(DV, b * sob + h * soh, sot, t, p, T, P, 1, dvo + ve * iv * gpv)
+        if TRACE:
+            _st(DV, b * sob + h * soh, sot, t, p, T, P, 0, dve)
+            _st(DV, b * sob + h * soh, sot, t, p, T, P, 1, dvo)
+            _st(DZV, zb, szt, t, p, T, P, 0, dzc)
+            _st(DZV, zb, szt, t, p, T, P, 1, dzs)
+        else:
+            # phi = atan2(o, e):  d phi/d e = -o / rho^2,  d phi/d o = e / rho^2
+            _st(DV, b * sob + h * soh, sot, t, p, T, P, 0, dve - vo * iv * gpv)
+            _st(DV, b * sob + h * soh, sot, t, p, T, P, 1, dvo + ve * iv * gpv)
+            if OFFSET:
+                _stp(DLAM, lb, slt, t, p, T, P, gpv)
     tl.store(DALPHA + bh, dal)
 
 
 @triton.jit
-def _bwd_k_kernel(DG, K, V, ANG, ALPHA, COEF, DK, DANG,
-                  skb, skh, skt, svb, svh, svt, sob, soh, sot, H, T, D, P, eps,
+def _bwd_k_kernel(DG, K, V, ANG, ALPHA, COEF, DK, DANG, ZK, ZV, DZK, LAM,
+                  skb, skh, skt, svb, svh, svt, sob, soh, sot, szb, szh, szt, slb, slh, slt, H, T, D, P, eps,
                   R: tl.constexpr, HEBB: tl.constexpr, BF16: tl.constexpr, ROTATED: tl.constexpr,
-                  BT: tl.constexpr, BP: tl.constexpr):
+                  TRACE: tl.constexpr, OFFSET: tl.constexpr, BT: tl.constexpr, BP: tl.constexpr):
     """Key side: dB_y = A_e dG_ey + A_o dG_oy; B_c = kr cos(r phiK), B_s = kr sin(r phiK);
-    then the phase, RoPE (angle gradient) and L2-norm chain to the raw key."""
+    then the phase, RoPE (angle gradient) and L2-norm chain to the raw key.
+    TRACE (R = 1): B_c = kr Re zK, B_s = kr Im zK; the phase path becomes dZK (DZK output)."""
     bh = tl.program_id(0)
     b, h = bh // H, bh % H
     alpha = tl.load(ALPHA + h)
     kb, vb = b * skb + h * skh, b * svb + h * svh
+    zb = b * szb + h * szh
+    lb = b * slb + h * slh
     gbase = bh * D * D
     p = tl.arange(0, BP)
     tt = tl.arange(0, BT)
@@ -319,13 +380,23 @@ def _bwd_k_kernel(DG, K, V, ANG, ALPHA, COEF, DK, DANG,
         inv = 1. / (n + eps)
         he, ho = k_e * inv[:, None], k_o * inv[:, None]
         ke, ko = he * ca - ho * sa, he * sa + ho * ca
-        cv, sv, _ = _unit(ve, vo)
-        if ROTATED:
-            ck, sk, ik = _unit(ke, ko)
-            pe, po = ke, ko
+        if TRACE:
+            cv = _ld(ZV, zb, szt, t, p, T, P, 0)
+            sv = _ld(ZV, zb, szt, t, p, T, P, 1)
+            ck = _ld(ZK, zb, szt, t, p, T, P, 0)
+            sk = _ld(ZK, zb, szt, t, p, T, P, 1)
         else:
-            ck, sk, ik = _unit(k_e, k_o)
-            pe, po = k_e, k_o
+            cv, sv, _ = _unit(ve, vo)
+            if OFFSET:
+                lam = _ldp(LAM, lb, slt, t, p, T, P)
+                cl, sl = tl.cos(lam), tl.sin(lam)
+                cv, sv = cv * cl - sv * sl, cv * sl + sv * cl
+            if ROTATED:
+                ck, sk, ik = _unit(ke, ko)
+                pe, po = ke, ko
+            else:
+                ck, sk, ik = _unit(k_e, k_o)
+                pe, po = k_e, k_o
         if HEBB:
             dke = _dot(ve, dee, BF16) + _dot(vo, doe, BF16)
             dko = _dot(ve, deo, BF16) + _dot(vo, doo, BF16)
@@ -333,6 +404,8 @@ def _bwd_k_kernel(DG, K, V, ANG, ALPHA, COEF, DK, DANG,
             dke = tl.zeros((BT, BP), dtype=tl.float32)
             dko = tl.zeros((BT, BP), dtype=tl.float32)
         gpk = tl.zeros((BT, BP), dtype=tl.float32)
+        dzc = tl.zeros((BT, BP), dtype=tl.float32)
+        dzs = tl.zeros((BT, BP), dtype=tl.float32)
         crv, srv, crk, srk = cv, sv, ck, sk
         for r in tl.static_range(R):
             c = tl.load(COEF + r) * alpha
@@ -345,14 +418,23 @@ def _bwd_k_kernel(DG, K, V, ANG, ALPHA, COEF, DK, DANG,
             dbs_o = _dot(ace, deo, BF16) + _dot(aco, doo, BF16)
             dke += dbc_e * crk + dbs_e * srk
             dko += dbc_o * crk + dbs_o * srk
-            gpk += rr * ((dbs_e * ke + dbs_o * ko) * crk - (dbc_e * ke + dbc_o * ko) * srk)
+            if TRACE:
+                # B_c = kr Re zK, B_s = kr Im zK  (R = 1)
+                dzc += dbc_e * ke + dbc_o * ko
+                dzs += dbs_e * ke + dbs_o * ko
+            else:
+                gpk += rr * ((dbs_e * ke + dbs_o * ko) * crk - (dbc_e * ke + dbc_o * ko) * srk)
             crv, srv = crv * cv - srv * sv, srv * cv + crv * sv
             crk, srk = crk * ck - srk * sk, srk * ck + crk * sk
-        # Phase gradient on its source pair (kr when rotated, the raw key otherwise).
-        dpe, dpo = -po * ik * gpk, pe * ik * gpk
-        if ROTATED:
-            dke += dpe
-            dko += dpo
+        if TRACE:
+            _st(DZK, zb, szt, t, p, T, P, 0, dzc)
+            _st(DZK, zb, szt, t, p, T, P, 1, dzs)
+        else:
+            # Phase gradient on its source pair (kr when rotated, the raw key otherwise).
+            dpe, dpo = -po * ik * gpk, pe * ik * gpk
+            if ROTATED:
+                dke += dpe
+                dko += dpo
         m = (t[:, None] < T) & (p[None, :] < P)
         tl.store(DANG + bh * T * P + t[:, None] * P + p[None, :], -dke * ko + dko * ke, mask=m)
         ge = dke * ca + dko * sa
@@ -361,9 +443,10 @@ def _bwd_k_kernel(DG, K, V, ANG, ALPHA, COEF, DK, DANG,
         cn = tl.where(n > 0., dot_xg * inv * inv / tl.where(n > 0., n, 1.), 0.)
         dxe = ge * inv[:, None] - k_e * cn[:, None]
         dxo = go * inv[:, None] - k_o * cn[:, None]
-        if not ROTATED:
-            dxe += dpe
-            dxo += dpo
+        if not TRACE:
+            if not ROTATED:
+                dxe += dpe
+                dxo += dpo
         _st(DK, b * sob + h * soh, sot, t, p, T, P, 0, dxe)
         _st(DK, b * sob + h * soh, sot, t, p, T, P, 1, dxo)
 
@@ -398,19 +481,58 @@ def _bp(d):
     return max(16, triton.next_power_of_2(d // 2))
 
 
+def _launch_forward(q, k, v, angles, alpha, coef, eps, hebbian, bf16, rotated, zk=None, zv=None, lam=None):
+    bsz, h, t, d = q.shape
+    trace, offset = zk is not None, lam is not None
+    # read is written as [B, T, H, D] (heads merge for free); outputs are never views
+    read = torch.empty(bsz, t, h, d, device=q.device, dtype=torch.float32)
+    g = torch.empty(bsz, h, d, d, device=q.device, dtype=torch.float32)
+    zk, zv = (zk, zv) if trace else (k, v)          # unused pointers when TRACE is off
+    lam = lam if offset else angles[None]           # unused pointer when OFFSET is off
+    _fwd[(bsz * h, 2)](q, k, v, angles, alpha, coef, read, g, zk, zv, lam,
+                                    *_strides(q), *_strides(k), *_strides(v), t * h * d, d, h * d, *_strides(zk),
+                                    *_strides(lam), h, t, d, d // 2, eps, R=coef.numel(), HEBB=hebbian, BF16=bf16,
+                                    ROTATED=rotated, TRACE=trace, OFFSET=offset, BP=_bp(d))
+    return read, g
+
+
+def _launch_backward(dr, q, k, v, angles, alpha, coef, g, eps, hebbian, bf16, rotated, zk=None, zv=None, lam=None):
+    bsz, h, t, d = q.shape
+    p, bp, n = d // 2, _bp(d), bsz * h
+    trace, offset = zk is not None, lam is not None
+    # Gradients get their own (dense) layout; q, k, v may be views with gaps (e.g. qkv chunks).
+    dq, dk, dv = (torch.empty(x.shape, device=x.device, dtype=x.dtype) for x in (q, k, v))
+    dg = torch.empty_like(g)
+    dalpha = torch.empty(n, device=q.device, dtype=torch.float32)
+    dang_q = torch.empty(bsz, h, t, p, device=q.device, dtype=torch.float32)
+    dang_k = torch.empty(bsz, h, t, p, device=q.device, dtype=torch.float32)
+    if trace:
+        dzk, dzv = torch.empty_like(zk), torch.empty_like(zv)
+    else:
+        zk, zv, dzk, dzv = k, v, dk, dv             # unused pointers when TRACE is off
+    if offset:
+        dlam = torch.empty_like(lam)
+    else:
+        lam = dlam = angles[None]                   # unused pointers when OFFSET is off
+    flags = dict(R=coef.numel(), HEBB=hebbian, BF16=bf16, ROTATED=rotated, TRACE=trace, OFFSET=offset, BP=bp)
+    _bwd_dg[(n, 2)](dr, q, angles, dg, *_strides(dr), *_strides(q), h, t, d, p, eps,
+                                 BF16=bf16, BP=bp)
+    _bwd_q[(n,)](dr, q, angles, g, dq, dang_q, *_strides(dr), *_strides(q), *_strides(dq),
+                              h, t, d, p, eps,
+                              BF16=bf16, BP=bp)
+    _bwd_v[(n,)](dg, k, v, angles, alpha, coef, dv, dalpha, zk, zv, dzv, lam, dlam, *_strides(k), *_strides(v),
+                              *_strides(dv), *_strides(zk), *_strides(lam), h, t, d, p, eps, **flags)
+    _bwd_k[(n,)](dg, k, v, angles, alpha, coef, dk, dang_k, zk, zv, dzk, lam, *_strides(k), *_strides(v),
+                              *_strides(dk), *_strides(zk), *_strides(lam), h, t, d, p, eps, **flags)
+    out = (dq, dk, dv, dalpha.view(bsz, h).sum(0), (dang_q + dang_k).sum(0))
+    return out + ((dzk, dzv) if trace else ()) + ((dlam,) if offset else ())
+
+
 @custom_op('lt::pairangle_attention', mutates_args=())
 def _attention(q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, angles: torch.Tensor,
                alpha: torch.Tensor, coef: torch.Tensor, eps: float, hebbian: bool, bf16: bool,
                rotated: bool) -> tuple[torch.Tensor, torch.Tensor]:
-    bsz, h, t, d = q.shape
-    # read is written as [B, T, H, D] (heads merge for free); outputs are never views
-    read = torch.empty(bsz, t, h, d, device=q.device, dtype=torch.float32)
-    g = torch.empty(bsz, h, d, d, device=q.device, dtype=torch.float32)
-    _fwd[(bsz * h, 2)](q, k, v, angles, alpha, coef, read, g,
-                                    *_strides(q), *_strides(k), *_strides(v), t * h * d, d, h * d,
-                                    h, t, d, d // 2, eps, R=coef.numel(), HEBB=hebbian, BF16=bf16,
-                                    ROTATED=rotated, BP=_bp(d))
-    return read, g
+    return _launch_forward(q, k, v, angles, alpha, coef, eps, hebbian, bf16, rotated)
 
 
 @custom_op('lt::pairangle_attention_backward', mutates_args=())
@@ -418,25 +540,7 @@ def _attention_backward(dr: torch.Tensor, q: torch.Tensor, k: torch.Tensor, v: t
                         angles: torch.Tensor, alpha: torch.Tensor, coef: torch.Tensor, g: torch.Tensor,
                         eps: float, hebbian: bool, bf16: bool, rotated: bool
                         ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor]:
-    bsz, h, t, d = q.shape
-    p, bp, n = d // 2, _bp(d), bsz * h
-    # Gradients get their own (dense) layout; q, k, v may be views with gaps (e.g. qkv chunks).
-    dq, dk, dv = (torch.empty(x.shape, device=x.device, dtype=x.dtype) for x in (q, k, v))
-    dg = torch.empty_like(g)
-    dalpha = torch.empty(n, device=q.device, dtype=torch.float32)
-    dang_q = torch.empty(bsz, h, t, p, device=q.device, dtype=torch.float32)
-    dang_k = torch.empty(bsz, h, t, p, device=q.device, dtype=torch.float32)
-    flags = dict(R=coef.numel(), HEBB=hebbian, BF16=bf16, ROTATED=rotated, BP=bp)
-    _bwd_dg[(n, 2)](dr, q, angles, dg, *_strides(dr), *_strides(q), h, t, d, p, eps,
-                                 BF16=bf16, BP=bp)
-    _bwd_q[(n,)](dr, q, angles, g, dq, dang_q, *_strides(dr), *_strides(q), *_strides(dq),
-                              h, t, d, p, eps,
-                              BF16=bf16, BP=bp)
-    _bwd_v[(n,)](dg, k, v, angles, alpha, coef, dv, dalpha, *_strides(k), *_strides(v),
-                              *_strides(dv), h, t, d, p, eps, **flags)
-    _bwd_k[(n,)](dg, k, v, angles, alpha, coef, dk, dang_k, *_strides(k), *_strides(v),
-                              *_strides(dk), h, t, d, p, eps, **flags)
-    return dq, dk, dv, dalpha.view(bsz, h).sum(0), (dang_q + dang_k).sum(0)
+    return _launch_backward(dr, q, k, v, angles, alpha, coef, g, eps, hebbian, bf16, rotated)
 
 
 @_attention.register_fake
@@ -469,6 +573,97 @@ def _backward(ctx, dr, dg):
 _attention.register_autograd(_backward, setup_context=_setup)
 
 
+@custom_op('lt::pairangle_attention_traced', mutates_args=())
+def _attention_traced(q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, zk: torch.Tensor, zv: torch.Tensor,
+                      angles: torch.Tensor, alpha: torch.Tensor, coef: torch.Tensor, eps: float, hebbian: bool,
+                      bf16: bool) -> tuple[torch.Tensor, torch.Tensor]:
+    return _launch_forward(q, k, v, angles, alpha, coef, eps, hebbian, bf16, False, zk, zv)
+
+
+@custom_op('lt::pairangle_attention_traced_backward', mutates_args=())
+def _attention_traced_backward(dr: torch.Tensor, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor,
+                               zk: torch.Tensor, zv: torch.Tensor, angles: torch.Tensor, alpha: torch.Tensor,
+                               coef: torch.Tensor, g: torch.Tensor, eps: float, hebbian: bool, bf16: bool
+                               ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor,
+                                          torch.Tensor, torch.Tensor]:
+    return _launch_backward(dr, q, k, v, angles, alpha, coef, g, eps, hebbian, bf16, False, zk, zv)
+
+
+@_attention_traced.register_fake
+def _attention_traced_fake(q, k, v, zk, zv, angles, alpha, coef, eps, hebbian, bf16):
+    bsz, h, t, d = q.shape
+    return q.new_empty(bsz, t, h, d, dtype=torch.float32), q.new_empty(bsz, h, d, d, dtype=torch.float32)
+
+
+@_attention_traced_backward.register_fake
+def _attention_traced_backward_fake(dr, q, k, v, zk, zv, angles, alpha, coef, g, eps, hebbian, bf16):
+    bsz, h, t, d = q.shape
+    return (*(torch.empty(x.shape, device=x.device, dtype=x.dtype) for x in (q, k, v)),
+            alpha.new_empty(h), angles.new_empty(angles.shape), torch.empty_like(zk), torch.empty_like(zv))
+
+
+def _setup_traced(ctx, inputs, output):
+    q, k, v, zk, zv, angles, alpha, coef, eps, hebbian, bf16 = inputs
+    ctx.save_for_backward(q, k, v, zk, zv, angles, alpha, coef, output[1])
+    ctx.flags = (eps, hebbian, bf16)
+    ctx.mark_non_differentiable(output[1])
+
+
+def _backward_traced(ctx, dr, dg):
+    q, k, v, zk, zv, angles, alpha, coef, g = ctx.saved_tensors
+    dq, dk, dv, dalpha, dang, dzk, dzv = _attention_traced_backward(dr.transpose(1, 2), q, k, v, zk, zv, angles,
+                                                                    alpha, coef, g, *ctx.flags)
+    return dq, dk, dv, dzk, dzv, dang, dalpha, None, None, None, None
+
+
+_attention_traced.register_autograd(_backward_traced, setup_context=_setup_traced)
+
+
+@custom_op('lt::pairangle_attention_offset', mutates_args=())
+def _attention_offset(q: torch.Tensor, k: torch.Tensor, v: torch.Tensor, lam: torch.Tensor, angles: torch.Tensor,
+                      alpha: torch.Tensor, coef: torch.Tensor, eps: float, hebbian: bool, bf16: bool,
+                      rotated: bool) -> tuple[torch.Tensor, torch.Tensor]:
+    return _launch_forward(q, k, v, angles, alpha, coef, eps, hebbian, bf16, rotated, lam=lam)
+
+
+@custom_op('lt::pairangle_attention_offset_backward', mutates_args=())
+def _attention_offset_backward(dr: torch.Tensor, q: torch.Tensor, k: torch.Tensor, v: torch.Tensor,
+                               lam: torch.Tensor, angles: torch.Tensor, alpha: torch.Tensor, coef: torch.Tensor,
+                               g: torch.Tensor, eps: float, hebbian: bool, bf16: bool, rotated: bool
+                               ) -> tuple[torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor, torch.Tensor,
+                                          torch.Tensor]:
+    return _launch_backward(dr, q, k, v, angles, alpha, coef, g, eps, hebbian, bf16, rotated, lam=lam)
+
+
+@_attention_offset.register_fake
+def _attention_offset_fake(q, k, v, lam, angles, alpha, coef, eps, hebbian, bf16, rotated):
+    bsz, h, t, d = q.shape
+    return q.new_empty(bsz, t, h, d, dtype=torch.float32), q.new_empty(bsz, h, d, d, dtype=torch.float32)
+
+
+@_attention_offset_backward.register_fake
+def _attention_offset_backward_fake(dr, q, k, v, lam, angles, alpha, coef, g, eps, hebbian, bf16, rotated):
+    return (*(torch.empty(x.shape, device=x.device, dtype=x.dtype) for x in (q, k, v)),
+            alpha.new_empty(q.shape[1]), angles.new_empty(angles.shape), torch.empty_like(lam))
+
+
+def _setup_offset(ctx, inputs, output):
+    q, k, v, lam, angles, alpha, coef, eps, hebbian, bf16, rotated = inputs
+    ctx.save_for_backward(q, k, v, lam, angles, alpha, coef, output[1])
+    ctx.flags = (eps, hebbian, bf16, rotated)
+    ctx.mark_non_differentiable(output[1])
+
+
+def _backward_offset(ctx, dr, dg):
+    q, k, v, lam, angles, alpha, coef, g = ctx.saved_tensors
+    dq, dk, dv, dalpha, dang, dlam = _attention_offset_backward(dr.transpose(1, 2), q, k, v, lam, angles, alpha,
+                                                                coef, g, *ctx.flags)
+    return dq, dk, dv, dlam, dang, dalpha, None, None, None, None, None
+
+
+_attention_offset.register_autograd(_backward_offset, setup_context=_setup_offset)
+
+
 def pairangle_attention(q, k, v, angles, alpha, coef, eps, hebbian=True, bf16=False, rotated=False):
     """q, k, v [B, H, T, D] (CUDA, FP32 or BF16, unit stride in D); angles [H, T, D/2] RoPE angles;
     alpha [H]; coef [R] (window c_r for frequencies 1..R). Token-sum write.
@@ -480,7 +675,33 @@ def pairangle_attention(q, k, v, angles, alpha, coef, eps, hebbian=True, bf16=Fa
     return read.transpose(1, 2), g
 
 
-def reference_attention(q, k, v, angles, alpha, coef, eps, hebbian=True, rotated=False):
+def pairangle_attention_traced(q, k, v, zk, zv, angles, alpha, coef, eps, hebbian=True, bf16=False):
+    """pairangle_attention with the timing term on phasor traces (unrotated frame, R = 1 only).
+
+    zk, zv [B, H, T, D]: (re, im) of the K and V phasor traces per pair, as laid out in k and v.
+    The timing write is sum_n v_na kr_nb c_1 Im(zV_a conj zK_b); the Hebbian part uses k and v.
+    Gradients flow to zk and zv (the trace update itself is outside the kernel).
+    """
+    if coef.numel() != 1:
+        raise ValueError('the traced kernel covers one harmonic (R = 1)')
+    read, g = _attention_traced(q, k, v, zk.float().contiguous(), zv.float().contiguous(),
+                                angles.float().contiguous(), alpha.float().contiguous(),
+                                coef.float().contiguous(), float(eps), bool(hebbian), bool(bf16))
+    return read.transpose(1, 2), g
+
+
+def pairangle_attention_offset(q, k, v, lam, angles, alpha, coef, eps, hebbian=True, bf16=False, rotated=False):
+    """pairangle_attention with each V pair's phase shifted by lam: W(phiV + lam - phiK).
+
+    lam [B, H, T, D/2] angles (one per V pair; expand a per-head offset before the call). Gradients flow to lam.
+    """
+    read, g = _attention_offset(q, k, v, lam.float().contiguous(), angles.float().contiguous(),
+                                alpha.float().contiguous(), coef.float().contiguous(), float(eps), bool(hebbian),
+                                bool(bf16), bool(rotated))
+    return read.transpose(1, 2), g
+
+
+def reference_attention(q, k, v, angles, alpha, coef, eps, hebbian=True, rotated=False, lam=None):
     """Direct torch evaluation with atan2 phases and the model's norm/RoPE (tests)."""
     q, k = (x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + eps) for x in (q, k))
     c, s = angles.cos()[None], angles.sin()[None]
@@ -492,9 +713,29 @@ def reference_attention(q, k, v, angles, alpha, coef, eps, hebbian=True, rotated
         pair = x.reshape(*x.shape[:-1], x.shape[-1] // 2, 2)
         return torch.atan2(pair[..., 1], pair[..., 0]).repeat_interleave(2, -1)
     pk, pv = angle(kr if rotated else k), angle(v)
+    if lam is not None:
+        pv = pv + lam.to(pv.dtype).repeat_interleave(2, -1)
     delta = pv[..., :, None] - pk[..., None, :]
     r = torch.arange(1, coef.numel() + 1, dtype=q.dtype, device=q.device)
     window = (coef.to(q.dtype) * torch.sin(delta[..., None] * r)).sum(-1)
+    gain = alpha.to(q.dtype)[:, None, None, None] * window
+    if hebbian:
+        gain = gain + 1
+    g = (v[..., :, None] * kr[..., None, :] * gain).sum(-3)
+    return qr @ g.transpose(-1, -2), g
+
+
+def reference_attention_traced(q, k, v, zk, zv, angles, alpha, coef, eps, hebbian=True):
+    """Direct torch evaluation of the traced write (unrotated frame, R = 1) for tests."""
+    q, k = (x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + eps) for x in (q, k))
+    c, s = angles.cos()[None], angles.sin()[None]
+    def rope(x):
+        e, o = x[..., 0::2], x[..., 1::2]
+        return torch.stack((e * c - o * s, e * s + o * c), -1).reshape_as(x)
+    qr, kr = rope(q), rope(k)
+    re = lambda z: z[..., 0::2].repeat_interleave(2, -1)
+    im = lambda z: z[..., 1::2].repeat_interleave(2, -1)
+    window = coef.to(q.dtype)[0] * (im(zv)[..., :, None] * re(zk)[..., None, :] - re(zv)[..., :, None] * im(zk)[..., None, :])
     gain = alpha.to(q.dtype)[:, None, None, None] * window
     if hebbian:
         gain = gain + 1

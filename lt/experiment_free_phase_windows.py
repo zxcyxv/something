@@ -21,7 +21,7 @@ from .kv_stability import ExponentialPhaseCurrentReadInner, ORIGINAL_MODEL_ID
 from .research_free_phase_windows import DEST, manual_feature_write, bf16_feature_write, two_feature_write, sine_window
 from .biexponential_phase_window import window as biexp_window, split_write as biexp_write
 from . import tanhsech_phase_window as tanhsech
-from .pairangle_fused import pairangle_attention
+from .pairangle_fused import pairangle_attention, pairangle_attention_traced
 
 
 class TransposedLinear(torch.nn.Module):
@@ -52,11 +52,23 @@ def periodized_tanhsech(tau_phi, modes):
 
 def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator='dense', feature_precision='float32',
                 window_scale=1.0, tie_qk=False, tie_vo=False, qk_l2=False, write_sum=False, tau_phi=2.0,
-                phase_floor=0.5, v_norm='none', tie_all=False, phase_kappa=1.0, phase_omega=0.0, phase_frame='rotated', dc_hebbian=False, dc_alpha_init=0.0, boundary_ffn='bilinear', kernel='torch'):
+                phase_floor=0.5, v_norm='none', tie_all=False, phase_kappa=1.0, phase_omega=0.0, phase_frame='rotated', dc_hebbian=False, dc_alpha_init=0.0, boundary_ffn='bilinear', kernel='torch',
+                phase_trace_eta=None, phase_trace_learn=False):
     if boundary_ffn not in ('bilinear', 'swiglu'):
         raise ValueError(boundary_ffn)
     if kernel not in ('torch', 'triton'):
         raise ValueError(kernel)
+    if phase_trace_eta is not None:
+        # Block-EMA of the K/V unit phasors, used only by the timing (STDP) term; the Hebbian
+        # carrier v kr^T stays the current block's. eta = 1 is the untraced pairangle write.
+        if window != 'pairangle':
+            raise ValueError('phase_trace_eta applies to the pairangle window.')
+        if kernel == 'triton' and not (phase_frame == 'unrotated' and modes == 1):
+            raise ValueError('The traced fused kernel covers the unrotated frame with one harmonic (R = 1).')
+        if not 0 < phase_trace_eta <= 1:
+            raise ValueError('phase_trace_eta must be in (0, 1].')
+    if phase_trace_learn and (phase_trace_eta is None or not 0 < phase_trace_eta < 1):
+        raise ValueError('phase_trace_learn needs an initial phase_trace_eta in (0, 1).')
     if kernel == 'triton' and not (window == 'pairangle' and qk_l2 and write_sum and v_norm == 'none'):
         raise ValueError('The fused kernel covers the pairangle window with QK L2, token-sum writes and raw V.')
     if v_norm not in ('none', 'unit', 'unit_gain'):
@@ -130,6 +142,14 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 # (the phase path then gets no gradient), init 1 gives the window 1 + W.
                 for layer in self.layers:
                     layer.stdp_alpha = torch.nn.Parameter(torch.full((self.H,), float(dc_alpha_init)))
+            if phase_trace_learn:
+                # Trace rate per head and pair, for K and V separately: eta = sigmoid(raw), raw
+                # initialized at logit(phase_trace_eta). 'eta_raw' puts them in the no-decay group.
+                logit = math.log(phase_trace_eta / (1 - phase_trace_eta))
+                for layer in self.layers:
+                    for role in ('k', 'v'):
+                        setattr(layer, f'trace_{role}_eta_raw',
+                                torch.nn.Parameter(torch.full((self.H, self.dh // 2), logit)))
             # Weight tying is applied after every original draw, so the remaining
             # parameters keep their original initial values.
             for layer in self.layers:
@@ -194,6 +214,14 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                     angles = (layer.theta[..., 0, None] * self.pos_u
                               + layer.theta[..., 1, None] * self.pos_w).transpose(-1, -2)
                     alpha = layer.stdp_alpha if dc_hebbian else torch.ones(self.H, device=q.device)
+                    if phase_trace_eta is not None:
+                        # Trace update in torch; the kernel reads the traces for the timing term
+                        # (the pair angle of the raw key equals that of the unit key).
+                        e_k, e_v = self.trace_update(k.float(), v.float(), e_k, e_v, fresh, layer)
+                        read, current = pairangle_attention_traced(q, k, v, e_k, e_v, angles, alpha,
+                                                                   self.window_coefficients, self.config.eps,
+                                                                   dc_hebbian, pairangle_bf16)
+                        return read, current, e_k, e_v
                     read, current = pairangle_attention(q, k, v, angles, alpha, self.window_coefficients,
                                                         self.config.eps, dc_hebbian, pairangle_bf16,
                                                         phase_frame == 'rotated')
@@ -217,11 +245,80 @@ def model_class(window='fourier', dynamic=True, modes=8, epsilon=.35, generator=
                 if window == 'complex':
                     current = self.complex_write(kr, v)
                     return self.complex_read(qr, current), current, None, None
+                if phase_trace_eta is not None:
+                    current, e_k, e_v = self.traced_write(layer, kr, v, k, e_k, e_v, fresh)
+                    current = current * k.shape[-2]          # token sum (write_sum is required)
+                    return gemm(qr, current.transpose(-1, -2)), current, e_k, e_v
                 current = self.window_write(layer, kr, v, k)
                 if write_sum:
                     # Every write path is a token mean; restore the token sum (x T=81).
                     current = current * k.shape[-2]
                 return gemm(qr, current.transpose(-1, -2)), current, None, None
+
+        def trace_update(self, k_phase, v, e_k, e_v, fresh, layer=None):
+            """z~ <- (1 - eta) z~ + eta u for the K and V unit phasors u ([..., D], (cos, sin) per
+            pair); z~ = u for a fresh puzzle or an empty carry. eta is the fixed rate, or with
+            phase_trace_learn sigmoid of the layer's per-head, per-pair parameters."""
+            def unit(x):
+                pair = x.reshape(*x.shape[:-1], self.dh // 2, 2)
+                angle = torch.atan2(pair[..., 1], pair[..., 0])
+                return torch.stack((angle.cos(), angle.sin()), -1).reshape(x.shape)
+
+            def rate(role, u):
+                if not phase_trace_learn:
+                    return phase_trace_eta
+                raw = getattr(layer, f'trace_{role}_eta_raw').to(u.dtype)
+                return torch.sigmoid(raw).repeat_interleave(2, -1)[None, :, None, :]
+
+            def update(trace, u, role):
+                if trace is None:
+                    return u
+                eta = rate(role, u)
+                new = (1 - eta) * trace.to(u.dtype) + eta * u
+                if fresh is not None:
+                    new = torch.where(fresh.view(-1, 1, 1, 1), u, new)
+                return new
+
+            return update(e_k, unit(k_phase), 'k'), update(e_v, unit(v), 'v')
+
+        def traced_write(self, layer, kr, v, k, e_k, e_v, fresh):
+            """Pairangle write whose timing term reads block-EMA phase traces (token mean).
+
+            u = unit phasor of each K pair (frame as phase_frame) and V pair, laid out like the
+            address ([..., D], (cos, sin) per pair). The traces z~ <- (1 - eta) z~ + eta u are
+            reset to u for a fresh puzzle and carried in the key_trace/value_trace slots.
+            Harmonic r uses the phasor of angle r*arg(z~) and length |z~|, so the timing write is
+                sum_n v_na kr_nb |z~V_a||z~K_b| sum_r c_r sin(r(arg z~V_a - arg z~K_b)).
+            The Hebbian part v kr^T and the carrier are the current block's.
+            """
+            zk, zv = self.trace_update(k if phase_frame == 'unrotated' else kr, v, e_k, e_v, fresh, layer)
+
+            def harmonics(z):
+                pair = z.reshape(*z.shape[:-1], self.dh // 2, 2)
+                re, im = pair[..., 0], pair[..., 1]
+                out, pr, pi = [], re, im
+                mag = torch.sqrt(re * re + im * im + 1e-24)
+                for r in range(1, self.window_coefficients.numel() + 1):
+                    if r == 1:
+                        c, s = re, im
+                    else:
+                        pr, pi = pr * re - pi * im, pr * im + pi * re      # z^r
+                        scale = mag.pow(1 - r)                             # length |z|, angle r arg z
+                        c, s = pr * scale, pi * scale
+                    out.append((c.repeat_interleave(2, -1), s.repeat_interleave(2, -1)))
+                return out
+
+            coef = self.window_coefficients.to(v.dtype)
+            timing = None
+            for r, ((cv, sv), (ck, sk)) in enumerate(zip(harmonics(zv), harmonics(zk))):
+                term = coef[r] * (gemm((v * sv).transpose(-1, -2), kr * ck)
+                                  - gemm((v * cv).transpose(-1, -2), kr * sk))
+                timing = term if timing is None else timing + term
+            timing = timing / kr.shape[-2]
+            if dc_hebbian:
+                alpha = layer.stdp_alpha.to(timing.dtype)[None, :, None, None]
+                return gemm(v.transpose(-1, -2), kr) / kr.shape[-2] + alpha * timing, zk, zv
+            return timing, zk, zv
 
         def complex_write(self, kr, v):
             """G_ij = sum_n |v_ni| |k_nj| W(arg v_ni - arg k_nj), W = sum_r c_r sin(r delta).
@@ -472,6 +569,11 @@ def main():
     ap.add_argument('--no-boundary-save', action='store_true', help='save only every --save-every steps and at stop')
     ap.add_argument('--no-activation-checkpoint', action='store_true',
                     help='keep block activations instead of recomputing them (same values, more memory)')
+    ap.add_argument('--phase-trace-eta', type=float, default=None,
+                    help='pairangle (torch path): timing term reads block-EMA traces of the K/V unit phasors '
+                         'with this rate, carried across blocks and segments; the Hebbian carrier stays current')
+    ap.add_argument('--phase-trace-learn', action='store_true',
+                    help='learn the trace rate per head and pair (K and V separately), initialized at --phase-trace-eta')
     ap.add_argument('--preflight', action='store_true')
     ap.add_argument('--out', type=Path, required=True)
     opt = ap.parse_args()
@@ -505,6 +607,8 @@ def main():
         name += '_bf16'
     if opt.nograd_fixed:
         name += f'_ng{opt.nograd_fixed}'
+    if opt.phase_trace_eta is not None:
+        name += f"_ptrace{'L' if opt.phase_trace_learn else ''}{opt.phase_trace_eta:g}"
     if opt.tie_all:
         name += '_tieall'
     if opt.window_scale != 1:
@@ -533,7 +637,8 @@ def main():
                research_matmul_precision=opt.precision)
     t.KVSTDPInner = model_class(opt.window, not opt.fixed, opt.modes, opt.epsilon, opt.generator, opt.feature_precision,
                                 opt.window_scale, opt.tie_qk, opt.tie_vo, opt.qk_l2, opt.write_sum, opt.tau_phi,
-                                opt.phase_floor, opt.v_norm, opt.tie_all, opt.phase_kappa, opt.phase_omega, opt.phase_frame, opt.dc_hebbian, opt.dc_alpha_init, opt.boundary_ffn, opt.kernel)
+                                opt.phase_floor, opt.v_norm, opt.tie_all, opt.phase_kappa, opt.phase_omega, opt.phase_frame, opt.dc_hebbian, opt.dc_alpha_init, opt.boundary_ffn, opt.kernel,
+                                opt.phase_trace_eta, opt.phase_trace_learn)
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + name
     protocol = dict(variant=name, window=opt.window, modes=opt.modes, epsilon=opt.epsilon, generator=opt.generator,
                     precision=opt.precision, feature_precision=opt.feature_precision, torch=torch.__version__, gpu=torch.cuda.get_device_name(),
@@ -619,6 +724,21 @@ def main():
                 position_invariance='the window is a per-pair scalar of content only, so it commutes with the RoPE rotation; the read depends on positions only through pos_t - pos_n, as in B-only',
                 baseline='2026-10-08 pairangle (identical except phase_frame=rotated) and B-only + QK L2 + token sum (same seed/harness)')
     protocol.update(phase_frame=opt.phase_frame, dc_hebbian=opt.dc_hebbian, dc_alpha_init=opt.dc_alpha_init, boundary_ffn=opt.boundary_ffn, kernel=opt.kernel)
+    if opt.phase_trace_eta is not None:
+        protocol.update(
+            phase_trace_eta=opt.phase_trace_eta,
+            phase_trace='timing term reads z~ <- (1-eta) z~ + eta u per neuron (u = unit phasor of the K pair in phase_frame '
+                        'and of the V pair), z~ = u for a fresh puzzle, carried across blocks and segments in key_trace/value_trace '
+                        '(detached at segment boundaries); harmonic r uses length |z~| and angle r*arg z~; the Hebbian product '
+                        'v kr^T and the carrier are the current block; eta = 1 equals the untraced write',
+            baseline='2026-10-10 R=1 8-block run (pairangle_r1_dca1_swiglu_bf16fused_20261010) and its 2026-10-12 rerun')
+        if opt.phase_trace_learn:
+            protocol.update(
+                phase_trace_learn=True,
+                phase_trace_rate='eta = sigmoid(raw) per layer, head and pair, separately for K and V (trace_k_eta_raw, '
+                                 'trace_v_eta_raw [H, D/2]); raw initialized at logit(phase_trace_eta); no weight decay '
+                                 '(trainer eta_raw rule); trainer learning rate',
+                baseline='2026-10-12 fixed-eta run pairangle_r1_dca1_swiglu_bf16_ptrace0.2_20261012 and the 2026-10-10 R=1 8-block run')
     if opt.dc_hebbian:
         protocol.update(
             write='G_ab = sum_n V_na K_nb (1 + alpha_h W(phiV_n,a - phiK_n,b)) = G_hebbian + alpha_h G_pairangle; token sum (no 1/T)',
