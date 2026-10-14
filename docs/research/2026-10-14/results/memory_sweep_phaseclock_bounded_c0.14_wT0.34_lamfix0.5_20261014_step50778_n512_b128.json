@@ -1,0 +1,129 @@
+{
+ "run": "phaseclock_bounded_c0.14_wT0.34_lamfix0.5_20261014",
+ "step": 50778,
+ "n": 512,
+ "blocks": 128,
+ "variants": {
+  "baseline": {
+   "solved": 264,
+   "exact_block16": 61,
+   "exact_block32": 194,
+   "cell_accuracy": 0.7462910601459141,
+   "solved_by_tier": {
+    "L0": 73,
+    "L1-only": 71,
+    "beyond-L1": 120
+   },
+   "blocks_per_round": 1.0625119571191184,
+   "newly_solved": 0,
+   "lost": 0,
+   "seconds": 8.827342044562101
+  },
+  "lam=0.6": {
+   "solved": 253,
+   "exact_block16": 55,
+   "exact_block32": 178,
+   "cell_accuracy": 0.7364121897580899,
+   "solved_by_tier": {
+    "L0": 73,
+    "L1-only": 68,
+    "beyond-L1": 112
+   },
+   "blocks_per_round": 1.0691185613843823,
+   "newly_solved": 7,
+   "lost": 18,
+   "seconds": 8.542635291814804
+  },
+  "lam=0.7": {
+   "solved": 216,
+   "exact_block16": 45,
+   "exact_block32": 148,
+   "cell_accuracy": 0.7116626522847069,
+   "solved_by_tier": {
+    "L0": 72,
+    "L1-only": 60,
+    "beyond-L1": 84
+   },
+   "blocks_per_round": 1.1109290089430022,
+   "newly_solved": 1,
+   "lost": 49,
+   "seconds": 8.608033374883235
+  },
+  "lam=0.8": {
+   "solved": 201,
+   "exact_block16": 35,
+   "exact_block32": 136,
+   "cell_accuracy": 0.7054141794952351,
+   "solved_by_tier": {
+    "L0": 72,
+    "L1-only": 57,
+    "beyond-L1": 72
+   },
+   "blocks_per_round": 1.441246566918717,
+   "newly_solved": 3,
+   "lost": 66,
+   "seconds": 8.573603459633887
+  },
+  "rho=0.5": {
+   "solved": 257,
+   "exact_block16": 50,
+   "exact_block32": 183,
+   "cell_accuracy": 0.7391000802876392,
+   "solved_by_tier": {
+    "L0": 72,
+    "L1-only": 71,
+    "beyond-L1": 114
+   },
+   "blocks_per_round": 1.1438758374360354,
+   "newly_solved": 9,
+   "lost": 16,
+   "seconds": 8.762568980455399
+  },
+  "rho=0.8": {
+   "solved": 253,
+   "exact_block16": 48,
+   "exact_block32": 171,
+   "cell_accuracy": 0.7348762523126331,
+   "solved_by_tier": {
+    "L0": 72,
+    "L1-only": 72,
+    "beyond-L1": 109
+   },
+   "blocks_per_round": 1.2783618768929208,
+   "newly_solved": 11,
+   "lost": 22,
+   "seconds": 8.929354114457965
+  },
+  "rho=0.9": {
+   "solved": 251,
+   "exact_block16": 45,
+   "exact_block32": 173,
+   "cell_accuracy": 0.7411596327713199,
+   "solved_by_tier": {
+    "L0": 71,
+    "L1-only": 68,
+    "beyond-L1": 112
+   },
+   "blocks_per_round": 1.0865705397336625,
+   "newly_solved": 13,
+   "lost": 26,
+   "seconds": 8.771442910656333
+  },
+  "lam=0.7+rho=0.8": {
+   "solved": 242,
+   "exact_block16": 45,
+   "exact_block32": 162,
+   "cell_accuracy": 0.7310713163682061,
+   "solved_by_tier": {
+    "L0": 72,
+    "L1-only": 65,
+    "beyond-L1": 105
+   },
+   "blocks_per_round": 1.109627273426582,
+   "newly_solved": 9,
+   "lost": 31,
+   "seconds": 8.755510220304132
+  }
+ },
+ "seconds": 115.61192927509546
+}

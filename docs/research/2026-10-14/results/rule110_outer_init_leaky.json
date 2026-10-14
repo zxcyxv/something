@@ -1,0 +1,2027 @@
+{
+ "V0|1|2|norm": [
+  2.392815589904785
+ ],
+ "V0|1|2|timing read | own input": [
+  0.9923216104507446
+ ],
+ "V0|1|2|timing read | input -1/+1": [
+  0.6210478842258453
+ ],
+ "V0|1|2|timing read | 1-step state": [
+  0.6682023406028748
+ ],
+ "V0|1|2|timing read | answer (4 steps)": [
+  0.5523486733436584
+ ],
+ "V0|1|2|state h | own input": [
+  1.0
+ ],
+ "V0|1|2|state h | input -1/+1": [
+  0.5848915874958038
+ ],
+ "V0|1|2|state h | 1-step state": [
+  0.6468383073806763
+ ],
+ "V0|1|2|state h | answer (4 steps)": [
+  0.5529810190200806
+ ],
+ "V0|1|3|norm": [
+  4.917252540588379
+ ],
+ "V0|1|3|timing read | own input": [
+  0.9933152794837952
+ ],
+ "V0|1|3|timing read | input -1/+1": [
+  0.6394534707069397
+ ],
+ "V0|1|3|timing read | 1-step state": [
+  0.6835591793060303
+ ],
+ "V0|1|3|timing read | answer (4 steps)": [
+  0.5535681843757629
+ ],
+ "V0|1|3|state h | own input": [
+  1.0
+ ],
+ "V0|1|3|state h | input -1/+1": [
+  0.5981481373310089
+ ],
+ "V0|1|3|state h | 1-step state": [
+  0.6464769840240479
+ ],
+ "V0|1|3|state h | answer (4 steps)": [
+  0.5529810190200806
+ ],
+ "V0|1|4|norm": [
+  6.241373538970947
+ ],
+ "V0|1|4|timing read | own input": [
+  0.9935411214828491
+ ],
+ "V0|1|4|timing read | input -1/+1": [
+  0.6401987373828888
+ ],
+ "V0|1|4|timing read | 1-step state": [
+  0.6885727047920227
+ ],
+ "V0|1|4|timing read | answer (4 steps)": [
+  0.555510401725769
+ ],
+ "V0|1|4|state h | own input": [
+  1.0
+ ],
+ "V0|1|4|state h | input -1/+1": [
+  0.6027100384235382
+ ],
+ "V0|1|4|state h | 1-step state": [
+  0.6535682082176208
+ ],
+ "V0|1|4|state h | answer (4 steps)": [
+  0.5555555820465088
+ ],
+ "V0|1|5|norm": [
+  6.670642852783203
+ ],
+ "V0|1|5|timing read | own input": [
+  0.9919602274894714
+ ],
+ "V0|1|5|timing read | input -1/+1": [
+  0.641147255897522
+ ],
+ "V0|1|5|timing read | 1-step state": [
+  0.6862240433692932
+ ],
+ "V0|1|5|timing read | answer (4 steps)": [
+  0.5537940263748169
+ ],
+ "V0|1|5|state h | own input": [
+  1.0
+ ],
+ "V0|1|5|state h | input -1/+1": [
+  0.6056233048439026
+ ],
+ "V0|1|5|state h | 1-step state": [
+  0.6570008993148804
+ ],
+ "V0|1|5|state h | answer (4 steps)": [
+  0.553297221660614
+ ],
+ "V0|1|6|norm": [
+  6.693526268005371
+ ],
+ "V0|1|6|timing read | own input": [
+  0.9881210327148438
+ ],
+ "V0|1|6|timing read | input -1/+1": [
+  0.6411924362182617
+ ],
+ "V0|1|6|timing read | 1-step state": [
+  0.6807136535644531
+ ],
+ "V0|1|6|timing read | answer (4 steps)": [
+  0.5538392066955566
+ ],
+ "V0|1|6|state h | own input": [
+  1.0
+ ],
+ "V0|1|6|state h | input -1/+1": [
+  0.6057362258434296
+ ],
+ "V0|1|6|state h | 1-step state": [
+  0.6668925285339355
+ ],
+ "V0|1|6|state h | answer (4 steps)": [
+  0.5546973943710327
+ ],
+ "V0|1|7|norm": [
+  6.597203254699707
+ ],
+ "V0|1|7|timing read | own input": [
+  0.9841463565826416
+ ],
+ "V0|1|7|timing read | input -1/+1": [
+  0.6419150829315186
+ ],
+ "V0|1|7|timing read | 1-step state": [
+  0.6781390905380249
+ ],
+ "V0|1|7|timing read | answer (4 steps)": [
+  0.5554200410842896
+ ],
+ "V0|1|7|state h | own input": [
+  1.0
+ ],
+ "V0|1|7|state h | input -1/+1": [
+  0.6035004556179047
+ ],
+ "V0|1|7|state h | 1-step state": [
+  0.6573171019554138
+ ],
+ "V0|1|7|state h | answer (4 steps)": [
+  0.5543360710144043
+ ],
+ "V0|1|8|norm": [
+  6.497016906738281
+ ],
+ "V0|1|8|timing read | own input": [
+  0.9834688305854797
+ ],
+ "V0|1|8|timing read | input -1/+1": [
+  0.6450542211532593
+ ],
+ "V0|1|8|timing read | 1-step state": [
+  0.6733514070510864
+ ],
+ "V0|1|8|timing read | answer (4 steps)": [
+  0.5565492510795593
+ ],
+ "V0|1|8|state h | own input": [
+  1.0
+ ],
+ "V0|1|8|state h | input -1/+1": [
+  0.6034778654575348
+ ],
+ "V0|1|8|state h | 1-step state": [
+  0.6559168696403503
+ ],
+ "V0|1|8|state h | answer (4 steps)": [
+  0.5540650486946106
+ ],
+ "V0|1|9|norm": [
+  6.4226861000061035
+ ],
+ "V0|1|9|timing read | own input": [
+  0.9833333492279053
+ ],
+ "V0|1|9|timing read | input -1/+1": [
+  0.6457543075084686
+ ],
+ "V0|1|9|timing read | 1-step state": [
+  0.6724480390548706
+ ],
+ "V0|1|9|timing read | answer (4 steps)": [
+  0.5607949495315552
+ ],
+ "V0|1|9|state h | own input": [
+  1.0
+ ],
+ "V0|1|9|state h | input -1/+1": [
+  0.6083333194255829
+ ],
+ "V0|1|9|state h | 1-step state": [
+  0.6559168696403503
+ ],
+ "V0|1|9|state h | answer (4 steps)": [
+  0.5532520413398743
+ ],
+ "V0|1|10|norm": [
+  6.373611927032471
+ ],
+ "V0|1|10|timing read | own input": [
+  0.9839205145835876
+ ],
+ "V0|1|10|timing read | input -1/+1": [
+  0.6486901342868805
+ ],
+ "V0|1|10|timing read | 1-step state": [
+  0.6733062267303467
+ ],
+ "V0|1|10|timing read | answer (4 steps)": [
+  0.5608401298522949
+ ],
+ "V0|1|10|state h | own input": [
+  1.0
+ ],
+ "V0|1|10|state h | input -1/+1": [
+  0.6051490604877472
+ ],
+ "V0|1|10|state h | 1-step state": [
+  0.6542457342147827
+ ],
+ "V0|1|10|state h | answer (4 steps)": [
+  0.553342342376709
+ ],
+ "V0|1|11|norm": [
+  6.34262752532959
+ ],
+ "V0|1|11|timing read | own input": [
+  0.9859982132911682
+ ],
+ "V0|1|11|timing read | input -1/+1": [
+  0.6489159762859344
+ ],
+ "V0|1|11|timing read | 1-step state": [
+  0.672990083694458
+ ],
+ "V0|1|11|timing read | answer (4 steps)": [
+  0.5602529644966125
+ ],
+ "V0|1|11|state h | own input": [
+  1.0
+ ],
+ "V0|1|11|state h | input -1/+1": [
+  0.6068202257156372
+ ],
+ "V0|1|11|state h | 1-step state": [
+  0.6499548554420471
+ ],
+ "V0|1|11|state h | answer (4 steps)": [
+  0.5522583723068237
+ ],
+ "V0|1|12|norm": [
+  6.323614120483398
+ ],
+ "V0|1|12|timing read | own input": [
+  0.9886630773544312
+ ],
+ "V0|1|12|timing read | input -1/+1": [
+  0.6500451564788818
+ ],
+ "V0|1|12|timing read | 1-step state": [
+  0.6741644144058228
+ ],
+ "V0|1|12|timing read | answer (4 steps)": [
+  0.5591237545013428
+ ],
+ "V0|1|12|state h | own input": [
+  1.0
+ ],
+ "V0|1|12|state h | input -1/+1": [
+  0.607723593711853
+ ],
+ "V0|1|12|state h | 1-step state": [
+  0.652890682220459
+ ],
+ "V0|1|12|state h | answer (4 steps)": [
+  0.550000011920929
+ ],
+ "V0|1|13|norm": [
+  6.312333106994629
+ ],
+ "V0|1|13|timing read | own input": [
+  0.9870370626449585
+ ],
+ "V0|1|13|timing read | input -1/+1": [
+  0.6503387689590454
+ ],
+ "V0|1|13|timing read | 1-step state": [
+  0.6772357821464539
+ ],
+ "V0|1|13|timing read | answer (4 steps)": [
+  0.5585365891456604
+ ],
+ "V0|1|13|state h | own input": [
+  1.0
+ ],
+ "V0|1|13|state h | input -1/+1": [
+  0.6100271046161652
+ ],
+ "V0|1|13|state h | 1-step state": [
+  0.6523938775062561
+ ],
+ "V0|1|13|state h | answer (4 steps)": [
+  0.5520777106285095
+ ],
+ "V0|1|14|norm": [
+  6.305692672729492
+ ],
+ "V0|1|14|timing read | own input": [
+  0.9873080253601074
+ ],
+ "V0|1|14|timing read | input -1/+1": [
+  0.6508129835128784
+ ],
+ "V0|1|14|timing read | 1-step state": [
+  0.6783198118209839
+ ],
+ "V0|1|14|timing read | answer (4 steps)": [
+  0.5580397248268127
+ ],
+ "V0|1|14|state h | own input": [
+  1.0
+ ],
+ "V0|1|14|state h | input -1/+1": [
+  0.6093496084213257
+ ],
+ "V0|1|14|state h | 1-step state": [
+  0.65153568983078
+ ],
+ "V0|1|14|state h | answer (4 steps)": [
+  0.5506775379180908
+ ],
+ "V0|1|15|norm": [
+  6.301494598388672
+ ],
+ "V0|1|15|timing read | own input": [
+  0.9880759119987488
+ ],
+ "V0|1|15|timing read | input -1/+1": [
+  0.6501806676387787
+ ],
+ "V0|1|15|timing read | 1-step state": [
+  0.6792683005332947
+ ],
+ "V0|1|15|timing read | answer (4 steps)": [
+  0.5572267174720764
+ ],
+ "V0|1|15|state h | own input": [
+  1.0
+ ],
+ "V0|1|15|state h | input -1/+1": [
+  0.6091689169406891
+ ],
+ "V0|1|15|state h | 1-step state": [
+  0.6560072302818298
+ ],
+ "V0|1|15|state h | answer (4 steps)": [
+  0.55198734998703
+ ],
+ "V0|1|16|norm": [
+  6.298449516296387
+ ],
+ "V0|1|16|timing read | own input": [
+  0.9884824156761169
+ ],
+ "V0|1|16|timing read | input -1/+1": [
+  0.6491192281246185
+ ],
+ "V0|1|16|timing read | 1-step state": [
+  0.6794037818908691
+ ],
+ "V0|1|16|timing read | answer (4 steps)": [
+  0.5577687621116638
+ ],
+ "V0|1|16|state h | own input": [
+  1.0
+ ],
+ "V0|1|16|state h | input -1/+1": [
+  0.6113143563270569
+ ],
+ "V0|1|16|state h | 1-step state": [
+  0.6509937047958374
+ ],
+ "V0|1|16|state h | answer (4 steps)": [
+  0.5534778833389282
+ ],
+ "V1|0.5|2|norm": [
+  2.3928158283233643
+ ],
+ "V1|0.5|2|timing read | own input": [
+  0.9923216104507446
+ ],
+ "V1|0.5|2|timing read | input -1/+1": [
+  0.6210478842258453
+ ],
+ "V1|0.5|2|timing read | 1-step state": [
+  0.6682023406028748
+ ],
+ "V1|0.5|2|timing read | answer (4 steps)": [
+  0.5523486733436584
+ ],
+ "V1|0.5|2|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|2|state h | input -1/+1": [
+  0.5848915874958038
+ ],
+ "V1|0.5|2|state h | 1-step state": [
+  0.6468383073806763
+ ],
+ "V1|0.5|2|state h | answer (4 steps)": [
+  0.5529810190200806
+ ],
+ "V1|0.5|3|norm": [
+  6.0605149269104
+ ],
+ "V1|0.5|3|timing read | own input": [
+  0.9936314225196838
+ ],
+ "V1|0.5|3|timing read | input -1/+1": [
+  0.641147255897522
+ ],
+ "V1|0.5|3|timing read | 1-step state": [
+  0.6837398409843445
+ ],
+ "V1|0.5|3|timing read | answer (4 steps)": [
+  0.5536133646965027
+ ],
+ "V1|0.5|3|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|3|state h | input -1/+1": [
+  0.6005420088768005
+ ],
+ "V1|0.5|3|state h | 1-step state": [
+  0.6476061344146729
+ ],
+ "V1|0.5|3|state h | answer (4 steps)": [
+  0.5528455376625061
+ ],
+ "V1|0.5|4|norm": [
+  9.172941207885742
+ ],
+ "V1|0.5|4|timing read | own input": [
+  0.9933152794837952
+ ],
+ "V1|0.5|4|timing read | input -1/+1": [
+  0.6417795717716217
+ ],
+ "V1|0.5|4|timing read | 1-step state": [
+  0.6930442452430725
+ ],
+ "V1|0.5|4|timing read | answer (4 steps)": [
+  0.5574074387550354
+ ],
+ "V1|0.5|4|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|4|state h | input -1/+1": [
+  0.6086269021034241
+ ],
+ "V1|0.5|4|state h | 1-step state": [
+  0.6598916053771973
+ ],
+ "V1|0.5|4|state h | answer (4 steps)": [
+  0.5565943717956543
+ ],
+ "V1|0.5|5|norm": [
+  11.110703468322754
+ ],
+ "V1|0.5|5|timing read | own input": [
+  0.9933152794837952
+ ],
+ "V1|0.5|5|timing read | input -1/+1": [
+  0.6406278312206268
+ ],
+ "V1|0.5|5|timing read | 1-step state": [
+  0.6914634108543396
+ ],
+ "V1|0.5|5|timing read | answer (4 steps)": [
+  0.5526196956634521
+ ],
+ "V1|0.5|5|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|5|state h | input -1/+1": [
+  0.6162601709365845
+ ],
+ "V1|0.5|5|state h | 1-step state": [
+  0.6703703999519348
+ ],
+ "V1|0.5|5|state h | answer (4 steps)": [
+  0.5564137101173401
+ ],
+ "V1|0.5|6|norm": [
+  12.077194213867188
+ ],
+ "V1|0.5|6|timing read | own input": [
+  0.991824746131897
+ ],
+ "V1|0.5|6|timing read | input -1/+1": [
+  0.6405826508998871
+ ],
+ "V1|0.5|6|timing read | 1-step state": [
+  0.6869918704032898
+ ],
+ "V1|0.5|6|timing read | answer (4 steps)": [
+  0.5518066883087158
+ ],
+ "V1|0.5|6|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|6|state h | input -1/+1": [
+  0.6208672225475311
+ ],
+ "V1|0.5|6|state h | 1-step state": [
+  0.6831074953079224
+ ],
+ "V1|0.5|6|state h | answer (4 steps)": [
+  0.5568202137947083
+ ],
+ "V1|0.5|7|norm": [
+  12.468526840209961
+ ],
+ "V1|0.5|7|timing read | own input": [
+  0.9875790476799011
+ ],
+ "V1|0.5|7|timing read | input -1/+1": [
+  0.6420731842517853
+ ],
+ "V1|0.5|7|timing read | 1-step state": [
+  0.6856819987297058
+ ],
+ "V1|0.5|7|timing read | answer (4 steps)": [
+  0.5527100563049316
+ ],
+ "V1|0.5|7|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|7|state h | input -1/+1": [
+  0.6235094964504242
+ ],
+ "V1|0.5|7|state h | 1-step state": [
+  0.6786359548568726
+ ],
+ "V1|0.5|7|state h | answer (4 steps)": [
+  0.5604336261749268
+ ],
+ "V1|0.5|8|norm": [
+  12.589192390441895
+ ],
+ "V1|0.5|8|timing read | own input": [
+  0.9836043119430542
+ ],
+ "V1|0.5|8|timing read | input -1/+1": [
+  0.6437443494796753
+ ],
+ "V1|0.5|8|timing read | 1-step state": [
+  0.68252032995224
+ ],
+ "V1|0.5|8|timing read | answer (4 steps)": [
+  0.5546973943710327
+ ],
+ "V1|0.5|8|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|8|state h | input -1/+1": [
+  0.6268518269062042
+ ],
+ "V1|0.5|8|state h | 1-step state": [
+  0.6731707453727722
+ ],
+ "V1|0.5|8|state h | answer (4 steps)": [
+  0.5590334534645081
+ ],
+ "V1|0.5|9|norm": [
+  12.606729507446289
+ ],
+ "V1|0.5|9|timing read | own input": [
+  0.980984628200531
+ ],
+ "V1|0.5|9|timing read | input -1/+1": [
+  0.6455058753490448
+ ],
+ "V1|0.5|9|timing read | 1-step state": [
+  0.6786359548568726
+ ],
+ "V1|0.5|9|timing read | answer (4 steps)": [
+  0.556639552116394
+ ],
+ "V1|0.5|9|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|9|state h | input -1/+1": [
+  0.6298328936100006
+ ],
+ "V1|0.5|9|state h | 1-step state": [
+  0.6698283553123474
+ ],
+ "V1|0.5|9|state h | answer (4 steps)": [
+  0.555781364440918
+ ],
+ "V1|0.5|10|norm": [
+  12.593664169311523
+ ],
+ "V1|0.5|10|timing read | own input": [
+  0.9795844554901123
+ ],
+ "V1|0.5|10|timing read | input -1/+1": [
+  0.64878049492836
+ ],
+ "V1|0.5|10|timing read | 1-step state": [
+  0.6760162711143494
+ ],
+ "V1|0.5|10|timing read | answer (4 steps)": [
+  0.5600722432136536
+ ],
+ "V1|0.5|10|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|10|state h | input -1/+1": [
+  0.627009928226471
+ ],
+ "V1|0.5|10|state h | 1-step state": [
+  0.6695122122764587
+ ],
+ "V1|0.5|10|state h | answer (4 steps)": [
+  0.5556910634040833
+ ],
+ "V1|0.5|11|norm": [
+  12.57431411743164
+ ],
+ "V1|0.5|11|timing read | own input": [
+  0.9802168011665344
+ ],
+ "V1|0.5|11|timing read | input -1/+1": [
+  0.6503839194774628
+ ],
+ "V1|0.5|11|timing read | 1-step state": [
+  0.6720415353775024
+ ],
+ "V1|0.5|11|timing read | answer (4 steps)": [
+  0.5596206188201904
+ ],
+ "V1|0.5|11|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|11|state h | input -1/+1": [
+  0.6273035109043121
+ ],
+ "V1|0.5|11|state h | 1-step state": [
+  0.6661698222160339
+ ],
+ "V1|0.5|11|state h | answer (4 steps)": [
+  0.5556910634040833
+ ],
+ "V1|0.5|12|norm": [
+  12.554551124572754
+ ],
+ "V1|0.5|12|timing read | own input": [
+  0.9843270182609558
+ ],
+ "V1|0.5|12|timing read | input -1/+1": [
+  0.6525067687034607
+ ],
+ "V1|0.5|12|timing read | 1-step state": [
+  0.6742095947265625
+ ],
+ "V1|0.5|12|timing read | answer (4 steps)": [
+  0.5602077841758728
+ ],
+ "V1|0.5|12|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|12|state h | input -1/+1": [
+  0.6290198862552643
+ ],
+ "V1|0.5|12|state h | 1-step state": [
+  0.6691960096359253
+ ],
+ "V1|0.5|12|state h | answer (4 steps)": [
+  0.5542457103729248
+ ],
+ "V1|0.5|13|norm": [
+  12.536314964294434
+ ],
+ "V1|0.5|13|timing read | own input": [
+  0.9840108156204224
+ ],
+ "V1|0.5|13|timing read | input -1/+1": [
+  0.653432697057724
+ ],
+ "V1|0.5|13|timing read | 1-step state": [
+  0.6768744587898254
+ ],
+ "V1|0.5|13|timing read | answer (4 steps)": [
+  0.5602529644966125
+ ],
+ "V1|0.5|13|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|13|state h | input -1/+1": [
+  0.6335591673851013
+ ],
+ "V1|0.5|13|state h | 1-step state": [
+  0.6662601828575134
+ ],
+ "V1|0.5|13|state h | answer (4 steps)": [
+  0.5563685894012451
+ ],
+ "V1|0.5|14|norm": [
+  12.521425247192383
+ ],
+ "V1|0.5|14|timing read | own input": [
+  0.9850496649742126
+ ],
+ "V1|0.5|14|timing read | input -1/+1": [
+  0.6544489562511444
+ ],
+ "V1|0.5|14|timing read | 1-step state": [
+  0.678997278213501
+ ],
+ "V1|0.5|14|timing read | answer (4 steps)": [
+  0.5590334534645081
+ ],
+ "V1|0.5|14|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|14|state h | input -1/+1": [
+  0.6326558291912079
+ ],
+ "V1|0.5|14|state h | 1-step state": [
+  0.6652213335037231
+ ],
+ "V1|0.5|14|state h | answer (4 steps)": [
+  0.5585365891456604
+ ],
+ "V1|0.5|15|norm": [
+  12.510531425476074
+ ],
+ "V1|0.5|15|timing read | own input": [
+  0.9865853786468506
+ ],
+ "V1|0.5|15|timing read | input -1/+1": [
+  0.6543812155723572
+ ],
+ "V1|0.5|15|timing read | 1-step state": [
+  0.6817073225975037
+ ],
+ "V1|0.5|15|timing read | answer (4 steps)": [
+  0.5598012804985046
+ ],
+ "V1|0.5|15|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|15|state h | input -1/+1": [
+  0.6330397427082062
+ ],
+ "V1|0.5|15|state h | 1-step state": [
+  0.673215925693512
+ ],
+ "V1|0.5|15|state h | answer (4 steps)": [
+  0.5575881004333496
+ ],
+ "V1|0.5|16|norm": [
+  12.502452850341797
+ ],
+ "V1|0.5|16|timing read | own input": [
+  0.9871273636817932
+ ],
+ "V1|0.5|16|timing read | input -1/+1": [
+  0.6546973884105682
+ ],
+ "V1|0.5|16|timing read | 1-step state": [
+  0.6839656829833984
+ ],
+ "V1|0.5|16|timing read | answer (4 steps)": [
+  0.5596206188201904
+ ],
+ "V1|0.5|16|state h | own input": [
+  1.0
+ ],
+ "V1|0.5|16|state h | input -1/+1": [
+  0.6321815848350525
+ ],
+ "V1|0.5|16|state h | 1-step state": [
+  0.6639114618301392
+ ],
+ "V1|0.5|16|state h | answer (4 steps)": [
+  0.5579946041107178
+ ],
+ "V2|0.5|2|norm": [
+  37.11389923095703
+ ],
+ "V2|0.5|2|timing read | own input": [
+  0.9140921235084534
+ ],
+ "V2|0.5|2|timing read | input -1/+1": [
+  0.5738933980464935
+ ],
+ "V2|0.5|2|timing read | 1-step state": [
+  0.6321138143539429
+ ],
+ "V2|0.5|2|timing read | answer (4 steps)": [
+  0.5501806735992432
+ ],
+ "V2|0.5|2|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|2|state h | input -1/+1": [
+  0.5862240493297577
+ ],
+ "V2|0.5|2|state h | 1-step state": [
+  0.648012638092041
+ ],
+ "V2|0.5|2|state h | answer (4 steps)": [
+  0.5544715523719788
+ ],
+ "V2|0.5|3|norm": [
+  58.86738204956055
+ ],
+ "V2|0.5|3|timing read | own input": [
+  0.9355465173721313
+ ],
+ "V2|0.5|3|timing read | input -1/+1": [
+  0.591576337814331
+ ],
+ "V2|0.5|3|timing read | 1-step state": [
+  0.6423215866088867
+ ],
+ "V2|0.5|3|timing read | answer (4 steps)": [
+  0.5528003573417664
+ ],
+ "V2|0.5|3|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|3|state h | input -1/+1": [
+  0.5972899794578552
+ ],
+ "V2|0.5|3|state h | 1-step state": [
+  0.6564589142799377
+ ],
+ "V2|0.5|3|state h | answer (4 steps)": [
+  0.555736243724823
+ ],
+ "V2|0.5|4|norm": [
+  73.70991516113281
+ ],
+ "V2|0.5|4|timing read | own input": [
+  0.9326558113098145
+ ],
+ "V2|0.5|4|timing read | input -1/+1": [
+  0.5935410857200623
+ ],
+ "V2|0.5|4|timing read | 1-step state": [
+  0.6465672850608826
+ ],
+ "V2|0.5|4|timing read | answer (4 steps)": [
+  0.5543360710144043
+ ],
+ "V2|0.5|4|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|4|state h | input -1/+1": [
+  0.5950316190719604
+ ],
+ "V2|0.5|4|state h | 1-step state": [
+  0.6584010720252991
+ ],
+ "V2|0.5|4|state h | answer (4 steps)": [
+  0.5552845597267151
+ ],
+ "V2|0.5|5|norm": [
+  82.4981689453125
+ ],
+ "V2|0.5|5|timing read | own input": [
+  0.9266937971115112
+ ],
+ "V2|0.5|5|timing read | input -1/+1": [
+  0.5942637622356415
+ ],
+ "V2|0.5|5|timing read | 1-step state": [
+  0.6426377892494202
+ ],
+ "V2|0.5|5|timing read | answer (4 steps)": [
+  0.5528455376625061
+ ],
+ "V2|0.5|5|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|5|state h | input -1/+1": [
+  0.5944670140743256
+ ],
+ "V2|0.5|5|state h | 1-step state": [
+  0.6630532741546631
+ ],
+ "V2|0.5|5|state h | answer (4 steps)": [
+  0.5532068610191345
+ ],
+ "V2|0.5|6|norm": [
+  87.186279296875
+ ],
+ "V2|0.5|6|timing read | own input": [
+  0.9014002084732056
+ ],
+ "V2|0.5|6|timing read | input -1/+1": [
+  0.5904245674610138
+ ],
+ "V2|0.5|6|timing read | 1-step state": [
+  0.6333333253860474
+ ],
+ "V2|0.5|6|timing read | answer (4 steps)": [
+  0.5511743426322937
+ ],
+ "V2|0.5|6|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|6|state h | input -1/+1": [
+  0.5935410857200623
+ ],
+ "V2|0.5|6|state h | 1-step state": [
+  0.6665763258934021
+ ],
+ "V2|0.5|6|state h | answer (4 steps)": [
+  0.5518066883087158
+ ],
+ "V2|0.5|7|norm": [
+  89.52806091308594
+ ],
+ "V2|0.5|7|timing read | own input": [
+  0.8783197999000549
+ ],
+ "V2|0.5|7|timing read | input -1/+1": [
+  0.5917118191719055
+ ],
+ "V2|0.5|7|timing read | 1-step state": [
+  0.630307137966156
+ ],
+ "V2|0.5|7|timing read | answer (4 steps)": [
+  0.549548327922821
+ ],
+ "V2|0.5|7|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|7|state h | input -1/+1": [
+  0.5919150710105896
+ ],
+ "V2|0.5|7|state h | 1-step state": [
+  0.6650406718254089
+ ],
+ "V2|0.5|7|state h | answer (4 steps)": [
+  0.5509936809539795
+ ],
+ "V2|0.5|8|norm": [
+  90.73870849609375
+ ],
+ "V2|0.5|8|timing read | own input": [
+  0.8570460677146912
+ ],
+ "V2|0.5|8|timing read | input -1/+1": [
+  0.5911924242973328
+ ],
+ "V2|0.5|8|timing read | 1-step state": [
+  0.6254742741584778
+ ],
+ "V2|0.5|8|timing read | answer (4 steps)": [
+  0.5483288168907166
+ ],
+ "V2|0.5|8|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|8|state h | input -1/+1": [
+  0.591802179813385
+ ],
+ "V2|0.5|8|state h | 1-step state": [
+  0.6624661087989807
+ ],
+ "V2|0.5|8|state h | answer (4 steps)": [
+  0.5497289896011353
+ ],
+ "V2|0.5|9|norm": [
+  91.50398254394531
+ ],
+ "V2|0.5|9|timing read | own input": [
+  0.848238468170166
+ ],
+ "V2|0.5|9|timing read | input -1/+1": [
+  0.5895212292671204
+ ],
+ "V2|0.5|9|timing read | 1-step state": [
+  0.6227642297744751
+ ],
+ "V2|0.5|9|timing read | answer (4 steps)": [
+  0.5476061701774597
+ ],
+ "V2|0.5|9|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|9|state h | input -1/+1": [
+  0.5918247401714325
+ ],
+ "V2|0.5|9|state h | 1-step state": [
+  0.6604335904121399
+ ],
+ "V2|0.5|9|state h | answer (4 steps)": [
+  0.5480126738548279
+ ],
+ "V2|0.5|10|norm": [
+  92.12733459472656
+ ],
+ "V2|0.5|10|timing read | own input": [
+  0.836720883846283
+ ],
+ "V2|0.5|10|timing read | input -1/+1": [
+  0.5916892290115356
+ ],
+ "V2|0.5|10|timing read | 1-step state": [
+  0.6215898990631104
+ ],
+ "V2|0.5|10|timing read | answer (4 steps)": [
+  0.5477416515350342
+ ],
+ "V2|0.5|10|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|10|state h | input -1/+1": [
+  0.5915537476539612
+ ],
+ "V2|0.5|10|state h | 1-step state": [
+  0.6597561240196228
+ ],
+ "V2|0.5|10|state h | answer (4 steps)": [
+  0.5480126738548279
+ ],
+ "V2|0.5|11|norm": [
+  92.69709777832031
+ ],
+ "V2|0.5|11|timing read | own input": [
+  0.8252032399177551
+ ],
+ "V2|0.5|11|timing read | input -1/+1": [
+  0.5910795032978058
+ ],
+ "V2|0.5|11|timing read | 1-step state": [
+  0.618563711643219
+ ],
+ "V2|0.5|11|timing read | answer (4 steps)": [
+  0.5482836365699768
+ ],
+ "V2|0.5|11|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|11|state h | input -1/+1": [
+  0.5837850272655487
+ ],
+ "V2|0.5|11|state h | 1-step state": [
+  0.6589431166648865
+ ],
+ "V2|0.5|11|state h | answer (4 steps)": [
+  0.5494579672813416
+ ],
+ "V2|0.5|12|norm": [
+  93.21044158935547
+ ],
+ "V2|0.5|12|timing read | own input": [
+  0.8127822875976562
+ ],
+ "V2|0.5|12|timing read | input -1/+1": [
+  0.5901083946228027
+ ],
+ "V2|0.5|12|timing read | 1-step state": [
+  0.6192411780357361
+ ],
+ "V2|0.5|12|timing read | answer (4 steps)": [
+  0.5486449599266052
+ ],
+ "V2|0.5|12|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|12|state h | input -1/+1": [
+  0.5899051427841187
+ ],
+ "V2|0.5|12|state h | 1-step state": [
+  0.6584914326667786
+ ],
+ "V2|0.5|12|state h | answer (4 steps)": [
+  0.5492321848869324
+ ],
+ "V2|0.5|13|norm": [
+  93.64029693603516
+ ],
+ "V2|0.5|13|timing read | own input": [
+  0.8158084750175476
+ ],
+ "V2|0.5|13|timing read | input -1/+1": [
+  0.5895438194274902
+ ],
+ "V2|0.5|13|timing read | 1-step state": [
+  0.6191960573196411
+ ],
+ "V2|0.5|13|timing read | answer (4 steps)": [
+  0.5498645305633545
+ ],
+ "V2|0.5|13|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|13|state h | input -1/+1": [
+  0.5884598195552826
+ ],
+ "V2|0.5|13|state h | 1-step state": [
+  0.6602077484130859
+ ],
+ "V2|0.5|13|state h | answer (4 steps)": [
+  0.5508130192756653
+ ],
+ "V2|0.5|14|norm": [
+  93.96562957763672
+ ],
+ "V2|0.5|14|timing read | own input": [
+  0.8134146332740784
+ ],
+ "V2|0.5|14|timing read | input -1/+1": [
+  0.5880307257175446
+ ],
+ "V2|0.5|14|timing read | 1-step state": [
+  0.6187894940376282
+ ],
+ "V2|0.5|14|timing read | answer (4 steps)": [
+  0.5507226586341858
+ ],
+ "V2|0.5|14|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|14|state h | input -1/+1": [
+  0.5863820910453796
+ ],
+ "V2|0.5|14|state h | 1-step state": [
+  0.6600270867347717
+ ],
+ "V2|0.5|14|state h | answer (4 steps)": [
+  0.5501354932785034
+ ],
+ "V2|0.5|15|norm": [
+  94.18201446533203
+ ],
+ "V2|0.5|15|timing read | own input": [
+  0.8146793246269226
+ ],
+ "V2|0.5|15|timing read | input -1/+1": [
+  0.5839882493019104
+ ],
+ "V2|0.5|15|timing read | 1-step state": [
+  0.61838299036026
+ ],
+ "V2|0.5|15|timing read | answer (4 steps)": [
+  0.5497289896011353
+ ],
+ "V2|0.5|15|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|15|state h | input -1/+1": [
+  0.5853432714939117
+ ],
+ "V2|0.5|15|state h | 1-step state": [
+  0.6616982817649841
+ ],
+ "V2|0.5|15|state h | answer (4 steps)": [
+  0.5501806735992432
+ ],
+ "V2|0.5|16|norm": [
+  94.30293273925781
+ ],
+ "V2|0.5|16|timing read | own input": [
+  0.8156729936599731
+ ],
+ "V2|0.5|16|timing read | input -1/+1": [
+  0.5816169679164886
+ ],
+ "V2|0.5|16|timing read | 1-step state": [
+  0.61946702003479
+ ],
+ "V2|0.5|16|timing read | answer (4 steps)": [
+  0.5504516959190369
+ ],
+ "V2|0.5|16|state h | own input": [
+  1.0
+ ],
+ "V2|0.5|16|state h | input -1/+1": [
+  0.5828139185905457
+ ],
+ "V2|0.5|16|state h | 1-step state": [
+  0.6627371311187744
+ ],
+ "V2|0.5|16|state h | answer (4 steps)": [
+  0.5509033203125
+ ],
+ "V1|0.9|2|norm": [
+  2.3928158283233643
+ ],
+ "V1|0.9|2|timing read | own input": [
+  0.9923216104507446
+ ],
+ "V1|0.9|2|timing read | input -1/+1": [
+  0.6210478842258453
+ ],
+ "V1|0.9|2|timing read | 1-step state": [
+  0.6682023406028748
+ ],
+ "V1|0.9|2|timing read | answer (4 steps)": [
+  0.5523486733436584
+ ],
+ "V1|0.9|2|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|2|state h | input -1/+1": [
+  0.5848915874958038
+ ],
+ "V1|0.9|2|state h | 1-step state": [
+  0.6468383073806763
+ ],
+ "V1|0.9|2|state h | answer (4 steps)": [
+  0.5529810190200806
+ ],
+ "V1|0.9|3|norm": [
+  6.987957954406738
+ ],
+ "V1|0.9|3|timing read | own input": [
+  0.9936314225196838
+ ],
+ "V1|0.9|3|timing read | input -1/+1": [
+  0.6405149102210999
+ ],
+ "V1|0.9|3|timing read | 1-step state": [
+  0.6842367053031921
+ ],
+ "V1|0.9|3|timing read | answer (4 steps)": [
+  0.5531616806983948
+ ],
+ "V1|0.9|3|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|3|state h | input -1/+1": [
+  0.6012420952320099
+ ],
+ "V1|0.9|3|state h | 1-step state": [
+  0.6513550281524658
+ ],
+ "V1|0.9|3|state h | answer (4 steps)": [
+  0.553342342376709
+ ],
+ "V1|0.9|4|norm": [
+  12.346263885498047
+ ],
+ "V1|0.9|4|timing read | own input": [
+  0.9934959411621094
+ ],
+ "V1|0.9|4|timing read | input -1/+1": [
+  0.6434507668018341
+ ],
+ "V1|0.9|4|timing read | 1-step state": [
+  0.6919602751731873
+ ],
+ "V1|0.9|4|timing read | answer (4 steps)": [
+  0.5567299127578735
+ ],
+ "V1|0.9|4|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|4|state h | input -1/+1": [
+  0.6128726601600647
+ ],
+ "V1|0.9|4|state h | 1-step state": [
+  0.6654922962188721
+ ],
+ "V1|0.9|4|state h | answer (4 steps)": [
+  0.5574074387550354
+ ],
+ "V1|0.9|5|norm": [
+  17.45948028564453
+ ],
+ "V1|0.9|5|timing read | own input": [
+  0.9935411214828491
+ ],
+ "V1|0.9|5|timing read | input -1/+1": [
+  0.6424119174480438
+ ],
+ "V1|0.9|5|timing read | 1-step state": [
+  0.6990063190460205
+ ],
+ "V1|0.9|5|timing read | answer (4 steps)": [
+  0.5554200410842896
+ ],
+ "V1|0.9|5|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|5|state h | input -1/+1": [
+  0.6294037997722626
+ ],
+ "V1|0.9|5|state h | 1-step state": [
+  0.6826558113098145
+ ],
+ "V1|0.9|5|state h | answer (4 steps)": [
+  0.5604336261749268
+ ],
+ "V1|0.9|6|norm": [
+  21.949390411376953
+ ],
+ "V1|0.9|6|timing read | own input": [
+  0.9930442571640015
+ ],
+ "V1|0.9|6|timing read | input -1/+1": [
+  0.6415989100933075
+ ],
+ "V1|0.9|6|timing read | 1-step state": [
+  0.6939927935600281
+ ],
+ "V1|0.9|6|timing read | answer (4 steps)": [
+  0.5538843870162964
+ ],
+ "V1|0.9|6|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|6|state h | input -1/+1": [
+  0.6310297846794128
+ ],
+ "V1|0.9|6|state h | 1-step state": [
+  0.6910569071769714
+ ],
+ "V1|0.9|6|state h | answer (4 steps)": [
+  0.5634598135948181
+ ],
+ "V1|0.9|7|norm": [
+  25.800682067871094
+ ],
+ "V1|0.9|7|timing read | own input": [
+  0.9919151067733765
+ ],
+ "V1|0.9|7|timing read | input -1/+1": [
+  0.6420957446098328
+ ],
+ "V1|0.9|7|timing read | 1-step state": [
+  0.6903793811798096
+ ],
+ "V1|0.9|7|timing read | answer (4 steps)": [
+  0.5541553497314453
+ ],
+ "V1|0.9|7|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|7|state h | input -1/+1": [
+  0.6371951103210449
+ ],
+ "V1|0.9|7|state h | 1-step state": [
+  0.6897922158241272
+ ],
+ "V1|0.9|7|state h | answer (4 steps)": [
+  0.5653116703033447
+ ],
+ "V1|0.9|8|norm": [
+  29.12833595275879
+ ],
+ "V1|0.9|8|timing read | own input": [
+  0.9902439117431641
+ ],
+ "V1|0.9|8|timing read | input -1/+1": [
+  0.6439250409603119
+ ],
+ "V1|0.9|8|timing read | 1-step state": [
+  0.6911020874977112
+ ],
+ "V1|0.9|8|timing read | answer (4 steps)": [
+  0.553342342376709
+ ],
+ "V1|0.9|8|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|8|state h | input -1/+1": [
+  0.6395438313484192
+ ],
+ "V1|0.9|8|state h | 1-step state": [
+  0.6896567344665527
+ ],
+ "V1|0.9|8|state h | answer (4 steps)": [
+  0.5630984902381897
+ ],
+ "V1|0.9|9|norm": [
+  32.0561408996582
+ ],
+ "V1|0.9|9|timing read | own input": [
+  0.9884824156761169
+ ],
+ "V1|0.9|9|timing read | input -1/+1": [
+  0.6451219618320465
+ ],
+ "V1|0.9|9|timing read | 1-step state": [
+  0.6923215985298157
+ ],
+ "V1|0.9|9|timing read | answer (4 steps)": [
+  0.5558717250823975
+ ],
+ "V1|0.9|9|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|9|state h | input -1/+1": [
+  0.6417118310928345
+ ],
+ "V1|0.9|9|state h | 1-step state": [
+  0.6915988922119141
+ ],
+ "V1|0.9|9|state h | answer (4 steps)": [
+  0.5646341443061829
+ ],
+ "V1|0.9|10|norm": [
+  34.67552185058594
+ ],
+ "V1|0.9|10|timing read | own input": [
+  0.9864950180053711
+ ],
+ "V1|0.9|10|timing read | input -1/+1": [
+  0.6485320925712585
+ ],
+ "V1|0.9|10|timing read | 1-step state": [
+  0.6935411095619202
+ ],
+ "V1|0.9|10|timing read | answer (4 steps)": [
+  0.5575881004333496
+ ],
+ "V1|0.9|10|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|10|state h | input -1/+1": [
+  0.6418021619319916
+ ],
+ "V1|0.9|10|state h | 1-step state": [
+  0.6928184032440186
+ ],
+ "V1|0.9|10|state h | answer (4 steps)": [
+  0.5672990083694458
+ ],
+ "V1|0.9|11|norm": [
+  37.04187774658203
+ ],
+ "V1|0.9|11|timing read | own input": [
+  0.9849141836166382
+ ],
+ "V1|0.9|11|timing read | input -1/+1": [
+  0.6483739912509918
+ ],
+ "V1|0.9|11|timing read | 1-step state": [
+  0.6923215985298157
+ ],
+ "V1|0.9|11|timing read | answer (4 steps)": [
+  0.5575881004333496
+ ],
+ "V1|0.9|11|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|11|state h | input -1/+1": [
+  0.6432926952838898
+ ],
+ "V1|0.9|11|state h | 1-step state": [
+  0.6924570798873901
+ ],
+ "V1|0.9|11|state h | answer (4 steps)": [
+  0.5682023763656616
+ ],
+ "V1|0.9|12|norm": [
+  39.181514739990234
+ ],
+ "V1|0.9|12|timing read | own input": [
+  0.9866305589675903
+ ],
+ "V1|0.9|12|timing read | input -1/+1": [
+  0.6491644084453583
+ ],
+ "V1|0.9|12|timing read | 1-step state": [
+  0.6924570798873901
+ ],
+ "V1|0.9|12|timing read | answer (4 steps)": [
+  0.5587172508239746
+ ],
+ "V1|0.9|12|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|12|state h | input -1/+1": [
+  0.6451671123504639
+ ],
+ "V1|0.9|12|state h | 1-step state": [
+  0.6938572525978088
+ ],
+ "V1|0.9|12|state h | answer (4 steps)": [
+  0.5686991810798645
+ ],
+ "V1|0.9|13|norm": [
+  41.1036376953125
+ ],
+ "V1|0.9|13|timing read | own input": [
+  0.9818428158760071
+ ],
+ "V1|0.9|13|timing read | input -1/+1": [
+  0.6512420773506165
+ ],
+ "V1|0.9|13|timing read | 1-step state": [
+  0.6921409368515015
+ ],
+ "V1|0.9|13|timing read | answer (4 steps)": [
+  0.5578139424324036
+ ],
+ "V1|0.9|13|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|13|state h | input -1/+1": [
+  0.6455058753490448
+ ],
+ "V1|0.9|13|state h | 1-step state": [
+  0.6935862898826599
+ ],
+ "V1|0.9|13|state h | answer (4 steps)": [
+  0.5678409934043884
+ ],
+ "V1|0.9|14|norm": [
+  42.81390380859375
+ ],
+ "V1|0.9|14|timing read | own input": [
+  0.9771454334259033
+ ],
+ "V1|0.9|14|timing read | input -1/+1": [
+  0.6526196897029877
+ ],
+ "V1|0.9|14|timing read | 1-step state": [
+  0.6924118995666504
+ ],
+ "V1|0.9|14|timing read | answer (4 steps)": [
+  0.5579946041107178
+ ],
+ "V1|0.9|14|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|14|state h | input -1/+1": [
+  0.6474254727363586
+ ],
+ "V1|0.9|14|state h | 1-step state": [
+  0.6923215985298157
+ ],
+ "V1|0.9|14|state h | answer (4 steps)": [
+  0.5688798427581787
+ ],
+ "V1|0.9|15|norm": [
+  44.3233642578125
+ ],
+ "V1|0.9|15|timing read | own input": [
+  0.9751129150390625
+ ],
+ "V1|0.9|15|timing read | input -1/+1": [
+  0.6541553735733032
+ ],
+ "V1|0.9|15|timing read | 1-step state": [
+  0.693360447883606
+ ],
+ "V1|0.9|15|timing read | answer (4 steps)": [
+  0.5596657395362854
+ ],
+ "V1|0.9|15|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|15|state h | input -1/+1": [
+  0.6479448974132538
+ ],
+ "V1|0.9|15|state h | 1-step state": [
+  0.6960253119468689
+ ],
+ "V1|0.9|15|state h | answer (4 steps)": [
+  0.5678409934043884
+ ],
+ "V1|0.9|16|norm": [
+  45.6502685546875
+ ],
+ "V1|0.9|16|timing read | own input": [
+  0.9717254042625427
+ ],
+ "V1|0.9|16|timing read | input -1/+1": [
+  0.655442625284195
+ ],
+ "V1|0.9|16|timing read | 1-step state": [
+  0.6924570798873901
+ ],
+ "V1|0.9|16|timing read | answer (4 steps)": [
+  0.5582655668258667
+ ],
+ "V1|0.9|16|state h | own input": [
+  1.0
+ ],
+ "V1|0.9|16|state h | input -1/+1": [
+  0.6495483219623566
+ ],
+ "V1|0.9|16|state h | 1-step state": [
+  0.6915988922119141
+ ],
+ "V1|0.9|16|state h | answer (4 steps)": [
+  0.5680216550827026
+ ],
+ "V2|0.9|2|norm": [
+  41.65545654296875
+ ],
+ "V2|0.9|2|timing read | own input": [
+  0.946702778339386
+ ],
+ "V2|0.9|2|timing read | input -1/+1": [
+  0.5743450820446014
+ ],
+ "V2|0.9|2|timing read | 1-step state": [
+  0.6357271671295166
+ ],
+ "V2|0.9|2|timing read | answer (4 steps)": [
+  0.5517615079879761
+ ],
+ "V2|0.9|2|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|2|state h | input -1/+1": [
+  0.5850948393344879
+ ],
+ "V2|0.9|2|state h | 1-step state": [
+  0.648012638092041
+ ],
+ "V2|0.9|2|state h | answer (4 steps)": [
+  0.5554652214050293
+ ],
+ "V2|0.9|3|norm": [
+  76.67524719238281
+ ],
+ "V2|0.9|3|timing read | own input": [
+  0.9530261754989624
+ ],
+ "V2|0.9|3|timing read | input -1/+1": [
+  0.5947605967521667
+ ],
+ "V2|0.9|3|timing read | 1-step state": [
+  0.6387534141540527
+ ],
+ "V2|0.9|3|timing read | answer (4 steps)": [
+  0.5532520413398743
+ ],
+ "V2|0.9|3|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|3|state h | input -1/+1": [
+  0.5969738066196442
+ ],
+ "V2|0.9|3|state h | 1-step state": [
+  0.6564589142799377
+ ],
+ "V2|0.9|3|state h | answer (4 steps)": [
+  0.5574525594711304
+ ],
+ "V2|0.9|4|norm": [
+  111.44654846191406
+ ],
+ "V2|0.9|4|timing read | own input": [
+  0.9440830945968628
+ ],
+ "V2|0.9|4|timing read | input -1/+1": [
+  0.5925925970077515
+ ],
+ "V2|0.9|4|timing read | 1-step state": [
+  0.6429991126060486
+ ],
+ "V2|0.9|4|timing read | answer (4 steps)": [
+  0.554652214050293
+ ],
+ "V2|0.9|4|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|4|state h | input -1/+1": [
+  0.594241201877594
+ ],
+ "V2|0.9|4|state h | 1-step state": [
+  0.6625564694404602
+ ],
+ "V2|0.9|4|state h | answer (4 steps)": [
+  0.5562330484390259
+ ],
+ "V2|0.9|5|norm": [
+  143.5315704345703
+ ],
+ "V2|0.9|5|timing read | own input": [
+  0.9307136535644531
+ ],
+ "V2|0.9|5|timing read | input -1/+1": [
+  0.5897922217845917
+ ],
+ "V2|0.9|5|timing read | 1-step state": [
+  0.6415989398956299
+ ],
+ "V2|0.9|5|timing read | answer (4 steps)": [
+  0.5533875226974487
+ ],
+ "V2|0.9|5|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|5|state h | input -1/+1": [
+  0.5930894315242767
+ ],
+ "V2|0.9|5|state h | 1-step state": [
+  0.6655374765396118
+ ],
+ "V2|0.9|5|state h | answer (4 steps)": [
+  0.5540650486946106
+ ],
+ "V2|0.9|6|norm": [
+  172.23948669433594
+ ],
+ "V2|0.9|6|timing read | own input": [
+  0.9143179655075073
+ ],
+ "V2|0.9|6|timing read | input -1/+1": [
+  0.5865402221679688
+ ],
+ "V2|0.9|6|timing read | 1-step state": [
+  0.6350045204162598
+ ],
+ "V2|0.9|6|timing read | answer (4 steps)": [
+  0.5525293350219727
+ ],
+ "V2|0.9|6|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|6|state h | input -1/+1": [
+  0.5893405675888062
+ ],
+ "V2|0.9|6|state h | 1-step state": [
+  0.6688798666000366
+ ],
+ "V2|0.9|6|state h | answer (4 steps)": [
+  0.5528455376625061
+ ],
+ "V2|0.9|7|norm": [
+  197.62789916992188
+ ],
+ "V2|0.9|7|timing read | own input": [
+  0.8982836604118347
+ ],
+ "V2|0.9|7|timing read | input -1/+1": [
+  0.5842366516590118
+ ],
+ "V2|0.9|7|timing read | 1-step state": [
+  0.6333333253860474
+ ],
+ "V2|0.9|7|timing read | answer (4 steps)": [
+  0.5514905452728271
+ ],
+ "V2|0.9|7|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|7|state h | input -1/+1": [
+  0.5879403948783875
+ ],
+ "V2|0.9|7|state h | 1-step state": [
+  0.668157160282135
+ ],
+ "V2|0.9|7|state h | answer (4 steps)": [
+  0.551129162311554
+ ],
+ "V2|0.9|8|norm": [
+  220.05250549316406
+ ],
+ "V2|0.9|8|timing read | own input": [
+  0.8811653256416321
+ ],
+ "V2|0.9|8|timing read | input -1/+1": [
+  0.582068681716919
+ ],
+ "V2|0.9|8|timing read | 1-step state": [
+  0.6300361156463623
+ ],
+ "V2|0.9|8|timing read | answer (4 steps)": [
+  0.5500451922416687
+ ],
+ "V2|0.9|8|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|8|state h | input -1/+1": [
+  0.582542896270752
+ ],
+ "V2|0.9|8|state h | 1-step state": [
+  0.669241189956665
+ ],
+ "V2|0.9|8|state h | answer (4 steps)": [
+  0.5506775379180908
+ ],
+ "V2|0.9|9|norm": [
+  239.94290161132812
+ ],
+ "V2|0.9|9|timing read | own input": [
+  0.8722673654556274
+ ],
+ "V2|0.9|9|timing read | input -1/+1": [
+  0.5792682766914368
+ ],
+ "V2|0.9|9|timing read | 1-step state": [
+  0.6301264762878418
+ ],
+ "V2|0.9|9|timing read | answer (4 steps)": [
+  0.550000011920929
+ ],
+ "V2|0.9|9|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|9|state h | input -1/+1": [
+  0.5810975432395935
+ ],
+ "V2|0.9|9|state h | 1-step state": [
+  0.6692863702774048
+ ],
+ "V2|0.9|9|state h | answer (4 steps)": [
+  0.550858199596405
+ ],
+ "V2|0.9|10|norm": [
+  257.6906433105469
+ ],
+ "V2|0.9|10|timing read | own input": [
+  0.8611111044883728
+ ],
+ "V2|0.9|10|timing read | input -1/+1": [
+  0.5801716446876526
+ ],
+ "V2|0.9|10|timing read | 1-step state": [
+  0.6271905899047852
+ ],
+ "V2|0.9|10|timing read | answer (4 steps)": [
+  0.5500451922416687
+ ],
+ "V2|0.9|10|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|10|state h | input -1/+1": [
+  0.580962061882019
+ ],
+ "V2|0.9|10|state h | 1-step state": [
+  0.6680216789245605
+ ],
+ "V2|0.9|10|state h | answer (4 steps)": [
+  0.5503161549568176
+ ],
+ "V2|0.9|11|norm": [
+  273.6165466308594
+ ],
+ "V2|0.9|11|timing read | own input": [
+  0.8485998511314392
+ ],
+ "V2|0.9|11|timing read | input -1/+1": [
+  0.5789521336555481
+ ],
+ "V2|0.9|11|timing read | 1-step state": [
+  0.6257904171943665
+ ],
+ "V2|0.9|11|timing read | answer (4 steps)": [
+  0.5501806735992432
+ ],
+ "V2|0.9|11|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|11|state h | input -1/+1": [
+  0.5804426670074463
+ ],
+ "V2|0.9|11|state h | 1-step state": [
+  0.6668473482131958
+ ],
+ "V2|0.9|11|state h | answer (4 steps)": [
+  0.5492321848869324
+ ],
+ "V2|0.9|12|norm": [
+  287.97210693359375
+ ],
+ "V2|0.9|12|timing read | own input": [
+  0.8344173431396484
+ ],
+ "V2|0.9|12|timing read | input -1/+1": [
+  0.5786585509777069
+ ],
+ "V2|0.9|12|timing read | 1-step state": [
+  0.6282294392585754
+ ],
+ "V2|0.9|12|timing read | answer (4 steps)": [
+  0.5488708019256592
+ ],
+ "V2|0.9|12|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|12|state h | input -1/+1": [
+  0.5785456001758575
+ ],
+ "V2|0.9|12|state h | 1-step state": [
+  0.6677506566047668
+ ],
+ "V2|0.9|12|state h | answer (4 steps)": [
+  0.5487805008888245
+ ],
+ "V2|0.9|13|norm": [
+  300.9531555175781
+ ],
+ "V2|0.9|13|timing read | own input": [
+  0.8327913284301758
+ ],
+ "V2|0.9|13|timing read | input -1/+1": [
+  0.5795844495296478
+ ],
+ "V2|0.9|13|timing read | 1-step state": [
+  0.6266034245491028
+ ],
+ "V2|0.9|13|timing read | answer (4 steps)": [
+  0.549774169921875
+ ],
+ "V2|0.9|13|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|13|state h | input -1/+1": [
+  0.5805104076862335
+ ],
+ "V2|0.9|13|state h | 1-step state": [
+  0.6661246418952942
+ ],
+ "V2|0.9|13|state h | answer (4 steps)": [
+  0.5488256812095642
+ ],
+ "V2|0.9|14|norm": [
+  312.7139892578125
+ ],
+ "V2|0.9|14|timing read | own input": [
+  0.8252936005592346
+ ],
+ "V2|0.9|14|timing read | input -1/+1": [
+  0.5803523063659668
+ ],
+ "V2|0.9|14|timing read | 1-step state": [
+  0.6254742741584778
+ ],
+ "V2|0.9|14|timing read | answer (4 steps)": [
+  0.5483288168907166
+ ],
+ "V2|0.9|14|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|14|state h | input -1/+1": [
+  0.5790198743343353
+ ],
+ "V2|0.9|14|state h | 1-step state": [
+  0.6658536791801453
+ ],
+ "V2|0.9|14|state h | answer (4 steps)": [
+  0.5495031476020813
+ ],
+ "V2|0.9|15|norm": [
+  323.378662109375
+ ],
+ "V2|0.9|15|timing read | own input": [
+  0.8205962181091309
+ ],
+ "V2|0.9|15|timing read | input -1/+1": [
+  0.5782294273376465
+ ],
+ "V2|0.9|15|timing read | 1-step state": [
+  0.6257904171943665
+ ],
+ "V2|0.9|15|timing read | answer (4 steps)": [
+  0.549548327922821
+ ],
+ "V2|0.9|15|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|15|state h | input -1/+1": [
+  0.5776874423027039
+ ],
+ "V2|0.9|15|state h | 1-step state": [
+  0.6667118072509766
+ ],
+ "V2|0.9|15|state h | answer (4 steps)": [
+  0.5490063428878784
+ ],
+ "V2|0.9|16|norm": [
+  333.0479431152344
+ ],
+ "V2|0.9|16|timing read | own input": [
+  0.8168473243713379
+ ],
+ "V2|0.9|16|timing read | input -1/+1": [
+  0.5770776867866516
+ ],
+ "V2|0.9|16|timing read | 1-step state": [
+  0.6252032518386841
+ ],
+ "V2|0.9|16|timing read | answer (4 steps)": [
+  0.5489611625671387
+ ],
+ "V2|0.9|16|state h | own input": [
+  1.0
+ ],
+ "V2|0.9|16|state h | input -1/+1": [
+  0.5785682201385498
+ ],
+ "V2|0.9|16|state h | 1-step state": [
+  0.6649051308631897
+ ],
+ "V2|0.9|16|state h | answer (4 steps)": [
+  0.5479223132133484
+ ]
+}

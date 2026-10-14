@@ -1,0 +1,137 @@
+{
+ "run": "phaseclock_bounded_c0.14_wT0.34_lamfix0.5_20261014",
+ "step": 50778,
+ "n": 32,
+ "blocks": 48,
+ "seconds": 1.220037736929953,
+ "results": {
+  "hebb|lead0|naked": {
+   "mass_on_J": 0.2856972537823577,
+   "cells": 134,
+   "chance": 0.15699628573745045,
+   "density_J_vs_other_peers": 1.7694752251923973,
+   "mass_on_peers": 0.4025443632211258
+  },
+  "hebb|lead0|hidden": {
+   "mass_on_J": 0.2201200673277949,
+   "cells": 213,
+   "chance": 0.12992958283760178,
+   "density_J_vs_other_peers": 1.317132081224325,
+   "J_mass_unfixed_part": 0.07717180028207984,
+   "J_mass_fixed_part": 0.14294826704571503,
+   "J_unfixed_count": 3.9906103286384975
+  },
+  "order|lead0|naked": {
+   "mass_on_J": 0.21106385472995132,
+   "cells": 134,
+   "chance": 0.15699628573745045,
+   "density_J_vs_other_peers": 0.8289311537102088,
+   "mass_on_peers": 0.37858618551225803
+  },
+  "order|lead0|hidden": {
+   "mass_on_J": 0.21076073445064922,
+   "cells": 213,
+   "chance": 0.12992958283760178,
+   "density_J_vs_other_peers": 1.2317398859301643,
+   "J_mass_unfixed_part": 0.09528356202891175,
+   "J_mass_fixed_part": 0.11547715451236062,
+   "J_unfixed_count": 3.9906103286384975
+  },
+  "latency|lead0|naked": {
+   "mass_on_J": 0.24385170438396397,
+   "cells": 134,
+   "chance": 0.15699628573745045,
+   "density_J_vs_other_peers": 1.1695333452367072,
+   "mass_on_peers": 0.38018776053812964
+  },
+  "latency|lead0|hidden": {
+   "mass_on_J": 0.2114311182442965,
+   "cells": 213,
+   "chance": 0.12992958283760178,
+   "density_J_vs_other_peers": 1.2207375110035212,
+   "J_mass_unfixed_part": 0.0815836767635435,
+   "J_mass_fixed_part": 0.129847441480753,
+   "J_unfixed_count": 3.9906103286384975
+  },
+  "sameblock|lead0|naked": {
+   "mass_on_J": 0.239968541842788,
+   "cells": 134,
+   "chance": 0.15699628573745045,
+   "density_J_vs_other_peers": 1.1315662896455223,
+   "mass_on_peers": 0.3789036878898962
+  },
+  "sameblock|lead0|hidden": {
+   "mass_on_J": 0.21165652566112822,
+   "cells": 213,
+   "chance": 0.12992958283760178,
+   "density_J_vs_other_peers": 1.225985674790933,
+   "J_mass_unfixed_part": 0.08345912879621478,
+   "J_mass_fixed_part": 0.12819739686491344,
+   "J_unfixed_count": 3.9906103286384975
+  },
+  "hebb|lead2|naked": {
+   "mass_on_J": 0.2630210420978603,
+   "cells": 134,
+   "chance": 0.15699628573745045,
+   "density_J_vs_other_peers": 1.6275325034981343,
+   "mass_on_peers": 0.3755901678284602
+  },
+  "hebb|lead2|hidden": {
+   "mass_on_J": 0.19137798900335606,
+   "cells": 213,
+   "chance": 0.12992958283760178,
+   "density_J_vs_other_peers": 1.197216338394953,
+   "J_mass_unfixed_part": 0.065144785133326,
+   "J_mass_fixed_part": 0.12623320387003006,
+   "J_unfixed_count": 3.9906103286384975
+  },
+  "order|lead2|naked": {
+   "mass_on_J": 0.18234301325100571,
+   "cells": 134,
+   "chance": 0.15699628573745045,
+   "density_J_vs_other_peers": 0.7043478097488631,
+   "mass_on_peers": 0.31186229079516964
+  },
+  "order|lead2|hidden": {
+   "mass_on_J": 0.13453645661403316,
+   "cells": 213,
+   "chance": 0.12992958283760178,
+   "density_J_vs_other_peers": 0.8035325601067341,
+   "J_mass_unfixed_part": 0.05362430984425433,
+   "J_mass_fixed_part": 0.08091215572446725,
+   "J_unfixed_count": 3.9906103286384975
+  },
+  "latency|lead2|naked": {
+   "mass_on_J": 0.19720755050431438,
+   "cells": 134,
+   "chance": 0.15699628573745045,
+   "density_J_vs_other_peers": 0.8792343139648438,
+   "mass_on_peers": 0.3019933558222073
+  },
+  "latency|lead2|hidden": {
+   "mass_on_J": 0.1360991571990537,
+   "cells": 213,
+   "chance": 0.12992958283760178,
+   "density_J_vs_other_peers": 0.8175488682420041,
+   "J_mass_unfixed_part": 0.04695267296732871,
+   "J_mass_fixed_part": 0.08914648423172498,
+   "J_unfixed_count": 3.9906103286384975
+  },
+  "sameblock|lead2|naked": {
+   "mass_on_J": 0.19473021777708138,
+   "cells": 134,
+   "chance": 0.15699628573745045,
+   "density_J_vs_other_peers": 0.8761003408859025,
+   "mass_on_peers": 0.2989580524501516
+  },
+  "sameblock|lead2|hidden": {
+   "mass_on_J": 0.1352514884841274,
+   "cells": 213,
+   "chance": 0.12992958283760178,
+   "density_J_vs_other_peers": 0.8202494589935446,
+   "J_mass_unfixed_part": 0.04707730432071596,
+   "J_mass_fixed_part": 0.08817417520872305,
+   "J_unfixed_count": 3.9906103286384975
+  }
+ }
+}

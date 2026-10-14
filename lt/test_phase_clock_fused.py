@@ -78,7 +78,7 @@ class PhaseClockFusedTests(unittest.TestCase):
             torch.testing.assert_close(a, b, rtol=1e-5, atol=1e-5)
 
     def test_model_torch_and_triton_paths_agree(self):
-        for clock in ('integrate', 'leaky', 'displacement'):
+        for clock in ('integrate', 'leaky', 'displacement', 'bounded'):
             with self.subTest(clock=clock):
                 self._model_paths_agree(clock)
 
@@ -106,7 +106,7 @@ class PhaseClockFusedTests(unittest.TestCase):
             outs.append((read, phi, zk, zv))
             loss = (read * cot).sum() + phi.sin().sum() + zk.square().sum() + zv.sum()
             names = ['stdp_alpha', 'theta', 'clock_lam_raw']
-            if clock != 'displacement':
+            if clock not in ('displacement', 'bounded'):
                 names += ['clock_freq.weight', 'clock_dt.weight']
             if clock == 'leaky':
                 names += ['clock_omega_raw', 'clock_psi_lam_raw']

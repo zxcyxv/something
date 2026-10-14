@@ -71,7 +71,7 @@ def _rep2(x):
 
 
 def advance_clock(clock, dt, freq_k, freq_v, rate_k, rate_v, state, omega_bar=None, psi_rate_k=None, psi_rate_v=None,
-                  k_unit=None, v=None):
+                  k_unit=None, v=None, bound=None, omega_t=None):
     """Advance the clock state by one block; return this block's event tags and retentions.
 
     dt [B,H,T,1]; freq_k, freq_v [B,H,T,P] (angular velocities of the K and V neurons); rate_k, rate_v
@@ -85,6 +85,12 @@ def advance_clock(clock, dt, freq_k, freq_v, rate_k, rate_v, state, omega_bar=No
     clock 'displacement': no generator. state = (phase_k, phase_v, zk_prev, zv_prev); the tags accumulate each
                        pair's own angular displacement wrap(theta(k) - theta(k-1)), theta = atan2 of the unit
                        key pair (before RoPE) / the raw value pair, given as k_unit, v [B,H,T,D]. dt is 1.
+    clock 'bounded':   the displacement clock with block spacing and bounded latency (2026-10-14): state =
+                       (phase_k, phase_v, zk_prev, zv_prev, count [B,H,T,1]); the tags are
+                       bound * sin(phase_r) + count * omega_t, count = blocks run since the lane's puzzle started (0 in
+                       the first block). Same-block pairs see only the bounded latency difference; a pair k blocks apart
+                       gets +-k omega_t, so with omega_t > 2 bound and K omega_t + 2 bound < pi every pair up to K blocks
+                       apart takes its LTP/LTD sign from the block order.
     Returns (phase_k, phase_v, lam_k, lam_v, new_state), tags and retentions [B,H,T,P].
     """
     lam_k, lam_v = torch.exp(-rate_k * dt), torch.exp(-rate_v * dt)
@@ -93,17 +99,22 @@ def advance_clock(clock, dt, freq_k, freq_v, rate_k, rate_v, state, omega_bar=No
         phase_k = wrap_phase(phase_k + dt * freq_k)
         phase_v = wrap_phase(phase_v + dt * freq_v)
         return phase_k, phase_v, lam_k, lam_v, (phase_k, phase_v)
-    if clock == 'displacement':
+    if clock in ('displacement', 'bounded'):
         # Parameter-free tags observed from the neurons themselves: each pair's own angular displacement
         # between consecutive blocks, accumulated since the puzzle start (a constant per-pair rotation of the
         # basis -- the gauge of the pair angle -- cancels in the displacement). The previous unit phasor is
         # carried; it is zero for a fresh lane, which makes the first displacement 0 (tags start at 0).
-        phase_k, phase_v, zk_prev, zv_prev = state
+        phase_k, phase_v, zk_prev, zv_prev = state[:4]
         dk, zk = _pair_displacement(k_unit, zk_prev)
         dv, zv = _pair_displacement(v, zv_prev)
         phase_k = wrap_phase(phase_k + dk)
         phase_v = wrap_phase(phase_v + dv)
-        return phase_k, phase_v, lam_k, lam_v, (phase_k, phase_v, zk, zv)
+        if clock == 'displacement':
+            return phase_k, phase_v, lam_k, lam_v, (phase_k, phase_v, zk, zv)
+        count = state[4]
+        tag_k = bound * torch.sin(phase_k) + count * omega_t
+        tag_v = bound * torch.sin(phase_v) + count * omega_t
+        return tag_k, tag_v, lam_k, lam_v, (phase_k, phase_v, zk, zv, count + 1)
     if clock != 'leaky':
         raise ValueError(clock)
     psi_k, psi_v, carrier = state
@@ -172,12 +183,14 @@ class ZeroLinear(torch.nn.Module):
 
 
 def model_class(lambda_init=0.1, alpha_init=1.0, dt_init=1.0, boundary_ffn='swiglu', kernel='torch',
-                feature_precision='float32', clock_precision='float32', clock='integrate', rho_init=0.5):
+                feature_precision='float32', clock_precision='float32', clock='integrate', rho_init=0.5,
+                bound=0.14, omega_t=0.34, freeze_lambda=False):
     """kernel 'torch': the block above in plain torch (any device, FP64 checks). 'triton': the fused kernel
     (lt/phase_clock_fused.py) on CUDA, with the phase advance and retentions in torch; feature_precision
     'bfloat16' rounds the kernel's dot operands to BF16 (FP32 accumulation, FP32 traces and phases).
     clock: see advance_clock. 'leaky' adds clock_omega_raw [H] (carrier velocity pi tanh, init 0) and
-    clock_psi_lam_raw [2, H, P] (latency leak; rho = rho_init per block at dt = dt_init)."""
+    clock_psi_lam_raw [2, H, P] (latency leak; rho = rho_init per block at dt = dt_init). 'bounded' uses the fixed
+    constants bound and omega_t (no parameters). freeze_lambda keeps clock_lam_raw at its initial value (no gradient)."""
     if boundary_ffn not in ('bilinear', 'swiglu'):
         raise ValueError(boundary_ffn)
     if kernel not in ('torch', 'triton'):
@@ -186,7 +199,7 @@ def model_class(lambda_init=0.1, alpha_init=1.0, dt_init=1.0, boundary_ffn='swig
         raise ValueError(feature_precision)
     if clock_precision not in ('float32', 'bfloat16'):
         raise ValueError(clock_precision)
-    if clock not in ('integrate', 'leaky', 'displacement'):
+    if clock not in ('integrate', 'leaky', 'displacement', 'bounded'):
         raise ValueError(clock)
     if not 0 < lambda_init < 1:
         raise ValueError('lambda_init must lie in (0, 1).')
@@ -210,19 +223,20 @@ def model_class(lambda_init=0.1, alpha_init=1.0, dt_init=1.0, boundary_ffn='swig
             # the initial values of the pairangle runs at the same seed. theta_k_raw/theta_v_raw
             # and trace_lam_raw stay allocated and unused, as in those runs.
             for layer in self.layers:
-                if clock != 'displacement':
+                if clock not in ('displacement', 'bounded'):
                     layer.clock_dt = ZeroLinear(self.d, self.H, t.inv_softplus(dt_init))
                     layer.clock_freq = ZeroLinear(self.d, 2 * self.H * self.P)
                 # 'lam_raw' puts the decay rates in the trainer's no-decay group.
                 layer.clock_lam_raw = torch.nn.Parameter(
-                    torch.full((2, self.H, self.P), float(t.inv_softplus(rate_init))))
+                    torch.full((2, self.H, self.P), float(t.inv_softplus(rate_init))), requires_grad=not freeze_lambda)
                 layer.stdp_alpha = torch.nn.Parameter(torch.full((self.H,), float(alpha_init)))
                 if clock == 'leaky':
                     layer.clock_omega_raw = torch.nn.Parameter(torch.zeros(self.H))
                     layer.clock_psi_lam_raw = torch.nn.Parameter(
                         torch.full((2, self.H, self.P), float(t.inv_softplus(psi_rate_init))))
             self.clock = clock
-            self.clock_width = {'integrate': 2, 'leaky': 2, 'displacement': 6}[clock] * self.P + (1 if clock == 'leaky' else 0)
+            self.clock_width = {'integrate': 2, 'leaky': 2, 'displacement': 6, 'bounded': 6}[clock] * self.P \
+                + (1 if clock in ('leaky', 'bounded') else 0)
 
         def boundary(self, layer, hidden):
             if boundary_ffn == 'bilinear':
@@ -290,18 +304,19 @@ def model_class(lambda_init=0.1, alpha_init=1.0, dt_init=1.0, boundary_ffn='swig
             return clk, (ek_re, ek_im, ev_re, ev_im)
 
         def clock_split(self, P):
-            return {'integrate': (P, P), 'leaky': (P, P, 1), 'displacement': (P, P, 2 * P, 2 * P)}[self.clock]
+            return {'integrate': (P, P), 'leaky': (P, P, 1), 'displacement': (P, P, 2 * P, 2 * P),
+                    'bounded': (P, P, 2 * P, 2 * P, 1)}[self.clock]
 
         def advance(self, layer, hidden, clk, dtype, k_unit=None, v=None):
             """This block's tags and retentions; returns them with the packed clock state.
-            'displacement' reads the tags from k_unit (unit key before RoPE) and v; the others from the block input."""
-            if self.clock == 'displacement':
+            'displacement' and 'bounded' read the tags from k_unit (unit key before RoPE) and v; the others from the block input."""
+            if self.clock in ('displacement', 'bounded'):
                 B, H, T, D = k_unit.shape
                 with torch.autocast(device_type=k_unit.device.type, enabled=False):
                     rate = torch.nn.functional.softplus(layer.clock_lam_raw.to(dtype))[:, None, :, None, :]
                     one = k_unit.new_ones(1, 1, 1, 1, dtype=dtype)
-                    phase_k, phase_v, lam_k, lam_v, clk = advance_clock('displacement', one, None, None, rate[0], rate[1], clk,
-                                                                        k_unit=k_unit, v=v)
+                    phase_k, phase_v, lam_k, lam_v, clk = advance_clock(self.clock, one, None, None, rate[0], rate[1], clk,
+                                                                        k_unit=k_unit, v=v, bound=bound, omega_t=omega_t)
                     lam_k, lam_v = (x.expand(B, H, T, D // 2).contiguous() for x in (lam_k, lam_v))
                 return phase_k, phase_v, lam_k, lam_v, torch.cat(clk, -1)
             dt, freq_k, freq_v, rate_k, rate_v = self.clock_inputs(layer, hidden, dtype)
@@ -350,7 +365,7 @@ def model_class(lambda_init=0.1, alpha_init=1.0, dt_init=1.0, boundary_ffn='swig
                 clk, ek, ev = (torch.where(mask, torch.zeros_like(x), x) for x in (clk, ek, ev))
             P = D // 2
             clk = tuple(clk.split(self.clock_split(P), -1))
-            if self.clock == 'displacement':
+            if self.clock in ('displacement', 'bounded'):
                 kf = k.to(dtype)
                 kf = kf / (torch.linalg.vector_norm(kf, dim=-1, keepdim=True) + self.config.eps)
                 phase_k, phase_v, lam_k, lam_v, clk = self.advance(layer, hidden, clk, dtype, k_unit=kf, v=v.to(dtype))
@@ -370,7 +385,8 @@ def make_model(protocol, cfg, device, state=None, seed=None, kernel=None):
     t.KVSTDPInner = model_class(protocol['lambda_init'], protocol['alpha_init'], protocol['dt_init'],
                                 protocol['boundary_ffn'], kernel or protocol.get('kernel', 'torch'),
                                 protocol.get('feature_precision', 'float32'), protocol.get('clock_precision', 'float32'),
-                                protocol.get('clock', 'integrate'), protocol.get('rho_init', 0.5))
+                                protocol.get('clock', 'integrate'), protocol.get('rho_init', 0.5),
+                                protocol.get('bound', 0.14), protocol.get('omega_t', 0.34), protocol.get('freeze_lambda', False))
     if seed is not None:
         torch.manual_seed(seed)
     model_cfg = dict(cfg, batch_size=cfg['global_batch_size'], seq_len=81, num_puzzle_identifiers=1)
@@ -528,6 +544,39 @@ def _check_displacement_clock(generator):
     assert all(bool(torch.isfinite(x.grad).all()) for x in ks + vs)
 
 
+def _check_bounded_clock(generator):
+    """The bounded clock's tags equal bound * sin(summed wrapped pair-angle differences since the lane's reset)
+    + n * omega_t, n = blocks since the reset (0 in the reset block), with a mid-run reset of one lane."""
+    g = generator
+    B, H, T, P, blocks = 2, 2, 4, 3, 7
+    D = 2 * P
+    bound, omega_t = 0.14, 0.34
+    rate = torch.ones(1, H, 1, P)
+    angle = lambda x: torch.atan2(x[..., 1::2], x[..., 0::2])
+    clk = (torch.zeros(B, H, T, P), torch.zeros(B, H, T, P), torch.zeros(B, H, T, D), torch.zeros(B, H, T, D),
+           torch.zeros(B, H, T, 1))
+    ref_k, ref_v, prev_k, prev_v = torch.zeros(B, H, T, P), torch.zeros(B, H, T, P), None, None
+    n = torch.zeros(B, 1, 1, 1)
+    for i in range(blocks):
+        k, v = torch.randn(B, H, T, D, generator=g), torch.randn(B, H, T, D, generator=g)
+        if i == 3:
+            mask = torch.tensor([True, False]).view(-1, 1, 1, 1)
+            clk = tuple(torch.where(mask, torch.zeros_like(x), x) for x in clk)
+            ref_k, ref_v = torch.where(mask, torch.zeros_like(ref_k), ref_k), torch.where(mask, torch.zeros_like(ref_v), ref_v)
+            prev_k = torch.where(mask, torch.full_like(prev_k, float('nan')), prev_k)
+            prev_v = torch.where(mask, torch.full_like(prev_v, float('nan')), prev_v)
+            n = torch.where(mask, torch.zeros_like(n), n)
+        tag_k, tag_v, _, _, clk = advance_clock('bounded', torch.ones(1, 1, 1, 1), None, None, rate, rate, clk,
+                                                 k_unit=k, v=v, bound=bound, omega_t=omega_t)
+        if prev_k is not None:
+            ref_k = ref_k + torch.nan_to_num(wrap_phase(angle(k) - prev_k), nan=0.0)
+            ref_v = ref_v + torch.nan_to_num(wrap_phase(angle(v) - prev_v), nan=0.0)
+        prev_k, prev_v = angle(k), angle(v)
+        torch.testing.assert_close(tag_k, bound * torch.sin(ref_k) + n * omega_t, rtol=1e-9, atol=1e-11, msg=f'K tag, block {i}')
+        torch.testing.assert_close(tag_v, bound * torch.sin(ref_v) + n * omega_t, rtol=1e-9, atol=1e-11, msg=f'V tag, block {i}')
+        n = n + 1
+
+
 def _check_leaky_clock(generator):
     """The leaky clock recursion equals the explicit sums: carrier = wrap(sum dt omega_bar) and
     psi(b) = sum_j [prod_{r=j+1..b} rho(r)] dt(j) freq(j), with a mid-run reset of one lane."""
@@ -570,6 +619,9 @@ def selftest():
         _check_leaky_clock(torch.Generator().manual_seed(17))
         checks.append('leaky clock: carrier and latency recursions equal their explicit sums, with a mid-run reset')
         _check_displacement_clock(torch.Generator().manual_seed(19))
+        _check_bounded_clock(torch.Generator().manual_seed(23))
+        checks.append('bounded clock: tags equal bound * sin(summed wrapped pair-angle differences) + blocks since reset * omega_t, '
+                      'with a mid-run reset')
         checks.append('displacement clock: tags equal the summed wrapped pair-angle differences since reset, are invariant '
                       'to a constant per-pair basis rotation (gauge), finite gradients')
 
@@ -585,7 +637,7 @@ def selftest():
                         labels=torch.randint(2, 11, (2, 81), generator=gen),
                         puzzle_identifiers=torch.zeros(2, dtype=torch.int32))
         batch, alt = batch_of(1), batch_of(2)
-        for clock in ('integrate', 'leaky', 'displacement'):
+        for clock in ('integrate', 'leaky', 'displacement', 'bounded'):
             _model_checks(clock, cfg, batch, alt, checks, close)
     finally:
         t.KVSTDPInner = old_inner
@@ -607,7 +659,7 @@ def _model_checks(clock, cfg, batch, alt, checks, close):
     base = build()
     lt, inner = base.model, base.model.inner
     base.eval()
-    if clock == 'displacement':
+    if clock in ('displacement', 'bounded'):
         lt.config.blocks_per_seg = 1          # tags are 0 in a lane's first block only (no previous event)
     with torch.no_grad():
         ca, oa = lt(lt.initial_carry(batch), batch)
@@ -620,7 +672,7 @@ def _model_checks(clock, cfg, batch, alt, checks, close):
     assert torch.equal(oa['logits'], ob['logits']) and torch.equal(ca.current_hidden, cb.current_hidden)
     phases = ca.coupling[..., :2 * inner.P]
     assert int(torch.count_nonzero(phases)) == 0 and ca.coupling.shape[-1] == inner.clock_width
-    checks.append(('first block: tags are exactly 0 and the forward equals alpha = 0 (B-only)' if clock == 'displacement'
+    checks.append(('first block: tags are exactly 0 and the forward equals alpha = 0 (B-only)' if clock in ('displacement', 'bounded')
                    else 'initialization: phases are exactly 0 and the forward equals alpha = 0 (B-only)') + tag)
 
     _activate_clock(inner, torch.Generator().manual_seed(12))
@@ -657,7 +709,7 @@ def _model_checks(clock, cfg, batch, alt, checks, close):
     _, loss, *_ = fresh_model(carry=fresh_model.initial_carry(batch), batch=batch, return_keys=set())
     loss.backward()
     layer = fresh_model.model.inner.layers[0]
-    if clock == 'displacement':
+    if clock in ('displacement', 'bounded'):
         # no generator: the only clock parameters are the decay rates and alpha, both live from the start
         for name in ('clock_lam_raw', 'stdp_alpha'):
             assert float(layer.get_parameter(name).grad.abs().max()) > 0, name
@@ -673,11 +725,11 @@ def _model_checks(clock, cfg, batch, alt, checks, close):
     for name in zero:
         grad = layer.get_parameter(name).grad
         assert grad is None or float(grad.abs().max()) == 0.0, name
-    if clock != 'displacement':
+    if clock not in ('displacement', 'bounded'):
         checks.append('at initialization only the frequency head' + (' and the carrier velocity' if clock == 'leaky' else '')
                       + ' have a gradient (dt, decay, latency leak and alpha are exactly 0)' + tag)
 
-    params = (['clock_lam_raw', 'stdp_alpha'] if clock == 'displacement'
+    params = (['clock_lam_raw', 'stdp_alpha'] if clock in ('displacement', 'bounded')
               else list(CLOCK_PARAMETERS) + (['clock_omega_raw', 'clock_psi_lam_raw'] if clock == 'leaky' else []))
     models = []
     for checkpointing in (False, True):
@@ -776,11 +828,15 @@ def main():
                     help='fused Triton block (lt/phase_clock_fused.py) or the plain torch block')
     ap.add_argument('--feature-precision', choices=('bfloat16', 'float32'), default='bfloat16',
                     help='dot operands of the fused kernel (FP32 accumulation; traces, phases and norms stay FP32)')
-    ap.add_argument('--clock', choices=('displacement', 'leaky', 'integrate'), default='displacement',
-                    help="'displacement': no generator; tags = each pair's own accumulated angular displacement (third run); "
+    ap.add_argument('--clock', choices=('displacement', 'leaky', 'integrate', 'bounded'), default='displacement',
+                    help="'bounded': displacement tags bounded to bound*sin(.) plus blocks-since-start * omega_t (2026-10-14); "
+                         "'displacement': no generator; tags = each pair's own accumulated angular displacement (third run); "
                          "'leaky': common carrier per head + leaky neuron latencies (second run); "
                          "'integrate': every neuron integrates its own velocity (first run)")
     ap.add_argument('--rho-init', type=float, default=0.5, help='initial latency retention per block at dt = dt-init (leaky clock)')
+    ap.add_argument('--bound', type=float, default=0.14, help='bounded clock: latency amplitude c (tags c sin(phase))')
+    ap.add_argument('--omega-t', type=float, default=0.34, help='bounded clock: phase advance per block (block spacing)')
+    ap.add_argument('--freeze-lambda', action='store_true', help='keep the trace retentions at --lambda-init (no gradient)')
     ap.add_argument('--clock-precision', choices=('float32', 'bfloat16'), default='float32',
                     help='the dt and frequency affine maps: FP32 outside autocast (default) or BF16 like the Q/K/V projections')
     ap.add_argument('--precision', choices=('highest', 'high'), default='highest')
@@ -810,6 +866,10 @@ def main():
         name += f'_leaky_rho{opt.rho_init:g}'
     elif opt.clock == 'displacement':
         name += '_disp'
+    elif opt.clock == 'bounded':
+        name += f'_bounded_c{opt.bound:g}_wT{opt.omega_t:g}'
+    if opt.freeze_lambda:
+        name += '_lamfix'
     if opt.boundary_ffn != 'bilinear':
         name += '_' + opt.boundary_ffn
     if opt.nograd_fixed:
@@ -831,7 +891,8 @@ def main():
                research_variant=name, research_matmul_precision=opt.precision,
                clock_no_decay=opt.clock_no_decay)
     t.KVSTDPInner = model_class(opt.lambda_init, opt.alpha_init, opt.dt_init, opt.boundary_ffn,
-                                opt.kernel, opt.feature_precision, opt.clock_precision, opt.clock, opt.rho_init)
+                                opt.kernel, opt.feature_precision, opt.clock_precision, opt.clock, opt.rho_init,
+                                opt.bound, opt.omega_t, opt.freeze_lambda)
     t.model_id_of = lambda c: ORIGINAL_MODEL_ID(c) + ':research-' + name
     ffn = 'h + D(silu(g) u)' if opt.boundary_ffn == 'swiglu' else 'h + D(g/2 * u)'
     protocol = dict(
@@ -840,6 +901,7 @@ def main():
         boundary_ffn=opt.boundary_ffn, clock_no_decay=opt.clock_no_decay,
         kernel=opt.kernel, feature_precision=opt.feature_precision if opt.kernel == 'triton' else 'float32',
         clock_precision=opt.clock_precision, clock=opt.clock, rho_init=opt.rho_init,
+        bound=opt.bound, omega_t=opt.omega_t, freeze_lambda=opt.freeze_lambda,
         clock_state=('leaky: carrier Phi <- wrap(Phi + dt pi tanh(clock_omega_raw[h])) per cell and head, shared by K and V; '
                      'latency psi_r <- exp(-softplus(clock_psi_lam_raw[r]) dt) psi_r + dt w_r (bounded, content-driven); '
                      'tags phi_r = wrap(Phi + psi_r); coupling = cat(psi_K, psi_V, Phi) [B,H,T,2P+1]'
@@ -848,6 +910,11 @@ def main():
                      'theta_K = atan2 of the unit key pair before RoPE, theta_V = atan2 of the raw value pair; 0 in a lane\'s first block; '
                      'dt = 1, lam_r = exp(-softplus(clock_lam_raw[r])); coupling = cat(phi_K, phi_V, zK_prev, zV_prev) [B,H,T,6P]'
                      if opt.clock == 'displacement' else
+                     f'bounded: displacement phases phi_r (as above, carried with zK_prev, zV_prev) and a per-lane block counter n '
+                     f'(0 in a puzzle\'s first block); tags = {opt.bound:g} sin(phi_r) + n * {opt.omega_t:g} for K and V; '
+                     f'coupling = cat(phi_K, phi_V, zK_prev, zV_prev, n) [B,H,T,6P+1]; lambda '
+                     + ('fixed' if opt.freeze_lambda else 'learned') + f' (init {opt.lambda_init:g})'
+                     if opt.clock == 'bounded' else
                      'integrate: phi_r <- wrap(phi_r + dt w_r) per neuron; coupling = cat(phi_K, phi_V) [B,H,T,2P]'),
         kernel_note=('lt/phase_clock_fused.py: L2 norm, RoPE, phase tags, trace update, five feature GEMMs and the read '
                      'in one Triton forward kernel; phase advance, retentions and the fresh-lane reset in torch'
