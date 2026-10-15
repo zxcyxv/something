@@ -1,0 +1,8 @@
+{
+  "_comment": "Run A of 2026-10-14: bounded phase clock, rho = 0 (G = Hebb + alpha Im S). 50,800 steps, RTX 4090 ~90 ms/step.",
+  "outer_rho": 0.0,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 25,
+  "log_every": 250
+}

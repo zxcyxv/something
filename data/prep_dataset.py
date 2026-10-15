@@ -3,7 +3,7 @@
 무엇을 만드는가
     `sudoku-extreme` 의 train.csv 에서 **1,000개를 서브샘플**하고, test.csv 의 **앞 2,048개**를 잘라
     하나의 `sudoku_lt_1k.npz` 로 저장한다. 증강 1,000배는 업로드하지 않는다 —
-    `train_kaggle.py` 가 학습 중에 같은 규칙으로 즉석 생성한다 (원본 1.3GB → 여기서는 ~130KB).
+    `lt/data.py` 가 학습 중에 같은 규칙으로 즉석 생성한다 (원본 1.3GB → 여기서는 ~130KB).
 
 무엇을 그대로 따랐는가 (`refs/URM/data/build_sudoku_dataset.py`)
     - 시드: `np.random.seed(int(os.environ.get("LT_SEED", "0")))` 를 **train 변환 직전에 1회**.
@@ -18,9 +18,9 @@
       (증강은 0=빈칸 좌표계에서 돌아야 자릿수 치환 `digit_map` 이 원본과 같은 식이 된다).
 
 사용
-    python kaggle/prep_dataset.py                      # 기본: HF 캐시/로컬 CSV 자동 탐색
-    python kaggle/prep_dataset.py --out /tmp/upload    # 업로드 디렉터리 지정
-    LT_SEED=0 python kaggle/prep_dataset.py            # 시드는 원본과 같은 env 이름
+    python data/prep_dataset.py                      # 기본: HF 캐시/로컬 CSV 자동 탐색
+    python data/prep_dataset.py --out /tmp/upload    # 업로드 디렉터리 지정
+    LT_SEED=0 python data/prep_dataset.py            # 시드는 원본과 같은 env 이름
 """
 import argparse
 import csv

@@ -1,0 +1,9 @@
+{
+  "_comment": "Model B (not yet run): leaky outer integral W <- rho W + Im S of the STDP increment, read Hebb + alpha W. Torch path (the fused kernel is rho = 0 only). Next proposal after rho 0.5: rho 0.9 with alpha_init 0.1 (equilibrium |W| = |Im S| / (1 - rho)).",
+  "outer_rho": 0.5,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 25,
+  "milestone_every": 10000,
+  "log_every": 250
+}

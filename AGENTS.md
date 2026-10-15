@@ -19,13 +19,13 @@
   다른 정규화 구조가 필요한 신규 실험은 사용자가 명시한 경우 예외로 적용하고,
   설정 및 실험 메타데이터에 차이를 기록한다.
 
-참조 구현: `lt/kv_stability.py`의 `URMNormCurrentReadInner`.
+참조 구현: `lt/model.py`의 `LT.block_step`.
 
 # 체크포인트·디스크 관리 규칙
 
 - 런마다 체크포인트는 최대 25개 보존한다 (`--keep-last 25`).
 - 새 아키텍처 실험을 시작할 때마다 직전 실험의 체크포인트(`step_*.pt`)를 workspace에서
-  모두 지우고 시작한다. 로그·설정·평가 기록은 지우기 전에 `docs/research/`에 보관한다.
+  모두 지우고 시작한다. 로그·설정·평가 기록은 지우기 전에 `docs/evidence/<런>/`에 보관한다.
 - 장기 런(10만 스텝 이상)의 체크포인트는 예외로 보관한다.
 - 커밋·푸시에는 체크포인트를 포함하지 않는다(장기 런 보관본 제외).
 - 장기 런의 보관본은 `checkpoints/`에 가중치만 담은 경량본(raw + EMA 가중치, cfg, protocol)으로 커밋한다.
@@ -35,7 +35,7 @@
 # 측정 규칙
 
 - 과적합(학습 퍼즐 대 held-out 격차)은 같은 가중치(EMA), 같은 평가 조건(새 carry, 16세그먼트)으로
-  학습 퍼즐과 held-out을 각각 평가해 잰다(`lt/probe_stdp_memorization.py`, `lt/extrapolate_free_phase.py --split train`).
+  학습 퍼즐과 held-out을 각각 평가해 잰다(`python -m lt.analysis.extrapolate CK --split train` 과 `--split test`).
   학습 중 기록되는 종료 세그먼트 지표(train.jsonl)는 같은 배치로 세그먼트마다 연속 갱신된 뒤의 값이라
   배치 내 적응이 섞여 있으며, 과적합 판단에 쓰지 않는다.
 
@@ -43,3 +43,12 @@
 
 - 질문을 받으면 그 질문에 먼저 직접 답한다. 부수적인 지적은 짧게 덧붙이거나 나중으로 미룬다.
 - 장기 학습 중에는 평가마다 보고하지 않는다. 약 1만 스텝 단위와 오류, 요청받은 시점에만 보고한다.
+
+# 저장소 구성 규칙
+
+- main에는 현재 가장 발전된 모델의 작동 코드(`lt/`), 그 검사(`tests/`), 핵심 해석 도구(`lt/analysis/`)만 둔다.
+  일회용 분석 스크립트는 커밋하지 않거나, 결론이 나면 결과 JSON만 `docs/evidence/`에 남긴다.
+- 문서는 `docs/architecture.md`(현재 구조와 그 정당화)와 `docs/results.md`(결과·부정 결과·미결)를 갱신한다.
+  새 증거가 기존 서술과 어긋나면 틀린 쪽을 고치고, 버린 관점은 architecture.md 마지막 절에 한 줄로 남긴다.
+- `lt/`를 바꾸면 `python kaggle/build_cell.py`로 Kaggle 셀을 다시 생성하고 `python -m unittest discover tests`를 통과시킨다.
+- 리팩토링 전 기록은 브랜치 `archive/pre-refactor-2026-10-15`에 있다.
