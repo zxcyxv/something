@@ -191,6 +191,26 @@ class Model(unittest.TestCase):
                 self.assertIsNone(carry.stdp_w)
             self.assertEqual(int(carry.clock[..., -1].max()), 2 * m.config.blocks_per_seg)
 
+    def test_without_hebb(self):
+        """hebb=False: the write is alpha Im S only, so with alpha = 0 the memory read is zero and the value projection
+        has no effect; with alpha != 0 the Hebbian and no-Hebbian models differ."""
+        torch.manual_seed(0)
+        outs = {}
+        for hebb in (True, False):
+            torch.manual_seed(0)
+            m = LT(tiny(hebb=hebb)).double().eval()
+            with torch.no_grad():
+                for p in m.parameters():
+                    p.add_(torch.randn_like(p) * 0.3)
+            outs[hebb] = m(m.initial_carry(batch(2)), batch(2))[1]
+            if not hebb:
+                with torch.no_grad():
+                    m.block.alpha.zero_()
+                    ref = m(m.initial_carry(batch(2)), batch(2))[1]
+                    m.block.v_proj.weight.normal_()
+                    torch.testing.assert_close(m(m.initial_carry(batch(2)), batch(2))[1], ref)
+        self.assertGreater(float((outs[True] - outs[False]).abs().max()), 1e-3)
+
     def test_initial_step_and_gradients(self):
         """Every trainable parameter gets a finite gradient; alpha does once the clock has moved."""
         torch.manual_seed(0)

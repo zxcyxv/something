@@ -1,0 +1,8 @@
+[EVAL] step 1953 acc 0.4957 exact 0/2048
+[EVAL] step 3906 acc 0.6152 exact 6/2048
+[EVAL] step 5859 acc 0.6557 exact 101/2048
+[EVAL] step 7812 acc 0.6629 exact 203/2048
+[EVAL] step 9765 acc 0.6660 exact 184/2048
+[EXTRAP] step 10000: seg16 47/512 -> best 55 (seg 95), error reduction 1.7%
+[EVAL] step 11718 acc 0.6788 exact 276/2048
+[EVAL] step 13671 acc 0.6748 exact 275/2048

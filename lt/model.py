@@ -10,7 +10,7 @@ One shared block, run 8 times per segment and 16 segments per puzzle (docs/archi
     traces: E_K <- lam E_K + (1 - lam) k^ e^{-i tau_K};   D_V = lam E_V;   E_V <- D_V + (1 - lam) v e^{+i tau_V}
     Im S  = Im sum_t [ (v e^{i tau_V}) RoPE(E_K)^T + D_V (k~ e^{-i tau_K})^T ]          (token sums, V rows, K cols)
     W     = rho W + Im S                                     (model B; rho = 0 is model A: W = Im S)
-    read  = q~ (sum_t v k~^T + alpha_h W)^T
+    read  = q~ (sum_t v k~^T + alpha_h W)^T                  (hebb=False drops sum_t v k~^T)
     h'    = RMSNorm(u + W_O read);   h = RMSNorm(h' + W_D(silu(g) * a)),  [g; a] = W_GU h'
 
 Every (post = V, pre = K) event pair of the same cell since the puzzle started is counted exactly once with weight
@@ -53,6 +53,7 @@ class ModelConfig:
     trace_lambda: float = 0.5         # lam_K = lam_V
     outer_rho: float = 0.0            # rho of W (0: model A)
     alpha_init: float = 1.0           # alpha_h at initialization
+    hebb: bool = True                 # include the Hebbian carrier sum_t v k~^T in the write (False: G = alpha Im S)
     kernel: str = 'auto'              # auto | torch | triton
     kernel_bf16: bool = True          # BF16 dot operands in the fused kernel (FP32 accumulation)
     amp: bool = True                  # BF16 autocast for projections and FFN where native
@@ -69,8 +70,8 @@ class ModelConfig:
             raise ValueError('need 0 < trace_lambda < 1, 0 <= outer_rho < 1, tag_bound >= 0, eps > 0')
         if self.kernel not in ('auto', 'torch', 'triton'):
             raise ValueError('kernel must be auto, torch or triton')
-        if self.kernel == 'triton' and self.outer_rho:
-            raise ValueError('the fused kernel implements outer_rho = 0 only')
+        if self.kernel == 'triton' and (self.outer_rho or not self.hebb):
+            raise ValueError('the fused kernel implements outer_rho = 0 with the Hebbian term only')
 
     @classmethod
     def from_dict(cls, d: dict) -> 'ModelConfig':
@@ -282,7 +283,8 @@ class LT(nn.Module):
         return inj
 
     def use_kernel(self, device, dtype):
-        if self.probe is not None or self.config.outer_rho or device.type != 'cuda' or dtype == torch.float64:
+        if (self.probe is not None or self.config.outer_rho or not self.config.hebb or device.type != 'cuda'
+                or dtype == torch.float64):
             return False
         if self.config.kernel == 'auto':
             return torch.cuda.get_device_capability(device) >= (8, 0)
@@ -322,7 +324,8 @@ class LT(nn.Module):
                 w = cfg.outer_rho * w.to(dtype) + im_s
                 im_s = w
             alpha = self.block.alpha.to(dtype)[None, :, None, None]
-            read = qr @ (hebb + alpha * im_s).transpose(-1, -2)
+            write = hebb + alpha * im_s if cfg.hebb else alpha * im_s
+            read = qr @ write.transpose(-1, -2)
         return read, (clock, torch.cat(new[:2], -1), torch.cat(new[2:], -1), w)
 
     def block_step(self, h, inj, state):

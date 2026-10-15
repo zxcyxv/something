@@ -1,0 +1,10 @@
+{
+  "_comment": "Model A without the Hebbian carrier: G = alpha_h Im S (order part O + latency part L only). Torch path (the fused kernel always adds Hebb).",
+  "outer_rho": 0.0,
+  "hebb": false,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 4,
+  "milestone_every": 10000,
+  "log_every": 250
+}

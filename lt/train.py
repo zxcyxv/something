@@ -40,7 +40,7 @@ FORMAT = 'lt-bounded-phase-clock-stdp-v1'
 DEFAULTS = dict(
     # model (lt.model.ModelConfig)
     hidden_size=832, num_heads=8, blocks_per_seg=8, loops=16, mlp_expansion=4.0, puzzle_emb_ndim=832, eps=1e-4,
-    tag_bound=0.14, block_omega=0.34, trace_lambda=0.5, outer_rho=0.0, alpha_init=1.0,
+    tag_bound=0.14, block_omega=0.34, trace_lambda=0.5, outer_rho=0.0, alpha_init=1.0, hebb=True,
     kernel='auto', kernel_bf16=True, amp=True,
     # data
     data_npz=None, test_size=2048, num_aug=1000,
@@ -54,7 +54,7 @@ DEFAULTS = dict(
     dataloader_workers=1)
 # A checkpoint resumes only under the same values of these keys (plus the data fingerprint).
 RECIPE_KEYS = ('hidden_size', 'num_heads', 'blocks_per_seg', 'loops', 'mlp_expansion', 'puzzle_emb_ndim', 'eps',
-               'tag_bound', 'block_omega', 'trace_lambda', 'outer_rho', 'alpha_init', 'num_aug', 'test_size',
+               'tag_bound', 'block_omega', 'trace_lambda', 'outer_rho', 'alpha_init', 'hebb', 'num_aug', 'test_size',
                'global_batch_size', 'epochs', 'eval_interval', 'lr', 'lr_warmup_steps', 'weight_decay', 'beta1',
                'beta2', 'puzzle_emb_lr', 'puzzle_emb_weight_decay', 'ema_rate', 'seed', 'data_fingerprint')
 METRICS = ('count', 'accuracy', 'exact_accuracy', 'lm_loss')
@@ -270,7 +270,8 @@ def load_checkpoint(path, model, optimizers, ema, cfg, rank, ws, device):
     ck = torch.load(path, map_location='cpu', weights_only=False)        # trusted files only (RNG/optimizer objects)
     if ck.get('format') != FORMAT:
         raise ValueError(f'{path}: not a {FORMAT} training checkpoint')
-    changed = {k: (ck['cfg'].get(k), cfg.get(k)) for k in RECIPE_KEYS if ck['cfg'].get(k) != cfg.get(k)}
+    saved = lambda k: ck['cfg'].get(k, DEFAULTS.get(k))           # keys added later default to their old behaviour
+    changed = {k: (saved(k), cfg.get(k)) for k in RECIPE_KEYS if saved(k) != cfg.get(k)}
     if changed:
         raise ValueError(f'resume config/data mismatch (use a new out_dir for a new experiment): {changed}')
     model.load_state_dict(ck['raw_model'])
