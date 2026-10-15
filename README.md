@@ -9,10 +9,10 @@ Hebb 운반자에 STDP 창(블록 순서로 LTP/LTD 부호가 정해지는 감�
 설계와 근거는 [docs/architecture.md](docs/architecture.md)에 있다. 결과, 부정 결과, 미결 문제는 [docs/results.md](docs/results.md)에 있다.
 A가 어떤 일반 형태의 특수한 경우인지 해체한 분석은 [docs/claude_analysis_expressivity.md](docs/claude_analysis_expressivity.md)에 있다(Claude의 주장, 실험 미검증).
 
-| 모델 | 상태 | 50.8k held-out (칸 / 완답, 2048) | 외삽 (seg16 → 128세그먼트까지 최고, 512문제) |
+| 모델 | 상태 | held-out (칸 / 완답, 2048; A는 50.8k) | 외삽 (seg16 → 128세그먼트까지 최고, 512문제) |
 | --- | --- | --- | --- |
 | A: ρ = 0 | 2026-10-14 학습 | 83.4% / 1,087 | 267 → 288 (오차 감소 8.6%) |
-| B: W ← ρW + Im S | 준비됨, 미실행 | — | — |
+| B: W ← 0.5W + Im S | 2026-10-15, 40k에서 중단 | 39k 81.2% / 954 (A 82.3% / 1,038) | 40k 220 → 240 (6.8%, A 41k 8.6%) |
 
 학습된 STDP 항은 두 성분으로 나뉜다.
 - 순서부 O: 풀이의 속도와 안정을 맡는 TD 델타 규칙이다. 고정점에서 0이 되므로 라벨 없는 수렴 검출기로도 쓴다(97%).

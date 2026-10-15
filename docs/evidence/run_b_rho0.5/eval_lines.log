@@ -1,0 +1,24 @@
+[EVAL] step 1953 acc 0.5392 exact 0/2048
+[EVAL] step 3906 acc 0.6574 exact 114/2048
+[EVAL] step 5859 acc 0.6811 exact 299/2048
+[EVAL] step 7812 acc 0.6888 exact 334/2048
+[EVAL] step 9765 acc 0.6917 exact 344/2048
+[EXTRAP] step 10000: seg16 99/512 -> best 101 (seg 96), error reduction 0.5%
+[EVAL] step 11718 acc 0.6944 exact 341/2048
+[EVAL] step 13671 acc 0.6891 exact 348/2048
+[EVAL] step 15624 acc 0.7024 exact 397/2048
+[EVAL] step 17577 acc 0.7054 exact 362/2048
+[EVAL] step 19530 acc 0.7094 exact 386/2048
+[EXTRAP] step 20000: seg16 120/512 -> best 125 (seg 32), error reduction 1.3%
+[EVAL] step 21483 acc 0.7171 exact 406/2048
+[EVAL] step 23436 acc 0.7202 exact 428/2048
+[EVAL] step 25389 acc 0.7371 exact 493/2048
+[EVAL] step 27342 acc 0.7464 exact 541/2048
+[EVAL] step 29295 acc 0.7582 exact 600/2048
+[EXTRAP] step 30000: seg16 173/512 -> best 182 (seg 112), error reduction 2.7%
+[EVAL] step 31248 acc 0.7718 exact 683/2048
+[EVAL] step 33201 acc 0.7904 exact 802/2048
+[EVAL] step 35154 acc 0.7964 exact 819/2048
+[EVAL] step 37107 acc 0.8042 exact 923/2048
+[EVAL] step 39060 acc 0.8125 exact 954/2048
+[EXTRAP] step 40000: seg16 220/512 -> best 240 (seg 125), error reduction 6.8%
