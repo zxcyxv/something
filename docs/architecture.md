@@ -3,7 +3,7 @@
 이 문서는 현재 모델이 무엇이고 각 선택이 어떤 증거로 정당화되는지만 적는다. 숫자의 출처는 날짜와 절(예: 10-14 §4)로 표시한다.
 날짜별 원 기록, 스크립트, 이전 모델은 `archive/pre-refactor-2026-10-15` 브랜치의 `docs/research/`에 있다.
 실험 결과표, 부정 결과, 미결 문제는 [results.md](results.md)에 있다.
-표현력 관점의 해체 분석(Claude의 주장, 실험 미검증)은 [claude_analysis_expressivity.md](claude_analysis_expressivity.md)에 있다.
+필수 성질 체크리스트와 표현력 관점의 해체 분석(둘 다 Claude의 주장, 실험 미검증)은 [claude_essential_properties.md](claude_essential_properties.md), [claude_analysis_expressivity.md](claude_analysis_expressivity.md)에 있다.
 
 표기
 - 칸 t = 1..81

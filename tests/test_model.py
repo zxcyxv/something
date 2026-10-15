@@ -135,6 +135,28 @@ class Clock(unittest.TestCase):
             series = (1 - lam) * (1 + 2 * sum(lam ** k * math.cos(k * om) for k in range(1, 400)))
             self.assertAlmostEqual(kappa(lam, om), series, places=12)
 
+    def test_time_shift_invariance(self):
+        """D1: the STDP term depends on the block counter only through differences; starting the counter at 1000
+        instead of 0 leaves Im S unchanged."""
+        g = torch.Generator().manual_seed(4)
+        B, H, T, P = 2, 2, 5, 4
+        D = 2 * P
+        rope = rope_fn(H, T, P, g)
+        seq = [(torch.nn.functional.normalize(torch.randn(B, H, T, D, generator=g, dtype=torch.float64), dim=-1),
+                torch.randn(B, H, T, D, generator=g, dtype=torch.float64)) for _ in range(12)]
+        runs = []
+        for n0 in (0.0, 1000.0):
+            clock = torch.zeros(B, H, T, 6 * P + 1, dtype=torch.float64)
+            clock[..., -1] = n0
+            traces, out = tuple(torch.zeros(B, H, T, D, dtype=torch.float64) for _ in range(4)), []
+            for k, v in seq:
+                tk, tv, _, clock = clock_step(clock, k, v, 0.14, 0.34)
+                _, im_s, traces = stdp_step(k, rope(k), v, rope, tk, tv, 0.5, traces)
+                out.append(im_s)
+            runs.append(out)
+        for a, b in zip(*runs):
+            torch.testing.assert_close(a, b, rtol=0, atol=1e-11)
+
     def test_sign_follows_block_order(self):
         """With omegaT > 2c and K omegaT + 2c < pi, sin(tau_post - tau_pre) > 0 for every pair 1..K blocks apart."""
         c, om, K = 0.14, 0.34, 8
