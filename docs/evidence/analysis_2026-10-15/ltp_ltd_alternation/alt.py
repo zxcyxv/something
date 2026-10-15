@@ -77,7 +77,7 @@ cls_t = torch.tensor([{'S': 0, 'L': 1, 'N': 2}[c] for c in cls])
 COS = {l: torch.stack(out['cos'][l]) for l in Ls}                 # [NB, B]
 INC = {k: torch.stack(out['inc'][k]) for k in 'SO'}                # [NB-2, B]
 torch.save(dict(COS=COS, INC=INC, CANC=out['canc'], cls=cls, sblk=sblk.cpu(), sub=sub.cpu()),
-           '/tmp/claude-0/-workspace-something/a4e9074b-035f-49fb-96da-495db6acc53d/scratchpad/alt/alt_res.pt')
+           __import__('os').path.join(__import__('os').path.dirname(__import__('os').path.abspath(__file__)), 'alt_res.pt'))
 names = ['S', 'L', 'N']
 print('\n== cancellation C(L) over seg17..64 (1 = no cancellation), mean per class')
 for k in 'SO':

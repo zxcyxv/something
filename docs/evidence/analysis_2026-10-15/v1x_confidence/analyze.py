@@ -6,7 +6,7 @@ conf = H < h0 (h0 = 0.2 nats ~ p_max >= 0.95). AUC = P(H_wrong > H_correct) pool
 Groups among puzzles unsolved at seg16: late = solved at some segment 17..128, never = not.
 """
 import sys, torch, math
-S = '/tmp/claude-0/-workspace-something/a4e9074b-035f-49fb-96da-495db6acc53d/scratchpad/conf'
+import os; S = os.environ.get('CONF_DIR', os.path.dirname(os.path.abspath(__file__)))   # R_*.pt and difficulty.pt live here
 H0 = 0.2
 names = sys.argv[1:] if len(sys.argv) > 1 else ['v1', 'v11', 'v17', 'b40k']
 diff = torch.load(f'{S}/difficulty.pt')
