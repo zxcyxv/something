@@ -18,6 +18,8 @@ HEADER = '''# -*- coding: utf-8 -*-
 # Input and set CFG['resume_from'] to that folder. max_steps is an absolute stopping step.
 CFG = {
     'outer_rho': 0.5,              # model B: W <- rho W + Im S. 0.0 = model A (run A of 2026-10-14)
+    'outer_eta': 0.0,              # EMA form instead: W <- (1 - eta) W + eta Im S (set outer_rho 0.0; e.g. 0.125)
+    'outer_eta_learn': False,      # learn eta per head (sigmoid, init outer_eta, no weight decay); logged at every eval
     'alpha_init': 1.0,
     'data_npz': '/kaggle/input/datasets/jrjinwoo/sudoku-lt-1k/sudoku_lt_1k.npz',
     'out_dir': '/kaggle/working/lt_run',

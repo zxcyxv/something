@@ -1,0 +1,14 @@
+/tmp/claude-0/-workspace-something/a4e9074b-035f-49fb-96da-495db6acc53d/scratchpad/etagrad/etagrad.py:25: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  losses.append(float(loss)); exact.append(int((logits.argmax(-1) == b['labels']).all(-1).sum()))
+ckpt runs/b_ema0.125_20261015/milestones/step_30000.pt eta 0.125: per-segment partial dL/deta (training gradient, carry detached):
+  segs 1-4  : -0.698 -2.069 -1.840 -2.467
+  segs 5-8  : -0.120 -1.298 -3.722 -1.614
+  segs 9-16 : -1.154 -0.728 -1.662 -1.028 -2.163 -0.940 -1.534 -2.252
+  mean -1.5806  -> gradient descent moves eta UP (shorter memory)
+eta 0.0625 (window  16.0): total loss  402.288 | loss segs 1-4 102.332, 5-8 100.699, 9-16 199.256 | exact seg16 6
+eta 0.1000 (window  10.0): total loss  402.012 | loss segs 1-4 101.646, 5-8 101.458, 9-16 198.908 | exact seg16 6
+eta 0.1250 (window   8.0): total loss  395.635 | loss segs 1-4 101.562, 5-8 100.082, 9-16 193.992 | exact seg16 7
+eta 0.1562 (window   6.4): total loss  400.083 | loss segs 1-4 101.441, 5-8 101.613, 9-16 197.029 | exact seg16 6
+eta 0.2500 (window   4.0): total loss  397.840 | loss segs 1-4 100.534, 5-8 100.693, 9-16 196.612 | exact seg16 6
+finite-difference total dL/deta (0.8x..1.25x): -34.291 -> a longer memory RAISES the 16-segment loss

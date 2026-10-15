@@ -1,0 +1,3 @@
+v1.1-160k step 160000: solved seg16 228, best 334, seg128 333
+v1.7-200k step 200000: solved seg16 227, best 357, seg128 357
+v1-120k step 120000: solved seg16 181, best 282, seg128 282

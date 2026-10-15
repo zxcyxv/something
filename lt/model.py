@@ -10,6 +10,7 @@ One shared block, run 8 times per segment and 16 segments per puzzle (docs/archi
     traces: E_K <- lam E_K + (1 - lam) k^ e^{-i tau_K};   D_V = lam E_V;   E_V <- D_V + (1 - lam) v e^{+i tau_V}
     Im S  = Im sum_t [ (v e^{i tau_V}) RoPE(E_K)^T + D_V (k~ e^{-i tau_K})^T ]          (token sums, V rows, K cols)
     W     = rho W + Im S                                     (model B; rho = 0 is model A: W = Im S)
+            or (1 - eta) W + eta Im S                        (outer_eta > 0: EMA form, fixed point W = Im S)
     read  = q~ (sum_t v k~^T + alpha_h W)^T                  (hebb=False drops sum_t v k~^T)
     h'    = RMSNorm(u + W_O read);   h = RMSNorm(h' + W_D(silu(g) * a)),  [g; a] = W_GU h'
 
@@ -29,6 +30,7 @@ from typing import Callable, Optional
 
 import torch
 import torch.nn.functional as F
+import torch.utils.checkpoint
 from torch import nn
 
 TWO_PI = 2 * math.pi
@@ -52,10 +54,13 @@ class ModelConfig:
     block_omega: float = 0.34         # omegaT
     trace_lambda: float = 0.5         # lam_K = lam_V
     outer_rho: float = 0.0            # rho of W (0: model A)
+    outer_eta: float = 0.0            # EMA rate of W: W = (1 - eta) W + eta Im S (0: off; exclusive with outer_rho)
+    outer_eta_learn: bool = False     # learn eta per head (sigmoid(eta_raw), initialized at outer_eta; no weight decay)
     alpha_init: float = 1.0           # alpha_h at initialization
     hebb: bool = True                 # include the Hebbian carrier sum_t v k~^T in the write (False: G = alpha Im S)
     kernel: str = 'auto'              # auto | torch | triton
     kernel_bf16: bool = True          # BF16 dot operands in the fused kernel (FP32 accumulation)
+    act_ckpt: bool = False            # recompute each block in backward (activation checkpointing; same math, less memory)
     amp: bool = True                  # BF16 autocast for projections and FFN where native
     forward_dtype: str = 'float32'    # float64 for tests
 
@@ -66,12 +71,21 @@ class ModelConfig:
             raise ValueError('the head dimension must be even')
         if not 0 <= self.puzzle_emb_ndim <= self.hidden_size:
             raise ValueError('puzzle_emb_ndim must lie in [0, hidden_size]')
-        if not (0 < self.trace_lambda < 1 and 0 <= self.outer_rho < 1 and self.tag_bound >= 0 and self.eps > 0):
-            raise ValueError('need 0 < trace_lambda < 1, 0 <= outer_rho < 1, tag_bound >= 0, eps > 0')
+        if not (0 < self.trace_lambda < 1 and 0 <= self.outer_rho < 1 and 0 <= self.outer_eta < 1
+                and self.tag_bound >= 0 and self.eps > 0):
+            raise ValueError('need 0 < trace_lambda < 1, 0 <= outer_rho < 1, 0 <= outer_eta < 1, tag_bound >= 0, eps > 0')
+        if self.outer_rho and self.outer_eta:
+            raise ValueError('outer_rho (leaky integral) and outer_eta (EMA) are exclusive')
+        if self.outer_eta_learn and not self.outer_eta:
+            raise ValueError('outer_eta_learn needs outer_eta > 0 as the initial value')
         if self.kernel not in ('auto', 'torch', 'triton'):
             raise ValueError('kernel must be auto, torch or triton')
-        if self.kernel == 'triton' and (self.outer_rho or not self.hebb):
-            raise ValueError('the fused kernel implements outer_rho = 0 with the Hebbian term only')
+        if self.kernel == 'triton' and (self.outer_rho or self.outer_eta or not self.hebb):
+            raise ValueError('the fused kernel implements outer_rho = outer_eta = 0 with the Hebbian term only')
+
+    @property
+    def outer_memory(self) -> bool:
+        return bool(self.outer_rho or self.outer_eta)
 
     @classmethod
     def from_dict(cls, d: dict) -> 'ModelConfig':
@@ -89,7 +103,7 @@ class Carry:
     clock: Optional[torch.Tensor] = None            # cat(phi_K, phi_V, zK_prev, zV_prev, n) [B, H, T, 6P+1]
     key_trace: Optional[torch.Tensor] = None        # cat(Re E_K, Im E_K) [B, H, T, 2D] (before RoPE)
     value_trace: Optional[torch.Tensor] = None      # cat(Re E_V, Im E_V) [B, H, T, 2D]
-    stdp_w: Optional[torch.Tensor] = None           # W [B, H, D, D] (model B only)
+    stdp_w: Optional[torch.Tensor] = None           # W [B, H, D, D] (outer_rho or outer_eta > 0 only)
     fresh: Optional[torch.Tensor] = None            # [B] lanes that start a puzzle in this segment
 
 
@@ -237,6 +251,12 @@ class Block(nn.Module):
             self.ffn_down.weight.zero_()
         self.rope_theta = nn.Parameter(torch.zeros(H, d // H // 2, 2))     # drawn last (see LT.__init__)
         self.alpha = nn.Parameter(torch.full((H,), float(cfg.alpha_init)))
+        if cfg.outer_eta_learn:                                              # no random draw: the init stays as without it
+            self.eta_raw = nn.Parameter(torch.full((H,), math.log(cfg.outer_eta / (1 - cfg.outer_eta))))
+
+    def eta(self, cfg):
+        """Per-head EMA rate of W [H] (learned) or the constant outer_eta."""
+        return torch.sigmoid(self.eta_raw) if cfg.outer_eta_learn else cfg.outer_eta
 
 
 class LT(nn.Module):
@@ -283,7 +303,7 @@ class LT(nn.Module):
         return inj
 
     def use_kernel(self, device, dtype):
-        if (self.probe is not None or self.config.outer_rho or not self.config.hebb or device.type != 'cuda'
+        if (self.probe is not None or self.config.outer_memory or not self.config.hebb or device.type != 'cuda'
                 or dtype == torch.float64):
             return False
         if self.config.kernel == 'auto':
@@ -323,6 +343,12 @@ class LT(nn.Module):
             if cfg.outer_rho:
                 w = cfg.outer_rho * w.to(dtype) + im_s
                 im_s = w
+            elif cfg.outer_eta:
+                eta = self.block.eta(cfg)
+                if torch.is_tensor(eta):
+                    eta = eta.to(dtype)[None, :, None, None]
+                w = (1 - eta) * w.to(dtype) + eta * im_s
+                im_s = w
             alpha = self.block.alpha.to(dtype)[None, :, None, None]
             write = hebb + alpha * im_s if cfg.hebb else alpha * im_s
             read = qr @ write.transpose(-1, -2)
@@ -345,7 +371,7 @@ class LT(nn.Module):
         P, D = self.dh // 2, self.dh
         z = lambda *s: torch.zeros(B, self.H, *s, device=device, dtype=dtype)
         return (z(self.config.seq_len, 6 * P + 1), z(self.config.seq_len, 2 * D), z(self.config.seq_len, 2 * D),
-                z(D, D) if self.config.outer_rho else None)
+                z(D, D) if self.config.outer_memory else None)
 
     # ------------------------------------------------------------------ segments
     def initial_carry(self, batch):
@@ -382,8 +408,12 @@ class LT(nn.Module):
         amp = self._amp(device)
         with torch.autocast('cuda', dtype=torch.bfloat16, enabled=amp, cache_enabled=False):
             inj = self.injection(data)
+            ckpt = self.config.act_ckpt and torch.is_grad_enabled()
             for _ in range(self.config.blocks_per_seg):
-                h, state = self.block_step(h, inj, state)
+                if ckpt:
+                    h, state = torch.utils.checkpoint.checkpoint(self.block_step, h, inj, state, use_reentrant=False)
+                else:
+                    h, state = self.block_step(h, inj, state)
             logits = self.classifier(h)
         if amp:
             h, logits = h.float(), logits.float()

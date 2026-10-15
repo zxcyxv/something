@@ -1,0 +1,20 @@
+v1.1-160k       base: seg16 228, late-solved 106, never 178, seg128 333, lost after 16 0
+v1.1-160k   freeze_w: seg16 228, late-solved 60, never 224, seg128 215, lost after 16 14
+v1.1-160k  no_read_w: seg16 228, late-solved 0, never 284, seg128 0, lost after 16 228
+v1.1-160k     eta_x4: seg16 228, late-solved 30, never 254, seg128 258, lost after 16 0
+v1.1-160k     eta_d4: seg16 228, late-solved 133, never 151, seg128 358, lost after 16 0
+
+v1.1-160k baseline: |dw|/|w| per segment (median), alignment(same-digit) and alignment(neighbour) by group
+ seg  dw late  dw never dw solved@16 align late align never align s16 alignNB late alignNB never
+   2   0.1484    0.1483       0.1526     -0.181      -0.177    -0.183        0.562         0.563
+   4   0.0957    0.0949       0.1046     -0.174      -0.168    -0.189        0.427         0.429
+   8   0.0462    0.0439       0.0842     -0.162      -0.148     0.104        0.250         0.252
+  16   0.0274    0.0203       0.0212     -0.148      -0.130     0.651        0.131         0.136
+  24   0.0311    0.0238       0.0050     -0.128      -0.125     0.737        0.101         0.120
+  32   0.0286    0.0237       0.0015     -0.119      -0.123     0.757        0.085         0.106
+  48   0.0137    0.0238       0.0003      0.644      -0.123     0.764       -0.054         0.110
+  64   0.0010    0.0237       0.0003      0.748      -0.121     0.765       -0.067         0.104
+  96   0.0003    0.0236       0.0003      0.760      -0.121     0.765       -0.068         0.107
+ 128   0.0003    0.0242       0.0003      0.761      -0.123     0.765       -0.069         0.106
+unsolved@16: late-solve rate by quartile of |dw|/|w| at seg16: Q1 21%, Q2 32%, Q3 39%, Q4 56%  (edges [0.016304880380630493, 0.022629760205745697, 0.03030076064169407])
+v1.7-200k       base: seg16 227, late-solved 130, never 155, seg128 357, lost after 16 0

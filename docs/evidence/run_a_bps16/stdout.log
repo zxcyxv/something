@@ -1,0 +1,33 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.11.0+cu128 device=cuda:0 ranks=1 params=8,538,835 amp=True kernel=triton compile=True
+[LT] tau = 0.14 sin(phi) + n 0.34; lambda 0.5; rho 0; alpha_init 1; stop_at 50800; NEW RUN; out /workspace/something/runs/a_bps16_20261015
+[LT] step 250 lm_loss 1.52952 lr 1.25e-05 acc 0.4552 exact 0.0000 [finished at step 240]
+[LT] step 500 lm_loss 1.33226 lr 2.49e-05 acc 0.5020 exact 0.0000 [finished at step 496]
+[LT] step 750 lm_loss 1.13919 lr 3.75e-05 acc 0.5549 exact 0.0000 [finished at step 736]
+[LT] step 1000 lm_loss 1.14478 lr 5e-05 acc 0.6125 exact 0.0000 [finished at step 992]
+[LT] step 1250 lm_loss 1.26408 lr 6.25e-05 acc 0.7000 exact 0.0000 [finished at step 1248]
+[LT] step 1500 lm_loss 0.81220 lr 7.5e-05 acc 0.7996 exact 0.0078 [finished at step 1488]
+[LT] step 1750 lm_loss 0.93785 lr 8.74e-05 acc 0.9035 exact 0.0781 [finished at step 1744]
+[EVAL] step 1953 acc 0.5405 exact 0/2048
+[LT] step 2000 lm_loss 0.34031 lr 0.0001 acc 0.9422 exact 0.1953 [finished at step 2000]
+[LT] step 2250 lm_loss 0.62780 lr 0.0001 acc 0.9269 exact 0.2109 [finished at step 2240]
+[LT] step 2500 lm_loss 0.98964 lr 0.0001 acc 0.9208 exact 0.1797 [finished at step 2496]
+[LT] step 2750 lm_loss 0.51346 lr 0.0001 acc 0.9458 exact 0.3516 [finished at step 2736]
+[LT] step 3000 lm_loss 0.68461 lr 0.0001 acc 0.9008 exact 0.2109 [finished at step 2992]
+[LT] step 3250 lm_loss 1.01944 lr 0.0001 acc 0.9271 exact 0.2812 [finished at step 3248]
+[LT] step 3500 lm_loss 0.57053 lr 0.0001 acc 0.9081 exact 0.2188 [finished at step 3488]
+[LT] step 3750 lm_loss 0.78932 lr 0.0001 acc 0.9022 exact 0.2578 [finished at step 3744]
+[EVAL] step 3906 acc 0.6344 exact 95/2048
+[LT] step 4000 lm_loss 0.50136 lr 0.0001 acc 0.8639 exact 0.1016 [finished at step 4000]
+[LT] step 4250 lm_loss 0.65685 lr 0.0001 acc 0.8986 exact 0.2422 [finished at step 4240]
+[LT] step 4500 lm_loss 1.00085 lr 0.0001 acc 0.9148 exact 0.3047 [finished at step 4496]
+[LT] step 4750 lm_loss 0.50352 lr 0.0001 acc 0.8949 exact 0.2578 [finished at step 4736]
+[LT] step 5000 lm_loss 0.65801 lr 0.0001 acc 0.8809 exact 0.1250 [finished at step 4992]
+[LT] step 5250 lm_loss 0.97205 lr 0.0001 acc 0.9037 exact 0.2656 [finished at step 5248]
+[LT] step 5500 lm_loss 0.53300 lr 0.0001 acc 0.8391 exact 0.0859 [finished at step 5488]
+[LT] step 5750 lm_loss 0.74287 lr 0.0001 acc 0.8890 exact 0.3047 [finished at step 5744]
+[EVAL] step 5859 acc 0.6509 exact 168/2048
+[LT] step 6000 lm_loss 0.42100 lr 0.0001 acc 0.8888 exact 0.2578 [finished at step 6000]
+[LT] step 6250 lm_loss 0.66228 lr 0.0001 acc 0.8907 exact 0.3359 [finished at step 6240]
+[LT] step 6500 lm_loss 0.93817 lr 0.0001 acc 0.8917 exact 0.2578 [finished at step 6496]
+[LT] step 6750 lm_loss 0.49138 lr 0.0001 acc 0.8868 exact 0.3047 [finished at step 6736]
+[LT] saved step 6950: /workspace/something/runs/a_bps16_20261015/step_6950.pt [stopped]

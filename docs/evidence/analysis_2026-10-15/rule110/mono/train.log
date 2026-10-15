@@ -1,0 +1,29 @@
+params 28900
+/venv/main/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:322: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+[TIME] step 50 88.7s
+[TIME] step 300 94.0s
+/tmp/claude-0/-workspace-something/a4e9074b-035f-49fb-96da-495db6acc53d/scratchpad/r110/train_mono_c.py:85: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:836.)
+  print(f'[TRAIN] step {step} ce {float(ce_loss):.5f} mono {float(mono):.5f}', flush=True)
+[TRAIN] step 1000 ce 0.20809 mono 0.00310
+[TRAIN] step 2000 ce 0.11539 mono 0.00092
+[EVAL] step 2000 loss 0.1163 alpha 0.945  exact@1:0.0000 2:0.0129 3:0.7500 4:0.9355 8:0.9883 12:0.9761 16:0.7847 24:0.2935 32:0.1145 48:0.0376 64:0.0208 96:0.0120 128:0.0100
+[TRAIN] step 3000 ce 0.09051 mono 0.00051
+[TRAIN] step 4000 ce 0.07851 mono 0.00004
+[EVAL] step 4000 loss 0.0786 alpha 0.944  exact@1:0.0000 2:0.5542 3:0.9626 4:0.9902 8:0.9963 12:0.9954 16:0.8489 24:0.4084 32:0.2183 48:0.0874 64:0.0530 96:0.0308 128:0.0242
+[TRAIN] step 5000 ce 0.06656 mono 0.00000
+[TRAIN] step 6000 ce 0.06400 mono 0.00004
+[EVAL] step 6000 loss 0.0640 alpha 0.947  exact@1:0.0000 2:0.7275 3:0.9802 4:0.9949 8:0.9963 12:0.9932 16:0.9670 24:0.5576 32:0.1873 48:0.0300 64:0.0112 96:0.0027 128:0.0022
+[TRAIN] step 7000 ce 0.05956 mono 0.00007
+[TRAIN] step 8000 ce 0.05856 mono 0.00045
+[EVAL] step 8000 loss 0.0590 alpha 0.955  exact@1:0.0000 2:0.8313 3:0.9707 4:0.9897 8:0.9963 12:0.9946 16:0.9824 24:0.7878 32:0.3967 48:0.0713 64:0.0251 96:0.0056 128:0.0024
+[TRAIN] step 9000 ce 0.05235 mono 0.00000
+[TRAIN] step 10000 ce 0.05511 mono 0.00008
+[EVAL] step 10000 loss 0.0552 alpha 0.975  exact@1:0.0000 2:0.8958 3:0.9932 4:0.9995 8:0.9993 12:0.9988 16:0.9941 24:0.7324 32:0.3267 48:0.0388 64:0.0027 96:0.0002 128:0.0000
+
+block         1       2       3       4       8      12      16      24      32      48      64      96     128
+exact    0.0000  0.8958  0.9932  0.9995  0.9993  0.9988  0.9941  0.7324  0.3267  0.0388  0.0027  0.0002  0.0000
+cell     0.7831  0.9969  0.9998  1.0000  1.0000  1.0000  0.9998  0.9911  0.9669  0.9071  0.8505  0.7899  0.7592
+w_norm   0.0000  0.4440  0.7890  1.0630  1.5840  1.6210  1.6180  1.6910  1.7460  1.7860  1.7950  1.8120  1.8300
+drift    7.6876  4.9008  2.9500  1.7853  0.4514  0.1595  0.0801  0.0411  0.0335  0.0290  0.0253  0.0155  0.0097

@@ -1,0 +1,14 @@
+  mean +0.2832  -> gradient descent moves eta DOWN (longer memory)
+eta 0.0625 (window  16.0): total loss  455.095 | loss segs 1-4 110.495, 5-8 114.894, 9-16 229.706 | exact seg16 0
+eta 0.1000 (window  10.0): total loss  456.608 | loss segs 1-4 110.583, 5-8 115.565, 9-16 230.459 | exact seg16 0
+eta 0.1250 (window   8.0): total loss  456.800 | loss segs 1-4 110.746, 5-8 115.528, 9-16 230.526 | exact seg16 0
+eta 0.1562 (window   6.4): total loss  456.972 | loss segs 1-4 110.931, 5-8 115.535, 9-16 230.505 | exact seg16 0
+eta 0.2500 (window   4.0): total loss  457.441 | loss segs 1-4 111.396, 5-8 115.781, 9-16 230.264 | exact seg16 0
+finite-difference total dL/deta (0.8x..1.25x): +6.465 -> a longer memory LOWERS the 16-segment loss
+  mean -1.4005  -> gradient descent moves eta UP (shorter memory)
+eta 0.0625 (window  16.0): total loss  496.800 | loss segs 1-4 114.928, 5-8 126.605, 9-16 255.267 | exact seg16 2
+eta 0.1000 (window  10.0): total loss  497.380 | loss segs 1-4 114.944, 5-8 126.975, 9-16 255.461 | exact seg16 2
+eta 0.1250 (window   8.0): total loss  495.756 | loss segs 1-4 115.034, 5-8 127.601, 9-16 253.121 | exact seg16 2
+eta 0.1562 (window   6.4): total loss  493.593 | loss segs 1-4 115.004, 5-8 127.223, 9-16 251.367 | exact seg16 2
+eta 0.2500 (window   4.0): total loss  488.518 | loss segs 1-4 114.738, 5-8 125.158, 9-16 248.622 | exact seg16 2
+finite-difference total dL/deta (0.8x..1.25x): -67.314 -> a longer memory RAISES the 16-segment loss

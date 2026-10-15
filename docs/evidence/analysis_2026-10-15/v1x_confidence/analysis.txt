@@ -1,0 +1,105 @@
+difficulty: L1-needed blanks tertile edges [47.0, 56.0], clues mean 25.0, L0-solvable 75/512
+
+## v1-120k: solved@16 181/512, late-solved 101 of 331 unsolved (30.5%), never 230
+                 group    n     H+     H-  conf✓  conf✗ tight✓ tight✗  wrong   AUC   P@k
+             solved@16  181  0.000    nan   55.5   0.00   55.5   0.00    0.0   nan   nan
+           unsolved@16  331  0.068  0.124   24.0  23.11   21.3  18.78   29.1  0.64  0.62
+           late-solved  101  0.044  0.097   29.2  20.49   26.9  17.25   24.7  0.64  0.58
+                 never  230  0.081  0.133   21.7  24.26   18.8  19.46   31.0  0.61  0.65
+difficulty    n solved@16 late/unsolved  H+ uns  H- uns conf✗ uns AUC uns H+ late H+ never conf✗ late conf✗ never
+      easy  181       133         45.8%   0.044   0.104     20.44    0.66   0.039    0.050      16.73       23.58
+    medium  186        21         24.2%   0.075   0.131     22.79    0.63   0.047    0.087      19.80       23.75
+      hard  145        27         33.1%   0.069   0.121     24.63    0.62   0.044    0.083      23.31       25.28
+  seg late conf✓ late conf✗ late wrong never conf✓ never conf✗ never wrong
+   16       29.2      20.49       24.7        21.7       24.26        31.0
+   24       35.8      15.01       18.6        22.2       24.40        30.7
+   32       40.5      11.95       14.5        22.5       24.26        30.6
+   48       45.0       8.39       10.2        22.2       24.45        30.9
+   64       50.0       4.36        5.6        21.8       24.65        31.2
+   96       54.4       1.50        1.8        21.7       24.88        31.1
+  128       56.3       0.00        0.0        21.5       25.02        31.7
+late-solved: per segment (17..128) correct->wrong flips 1.084/puzzle, wrong->correct 1.305/puzzle; puzzles with any correct->wrong flip 91/101
+never: per segment (17..128) correct->wrong flips 4.494/puzzle, wrong->correct 4.487/puzzle; puzzles with any correct->wrong flip 230/230
+late-solved: wrong@16 cells 24.7/puzzle, entropy@16 of wrong cells 0.097, of correct cells that stayed 0.044, of correct cells that changed nan (count 0.00/puzzle); solve segment median 37
+
+## v1.1-160k: solved@16 228/512, late-solved 106 of 284 unsolved (37.3%), never 178
+                 group    n     H+     H-  conf✓  conf✗ tight✓ tight✗  wrong   AUC   P@k
+             solved@16  228  0.000    nan   55.5   0.00   55.5   0.00    0.0   nan   nan
+           unsolved@16  284  0.061  0.111   24.0  24.07   21.5  19.94   29.5  0.61  0.64
+           late-solved  106  0.056  0.117   27.6  20.64   25.0  16.94   25.8  0.65  0.60
+                 never  178  0.065  0.107   21.8  26.11   19.4  21.72   31.8  0.61  0.66
+difficulty    n solved@16 late/unsolved  H+ uns  H- uns conf✗ uns AUC uns H+ late H+ never conf✗ late conf✗ never
+      easy  181       139         50.0%   0.042   0.098     21.98    0.65   0.033    0.054      19.05       24.90
+    medium  186        52         32.1%   0.063   0.115     23.00    0.64   0.060    0.065      17.02       25.82
+      hard  145        37         38.9%   0.068   0.110     26.21    0.59   0.065    0.070      25.14       26.89
+  seg late conf✓ late conf✗ late wrong never conf✓ never conf✗ never wrong
+   16       27.6      20.64       25.8        21.8       26.11        31.8
+   24       33.7      17.02       20.7        21.0       26.84        32.5
+   32       39.8      12.44       15.1        21.4       26.91        32.3
+   48       44.3       9.69       11.3        21.6       26.35        31.9
+   64       48.3       6.18        7.4        21.6       26.62        32.1
+   96       54.2       1.40        1.8        21.2       26.65        32.2
+  128       56.0       0.27        0.3        21.7       26.64        32.1
+late-solved: per segment (17..128) correct->wrong flips 0.976/puzzle, wrong->correct 1.203/puzzle; puzzles with any correct->wrong flip 99/106
+never: per segment (17..128) correct->wrong flips 3.356/puzzle, wrong->correct 3.353/puzzle; puzzles with any correct->wrong flip 178/178
+late-solved: wrong@16 cells 25.8/puzzle, entropy@16 of wrong cells 0.117, of correct cells that stayed 0.056, of correct cells that changed nan (count 0.00/puzzle); solve segment median 36
+
+## v1.7-200k: solved@16 227/512, late-solved 130 of 285 unsolved (45.6%), never 155
+                 group    n     H+     H-  conf✓  conf✗ tight✓ tight✗  wrong   AUC   P@k
+             solved@16  227  0.000    nan   55.5   0.00   55.5   0.00    0.0   nan   nan
+           unsolved@16  285  0.055  0.099   24.2  24.69   21.9  20.67   29.6  0.61  0.63
+           late-solved  130  0.051  0.107   27.4  21.82   24.9  17.86   26.5  0.66  0.61
+                 never  155  0.060  0.094   21.5  27.10   19.4  23.02   32.2  0.57  0.65
+difficulty    n solved@16 late/unsolved  H+ uns  H- uns conf✗ uns AUC uns H+ late H+ never conf✗ late conf✗ never
+      easy  181       134         55.3%   0.036   0.078     23.09    0.64   0.040    0.031      19.04       28.10
+    medium  186        60         40.5%   0.057   0.100     24.83    0.60   0.053    0.061      21.24       27.28
+      hard  145        33         47.3%   0.062   0.106     25.21    0.61   0.056    0.069      23.75       26.53
+  seg late conf✓ late conf✗ late wrong never conf✓ never conf✗ never wrong
+   16       27.4      21.82       26.5        21.5       27.10        32.2
+   24       34.9      16.35       19.7        21.3       27.20        32.3
+   32       41.5      11.02       13.6        20.9       27.72        32.9
+   48       47.8       6.75        8.0        21.4       27.46        32.4
+   64       51.1       4.22        5.0        21.5       27.42        32.4
+   96       54.4       1.75        2.0        21.9       26.83        32.1
+  128       56.5       0.00        0.0        21.1       27.66        32.4
+late-solved: per segment (17..128) correct->wrong flips 0.969/puzzle, wrong->correct 1.206/puzzle; puzzles with any correct->wrong flip 127/130
+never: per segment (17..128) correct->wrong flips 4.252/puzzle, wrong->correct 4.250/puzzle; puzzles with any correct->wrong flip 155/155
+late-solved: wrong@16 cells 26.5/puzzle, entropy@16 of wrong cells 0.107, of correct cells that stayed 0.051, of correct cells that changed nan (count 0.00/puzzle); solve segment median 34
+
+## B-40k: solved@16 219/512, late-solved 15 of 293 unsolved (5.1%), never 278
+                 group    n     H+     H-  conf✓  conf✗ tight✓ tight✗  wrong   AUC   P@k
+             solved@16  219  0.000    nan   55.5   0.00   55.5   0.00    0.0   nan   nan
+           unsolved@16  293  0.045  0.081   24.8  25.49   22.9  22.31   29.4  0.61  0.62
+           late-solved   15  0.053  0.113   30.3  19.27   27.7  15.73   23.3  0.65  0.56
+                 never  278  0.045  0.080   24.6  25.83   22.6  22.67   29.7  0.61  0.63
+difficulty    n solved@16 late/unsolved  H+ uns  H- uns conf✗ uns AUC uns H+ late H+ never conf✗ late conf✗ never
+      easy  181       144          2.7%   0.026   0.053     22.78    0.64   0.025    0.026      26.00       22.69
+    medium  186        46          5.0%   0.049   0.084     25.56    0.60   0.078    0.047      18.57       25.92
+      hard  145        29          6.0%   0.048   0.086     26.28    0.59   0.034    0.050      19.00       26.75
+  seg late conf✓ late conf✗ late wrong never conf✓ never conf✗ never wrong
+   16       30.3      19.27       23.3        24.6       25.83        29.7
+   24       41.0      10.47       13.7        24.2       26.07        30.1
+   32       48.5       5.60        7.5        24.3       26.02        29.8
+   48       52.5       2.80        3.7        24.4       25.65        29.8
+   64       54.7       1.47        1.8        24.5       26.16        29.8
+   96       56.5       0.00        0.0        24.2       26.13        30.1
+  128       56.5       0.00        0.0        24.3       25.90        30.0
+late-solved: per segment (17..128) correct->wrong flips 0.588/puzzle, wrong->correct 0.796/puzzle; puzzles with any correct->wrong flip 14/15
+never: per segment (17..128) correct->wrong flips 3.100/puzzle, wrong->correct 3.097/puzzle; puzzles with any correct->wrong flip 277/278
+late-solved: wrong@16 cells 23.3/puzzle, entropy@16 of wrong cells 0.113, of correct cells that stayed 0.053, of correct cells that changed nan (count 0.00/puzzle); solve segment median 27
+
+## summary: late-solve rate vs calibration (model x difficulty)
+   model     bin  late%  H+ uns   AUC  conf✗   P@k
+      v1    easy   45.8   0.044  0.66  20.44  0.60
+      v1  medium   24.2   0.075  0.63  22.79  0.63
+      v1    hard   33.1   0.069  0.62  24.63  0.63
+     v11    easy   50.0   0.042  0.65  21.98  0.62
+     v11  medium   32.1   0.063  0.64  23.00  0.63
+     v11    hard   38.9   0.068  0.59  26.21  0.65
+     v17    easy   55.3   0.036  0.64  23.09  0.62
+     v17  medium   40.5   0.057  0.60  24.83  0.64
+     v17    hard   47.3   0.062  0.61  25.21  0.63
+    b40k    easy    2.7   0.026  0.64  22.78  0.62
+    b40k  medium    5.0   0.049  0.60  25.56  0.63
+    b40k    hard    6.0   0.048  0.59  26.28  0.62
+Spearman(late%, H+ unsolved) = -0.15; (late%, AUC) = 0.25; (late%, conf✗) = -0.22; (late%, P@k) = -0.06  over 12 model×bin cells

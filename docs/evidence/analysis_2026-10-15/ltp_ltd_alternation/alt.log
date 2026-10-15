@@ -1,0 +1,22 @@
+L solve segments: [17, 18, 19, 23, 24, 26, 43, 46, 55, 60, 60, 66, 67, 69, 73, 77, 80, 85, 91, 95, 99]
+pass1 == pass2 predictions: True
+
+== cancellation C(L) over seg17..64 (1 = no cancellation), mean per class
+Im S L=1    L=2    L=4    L=8    L=16   L=32   L=64   L=128
+  S  1.000  1.000  1.000  1.000  1.000  1.000  1.000  1.000
+  L  1.000  0.985  0.970  0.953  0.943  0.937  0.932  0.924
+  N  1.000  0.973  0.953  0.932  0.922  0.917  0.916  0.915
+O    L=1    L=2    L=4    L=8    L=16   L=32   L=64   L=128
+  S  1.000  0.489  0.335  0.266  0.220  0.188  0.160  0.138
+  L  1.000  0.825  0.634  0.409  0.256  0.183  0.146  0.129
+  N  1.000  0.729  0.547  0.306  0.163  0.093  0.067  0.055
+
+== lag-1 correlation of increments (negative = alternation), blocks in seg17..64, mean per class
+Im S  S -0.624  L -0.215  N -0.354
+O     S -0.639  L -0.283  N -0.397
+
+== cos(EMA_L(t), W*) on pre-solve blocks (W* = model W at block 1024 )
+  S early: blocks 9..solve     n=680: L=1 0.519  L=2 0.530  L=4 0.534  L=8 0.534  L=16 0.531  L=32 0.529  L=64 0.527  L=128 0.526
+  L late: seg17..solve         n=6774: L=1 0.702  L=2 0.717  L=4 0.726  L=8 0.731  L=16 0.734  L=32 0.734  L=64 0.733  L=128 0.732
+
+[exited with code 0]

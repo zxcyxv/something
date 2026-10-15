@@ -169,10 +169,11 @@ class Clock(unittest.TestCase):
 
 class Model(unittest.TestCase):
     def test_outer_integral(self):
-        """Model B: W_b = rho W_{b-1} + Im S_b (over segments too, reset for fresh lanes); rho = 0 is model A."""
+        """Model B: W_b = rho W_{b-1} + Im S_b, or the EMA form W_b = (1 - eta) W_{b-1} + eta Im S_b (over segments too,
+        reset for fresh lanes); rho = eta = 0 is model A."""
         torch.manual_seed(0)
-        for rho in (0.0, 0.5):
-            m = LT(tiny(outer_rho=rho)).double().eval()
+        for rho, eta in ((0.0, 0.0), (0.5, 0.0), (0.0, 0.25)):
+            m = LT(tiny(outer_rho=rho, outer_eta=eta)).double().eval()
             with torch.no_grad():
                 for p in m.parameters():
                     p.add_(torch.randn_like(p) * 0.3)
@@ -182,14 +183,31 @@ class Model(unittest.TestCase):
             with torch.no_grad():
                 for _ in range(2):
                     carry, _ = m(carry, batch(0))
-            if rho:
+            if rho or eta:
                 w = torch.zeros_like(seen[0])
                 for s in seen:
-                    w = rho * w + s
+                    w = rho * w + s if rho else (1 - eta) * w + eta * s
                 torch.testing.assert_close(carry.stdp_w, w)
             else:
                 self.assertIsNone(carry.stdp_w)
             self.assertEqual(int(carry.clock[..., -1].max()), 2 * m.config.blocks_per_seg)
+        with self.assertRaises(ValueError):
+            tiny(outer_rho=0.5, outer_eta=0.25)
+        # learned eta starts exactly at the fixed value and receives a gradient
+        torch.manual_seed(0)
+        fixed = LT(tiny(outer_eta=0.25)).double()
+        torch.manual_seed(0)
+        learn = LT(tiny(outer_eta=0.25, outer_eta_learn=True)).double()
+        self.assertEqual(learn.block.eta_raw.shape, (learn.H,))
+        with torch.no_grad():
+            for pf, pl in zip(fixed.parameters(), [p for n, p in learn.named_parameters() if n != 'block.eta_raw']):
+                pl.copy_(pf)
+        carry_f, logits_f = fixed(fixed.initial_carry(batch(0)), batch(0))
+        carry_l, logits_l = learn(learn.initial_carry(batch(0)), batch(0))
+        torch.testing.assert_close(logits_l, logits_f)
+        torch.testing.assert_close(carry_l.stdp_w, carry_f.stdp_w)
+        logits_l.square().mean().backward()
+        self.assertGreater(float(learn.block.eta_raw.grad.abs().max()), 0.0)
 
     def test_without_hebb(self):
         """hebb=False: the write is alpha Im S only, so with alpha = 0 the memory read is zero and the value projection
@@ -210,6 +228,23 @@ class Model(unittest.TestCase):
                     m.block.v_proj.weight.normal_()
                     torch.testing.assert_close(m(m.initial_carry(batch(2)), batch(2))[1], ref)
         self.assertGreater(float((outs[True] - outs[False]).abs().max()), 1e-3)
+
+    def test_activation_checkpointing(self):
+        """act_ckpt recomputes each block in backward: same logits and gradients (EMA form, two segments)."""
+        res = {}
+        for ck in (False, True):
+            torch.manual_seed(0)
+            m = LT(tiny(outer_eta=0.125, act_ckpt=ck)).double()
+            with torch.no_grad():
+                m.block.ffn_down.weight.normal_(0, 0.05)
+            carry = m.initial_carry(batch(1))
+            for _ in range(2):
+                carry, logits = m(carry, batch(1))
+            logits.square().mean().backward()
+            res[ck] = (logits.detach(), {n: p.grad.clone() for n, p in m.named_parameters()})
+        torch.testing.assert_close(res[True][0], res[False][0])
+        for n in res[False][1]:
+            torch.testing.assert_close(res[True][1][n], res[False][1][n], msg=n)
 
     def test_initial_step_and_gradients(self):
         """Every trainable parameter gets a finite gradient; alpha does once the clock has moved."""

@@ -1,0 +1,4 @@
+eta 0.5    (window   2.0 blocks): seg16 219, late-solved 15, never 278, seg128 234, lost after 16 0
+eta 0.25   (window   4.0 blocks): seg16 234, late-solved 24, never 254, seg128 258, lost after 16 0
+eta 0.125  (window   8.0 blocks): seg16 224, late-solved 33, never 255, seg128 257, lost after 16 0
+eta 0.0625 (window  16.0 blocks): seg16 213, late-solved 29, never 268, seg128 242, lost after 16 0

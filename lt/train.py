@@ -40,8 +40,9 @@ FORMAT = 'lt-bounded-phase-clock-stdp-v1'
 DEFAULTS = dict(
     # model (lt.model.ModelConfig)
     hidden_size=832, num_heads=8, blocks_per_seg=8, loops=16, mlp_expansion=4.0, puzzle_emb_ndim=832, eps=1e-4,
-    tag_bound=0.14, block_omega=0.34, trace_lambda=0.5, outer_rho=0.0, alpha_init=1.0, hebb=True,
-    kernel='auto', kernel_bf16=True, amp=True,
+    tag_bound=0.14, block_omega=0.34, trace_lambda=0.5, outer_rho=0.0, outer_eta=0.0, outer_eta_learn=False,
+    alpha_init=1.0, hebb=True,
+    kernel='auto', kernel_bf16=True, amp=True, act_ckpt=False,
     # data
     data_npz=None, test_size=2048, num_aug=1000,
     # optimization
@@ -54,7 +55,8 @@ DEFAULTS = dict(
     dataloader_workers=1)
 # A checkpoint resumes only under the same values of these keys (plus the data fingerprint).
 RECIPE_KEYS = ('hidden_size', 'num_heads', 'blocks_per_seg', 'loops', 'mlp_expansion', 'puzzle_emb_ndim', 'eps',
-               'tag_bound', 'block_omega', 'trace_lambda', 'outer_rho', 'alpha_init', 'hebb', 'num_aug', 'test_size',
+               'tag_bound', 'block_omega', 'trace_lambda', 'outer_rho', 'outer_eta', 'outer_eta_learn', 'alpha_init', 'hebb',
+               'num_aug', 'test_size',
                'global_batch_size', 'epochs', 'eval_interval', 'lr', 'lr_warmup_steps', 'weight_decay', 'beta1',
                'beta2', 'puzzle_emb_lr', 'puzzle_emb_weight_decay', 'ema_rate', 'seed', 'data_fingerprint')
 METRICS = ('count', 'accuracy', 'exact_accuracy', 'lm_loss')
@@ -352,6 +354,12 @@ def evaluate(model, ema, x, y, cfg, rank, ws, device, step, deadline=float('inf'
     n = max(int(count), 1)
     acc, exact = float(sums[0, -1]) / n, int(sums[1, -1])
     print(f'[EVAL] step {step} acc {acc:.4f} exact {exact}/{int(count)}' + (' [partial]' if partial else ''), flush=True)
+    if model.config.outer_eta_learn:
+        with ema.swap(model):
+            eta_ema = torch.sigmoid(model.block.eta_raw.detach()).tolist()
+        eta_raw = torch.sigmoid(model.block.eta_raw.detach()).tolist()
+        fmt = lambda v: '[' + ' '.join(f'{e:.4f}' for e in v) + ']'
+        print(f'[ETA] step {step} mean {sum(eta_ema) / len(eta_ema):.4f} ema {fmt(eta_ema)} raw {fmt(eta_raw)}', flush=True)
     return dict(step=step, accuracy=acc, exact=exact, n=int(count), partial=partial)
 
 
@@ -525,7 +533,7 @@ def main(cfg):
               f"params={sum(p.numel() for p in model.parameters()):,} amp={model._amp(device)} "
               f"kernel={'triton' if model.use_kernel(device, torch.float32) else 'torch'} compile={cfg['compile']}", flush=True)
         print(f"[LT] tau = {mc.tag_bound:g} sin(phi) + n {mc.block_omega:g}; lambda {mc.trace_lambda:g}; "
-              f"rho {mc.outer_rho:g}; alpha_init {mc.alpha_init:g}; stop_at {stop_at}; "
+              f"rho {mc.outer_rho:g}; eta {mc.outer_eta:g}; alpha_init {mc.alpha_init:g}; stop_at {stop_at}; "
               + (f"RESUME {ckpt} step {state['step']}" if ckpt else 'NEW RUN') + f'; out {out_dir}', flush=True)
     ds = SudokuTrainDataset(tr_x, tr_y, seed=cfg['seed'], num_aug=cfg['num_aug'], global_batch_size=gbs, rank=rank,
                             world_size=ws, epochs_per_iter=cfg['eval_interval'], start_iter=state['iter_id'],

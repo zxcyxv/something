@@ -1,0 +1,12 @@
+{
+  "_comment": "Model B in EMA form with a learned per-head rate (2026-10-15): W <- (1 - eta_h) W + eta_h Im S, eta_h = sigmoid(eta_raw) initialized at 0.125, no weight decay (1-D parameter). Control: configs/b_ema.json (eta fixed). Question: does the learned memory lengthen early and shorten after saturation (as v1.71: 20 -> 53 -> 38 -> 16 blocks), or drift monotonically? eta is logged at every evaluation.",
+  "outer_rho": 0.0,
+  "outer_eta": 0.125,
+  "outer_eta_learn": true,
+  "alpha_init": 1.0,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}
