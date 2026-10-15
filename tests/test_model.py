@@ -116,6 +116,25 @@ class Clock(unittest.TestCase):
         sum(t.sum() for t in runs[0]).backward()
         self.assertTrue(all(bool(torch.isfinite(x.grad).all()) for x in ks + vs))
 
+    def test_reduces_to_relative_angle(self):
+        """sin of the accumulated wrapped displacement equals sin(theta_b - theta_0): the latency depends only on the
+        pair's rotation since the puzzle's first block (the winding number is discarded)."""
+        g = torch.Generator().manual_seed(3)
+        B, H, T, P = 2, 2, 5, 4
+        clock = torch.zeros(B, H, T, 6 * P + 1, dtype=torch.float64)
+        xs = [torch.randn(B, H, T, 2 * P, generator=g, dtype=torch.float64) * (0.1 + 3 * i % 7) for i in range(40)]
+        angle = lambda x: torch.atan2(x[..., 1::2], x[..., 0::2])
+        for n, x in enumerate(xs):
+            tk, _, _, clock = clock_step(clock, x, x, 0.14, 0.34)
+            torch.testing.assert_close(tk, 0.14 * torch.sin(angle(x) - angle(xs[0])) + n * 0.34, rtol=0, atol=1e-12)
+
+    def test_kappa_is_poisson_sum(self):
+        """kappa = (1-lam)(1-lam^2)/(1 - 2 lam cos wT + lam^2) = (1-lam)[1 + 2 sum_k lam^k cos(k wT)]."""
+        from lt.analysis.common import kappa
+        for lam, om in ((0.5, 0.34), (0.8, 0.2), (0.3, 1.0)):
+            series = (1 - lam) * (1 + 2 * sum(lam ** k * math.cos(k * om) for k in range(1, 400)))
+            self.assertAlmostEqual(kappa(lam, om), series, places=12)
+
     def test_sign_follows_block_order(self):
         """With omegaT > 2c and K omegaT + 2c < pi, sin(tau_post - tau_pre) > 0 for every pair 1..K blocks apart."""
         c, om, K = 0.14, 0.34, 8
