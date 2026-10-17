@@ -68,6 +68,11 @@ class ModelConfig:
     event_stdp: bool = False          # STDP between block-to-block changes, read by the query's change (needs tag_bound 0)
     event_theta: float = 0.0          # initial soft threshold of the events (0: linear events, no parameter)
     event_even: bool = False          # add the even (co-change) window Re S with a learned gain gamma_h (init 0)
+    kv_ema: bool = False              # plain linear KV memory: W = (1 - eta) W + eta sum_t v k~^T, read q~ W^T (no clock/STDP)
+    kv_ema_current: bool = False      # kv_ema read = q~ (sum_t v k~^T + alpha_h W)^T: this block's Hebb at gain 1 plus the EMA
+    exp_stdp: bool = False            # exponential pair STDP on scalar channels, L(0) = 0: W = (1 - eta) W + eta dW, read q~ W^T;
+                                      # per-head learned lam+, lam-, A+ (init trace_lambda, trace_lambda, 1), A- by equal areas
+    exp_hebb: bool = False            # exp_stdp read = q~ (sum_t v k~^T + alpha_h W)^T: B-EMA's form with the exponential window
     kernel: str = 'auto'              # auto | torch | triton
     kernel_bf16: bool = True          # BF16 dot operands in the fused kernel (FP32 accumulation)
     act_ckpt: bool = False            # recompute each block in backward (activation checkpointing; same math, less memory)
@@ -96,6 +101,14 @@ class ModelConfig:
             raise ValueError('event_stdp has no in-block latency: set tag_bound = 0')
         if self.event_theta < 0 or ((self.event_theta or self.event_even) and not self.event_stdp):
             raise ValueError('event_theta >= 0; event_theta and event_even need event_stdp')
+        if self.kv_ema and (not self.outer_eta or self.event_stdp or not self.hebb):
+            raise ValueError('kv_ema needs outer_eta > 0 (the EMA rate), event_stdp off and hebb on')
+        if self.kv_ema_current and not self.kv_ema:
+            raise ValueError('kv_ema_current needs kv_ema')
+        if self.exp_stdp and (self.outer_rho or self.event_stdp or self.kv_ema or self.tag_bound):
+            raise ValueError('exp_stdp needs outer_rho = 0, event_stdp and kv_ema off and tag_bound = 0')
+        if self.exp_hebb and not self.exp_stdp:
+            raise ValueError('exp_hebb needs exp_stdp')
 
     @property
     def outer_memory(self) -> bool:
@@ -270,7 +283,8 @@ class Block(nn.Module):
         with torch.no_grad():
             self.ffn_down.weight.zero_()
         self.rope_theta = nn.Parameter(torch.zeros(H, d // H // 2, 2))     # drawn last (see LT.__init__)
-        self.alpha = nn.Parameter(torch.full((H,), float(cfg.alpha_init)))
+        if not (cfg.kv_ema or cfg.exp_stdp) or cfg.kv_ema_current or cfg.exp_hebb:  # plain kv_ema / exp_stdp: one term
+            self.alpha = nn.Parameter(torch.full((H,), float(cfg.alpha_init)))
         if cfg.outer_eta_learn:                                              # no random draw: the init stays as without it
             self.eta_raw = nn.Parameter(torch.full((H,), math.log(cfg.outer_eta / (1 - cfg.outer_eta))))
         if cfg.event_stdp and cfg.event_theta > 0:                           # theta_i^2 = softplus(raw_i); rows q^/k^, v
@@ -278,6 +292,15 @@ class Block(nn.Module):
             self.event_theta_raw = nn.Parameter(torch.full((2, H), t2 + math.log(-math.expm1(-t2))))
         if cfg.event_even:
             self.gamma_even = nn.Parameter(torch.zeros(H))
+        if cfg.exp_stdp:                                                     # rows: logit lam+, logit lam-, log A+
+            lam = math.log(cfg.trace_lambda / (1 - cfg.trace_lambda))
+            self.window_raw = nn.Parameter(torch.tensor([[lam] * H, [lam] * H, [0.0] * H]))
+
+    def window(self):
+        """exp_stdp window per head [H]: (lam+, lam-, A+, A-) with A- lam- = A+ lam+ (equal LTP and LTD areas)."""
+        lp, lm = torch.sigmoid(self.window_raw[0]), torch.sigmoid(self.window_raw[1])
+        ap = torch.exp(self.window_raw[2])
+        return lp, lm, ap, ap * lp / lm
 
     def eta(self, cfg):
         """Per-head EMA rate of W [H] (learned) or the constant outer_eta."""
@@ -342,6 +365,10 @@ class LT(nn.Module):
         cfg = self.config
         if cfg.event_stdp:
             return self.event_memory_step(q, k, v, state)
+        if cfg.kv_ema:
+            return self.kv_ema_step(q, k, v, state)
+        if cfg.exp_stdp:
+            return self.exp_stdp_step(q, k, v, state)
         clock, ek, ev, w, _ = state
         with torch.autocast(device_type=q.device.type, enabled=False):
             dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
@@ -386,6 +413,59 @@ class LT(nn.Module):
             w = (1 - eta) * w.to(dtype) + eta * p
             return w, w
         return w, p
+
+    def kv_ema_step(self, q, k, v, state):
+        """kv_ema: W = (1 - eta) W + eta sum_t v k~^T, read = q~ W^T (kv_ema_current: q~ (sum_t v k~^T + alpha_h W)^T).
+        The clock and traces are carried unchanged."""
+        cfg = self.config
+        clock, ek, ev, w, prev = state
+        if self.probe is not None:
+            raise NotImplementedError('the analysis probe reads the phase-clock model only')
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            unit = lambda x: x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + cfg.eps)
+            angles = self.rope_angles().to(dtype)
+            tables = angles.cos()[None], angles.sin()[None]
+            qr, kr = self.rope(unit(q.to(dtype)), tables), self.rope(unit(k.to(dtype)), tables)
+            hebb = v.to(dtype).transpose(-1, -2) @ kr
+            w, m = self.accumulate(w, hebb, dtype)
+            if cfg.kv_ema_current:
+                m = hebb + self.block.alpha.to(dtype)[None, :, None, None] * m
+            read = qr @ m.transpose(-1, -2)
+        return read, (clock, ek, ev, w, prev)
+
+    def exp_stdp_step(self, q, k, v, state):
+        """exp_stdp: pair STDP on the scalar channels of k~ (pre) and v (post) of the same cell, with the per-head window
+        L(s) = A+ (1 - lam+) lam+^s (s > 0, pre first), -A- (1 - lam-) lam-^|s| (s < 0), L(0) = 0, A- lam- = A+ lam+:
+
+            xbar <- lam+ xbar + (1 - lam+) k~,   ybar <- lam- ybar + (1 - lam-) v         (real traces)
+            dW = A+ sum_t v (lam+ xbar_prev)^T - A- sum_t (lam- ybar_prev) k~^T          (LTP at the post, LTD at the pre)
+            W = (1 - eta) W + eta dW,   read = q~ W^T            (outer_eta = 0: read = q~ dW^T, this block's write only)
+            exp_hebb: read = q~ (sum_t v k~^T + alpha_h W)^T     (the Hebbian term at gain 1, as in B-EMA)
+
+        xbar, ybar are kept in the first D columns of the E_K, E_V slots; the clock is carried unchanged."""
+        cfg = self.config
+        clock, ek, ev, w, prev = state
+        if self.probe is not None:
+            raise NotImplementedError('the analysis probe reads the phase-clock model only')
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            unit = lambda x: x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + cfg.eps)
+            angles = self.rope_angles().to(dtype)
+            tables = angles.cos()[None], angles.sin()[None]
+            qr, kr = self.rope(unit(q.to(dtype)), tables), self.rope(unit(k.to(dtype)), tables)
+            v = v.to(dtype)
+            D = k.shape[-1]
+            lp, lm, ap, am = (x.to(dtype)[None, :, None, None] for x in self.block.window())
+            xbar, ybar = ek[..., :D].to(dtype), ev[..., :D].to(dtype)
+            dw = ap * (v.transpose(-1, -2) @ (lp * xbar)) - am * ((lm * ybar).transpose(-1, -2) @ kr)
+            w, m = self.accumulate(w, dw, dtype)
+            if cfg.exp_hebb:
+                m = v.transpose(-1, -2) @ kr + self.block.alpha.to(dtype)[None, :, None, None] * m
+            read = qr @ m.transpose(-1, -2)
+            ek = torch.cat([lp * xbar + (1 - lp) * kr, ek[..., D:].to(dtype)], -1)
+            ev = torch.cat([lm * ybar + (1 - lm) * v, ev[..., D:].to(dtype)], -1)
+        return read, (clock, ek, ev, w, prev)
 
     def event_memory_step(self, q, k, v, state):
         """event_stdp: one block of STDP between changes (events) of q^, k^, v, plus the Hebbian read of the states.

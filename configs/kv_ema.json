@@ -1,0 +1,14 @@
+{
+  "_comment": "Plain linear KV memory (2026-10-17): no clock, traces or STDP term. W <- (1 - eta) W + eta sum_t v k~^T (k~, q~: L2-normalized and learned 2D RoPE, as before), read q~ W^T. eta is learned per head (sigmoid), initialized at 0.0625 (16-block window, below B-EMA's 0.125). 8 blocks per segment, same harness as B-EMA.",
+  "kv_ema": true,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.0625,
+  "outer_eta_learn": true,
+  "blocks_per_seg": 8,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}

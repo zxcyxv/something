@@ -1,0 +1,16 @@
+{
+  "_comment": "KV-EMA plus this block's Hebbian read at gain 1 (2026-10-17): read = q~ (sum_t v k~^T + alpha_h W)^T with W <- (1 - eta) W + eta sum_t v k~^T. Same as B-EMA except that the EMA integrates the Hebbian write instead of the STDP term Im S (no clock, no traces). eta learned per head from 0.0625, alpha_h learned from 1 as in B-EMA.",
+  "kv_ema": true,
+  "kv_ema_current": true,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.0625,
+  "outer_eta_learn": true,
+  "alpha_init": 1.0,
+  "blocks_per_seg": 8,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}

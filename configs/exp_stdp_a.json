@@ -1,0 +1,14 @@
+{
+  "_comment": "exp_stdp without the EMA (2026-10-17): read = q~ dW^T with dW this block's exponential pair STDP write (no W carried). Against B-only (read = q~ (sum_t v k~^T)^T, the window delta(s)) the only difference is the window: odd exponential, L(0) = 0, per-head learned lam+, lam-, A+ (init 0.5, 0.5, 1), A- lam- = A+ lam+.",
+  "exp_stdp": true,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.0,
+  "trace_lambda": 0.5,
+  "blocks_per_seg": 8,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}

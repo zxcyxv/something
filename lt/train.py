@@ -41,7 +41,7 @@ DEFAULTS = dict(
     # model (lt.model.ModelConfig)
     hidden_size=832, num_heads=8, blocks_per_seg=8, loops=16, mlp_expansion=4.0, puzzle_emb_ndim=832, eps=1e-4,
     tag_bound=0.14, block_omega=0.34, trace_lambda=0.5, outer_rho=0.0, outer_eta=0.0, outer_eta_learn=False,
-    alpha_init=1.0, hebb=True, event_stdp=False, event_theta=0.0, event_even=False,
+    alpha_init=1.0, hebb=True, event_stdp=False, event_theta=0.0, event_even=False, kv_ema=False, kv_ema_current=False, exp_stdp=False, exp_hebb=False,
     kernel='auto', kernel_bf16=True, amp=True, act_ckpt=False,
     # data
     data_npz=None, test_size=2048, num_aug=1000,
@@ -56,7 +56,7 @@ DEFAULTS = dict(
 # A checkpoint resumes only under the same values of these keys (plus the data fingerprint).
 RECIPE_KEYS = ('hidden_size', 'num_heads', 'blocks_per_seg', 'loops', 'mlp_expansion', 'puzzle_emb_ndim', 'eps',
                'tag_bound', 'block_omega', 'trace_lambda', 'outer_rho', 'outer_eta', 'outer_eta_learn', 'alpha_init', 'hebb',
-               'event_stdp', 'event_theta', 'event_even',
+               'event_stdp', 'event_theta', 'event_even', 'kv_ema', 'kv_ema_current', 'exp_stdp', 'exp_hebb',
                'num_aug', 'test_size',
                'global_batch_size', 'epochs', 'eval_interval', 'lr', 'lr_warmup_steps', 'weight_decay', 'beta1',
                'beta2', 'puzzle_emb_lr', 'puzzle_emb_weight_decay', 'ema_rate', 'seed', 'data_fingerprint')
@@ -362,6 +362,11 @@ def evaluate(model, ema, x, y, cfg, rank, ws, device, step, deadline=float('inf'
         eta_raw = torch.sigmoid(model.block.eta_raw.detach()).tolist()
         fmt = lambda v: '[' + ' '.join(f'{e:.4f}' for e in v) + ']'
         print(f'[ETA] step {step} mean {sum(eta_ema) / len(eta_ema):.4f} ema {fmt(eta_ema)} raw {fmt(eta_raw)}', flush=True)
+    if model.config.exp_stdp:
+        with ema.swap(model):
+            lp, lm, ap, am = (x.detach().tolist() for x in model.block.window())
+        fmt = lambda v: '[' + ' '.join(f'{e:.3f}' for e in v) + ']'
+        print(f'[WIN] step {step} (ema) lam+ {fmt(lp)} lam- {fmt(lm)} A+ {fmt(ap)} A- {fmt(am)}', flush=True)
     return dict(step=step, accuracy=acc, exact=exact, n=int(count), partial=partial)
 
 
@@ -537,6 +542,8 @@ def main(cfg):
         print(f"[LT] tau = {mc.tag_bound:g} sin(phi) + n {mc.block_omega:g}; lambda {mc.trace_lambda:g}; "
               f"rho {mc.outer_rho:g}; eta {mc.outer_eta:g}; alpha_init {mc.alpha_init:g}; "
               + (f"EVENT-STDP theta {mc.event_theta:g} even {mc.event_even}; " if mc.event_stdp else '')
+              + (('KV-EMA + current Hebb (gain 1); ' if mc.kv_ema_current else 'KV-EMA (plain linear KV, no clock/STDP); ') if mc.kv_ema else '')
+              + (('exp-STDP + Hebb (B-EMA form); ' if mc.exp_hebb else 'exp-STDP (scalar channels, exponential pair window, L(0) = 0); ') if mc.exp_stdp else '')
               + f"stop_at {stop_at}; "
               + (f"RESUME {ckpt} step {state['step']}" if ckpt else 'NEW RUN') + f'; out {out_dir}', flush=True)
     ds = SudokuTrainDataset(tr_x, tr_y, seed=cfg['seed'], num_aug=cfg['num_aug'], global_batch_size=gbs, rank=rank,

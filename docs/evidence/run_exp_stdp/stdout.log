@@ -1,0 +1,25 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.11.0+cu128 device=cuda:0 ranks=1 params=8,538,851 amp=True kernel=torch compile=True
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0.125; alpha_init 1; exp-STDP (scalar channels, exponential pair window, L(0) = 0); stop_at 50800; NEW RUN; out /workspace/something/runs/exp_stdp
+/venv/main/lib/python3.12/site-packages/torch/_inductor/compile_fx.py:322: UserWarning: TensorFloat32 tensor cores for float32 matrix multiplication available but not enabled. Consider setting `torch.set_float32_matmul_precision('high')` for better performance.
+  warnings.warn(
+[LT] step 250 lm_loss 1.62108 lr 1.25e-05 acc 0.3954 exact 0.0000 [finished at step 240]
+[LT] step 500 lm_loss 1.55704 lr 2.49e-05 acc 0.3903 exact 0.0000 [finished at step 496]
+[LT] step 750 lm_loss 1.53407 lr 3.75e-05 acc 0.4147 exact 0.0000 [finished at step 736]
+[LT] step 1000 lm_loss 1.53908 lr 5e-05 acc 0.3929 exact 0.0000 [finished at step 992]
+[LT] step 1250 lm_loss 1.50533 lr 6.25e-05 acc 0.4447 exact 0.0000 [finished at step 1248]
+[LT] step 1500 lm_loss 1.41141 lr 7.5e-05 acc 0.4598 exact 0.0000 [finished at step 1488]
+[LT] step 1750 lm_loss 1.37224 lr 8.74e-05 acc 0.4695 exact 0.0000 [finished at step 1744]
+[EVAL] step 1953 acc 0.3884 exact 0/2048
+[WIN] step 1953 (ema) lam+ [0.505 0.505 0.504 0.505 0.504 0.505 0.504 0.502] lam- [0.503 0.502 0.502 0.502 0.501 0.502 0.502 0.501] A+ [1.020 1.021 1.019 1.018 1.015 1.018 1.018 1.012] A- [1.025 1.026 1.024 1.023 1.021 1.024 1.023 1.014]
+[LT] step 2000 lm_loss 1.29833 lr 0.0001 acc 0.4751 exact 0.0000 [finished at step 2000]
+[LT] step 2250 lm_loss 1.26659 lr 0.0001 acc 0.4824 exact 0.0000 [finished at step 2240]
+[LT] step 2500 lm_loss 1.26414 lr 0.0001 acc 0.4833 exact 0.0000 [finished at step 2496]
+[LT] step 2750 lm_loss 1.22444 lr 0.0001 acc 0.4986 exact 0.0000 [finished at step 2736]
+[LT] step 3000 lm_loss 1.20409 lr 0.0001 acc 0.5009 exact 0.0000 [finished at step 2992]
+[LT] step 3250 lm_loss 1.20418 lr 0.0001 acc 0.5265 exact 0.0000 [finished at step 3248]
+[LT] step 3500 lm_loss 1.08705 lr 0.0001 acc 0.5661 exact 0.0000 [finished at step 3488]
+[LT] step 3750 lm_loss 1.07199 lr 0.0001 acc 0.5747 exact 0.0000 [finished at step 3744]
+[EVAL] step 3906 acc 0.4811 exact 0/2048
+[WIN] step 3906 (ema) lam+ [0.507 0.505 0.504 0.505 0.506 0.505 0.505 0.507] lam- [0.497 0.500 0.493 0.497 0.499 0.497 0.494 0.502] A+ [1.048 1.027 1.035 1.021 1.024 1.027 1.052 1.033] A- [1.070 1.037 1.057 1.037 1.038 1.044 1.076 1.043]
+[LT] step 4000 lm_loss 0.95611 lr 0.0001 acc 0.6031 exact 0.0000 [finished at step 4000]
+[LT] saved step 4200: /workspace/something/runs/exp_stdp/step_4200.pt [stopped]

@@ -1,0 +1,16 @@
+{
+  "_comment": "B-EMA's form with the exponential pair window (2026-10-17): read = q~ (sum_t v k~^T + alpha_h W)^T, W <- (1 - eta) W + eta dW, dW the odd exponential pair STDP write of exp_stdp (scalar channels, no clock, L(0) = 0 inside dW, per-head learned lam+, lam-, A+ from 0.5, 0.5, 1, A- lam- = A+ lam+). eta fixed 0.125 and alpha_h learned from 1, as in B-EMA; against B-EMA only the odd part differs (exponential window on scalar channels instead of the clocked damped sine with pair-angle latency).",
+  "exp_stdp": true,
+  "exp_hebb": true,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.125,
+  "trace_lambda": 0.5,
+  "alpha_init": 1.0,
+  "blocks_per_seg": 8,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}

@@ -1,0 +1,14 @@
+{
+  "_comment": "Exponential pair STDP on scalar channels (2026-10-17): no clock, no pair angle, no Hebbian term (L(0) = 0). Per-head window L(s) = A+ (1 - lam+) lam+^s for s > 0 (pre first), -A- (1 - lam-) lam-^|s| for s < 0, with A- lam- = A+ lam+ (equal areas, nothing written at fixed points). lam+, lam-, A+ learned per head from 0.5, 0.5, 1. k~, q~ L2-normalized + learned RoPE, v raw, read gain 1: read = q~ W^T with W <- (1 - eta) W + eta dW, eta fixed 0.125 as in B-EMA.",
+  "exp_stdp": true,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.125,
+  "trace_lambda": 0.5,
+  "blocks_per_seg": 8,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}
