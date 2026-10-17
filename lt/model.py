@@ -21,6 +21,13 @@ the block order. c, omegaT, lam and rho are fixed constants; alpha_h is trained 
 
 The clock, traces, W and the read are FP32 (FP64 in tests); projections and the FFN follow BF16 autocast where the
 GPU has native BF16. kernel 'triton' runs the memory step through lt/kernel.py (rho = 0 only).
+
+event_stdp (control model, tag_bound = 0): the pairs are taken between block-to-block changes (events) instead of
+states, and the Hebbian term stays on the states:
+
+    e_x  = x - x_prev for x in (q^, k^, v), soft-thresholded e = d r2 / (r2 + theta^2) when event_theta > 0; 0 at n = 0
+    P    = Im S over (e_V, e_K) with tau = n omegaT (no latency)  [+ gamma_h Re S with event_even]
+    W    = rho W + P | (1 - eta) W + eta P | P;    read = alpha_h RoPE(e_Q) W^T + q~ (sum_t v k~^T)^T
 """
 from __future__ import annotations
 
@@ -58,6 +65,9 @@ class ModelConfig:
     outer_eta_learn: bool = False     # learn eta per head (sigmoid(eta_raw), initialized at outer_eta; no weight decay)
     alpha_init: float = 1.0           # alpha_h at initialization
     hebb: bool = True                 # include the Hebbian carrier sum_t v k~^T in the write (False: G = alpha Im S)
+    event_stdp: bool = False          # STDP between block-to-block changes, read by the query's change (needs tag_bound 0)
+    event_theta: float = 0.0          # initial soft threshold of the events (0: linear events, no parameter)
+    event_even: bool = False          # add the even (co-change) window Re S with a learned gain gamma_h (init 0)
     kernel: str = 'auto'              # auto | torch | triton
     kernel_bf16: bool = True          # BF16 dot operands in the fused kernel (FP32 accumulation)
     act_ckpt: bool = False            # recompute each block in backward (activation checkpointing; same math, less memory)
@@ -80,8 +90,12 @@ class ModelConfig:
             raise ValueError('outer_eta_learn needs outer_eta > 0 as the initial value')
         if self.kernel not in ('auto', 'torch', 'triton'):
             raise ValueError('kernel must be auto, torch or triton')
-        if self.kernel == 'triton' and (self.outer_rho or self.outer_eta or not self.hebb):
+        if self.kernel == 'triton' and (self.outer_rho or self.outer_eta or not self.hebb or self.event_stdp):
             raise ValueError('the fused kernel implements outer_rho = outer_eta = 0 with the Hebbian term only')
+        if self.event_stdp and self.tag_bound != 0:
+            raise ValueError('event_stdp has no in-block latency: set tag_bound = 0')
+        if self.event_theta < 0 or ((self.event_theta or self.event_even) and not self.event_stdp):
+            raise ValueError('event_theta >= 0; event_theta and event_even need event_stdp')
 
     @property
     def outer_memory(self) -> bool:
@@ -104,6 +118,7 @@ class Carry:
     key_trace: Optional[torch.Tensor] = None        # cat(Re E_K, Im E_K) [B, H, T, 2D] (before RoPE)
     value_trace: Optional[torch.Tensor] = None      # cat(Re E_V, Im E_V) [B, H, T, 2D]
     stdp_w: Optional[torch.Tensor] = None           # W [B, H, D, D] (outer_rho or outer_eta > 0 only)
+    prev: Optional[torch.Tensor] = None             # cat(q^, k^, v) of the previous block [B, H, T, 3D] (event_stdp only)
     fresh: Optional[torch.Tensor] = None            # [B] lanes that start a puzzle in this segment
 
 
@@ -191,11 +206,12 @@ def clock_step(clock, k_unit, v, bound, omega_t):
     return tag_k, tag_v, count, torch.cat((phase_k, phase_v, zk, zv, count + 1), -1)
 
 
-def stdp_step(k_unit, kr, v, rope, tag_k, tag_v, lam, traces):
+def stdp_step(k_unit, kr, v, rope, tag_k, tag_v, lam, traces, real=False):
     """One block of the phase-tagged traces; returns (hebb, Im S, new traces), token sums [B,H,D,D].
 
     k_unit: unit key before RoPE; kr = rope(k_unit); v raw; tag_k, tag_v [B,H,T,P]; lam: retention (scalar or
     broadcastable to [B,H,T,P]); traces = (Re E_K, Im E_K, Re E_V, Im E_V), zeroed for fresh lanes.
+    real=True also returns Re S (the even window, same pairs) as a fourth value.
     """
     ek_re, ek_im, ev_re, ev_im = traces
     ck, sk = rep2(tag_k.cos()), rep2(tag_k.sin())
@@ -213,9 +229,13 @@ def stdp_step(k_unit, kr, v, rope, tag_k, tag_v, lam, traces):
     im_s = (vs @ ekr_re + vc @ ekr_im
             + dv_im.transpose(-1, -2) @ (kr * ck) - dv_re.transpose(-1, -2) @ (kr * sk))
     hebb = v.transpose(-1, -2) @ kr
+    if real:
+        re_s = (vc @ ekr_re - vs @ ekr_im
+                + dv_re.transpose(-1, -2) @ (kr * ck) + dv_im.transpose(-1, -2) @ (kr * sk))
     ev_re = dv_re + (1 - lam) * v * cv
     ev_im = dv_im + (1 - lam) * v * sv
-    return hebb, im_s, (ek_re, ek_im, ev_re, ev_im)
+    new = (ek_re, ek_im, ev_re, ev_im)
+    return (hebb, im_s, new, re_s) if real else (hebb, im_s, new)
 
 
 class PuzzleEmbedding(nn.Module):
@@ -253,6 +273,11 @@ class Block(nn.Module):
         self.alpha = nn.Parameter(torch.full((H,), float(cfg.alpha_init)))
         if cfg.outer_eta_learn:                                              # no random draw: the init stays as without it
             self.eta_raw = nn.Parameter(torch.full((H,), math.log(cfg.outer_eta / (1 - cfg.outer_eta))))
+        if cfg.event_stdp and cfg.event_theta > 0:                           # theta_i^2 = softplus(raw_i); rows q^/k^, v
+            t2 = cfg.event_theta ** 2
+            self.event_theta_raw = nn.Parameter(torch.full((2, H), t2 + math.log(-math.expm1(-t2))))
+        if cfg.event_even:
+            self.gamma_even = nn.Parameter(torch.zeros(H))
 
     def eta(self, cfg):
         """Per-head EMA rate of W [H] (learned) or the constant outer_eta."""
@@ -303,8 +328,8 @@ class LT(nn.Module):
         return inj
 
     def use_kernel(self, device, dtype):
-        if (self.probe is not None or self.config.outer_memory or not self.config.hebb or device.type != 'cuda'
-                or dtype == torch.float64):
+        if (self.probe is not None or self.config.outer_memory or not self.config.hebb or self.config.event_stdp
+                or device.type != 'cuda' or dtype == torch.float64):
             return False
         if self.config.kernel == 'auto':
             return torch.cuda.get_device_capability(device) >= (8, 0)
@@ -315,7 +340,9 @@ class LT(nn.Module):
         """One block of the STDP memory in FP32 (FP64 on the test path). state = (clock, E_K, E_V, W), already
         zeroed for fresh lanes. Returns read [B,H,T,D] and the new state."""
         cfg = self.config
-        clock, ek, ev, w = state
+        if cfg.event_stdp:
+            return self.event_memory_step(q, k, v, state)
+        clock, ek, ev, w, _ = state
         with torch.autocast(device_type=q.device.type, enabled=False):
             dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
             k_unit = k.to(dtype)
@@ -328,7 +355,7 @@ class LT(nn.Module):
                 lam = torch.full_like(tag_k, cfg.trace_lambda)
                 read, _, ek, ev = phase_clock_attention(q, k, v, ek, ev, tag_k, tag_v, lam, lam, angles,
                                                         self.block.alpha, cfg.eps, cfg.kernel_bf16)
-                return read, (clock, ek, ev, None)
+                return read, (clock, ek, ev, None, None)
             q, v = q.to(dtype), v.to(dtype)
             tables = angles.cos()[None], angles.sin()[None]
             rope = lambda x: self.rope(x, tables)
@@ -340,19 +367,69 @@ class LT(nn.Module):
             if self.probe is not None:
                 swap = self.probe(StepRecord(k_unit, kr, qr, v, tag_k, tag_v, count, traces, new, hebb, im_s, rope))
                 im_s = im_s if swap is None else swap
-            if cfg.outer_rho:
-                w = cfg.outer_rho * w.to(dtype) + im_s
-                im_s = w
-            elif cfg.outer_eta:
-                eta = self.block.eta(cfg)
-                if torch.is_tensor(eta):
-                    eta = eta.to(dtype)[None, :, None, None]
-                w = (1 - eta) * w.to(dtype) + eta * im_s
-                im_s = w
+            w, im_s = self.accumulate(w, im_s, dtype)
             alpha = self.block.alpha.to(dtype)[None, :, None, None]
             write = hebb + alpha * im_s if cfg.hebb else alpha * im_s
             read = qr @ write.transpose(-1, -2)
-        return read, (clock, torch.cat(new[:2], -1), torch.cat(new[2:], -1), w)
+        return read, (clock, torch.cat(new[:2], -1), torch.cat(new[2:], -1), w, None)
+
+    def accumulate(self, w, p, dtype):
+        """W of model B (leaky or EMA form) for this block's write p; returns (W, what the read uses)."""
+        cfg = self.config
+        if cfg.outer_rho:
+            w = cfg.outer_rho * w.to(dtype) + p
+            return w, w
+        if cfg.outer_eta:
+            eta = self.block.eta(cfg)
+            if torch.is_tensor(eta):
+                eta = eta.to(dtype)[None, :, None, None]
+            w = (1 - eta) * w.to(dtype) + eta * p
+            return w, w
+        return w, p
+
+    def event_memory_step(self, q, k, v, state):
+        """event_stdp: one block of STDP between changes (events) of q^, k^, v, plus the Hebbian read of the states.
+        state = (clock, E_K, E_V, W, prev); only n (the clock's last channel) is used from the clock."""
+        cfg = self.config
+        clock, ek, ev, w, prev = state
+        if self.probe is not None:
+            raise NotImplementedError('the analysis probe reads the phase-clock model only')
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            unit = lambda x: x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + cfg.eps)
+            q_unit, k_unit, v = unit(q.to(dtype)), unit(k.to(dtype)), v.to(dtype)
+            clock = clock.to(dtype)
+            count = clock[..., -1:]
+            started = (count > 0).to(dtype)
+            theta = (F.softplus(self.block.event_theta_raw.to(dtype)) if cfg.event_theta > 0 else None)
+
+            def event(d, i):                     # soft threshold per vector: d r2 / (r2 + theta_i^2), direction kept
+                if theta is not None:
+                    r2 = d.square().sum(-1, keepdim=True)
+                    d = d * (r2 / (r2 + theta[i][None, :, None, None]))
+                return d * started
+
+            D = k.shape[-1]
+            pq, pk, pv = prev.to(dtype).split(D, -1)
+            e_q, e_k, e_v = event(q_unit - pq, 0), event(k_unit - pk, 0), event(v - pv, 1)
+            angles = self.rope_angles().to(dtype)
+            tables = angles.cos()[None], angles.sin()[None]
+            rope = lambda x: self.rope(x, tables)
+            tag = (count * cfg.block_omega).expand(*count.shape[:-1], D // 2)
+            traces = (*ek.to(dtype).split(D, -1), *ev.to(dtype).split(D, -1))
+            out = stdp_step(e_k, rope(e_k), e_v, rope, tag, tag, cfg.trace_lambda, traces, real=cfg.event_even)
+            p, new = out[1], out[2]
+            if cfg.event_even:
+                p = p + self.block.gamma_even.to(dtype)[None, :, None, None] * out[3]
+            w, m = self.accumulate(w, p, dtype)
+            alpha = self.block.alpha.to(dtype)[None, :, None, None]
+            read = rope(e_q) @ (alpha * m).transpose(-1, -2)
+            if cfg.hebb:
+                kr = rope(k_unit)
+                read = read + rope(q_unit) @ (v.transpose(-1, -2) @ kr).transpose(-1, -2)
+            clock = torch.cat((clock[..., :-1], count + 1), -1)
+        return read, (clock, torch.cat(new[:2], -1), torch.cat(new[2:], -1), w,
+                      torch.cat((q_unit, k_unit, v), -1))
 
     def block_step(self, h, inj, state):
         """One recurrent block: returns the new hidden state and memory state."""
@@ -371,7 +448,8 @@ class LT(nn.Module):
         P, D = self.dh // 2, self.dh
         z = lambda *s: torch.zeros(B, self.H, *s, device=device, dtype=dtype)
         return (z(self.config.seq_len, 6 * P + 1), z(self.config.seq_len, 2 * D), z(self.config.seq_len, 2 * D),
-                z(D, D) if self.config.outer_memory else None)
+                z(D, D) if self.config.outer_memory else None,
+                z(self.config.seq_len, 3 * D) if self.config.event_stdp else None)
 
     # ------------------------------------------------------------------ segments
     def initial_carry(self, batch):
@@ -404,7 +482,7 @@ class LT(nn.Module):
         else:
             mask = fresh.view(-1, 1, 1, 1)
             state = tuple(None if x is None else torch.where(mask, torch.zeros_like(x), x)
-                          for x in (carry.clock, carry.key_trace, carry.value_trace, carry.stdp_w))
+                          for x in (carry.clock, carry.key_trace, carry.value_trace, carry.stdp_w, carry.prev))
         amp = self._amp(device)
         with torch.autocast('cuda', dtype=torch.bfloat16, enabled=amp, cache_enabled=False):
             inj = self.injection(data)
@@ -418,9 +496,9 @@ class LT(nn.Module):
         if amp:
             h, logits = h.float(), logits.float()
         steps = torch.where(fresh, 0, carry.steps) + 1
-        clock, ek, ev, w = (None if x is None else x.detach() for x in state)
+        clock, ek, ev, w, prev = (None if x is None else x.detach() for x in state)
         new = Carry(hidden=h.detach(), steps=steps, halted=steps >= self.config.loops, data=data,
-                    clock=clock, key_trace=ek, value_trace=ev, stdp_w=w)
+                    clock=clock, key_trace=ek, value_trace=ev, stdp_w=w, prev=prev)
         return new, logits
 
 

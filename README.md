@@ -6,7 +6,7 @@
     G_b = Σ_t v k̃ᵀ  +  α_h · Im S_b,     τ = n·ωT + c·sin φ
 
 Hebb 운반자에 STDP 창(블록 순서로 LTP/LTD 부호가 정해지는 감쇠 사인 λ^k sin(kωT))을 더한 것이다.
-설계와 근거는 [docs/architecture.md](docs/architecture.md)에 있다. 결과, 부정 결과, 미결 문제는 [docs/results.md](docs/results.md)에 있다. 2026-10-15의 기억 시정수·EMA·Rule 110 해부 기록은 [docs/claude_2026-10-15_memory_and_rule110.md](docs/claude_2026-10-15_memory_and_rule110.md)에 있다.
+설계와 근거는 [docs/architecture.md](docs/architecture.md)에 있다. 결과, 부정 결과, 미결 문제는 [docs/results.md](docs/results.md)에 있다. 2026-10-15의 기억 시정수·EMA·Rule 110 해부 기록은 [docs/claude_2026-10-15_memory_and_rule110.md](docs/claude_2026-10-15_memory_and_rule110.md)에, 2026-10-17의 변화량 STDP 비판 검토와 Event-STDP 대조군(`event_stdp`, 학습 진행 예정)은 [docs/claude_2026-10-17_event_stdp_handoff.md](docs/claude_2026-10-17_event_stdp_handoff.md)에 있다.
 이 아키텍처가 보장해야 할 성질은 [docs/claude_essential_properties.md](docs/claude_essential_properties.md)에, A가 어떤 일반 형태의 특수한 경우인지 해체한 분석은 [docs/claude_analysis_expressivity.md](docs/claude_analysis_expressivity.md)에 있다(둘 다 Claude의 주장, 실험 미검증).
 
 | 모델 | 상태 | held-out (칸 / 완답, 2048; A는 50.8k) | 외삽 (seg16 → 128세그먼트까지 최고, 512문제) |
@@ -32,7 +32,7 @@ lt/analysis/          해석 도구
   depth.py              L0/L1 동기식 제약 전파 깊이
   extrapolate.py        학습 지평 너머 세그먼트, 학습 퍼즐 대 held-out
 tests/                쌍 합 항등식, 시계, B의 W, O/L 정리, 커널 대 참조, 재개 정확성
-configs/              a_bounded.json (런 A), b_leaky.json (모델 B)
+configs/              a_bounded.json (런 A), b_leaky.json (모델 B), b_ema.json (B-EMA), b_ema_event.json (Event-STDP 대조군)
 kaggle/               build_cell.py → lt_cell.py (셀 하나에 붙여넣어 학습)
 data/                 sudoku_lt_1k.npz와 그 생성 스크립트
 docs/                 architecture.md, results.md, claude_2026-10-15_memory_and_rule110.md, claude_essential_properties.md, claude_analysis_expressivity.md, evidence/

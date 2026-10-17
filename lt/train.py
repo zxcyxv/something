@@ -41,7 +41,7 @@ DEFAULTS = dict(
     # model (lt.model.ModelConfig)
     hidden_size=832, num_heads=8, blocks_per_seg=8, loops=16, mlp_expansion=4.0, puzzle_emb_ndim=832, eps=1e-4,
     tag_bound=0.14, block_omega=0.34, trace_lambda=0.5, outer_rho=0.0, outer_eta=0.0, outer_eta_learn=False,
-    alpha_init=1.0, hebb=True,
+    alpha_init=1.0, hebb=True, event_stdp=False, event_theta=0.0, event_even=False,
     kernel='auto', kernel_bf16=True, amp=True, act_ckpt=False,
     # data
     data_npz=None, test_size=2048, num_aug=1000,
@@ -56,6 +56,7 @@ DEFAULTS = dict(
 # A checkpoint resumes only under the same values of these keys (plus the data fingerprint).
 RECIPE_KEYS = ('hidden_size', 'num_heads', 'blocks_per_seg', 'loops', 'mlp_expansion', 'puzzle_emb_ndim', 'eps',
                'tag_bound', 'block_omega', 'trace_lambda', 'outer_rho', 'outer_eta', 'outer_eta_learn', 'alpha_init', 'hebb',
+               'event_stdp', 'event_theta', 'event_even',
                'num_aug', 'test_size',
                'global_batch_size', 'epochs', 'eval_interval', 'lr', 'lr_warmup_steps', 'weight_decay', 'beta1',
                'beta2', 'puzzle_emb_lr', 'puzzle_emb_weight_decay', 'ema_rate', 'seed', 'data_fingerprint')
@@ -144,13 +145,14 @@ class SignSGDEmbedding(Optimizer):
 
 
 def create_optimizers(model, cfg, world_size):
-    """Weight decay on the projection/FFN/embedding/classifier matrices; none on biases, alpha and RoPE angles."""
+    """Weight decay on the projection/FFN/embedding/classifier matrices; none on biases, alpha, RoPE angles and the
+    event thresholds."""
     opts, lrs = [], []
     if model.puzzle_emb is not None:
         opts.append(SignSGDEmbedding(model.puzzle_emb, world_size, weight_decay=cfg['puzzle_emb_weight_decay']))
         lrs.append(cfg['puzzle_emb_lr'])
     named = [(n, p) for n, p in model.named_parameters() if p.requires_grad]
-    decay = lambda n, p: p.ndim >= 2 and 'rope_theta' not in n
+    decay = lambda n, p: p.ndim >= 2 and 'rope_theta' not in n and 'event_theta_raw' not in n
     opts.append(AdamATan2([{'params': [p for n, p in named if not decay(n, p)], 'weight_decay': 0.0},
                            {'params': [p for n, p in named if decay(n, p)], 'weight_decay': cfg['weight_decay']}],
                           lr=0, betas=(cfg['beta1'], cfg['beta2'])))
@@ -533,7 +535,9 @@ def main(cfg):
               f"params={sum(p.numel() for p in model.parameters()):,} amp={model._amp(device)} "
               f"kernel={'triton' if model.use_kernel(device, torch.float32) else 'torch'} compile={cfg['compile']}", flush=True)
         print(f"[LT] tau = {mc.tag_bound:g} sin(phi) + n {mc.block_omega:g}; lambda {mc.trace_lambda:g}; "
-              f"rho {mc.outer_rho:g}; eta {mc.outer_eta:g}; alpha_init {mc.alpha_init:g}; stop_at {stop_at}; "
+              f"rho {mc.outer_rho:g}; eta {mc.outer_eta:g}; alpha_init {mc.alpha_init:g}; "
+              + (f"EVENT-STDP theta {mc.event_theta:g} even {mc.event_even}; " if mc.event_stdp else '')
+              + f"stop_at {stop_at}; "
               + (f"RESUME {ckpt} step {state['step']}" if ckpt else 'NEW RUN') + f'; out {out_dir}', flush=True)
     ds = SudokuTrainDataset(tr_x, tr_y, seed=cfg['seed'], num_aug=cfg['num_aug'], global_batch_size=gbs, rank=rank,
                             world_size=ws, epochs_per_iter=cfg['eval_interval'], start_iter=state['iter_id'],

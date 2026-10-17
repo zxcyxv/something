@@ -1,0 +1,16 @@
+{
+  "_comment": "Event-STDP control for B-EMA (2026-10-17): the STDP pairs are taken between block-to-block changes of k^ and v (window (1 - lam) lam^|a-b| sin(omegaT (a-b)), no latency: tag_bound 0), accumulated as W <- (1 - eta) W + eta P with eta 0.125 as in B-EMA, and read by the query's change; the Hebbian read stays on the states. Linear events (event_theta 0), odd window only (event_even false). 8 blocks per segment.",
+  "event_stdp": true,
+  "event_theta": 0.0,
+  "event_even": false,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.125,
+  "alpha_init": 1.0,
+  "blocks_per_seg": 8,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}
