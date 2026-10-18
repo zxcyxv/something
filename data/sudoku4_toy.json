@@ -1,0 +1,31 @@
+{
+  "grids": 288,
+  "train_grids": 230,
+  "test_grids": 58,
+  "train_puzzles": 5520,
+  "test_puzzles": 1392,
+  "seed": 0,
+  "per_grid": 24,
+  "clues_train": {
+    "4": 3526,
+    "5": 1974,
+    "6": 20
+  },
+  "clues_test": {
+    "4": 778,
+    "5": 606,
+    "6": 8
+  },
+  "naked_single_rounds_train": {
+    "2": 786,
+    "3": 1574,
+    "4": 2417,
+    "5": 743
+  },
+  "naked_single_rounds_test": {
+    "2": 267,
+    "3": 495,
+    "4": 471,
+    "5": 159
+  }
+}

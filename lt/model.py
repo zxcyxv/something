@@ -28,6 +28,15 @@ states, and the Hebbian term stays on the states:
     e_x  = x - x_prev for x in (q^, k^, v), soft-thresholded e = d r2 / (r2 + theta^2) when event_theta > 0; 0 at n = 0
     P    = Im S over (e_V, e_K) with tau = n omegaT (no latency)  [+ gamma_h Re S with event_even]
     W    = rho W + P | (1 - eta) W + eta P | P;    read = alpha_h RoPE(e_Q) W^T + q~ (sum_t v k~^T)^T
+
+bands = R > 0 (no clock, tag_bound = 0): the pair window is a sum of R damped complex exponentials with learned poles
+z_r = exp(-e^{nu_r} + i theta_r) and complex coefficients a_r (value at or after the key), b_r (value before):
+
+    E_K,r <- z_r E_K,r + gamma_r k~;   D_V,r = z_r E_V,r;   E_V,r <- D_V,r + gamma_r v      gamma_r = sqrt(1 - |z_r|^2)
+    S     = sum_r Re(a_r v^T E_K,r + b_r D_V,r^T k~)        window l(D) = sum_r gamma_r Re(a_r z_r^D), D >= 0;
+    W     = (1 - eta) W + eta S,   read = q~ (sum_t v k~^T + W)^T          sum_r gamma_r Re(b_r z_r^|D|), D < 0
+    hebb=False drops the tonic term and reads this block's write directly: read = q~ (S + W)^T (one window: the
+    same-block Hebb is l(0) = sum_r gamma_r Re a_r)
 """
 from __future__ import annotations
 
@@ -48,6 +57,7 @@ class ModelConfig:
     batch_size: int = 128             # per process (the puzzle-embedding buffer)
     seq_len: int = 81
     grid: int = 9
+    num_grids: int = 1                # grids per sample, stacked along rows (in-context demonstrations + query)
     vocab_size: int = 11              # 0 pad, 1 blank, 2..10 digits 1..9
     num_puzzle_identifiers: int = 1
     puzzle_emb_ndim: int = 832
@@ -56,6 +66,7 @@ class ModelConfig:
     blocks_per_seg: int = 8
     loops: int = 16                   # segments per puzzle
     mlp_expansion: float = 4.0
+    mlp_inter: int = 0                # FFN inner width (0: mlp_expansion * d * 2/3 rounded up to a multiple of 256)
     eps: float = 1e-4                 # Q/K L2 denominator ||x|| + eps
     tag_bound: float = 0.14           # c
     block_omega: float = 0.34         # omegaT
@@ -73,15 +84,40 @@ class ModelConfig:
     exp_stdp: bool = False            # exponential pair STDP on scalar channels, L(0) = 0: W = (1 - eta) W + eta dW, read q~ W^T;
                                       # per-head learned lam+, lam-, A+ (init trace_lambda, trace_lambda, 1), A- by equal areas
     exp_hebb: bool = False            # exp_stdp read = q~ (sum_t v k~^T + alpha_h W)^T: B-EMA's form with the exponential window
+    bands: int = 0                    # R > 0: clockless window of R complex poles, read q~ (sum_t v k~^T + W)^T (bands_step);
+                                      # with hebb False read q~ (S + W)^T
+    band_periods: tuple = (2.0, 6.0, 20.0, 64.0)   # initial periods p_r: theta_r = 2 pi / p_r, |z_r| = e^{-1/p_r}
+    band_coef_std: float = 0.1        # std of each real component of the initial a_r, b_r
+    outer_eta_cap: bool = False       # project the learned eta onto eta <= outer_eta after every optimizer step
+    linear_attn: bool = False         # standard recurrent linear attention: read = q~ (sum_t v k~^T)^T (no clock, W, STDP)
+    task_film: bool = False           # per-identifier FiLM of the FFN gate keys: g <- g * (1 + gamma[id]), gamma init 0
+    task_film_up: bool = False        # per-identifier scale of the FFN up side: a <- a * (1 + w[id]) (linear in each slot's
+                                      # output: the update is a task-weighted sum of the slots' fields), w init 0
+    task_lowrank: int = 0             # r > 0: per-identifier rank-r change of the gate keys, W_G + U[id] V[id]^T (U init 0)
+    puzzle_emb_mode: str = 'add'      # add: puzzle embedding added to every cell's input; prefix: URM/HRM style, padded to
+                                      # ceil(puzzle_emb_ndim / d) extra positions in front of the cells (logits drop them);
+                                      # film: not injected, a shared projection makes FFN gate scales g <- g * (1 + H e[id])
     kernel: str = 'auto'              # auto | torch | triton
     kernel_bf16: bool = True          # BF16 dot operands in the fused kernel (FP32 accumulation)
     act_ckpt: bool = False            # recompute each block in backward (activation checkpointing; same math, less memory)
+    act_ckpt_blocks: int = -1         # with act_ckpt: checkpoint only the first N blocks of a segment (-1: all)
     amp: bool = True                  # BF16 autocast for projections and FFN where native
     forward_dtype: str = 'float32'    # float64 for tests
+    act: bool = False                 # URM ACT: q_head on position 0 gives q_halt; in training a lane halts when q_halt > 0
+                                      # (or after `loops` segments), with exploration (a random minimum of 2..loops segments
+                                      # with probability act_explore); evaluation always runs `loops` segments
+    act_explore: float = 0.1
+    fast_ffn: int = 0                 # r > 0: fast-weight FFN memory (weight-space delta rule). Per lane dW [r, I]; key
+                                      # phi~ = unit(silu(g) * a) (the FFN's own hidden pattern), value v_f = W_fv h' [r];
+                                      # dW <- (1 - lam) dW + (eta / T) sum_t (v_f - dW phi~) phi~^T (one gradient step on
+                                      # 1/2 sum_t |v_f - dW phi~|^2: eta < 1 and |phi~| = 1 keep the step a contraction);
+                                      # FFN output += W_fo dW phi~ (W_fo starts at 0, so the model starts unchanged)
+    fast_ffn_eta: float = 0.5         # initial eta (learned, sigmoid)
+    fast_ffn_decay: float = 0.02      # initial lam (learned, sigmoid)
 
     def __post_init__(self):
-        if self.seq_len != self.grid ** 2:
-            raise ValueError('seq_len must equal grid**2')
+        if self.seq_len != self.num_grids * self.grid ** 2:
+            raise ValueError('seq_len must equal num_grids * grid**2')
         if self.hidden_size % self.num_heads or (self.hidden_size // self.num_heads) % 2:
             raise ValueError('the head dimension must be even')
         if not 0 <= self.puzzle_emb_ndim <= self.hidden_size:
@@ -95,7 +131,8 @@ class ModelConfig:
             raise ValueError('outer_eta_learn needs outer_eta > 0 as the initial value')
         if self.kernel not in ('auto', 'torch', 'triton'):
             raise ValueError('kernel must be auto, torch or triton')
-        if self.kernel == 'triton' and (self.outer_rho or self.outer_eta or not self.hebb or self.event_stdp):
+        if self.kernel == 'triton' and (self.outer_rho or self.outer_eta or not self.hebb or self.event_stdp
+                                        or self.linear_attn):
             raise ValueError('the fused kernel implements outer_rho = outer_eta = 0 with the Hebbian term only')
         if self.event_stdp and self.tag_bound != 0:
             raise ValueError('event_stdp has no in-block latency: set tag_bound = 0')
@@ -109,6 +146,27 @@ class ModelConfig:
             raise ValueError('exp_stdp needs outer_rho = 0, event_stdp and kv_ema off and tag_bound = 0')
         if self.exp_hebb and not self.exp_stdp:
             raise ValueError('exp_hebb needs exp_stdp')
+        self.band_periods = tuple(float(p) for p in self.band_periods)
+        if self.bands and (self.outer_rho or not self.outer_eta or self.tag_bound or self.event_stdp
+                           or self.kv_ema or self.exp_stdp):
+            raise ValueError('bands needs outer_eta > 0, outer_rho = 0, tag_bound = 0 and no other memory mode')
+        if self.bands < 0 or (self.bands and (len(self.band_periods) != self.bands or min(self.band_periods) <= 0)):
+            raise ValueError('bands >= 0 with one positive initial period per band')
+        if self.linear_attn and (self.outer_rho or self.outer_eta or self.tag_bound or not self.hebb or self.event_stdp
+                                 or self.kv_ema or self.exp_stdp or self.bands):
+            raise ValueError('linear_attn needs outer_rho = outer_eta = 0, tag_bound = 0, hebb on and no other memory mode')
+        if self.puzzle_emb_mode not in ('add', 'prefix', 'film'):
+            raise ValueError('puzzle_emb_mode must be add, prefix or film')
+        if self.puzzle_emb_mode == 'film' and not self.puzzle_emb_ndim:
+            raise ValueError('puzzle_emb_mode film needs puzzle_emb_ndim > 0')
+        if self.mlp_inter < 0:
+            raise ValueError('mlp_inter >= 0')
+        if self.outer_eta_cap and not self.outer_eta_learn:
+            raise ValueError('outer_eta_cap needs outer_eta_learn')
+        if not 0 <= self.act_explore <= 1:
+            raise ValueError('act_explore must lie in [0, 1]')
+        if self.fast_ffn < 0 or not (0 < self.fast_ffn_eta < 1 and 0 < self.fast_ffn_decay < 1):
+            raise ValueError('fast_ffn >= 0 with 0 < fast_ffn_eta, fast_ffn_decay < 1')
 
     @property
     def outer_memory(self) -> bool:
@@ -133,6 +191,7 @@ class Carry:
     stdp_w: Optional[torch.Tensor] = None           # W [B, H, D, D] (outer_rho or outer_eta > 0 only)
     prev: Optional[torch.Tensor] = None             # cat(q^, k^, v) of the previous block [B, H, T, 3D] (event_stdp only)
     fresh: Optional[torch.Tensor] = None            # [B] lanes that start a puzzle in this segment
+    fast_w: Optional[torch.Tensor] = None           # dW of the fast-weight FFN [B, r, I] (fast_ffn only)
 
 
 @dataclass
@@ -277,13 +336,19 @@ class Block(nn.Module):
         self.k_proj = nn.Linear(d, d, bias=False)
         self.v_proj = nn.Linear(d, d, bias=False)
         self.out_proj = nn.Linear(d, d, bias=False)
-        inter = int(cfg.mlp_expansion * d * 2 / 3 + 255) // 256 * 256
+        inter = cfg.mlp_inter or int(cfg.mlp_expansion * d * 2 / 3 + 255) // 256 * 256
         self.ffn_gate_up = nn.Linear(d, 2 * inter, bias=False)
         self.ffn_down = nn.Linear(inter, d, bias=False)
         with torch.no_grad():
             self.ffn_down.weight.zero_()
+        if cfg.fast_ffn:                     # W_fv drawn last in LT.__init__ (W_fo stays 0)
+            self.ffw_v = nn.Parameter(torch.zeros(cfg.fast_ffn, d))
+            self.ffw_out = nn.Parameter(torch.zeros(d, cfg.fast_ffn))
+            logit = lambda x: math.log(x / (1 - x))
+            self.ffw_eta_raw = nn.Parameter(torch.tensor(logit(cfg.fast_ffn_eta)))
+            self.ffw_decay_raw = nn.Parameter(torch.tensor(logit(cfg.fast_ffn_decay)))
         self.rope_theta = nn.Parameter(torch.zeros(H, d // H // 2, 2))     # drawn last (see LT.__init__)
-        if not (cfg.kv_ema or cfg.exp_stdp) or cfg.kv_ema_current or cfg.exp_hebb:  # plain kv_ema / exp_stdp: one term
+        if not (cfg.kv_ema or cfg.exp_stdp or cfg.bands or cfg.linear_attn) or cfg.kv_ema_current or cfg.exp_hebb:
             self.alpha = nn.Parameter(torch.full((H,), float(cfg.alpha_init)))
         if cfg.outer_eta_learn:                                              # no random draw: the init stays as without it
             self.eta_raw = nn.Parameter(torch.full((H,), math.log(cfg.outer_eta / (1 - cfg.outer_eta))))
@@ -295,12 +360,49 @@ class Block(nn.Module):
         if cfg.exp_stdp:                                                     # rows: logit lam+, logit lam-, log A+
             lam = math.log(cfg.trace_lambda / (1 - cfg.trace_lambda))
             self.window_raw = nn.Parameter(torch.tensor([[lam] * H, [lam] * H, [0.0] * H]))
+        if cfg.task_lowrank:                                                 # U zero (start = no change); V drawn in LT
+            self.task_u = nn.Parameter(torch.zeros(cfg.num_puzzle_identifiers, cfg.task_lowrank, inter))
+            self.task_v = nn.Parameter(torch.zeros(cfg.num_puzzle_identifiers, cfg.task_lowrank, d))
+        if cfg.puzzle_emb_mode == 'film' and cfg.puzzle_emb_ndim:           # H: embedding -> gate scales (drawn in LT)
+            self.task_film_proj = nn.Linear(cfg.puzzle_emb_ndim, inter, bias=False)
+        if cfg.task_film:                                                    # zeros: the start equals the model without it
+            self.task_film = nn.Parameter(torch.zeros(cfg.num_puzzle_identifiers, inter))
+        if cfg.task_film_up:
+            self.task_film_up = nn.Parameter(torch.zeros(cfg.num_puzzle_identifiers, inter))
+        if cfg.bands:                                                        # rows nu, theta [2,H,R]; |z| = e^{-1/p}
+            p = torch.tensor(cfg.band_periods, dtype=torch.float64)
+            self.band_pole = nn.Parameter(torch.stack((-p.log(), 2 * math.pi / p))[:, None].repeat(1, H, 1).float())
+            self.band_coef = nn.Parameter(torch.zeros(4, H, cfg.bands))     # Re a, Im a, Re b, Im b; drawn in LT
 
     def window(self):
         """exp_stdp window per head [H]: (lam+, lam-, A+, A-) with A- lam- = A+ lam+ (equal LTP and LTD areas)."""
         lp, lm = torch.sigmoid(self.window_raw[0]), torch.sigmoid(self.window_raw[1])
         ap = torch.exp(self.window_raw[2])
         return lp, lm, ap, ap * lp / lm
+
+    def bands(self):
+        """Per head and band [H,R]: Re z, Im z, gamma = sqrt(1 - |z|^2), Re a, Im a, Re b, Im b."""
+        nu, theta = self.band_pole
+        mag = torch.exp(-torch.exp(nu))
+        return (mag * torch.cos(theta), mag * torch.sin(theta), torch.sqrt(-torch.expm1(-2 * torch.exp(nu))),
+                *self.band_coef)
+
+    def band_summary(self):
+        """Per head [H]: l(0) = sum_r gamma Re a (same-block pairs) and the window area
+        M0 = sum_r gamma Re[(a + b z) / (1 - z)] (the gain on a constant state); per band [R]: head-mean period
+        2 pi / theta and e-fold time e^{-nu} in blocks."""
+        zr, zi, gamma, ar, ai, br, bi = (x.detach().double() for x in self.bands())
+        z, a, b = torch.complex(zr, zi), torch.complex(ar, ai), torch.complex(br, bi)
+        l0 = (gamma * a.real).sum(-1)
+        area = (gamma * ((a + b * z) / (1 - z)).real).sum(-1)
+        nu, theta = self.band_pole.detach().double()
+        return l0, area, (2 * math.pi / theta.abs()).mean(0), torch.exp(-nu).mean(0)
+
+    @torch.no_grad()
+    def project_eta_(self, cfg):
+        """outer_eta_cap: eta <= outer_eta (the W window never shorter than 1 / outer_eta blocks)."""
+        if cfg.outer_eta_cap:
+            self.eta_raw.clamp_(max=math.log(cfg.outer_eta / (1 - cfg.outer_eta)))
 
     def eta(self, cfg):
         """Per-head EMA rate of W [H] (learned) or the constant outer_eta."""
@@ -325,17 +427,38 @@ class LT(nn.Module):
         self.init_hidden = nn.Buffer(trunc_normal_(torch.empty(d, dtype=self.forward_dtype), std=1.0))
         with torch.no_grad():
             self.block.rope_theta.uniform_(-math.pi / 2, math.pi / 2)
+            if cfg.bands:                    # drawn last: every other initial weight matches the runs without bands
+                self.block.band_coef.normal_(0.0, cfg.band_coef_std)
+            if cfg.task_lowrank:             # drawn last as well
+                self.block.task_v.normal_(0.0, 1.0 / math.sqrt(d))
+            if cfg.puzzle_emb_mode == 'film' and cfg.puzzle_emb_ndim:      # the table starts at 0, so H must not
+                self.block.task_film_proj.weight.normal_(0.0, 1.0 / math.sqrt(cfg.puzzle_emb_ndim))
+        self.prefix_len = (-(cfg.puzzle_emb_ndim // -d) if cfg.puzzle_emb_mode == 'prefix' and cfg.puzzle_emb_ndim else 0)
+        self.n_pos = cfg.seq_len + self.prefix_len         # positions in the recurrent state (prefix first)
         T, g = cfg.seq_len, cfg.grid
         rope_dtype = torch.float64 if self.forward_dtype == torch.float64 else torch.float32
         self.register_buffer('pos_row', (torch.arange(T) // g).to(rope_dtype), persistent=False)
         self.register_buffer('pos_col', (torch.arange(T) % g).to(rope_dtype), persistent=False)
         self.probe: Optional[Callable[[StepRecord], Optional[torch.Tensor]]] = None
+        self.block_fn: Optional[Callable] = None          # compiled block_step (lt.train compile_scope 'block')
+        self.q_halt_logits: Optional[torch.Tensor] = None   # [B] of the last segment (act)
+        if cfg.fast_ffn:                     # drawn last as well
+            with torch.no_grad():
+                self.block.ffw_v.normal_(0.0, 1.0 / math.sqrt(d))
+        if cfg.act:                          # created last: every other initial weight matches the runs without ACT
+            self.q_head = nn.Linear(d, 1, dtype=self.forward_dtype)
+            with torch.no_grad():            # URM: weight 0, bias -5 (no early halting at the start)
+                self.q_head.weight.zero_()
+                self.q_head.bias.fill_(-5.0)
 
     # ------------------------------------------------------------------ parts
     def rope_angles(self):
-        """[H, T, P] learned 2D RoPE angles theta_row * row + theta_col * col."""
+        """[H, T, P] learned 2D RoPE angles theta_row * row + theta_col * col; prefix positions get angle 0."""
         th = self.block.rope_theta
-        return (th[..., 0, None] * self.pos_row + th[..., 1, None] * self.pos_col).transpose(-1, -2)
+        a = (th[..., 0, None] * self.pos_row + th[..., 1, None] * self.pos_col).transpose(-1, -2)
+        if self.prefix_len:
+            a = torch.cat([a.new_zeros(a.shape[0], self.prefix_len, a.shape[-1]), a], 1)
+        return a
 
     def rope(self, x, tables):
         cos, sin = tables
@@ -346,13 +469,19 @@ class LT(nn.Module):
         inj = self.embed(batch['inputs'].long())
         if self.puzzle_emb is not None:
             pe = self.puzzle_emb(batch['puzzle_identifiers'])
+            if self.config.puzzle_emb_mode == 'film':            # read by block_step, not injected
+                self.task_gamma = self.block.task_film_proj(pe.to(self.block.task_film_proj.weight.dtype))
+                return inj
+            if self.prefix_len:                                  # URM/HRM: concatenated in front, not added
+                pe = F.pad(pe, (0, self.prefix_len * self.d - pe.shape[-1])).view(-1, self.prefix_len, self.d)
+                return torch.cat([pe.to(inj.dtype), inj], 1)
             pe = F.pad(pe, (0, self.d - pe.shape[-1]))
             inj = inj + pe.to(inj.dtype).unsqueeze(1)
         return inj
 
     def use_kernel(self, device, dtype):
         if (self.probe is not None or self.config.outer_memory or not self.config.hebb or self.config.event_stdp
-                or device.type != 'cuda' or dtype == torch.float64):
+                or self.config.linear_attn or device.type != 'cuda' or dtype == torch.float64):
             return False
         if self.config.kernel == 'auto':
             return torch.cuda.get_device_capability(device) >= (8, 0)
@@ -369,6 +498,10 @@ class LT(nn.Module):
             return self.kv_ema_step(q, k, v, state)
         if cfg.exp_stdp:
             return self.exp_stdp_step(q, k, v, state)
+        if cfg.bands:
+            return self.bands_step(q, k, v, state)
+        if cfg.linear_attn:
+            return self.linear_attn_step(q, k, v, state)
         clock, ek, ev, w, _ = state
         with torch.autocast(device_type=q.device.type, enabled=False):
             dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
@@ -467,6 +600,54 @@ class LT(nn.Module):
             ev = torch.cat([lm * ybar + (1 - lm) * v, ev[..., D:].to(dtype)], -1)
         return read, (clock, ek, ev, w, prev)
 
+    def linear_attn_step(self, q, k, v, state):
+        """linear_attn: read = q~ (sum_t v k~^T)^T, the cells of this block only; every carried state is unchanged."""
+        cfg = self.config
+        if self.probe is not None:
+            raise NotImplementedError('the analysis probe reads the phase-clock model only')
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            unit = lambda x: x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + cfg.eps)
+            angles = self.rope_angles().to(dtype)
+            tables = angles.cos()[None], angles.sin()[None]
+            qr, kr = self.rope(unit(q.to(dtype)), tables), self.rope(unit(k.to(dtype)), tables)
+            read = qr @ (v.to(dtype).transpose(-1, -2) @ kr).transpose(-1, -2)
+        return read, state
+
+    def bands_step(self, q, k, v, state):
+        """bands: the complex-pole pair window (module docstring). E_K, E_V hold (Re, Im) x R bands of [T,D] traces
+        of k~ and v; the bands are merged before the token sums, so S costs two [D,T] @ [T,D] products for any R:
+
+            S = v^T sum_r Re(a_r E_K,r) + (sum_r Re(b_r D_V,r))^T k~
+
+        The clock is carried unchanged."""
+        cfg = self.config
+        clock, ek, ev, w, prev = state
+        if self.probe is not None:
+            raise NotImplementedError('the analysis probe reads the phase-clock model only')
+        with torch.autocast(device_type=q.device.type, enabled=False):
+            dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
+            unit = lambda x: x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + cfg.eps)
+            angles = self.rope_angles().to(dtype)
+            tables = angles.cos()[None], angles.sin()[None]
+            qr, kr = self.rope(unit(q.to(dtype)), tables), self.rope(unit(k.to(dtype)), tables)
+            v = v.to(dtype)
+            B, H, T, D = v.shape
+            zr, zi, gamma, ar, ai, br, bi = (x.to(dtype)[None, :, None, :, None] for x in self.block.bands())
+            ek_re, ek_im = ek.to(dtype).reshape(B, H, T, 2, cfg.bands, D).unbind(3)
+            ev_re, ev_im = ev.to(dtype).reshape(B, H, T, 2, cfg.bands, D).unbind(3)
+            ek_re, ek_im = zr * ek_re - zi * ek_im + gamma * kr.unsqueeze(3), zr * ek_im + zi * ek_re   # this block in
+            dv_re, dv_im = zr * ev_re - zi * ev_im, zr * ev_im + zi * ev_re                              # this block out
+            k_mix = (ar * ek_re - ai * ek_im).sum(3)
+            v_mix = (br * dv_re - bi * dv_im).sum(3)
+            s = v.transpose(-1, -2) @ k_mix + v_mix.transpose(-1, -2) @ kr
+            w, m = self.accumulate(w, s, dtype)
+            read = qr @ ((v.transpose(-1, -2) @ kr if cfg.hebb else s) + m).transpose(-1, -2)
+            ev_re = dv_re + gamma * v.unsqueeze(3)
+            ek = torch.stack((ek_re, ek_im), 3).reshape(B, H, T, -1)
+            ev = torch.stack((ev_re, dv_im), 3).reshape(B, H, T, -1)
+        return read, (clock, ek, ev, w, prev)
+
     def event_memory_step(self, q, k, v, state):
         """event_stdp: one block of STDP between changes (events) of q^, k^, v, plus the Hebbian read of the states.
         state = (clock, E_K, E_V, W, prev); only n (the clock's last channel) is used from the clock."""
@@ -518,24 +699,57 @@ class LT(nn.Module):
         B, T, _ = u.shape
         heads = lambda x: x.reshape(B, T, self.H, self.dh).transpose(1, 2)
         q, k, v = heads(L.q_proj(u)), heads(L.k_proj(u)), heads(L.v_proj(u))
+        extended = len(state) > 5                      # (memory state..., fast_w); a bare memory state is accepted too
+        state, fast_w = state[:5], (state[5] if extended else None)
         read, state = self.memory_step(q, k, v, state)
         read = read.transpose(1, 2).reshape(B, T, self.d).to(u.dtype)
         h = rms_norm(u + L.out_proj(read))
         g, a = L.ffn_gate_up(h).chunk(2, dim=-1)
-        return rms_norm(h + L.ffn_down(F.silu(g) * a)), state
+        if self.config.task_film:
+            g = g * (1 + L.task_film[self.task_ids].to(g.dtype)[:, None, :])
+        if self.config.task_film_up:
+            a = a * (1 + L.task_film_up[self.task_ids].to(a.dtype)[:, None, :])
+        if self.config.puzzle_emb_mode == 'film' and self.puzzle_emb is not None:
+            g = g * (1 + self.task_gamma.to(g.dtype)[:, None, :])
+        if self.config.task_lowrank:
+            u, v = L.task_u[self.task_ids].to(g.dtype), L.task_v[self.task_ids].to(g.dtype)    # [B,r,I], [B,r,d]
+            g = g + torch.einsum('btd,brd,bri->bti', h.to(g.dtype), v, u)
+        m = F.silu(g) * a
+        out = L.ffn_down(m)
+        if self.config.fast_ffn:
+            out, fast_w = self.fast_ffn_step(h, m, out, fast_w)
+        return rms_norm(h + out), ((*state, fast_w) if extended else state)
+
+    def fast_ffn_step(self, h, m, out, fast_w):
+        """Fast-weight FFN (ModelConfig.fast_ffn): one delta-rule step of dW on this block's (phi~, v_f) pairs, then
+        the read W_fo dW phi~ added to the FFN output. FP32 (FP64 on the test path)."""
+        L, cfg = self.block, self.config
+        with torch.autocast(device_type=h.device.type, enabled=False):
+            dtype = torch.float64 if h.dtype == torch.float64 else torch.float32
+            phi = m.to(dtype)
+            phi = phi / (torch.linalg.vector_norm(phi, dim=-1, keepdim=True) + cfg.eps)        # [B, T, I]
+            vf = h.to(dtype) @ L.ffw_v.to(dtype).T                                           # [B, T, r]
+            eta = torch.sigmoid(L.ffw_eta_raw.to(dtype)) / phi.shape[1]
+            lam = torch.sigmoid(L.ffw_decay_raw.to(dtype))
+            w = fast_w.to(dtype)                                                             # [B, r, I]
+            err = vf - phi @ w.transpose(-1, -2)                                             # [B, T, r]
+            w = (1 - lam) * w + eta * err.transpose(-1, -2) @ phi
+            read = (phi @ w.transpose(-1, -2)) @ L.ffw_out.to(dtype).T                       # [B, T, d]
+        return out + read.to(out.dtype), w
 
     def initial_state(self, B, device, dtype=torch.float32):
         P, D = self.dh // 2, self.dh
         z = lambda *s: torch.zeros(B, self.H, *s, device=device, dtype=dtype)
-        return (z(self.config.seq_len, 6 * P + 1), z(self.config.seq_len, 2 * D), z(self.config.seq_len, 2 * D),
+        trace = 2 * D * max(self.config.bands, 1)
+        return (z(self.n_pos, 6 * P + 1), z(self.n_pos, trace), z(self.n_pos, trace),
                 z(D, D) if self.config.outer_memory else None,
-                z(self.config.seq_len, 3 * D) if self.config.event_stdp else None)
+                z(self.n_pos, 3 * D) if self.config.event_stdp else None)
 
     # ------------------------------------------------------------------ segments
     def initial_carry(self, batch):
         B = batch['inputs'].shape[0]
         device = self.init_hidden.device
-        return Carry(hidden=torch.empty(B, self.config.seq_len, self.d, dtype=self.forward_dtype, device=device),
+        return Carry(hidden=torch.empty(B, self.n_pos, self.d, dtype=self.forward_dtype, device=device),
                      steps=torch.zeros(B, dtype=torch.int32, device=device),
                      halted=torch.ones(B, dtype=torch.bool, device=device),
                      data={k: torch.empty_like(v, device=device) for k, v in batch.items()})
@@ -563,22 +777,41 @@ class LT(nn.Module):
             mask = fresh.view(-1, 1, 1, 1)
             state = tuple(None if x is None else torch.where(mask, torch.zeros_like(x), x)
                           for x in (carry.clock, carry.key_trace, carry.value_trace, carry.stdp_w, carry.prev))
+        fast = None
+        if self.config.fast_ffn:
+            fast = carry.fast_w
+            fast = (torch.zeros(B, self.config.fast_ffn, self.block.ffn_down.in_features, device=device, dtype=dtype)
+                    if fast is None else torch.where(fresh.view(-1, 1, 1), torch.zeros_like(fast), fast))
+        state = (*state, fast)
         amp = self._amp(device)
         with torch.autocast('cuda', dtype=torch.bfloat16, enabled=amp, cache_enabled=False):
             inj = self.injection(data)
+            self.task_ids = data['puzzle_identifiers'].long()           # read by block_step (task_film)
             ckpt = self.config.act_ckpt and torch.is_grad_enabled()
-            for _ in range(self.config.blocks_per_seg):
-                if ckpt:
-                    h, state = torch.utils.checkpoint.checkpoint(self.block_step, h, inj, state, use_reentrant=False)
+            step = self.block_fn or self.block_step
+            n_ckpt = self.config.blocks_per_seg if self.config.act_ckpt_blocks < 0 else self.config.act_ckpt_blocks
+            for i in range(self.config.blocks_per_seg):
+                if ckpt and i < n_ckpt:
+                    h, state = torch.utils.checkpoint.checkpoint(step, h, inj, state, use_reentrant=False)
                 else:
-                    h, state = self.block_step(h, inj, state)
-            logits = self.classifier(h)
+                    h, state = step(h, inj, state)
+            logits = self.classifier(h[:, self.prefix_len:])
         if amp:
             h, logits = h.float(), logits.float()
         steps = torch.where(fresh, 0, carry.steps) + 1
-        clock, ek, ev, w, prev = (None if x is None else x.detach() for x in state)
-        new = Carry(hidden=h.detach(), steps=steps, halted=steps >= self.config.loops, data=data,
-                    clock=clock, key_trace=ek, value_trace=ev, stdp_w=w, prev=prev)
+        halted = steps >= self.config.loops
+        if self.config.act:
+            q = self.q_head(h[:, 0].to(self.q_head.weight.dtype)).float().squeeze(-1)   # prefix token (URM: position 0)
+            self.q_halt_logits = q
+            if self.training and self.config.loops > 1:
+                with torch.no_grad():
+                    halted = halted | (q > 0)
+                    explore = torch.rand_like(q) < self.config.act_explore
+                    min_steps = explore * torch.randint_like(steps, low=2, high=self.config.loops + 1)
+                    halted = halted & (steps >= min_steps)
+        clock, ek, ev, w, prev, fast = (None if x is None else x.detach() for x in state)
+        new = Carry(hidden=h.detach(), steps=steps, halted=halted, data=data,
+                    clock=clock, key_trace=ek, value_trace=ev, stdp_w=w, prev=prev, fast_w=fast)
         return new, logits
 
 

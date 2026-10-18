@@ -1,0 +1,24 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.11.0+cu128 device=cuda:0 ranks=1 params=1,890 amp=True kernel=torch compile=False scope=segment
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0; alpha_init 1; stop_at 4000; NEW RUN; out /workspace/something/runs/toy_linattn4
+[LT] step 250 lm_loss 1.41821 lr 0.000498 acc 0.4248 exact 0.0000 [finished at step 250]
+[LT] step 500 lm_loss 1.06414 lr 0.000998 acc 0.5757 exact 0.0000 [finished at step 500]
+[LT] step 750 lm_loss 0.84797 lr 0.001 acc 0.6558 exact 0.0000 [finished at step 750]
+[EVAL] step 862 acc 0.5138 exact 0/1392
+[LT] step 1000 lm_loss 0.64270 lr 0.001 acc 0.7427 exact 0.0156 [finished at step 1000]
+[LT] step 1250 lm_loss 0.52914 lr 0.001 acc 0.8193 exact 0.1641 [finished at step 1250]
+[LT] step 1500 lm_loss 0.31121 lr 0.001 acc 0.9180 exact 0.5781 [finished at step 1500]
+[EVAL] step 1724 acc 0.6403 exact 0/1392
+[LT] step 1750 lm_loss 0.17821 lr 0.001 acc 0.9629 exact 0.8125 [finished at step 1750]
+[LT] step 2000 lm_loss 0.14481 lr 0.001 acc 0.9731 exact 0.8594 [finished at step 2000]
+[LT] step 2250 lm_loss 0.10154 lr 0.001 acc 0.9858 exact 0.9297 [finished at step 2250]
+[LT] step 2500 lm_loss 0.09217 lr 0.001 acc 0.9883 exact 0.9531 [finished at step 2500]
+[EVAL] step 2586 acc 0.8404 exact 283/1392
+[LT] step 2750 lm_loss 0.08658 lr 0.001 acc 0.9868 exact 0.9531 [finished at step 2750]
+[LT] step 3000 lm_loss 0.05835 lr 0.001 acc 0.9941 exact 0.9766 [finished at step 3000]
+[LT] step 3250 lm_loss 0.05600 lr 0.001 acc 0.9922 exact 0.9609 [finished at step 3250]
+[EVAL] step 3448 acc 0.9566 exact 1085/1392
+[LT] step 3500 lm_loss 0.06042 lr 0.001 acc 0.9932 exact 0.9766 [finished at step 3500]
+[LT] step 3750 lm_loss 0.03823 lr 0.001 acc 0.9976 exact 0.9844 [finished at step 3750]
+[LT] step 4000 lm_loss 0.02880 lr 0.001 acc 0.9980 exact 0.9922 [finished at step 4000]
+[EVAL] step 4000 acc 0.9814 exact 1257/1392
+[LT] saved step 4000: /workspace/something/runs/toy_linattn4/step_4000.pt

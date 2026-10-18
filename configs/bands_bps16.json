@@ -1,0 +1,20 @@
+{
+  "_comment": "configs/bands.json at 16 blocks per segment (2026-10-18): same model and recipe, blocks_per_seg 16 (256 blocks per puzzle over 16 segments). Every block is checkpointed (act_ckpt, act_ckpt_blocks 16) around one compiled block_step (compile_scope block) to fit an RTX 4090; both only change what is stored and recomputed, not the math.",
+  "bands": 4,
+  "band_periods": [2.0, 6.0, 20.0, 64.0],
+  "band_coef_std": 0.1,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.125,
+  "outer_eta_learn": true,
+  "outer_eta_cap": true,
+  "blocks_per_seg": 16,
+  "act_ckpt": true,
+  "act_ckpt_blocks": 16,
+  "compile_scope": "block",
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}

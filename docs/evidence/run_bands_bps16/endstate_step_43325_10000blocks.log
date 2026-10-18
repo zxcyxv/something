@@ -1,0 +1,13 @@
+[   90s] seg 100: solved 400
+[  180s] seg 200: solved 408
+[  270s] seg 300: solved 417
+[  361s] seg 400: solved 417
+[  451s] seg 500: solved 419
+[  542s] seg 600: solved 420
+SOLVED at the end: 420 | prediction frozen over last 200 segs 418, periodic 0 (periods []), wandering 2
+   frozen   : median |dh|/|h| last 2.76e-03, median wrong cells 0, median violations 0, median distinct preds 1, clue broken in 0
+   wandering: median |dh|/|h| last 3.01e-03, median wrong cells 0, median violations 0, median distinct preds 140, clue broken in 0
+UNSOLVED at the end: 92 | prediction frozen over last 200 segs 3, periodic 0 (periods []), wandering 89
+   frozen   : median |dh|/|h| last 6.38e-03, median wrong cells 38, median violations 6, median distinct preds 1, clue broken in 0
+   wandering: median |dh|/|h| last 1.68e-01, median wrong cells 34, median violations 12, median distinct preds 134, clue broken in 0
+solved at some segment but not at the end: 0

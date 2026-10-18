@@ -1,0 +1,33 @@
+{
+  "grids": 576,
+  "test_grids": 115,
+  "tasks": {
+    "standard": {
+      "solutions": 288,
+      "test_solutions": 89,
+      "train_puzzles": 2000,
+      "test_puzzles": 400,
+      "mean_clues_train": 4.349
+    },
+    "latin": {
+      "solutions": 576,
+      "test_solutions": 115,
+      "train_puzzles": 2000,
+      "test_puzzles": 400,
+      "mean_clues_train": 4.908
+    },
+    "diagonal": {
+      "solutions": 48,
+      "test_solutions": 21,
+      "train_puzzles": 2000,
+      "test_puzzles": 400,
+      "mean_clues_train": 3.1365
+    }
+  },
+  "seed": 0,
+  "tasks_order": [
+    "standard",
+    "latin",
+    "diagonal"
+  ]
+}

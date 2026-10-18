@@ -1,0 +1,42 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.11.0+cu128 device=cuda:0 ranks=1 params=42,572 amp=True kernel=torch compile=False scope=segment
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0; alpha_init 1; stop_at 8000; NEW RUN; out /workspace/something/runs/miniarc_ctxall_h64
+[LT] step 250 lm_loss 1.41681 lr 0.000498 acc 0.6250 exact 0.0078 [finished at step 250]
+[LT] step 500 lm_loss 1.09871 lr 0.000998 acc 0.6966 exact 0.0078 [finished at step 500]
+[LT] step 750 lm_loss 0.88135 lr 0.001 acc 0.7228 exact 0.0156 [finished at step 750]
+[LT] step 1000 lm_loss 0.74865 lr 0.001 acc 0.7647 exact 0.0391 [finished at step 1000]
+[LT] step 1250 lm_loss 0.78477 lr 0.001 acc 0.7266 exact 0.0312 [finished at step 1250]
+[EVAL] step 1320 acc 0.6574 exact 0/149
+[LT] step 1500 lm_loss 0.71677 lr 0.001 acc 0.7406 exact 0.0078 [finished at step 1500]
+[LT] step 1750 lm_loss 0.64890 lr 0.001 acc 0.7625 exact 0.0156 [finished at step 1750]
+[LT] step 2000 lm_loss 0.66856 lr 0.001 acc 0.7456 exact 0.0078 [finished at step 2000]
+[LT] step 2250 lm_loss 0.63409 lr 0.001 acc 0.7628 exact 0.0625 [finished at step 2250]
+[LT] step 2500 lm_loss 0.60160 lr 0.001 acc 0.7809 exact 0.0312 [finished at step 2500]
+[EVAL] step 2640 acc 0.7299 exact 1/149
+[LT] step 2750 lm_loss 0.59457 lr 0.001 acc 0.7669 exact 0.0391 [finished at step 2750]
+[LT] step 3000 lm_loss 0.63030 lr 0.001 acc 0.7512 exact 0.0391 [finished at step 3000]
+[LT] step 3250 lm_loss 0.53114 lr 0.001 acc 0.7862 exact 0.0469 [finished at step 3250]
+[LT] step 3500 lm_loss 0.56260 lr 0.001 acc 0.7788 exact 0.0469 [finished at step 3500]
+[LT] step 3750 lm_loss 0.52713 lr 0.001 acc 0.7950 exact 0.0547 [finished at step 3750]
+[EVAL] step 3960 acc 0.7315 exact 2/149
+[LT] step 4000 lm_loss 0.51077 lr 0.001 acc 0.8059 exact 0.0703 [finished at step 4000]
+[LT] step 4250 lm_loss 0.47795 lr 0.001 acc 0.8037 exact 0.0625 [finished at step 4250]
+[LT] step 4500 lm_loss 0.48817 lr 0.001 acc 0.8125 exact 0.0547 [finished at step 4500]
+[LT] step 4750 lm_loss 0.49475 lr 0.001 acc 0.7956 exact 0.0547 [finished at step 4750]
+[LT] step 5000 lm_loss 0.52613 lr 0.001 acc 0.7844 exact 0.0781 [finished at step 5000]
+[LT] step 5250 lm_loss 0.47063 lr 0.001 acc 0.8084 exact 0.0469 [finished at step 5250]
+[EVAL] step 5280 acc 0.7232 exact 4/149
+[LT] step 5500 lm_loss 0.48594 lr 0.001 acc 0.8006 exact 0.0391 [finished at step 5500]
+[LT] step 5750 lm_loss 0.49382 lr 0.001 acc 0.7972 exact 0.0312 [finished at step 5750]
+[LT] step 6000 lm_loss 0.45211 lr 0.001 acc 0.8219 exact 0.0391 [finished at step 6000]
+[LT] step 6250 lm_loss 0.43647 lr 0.001 acc 0.8294 exact 0.0234 [finished at step 6250]
+[LT] step 6500 lm_loss 0.38855 lr 0.001 acc 0.8413 exact 0.0859 [finished at step 6500]
+[EVAL] step 6600 acc 0.7211 exact 3/149
+[LT] step 6750 lm_loss 0.45178 lr 0.001 acc 0.8119 exact 0.0547 [finished at step 6750]
+[LT] step 7000 lm_loss 0.42462 lr 0.001 acc 0.8259 exact 0.0547 [finished at step 7000]
+[LT] step 7250 lm_loss 0.46103 lr 0.001 acc 0.8025 exact 0.0703 [finished at step 7250]
+[LT] step 7500 lm_loss 0.40837 lr 0.001 acc 0.8397 exact 0.0625 [finished at step 7500]
+[LT] step 7750 lm_loss 0.43084 lr 0.001 acc 0.8191 exact 0.0625 [finished at step 7750]
+[EVAL] step 7920 acc 0.7074 exact 4/149
+[LT] step 8000 lm_loss 0.42877 lr 0.001 acc 0.8203 exact 0.0859 [finished at step 8000]
+[EVAL] step 8000 acc 0.7071 exact 4/149
+[LT] saved step 8000: /workspace/something/runs/miniarc_ctxall_h64/step_8000.pt

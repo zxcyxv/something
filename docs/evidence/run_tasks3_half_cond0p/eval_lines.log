@@ -1,0 +1,14 @@
+[TASK] step 937 task 0 acc 0.5003 exact 0/400 | task 1 acc 0.5341 exact 0/400 | task 2 acc 0.4333 exact 0/400
+[EVAL] step 937 acc 0.4892 exact 0/1200
+[TASK] step 1874 task 0 acc 0.7509 exact 7/400 | task 1 acc 0.8130 exact 35/400 | task 2 acc 0.5875 exact 0/400
+[EVAL] step 1874 acc 0.7172 exact 42/1200
+[TASK] step 2811 task 0 acc 0.9441 exact 306/400 | task 1 acc 0.9903 exact 375/400 | task 2 acc 0.7184 exact 11/400
+[EVAL] step 2811 acc 0.8844 exact 693/1200
+[TASK] step 3748 task 0 acc 0.9853 exact 375/400 | task 1 acc 0.9986 exact 396/400 | task 2 acc 0.8016 exact 83/400
+[EVAL] step 3748 acc 0.9284 exact 855/1200
+[TASK] step 4685 task 0 acc 0.9964 exact 392/400 | task 1 acc 0.9945 exact 389/400 | task 2 acc 0.8527 exact 153/400
+[EVAL] step 4685 acc 0.9478 exact 934/1200
+[TASK] step 5622 task 0 acc 0.9944 exact 388/400 | task 1 acc 0.9962 exact 394/400 | task 2 acc 0.9081 exact 225/400
+[EVAL] step 5622 acc 0.9663 exact 1008/1200
+[TASK] step 6000 task 0 acc 0.9941 exact 390/400 | task 1 acc 0.9962 exact 394/400 | task 2 acc 0.9261 exact 256/400
+[EVAL] step 6000 acc 0.9722 exact 1040/1200

@@ -1,0 +1,11 @@
+{
+  "tasks": 960,
+  "per_subset": {
+    "training": 400,
+    "evaluation": 400,
+    "concept": 160
+  },
+  "train_pairs": 3092,
+  "test_pairs": 419,
+  "source": "fchollet/ARC-AGI data/{training,evaluation} + victorvikram/ConceptARC corpus"
+}

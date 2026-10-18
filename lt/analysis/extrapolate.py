@@ -13,7 +13,7 @@ import time
 
 import torch
 
-from ..data import load_data
+from ..data import load_data, load_task_ids
 from ..train import run_segments
 from .common import load_model
 
@@ -31,12 +31,15 @@ def main(argv=None):
     torch.set_float32_matmul_precision('highest')
     device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
     model, cfg = load_model(opt.checkpoint, device, weights=opt.weights, kernel='auto', amp=True)
-    tr_x, tr_y, x, y, _, _ = load_data(cfg.get('data_npz'))
+    tr_x, tr_y, x, y, path, _ = load_data(cfg.get('data_npz'))
+    tr_ids, ids = load_task_ids(path)
     if opt.split == 'train':
-        x, y = tr_x, tr_y
+        x, y, ids = tr_x, tr_y, tr_ids
     x, y = x[:opt.n], y[:opt.n]
+    ids = None if ids is None else ids[:opt.n]
     began = time.monotonic()
-    sums, count, _ = run_segments(model, x, y, opt.segs, opt.batch, 0, 1, device)
+    sums, count, _ = run_segments(model, x, y, opt.segs, opt.batch, 0, 1, device, ids=ids,
+                                  ignore0=cfg.get('ignore_label0', False))
     n, exact = int(count), [int(e) for e in sums[1].tolist()]
     horizon = model.config.loops
     best = max(exact)

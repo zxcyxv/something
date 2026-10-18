@@ -1,0 +1,10 @@
+{
+  "tasks": 149,
+  "k": 2,
+  "grids_per_sample": 5,
+  "train_samples": 16896,
+  "test_samples": 149,
+  "seed": 0,
+  "source": "github.com/KSB21ST/MINI-ARC data/MiniARC",
+  "task_identifiers": "none"
+}

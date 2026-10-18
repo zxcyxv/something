@@ -1,0 +1,7 @@
+[EVAL] step 1320 acc 0.6513 exact 2/149
+[EVAL] step 2640 acc 0.7203 exact 1/149
+[EVAL] step 3960 acc 0.7544 exact 1/149
+[EVAL] step 5280 acc 0.7691 exact 3/149
+[EVAL] step 6600 acc 0.7726 exact 5/149
+[EVAL] step 7920 acc 0.7839 exact 4/149
+[EVAL] step 8000 acc 0.7850 exact 4/149

@@ -1,0 +1,17 @@
+{
+  "_comment": "Clockless complex-pole band window (2026-10-18): E_K,r <- z_r E_K,r + gamma_r k~, D_V,r = z_r E_V,r, S = sum_r Re(a_r v^T E_K,r + b_r D_V,r^T k~), E_V,r <- D_V,r + gamma_r v; W <- (1 - eta) W + eta S; read = q~ (sum_t v k~^T + W)^T (tonic Hebb at gain 1 kept). R = 4, initial periods 2, 6, 20, 64 blocks with |z| = e^{-1/p}; a, b small random complex (std 0.1 per component); eta learned per head from 0.125 and projected onto eta <= 0.125 after every step. Against B-EMA: no clock (c = 0, no n omegaT), alpha absorbed into a, b, R bands.",
+  "bands": 4,
+  "band_periods": [2.0, 6.0, 20.0, 64.0],
+  "band_coef_std": 0.1,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.125,
+  "outer_eta_learn": true,
+  "outer_eta_cap": true,
+  "blocks_per_seg": 8,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}

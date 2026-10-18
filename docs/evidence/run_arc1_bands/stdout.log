@@ -1,0 +1,12 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.11.0+cu128 device=cuda:0 ranks=1 params=3,421,909 amp=True kernel=torch compile=True scope=block
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0.125; alpha_init 1; BANDS R=4 periods [2.0, 6.0, 20.0, 64.0] coef_std 0.1 eta_learn True cap True; stop_at 50000; RESUME /workspace/something/runs/arc1_bands/step_4831.pt step 4831; out /workspace/something/runs/arc1_bands
+[LT] step 4850 lm_loss 1.43810 lr 0.0001 acc 0.9263 exact 0.1875 [finished at step 4848]
+[LT] step 4900 lm_loss 0.98449 lr 0.0001 acc 0.9330 exact 0.3438 [finished at step 4896]
+[LT] step 4950 lm_loss 0.73329 lr 0.0001 acc 0.9286 exact 0.3750 [finished at step 4944]
+[LT] step 5000 lm_loss 0.52801 lr 0.0001 acc 0.9183 exact 0.3438 [finished at step 4992]
+[LT] step 5050 lm_loss 0.62343 lr 0.0001 acc 0.9159 exact 0.2500 [finished at step 5040]
+[LT] step 5100 lm_loss 0.36063 lr 0.0001 acc 0.9474 exact 0.3750 [finished at step 5088]
+[LT] step 5150 lm_loss 0.43922 lr 0.0001 acc 0.9193 exact 0.3750 [finished at step 5136]
+[LT] step 5200 lm_loss 0.29131 lr 0.0001 acc 0.9374 exact 0.3438 [finished at step 5200]
+[LT] step 5250 lm_loss 0.91011 lr 0.0001 acc 0.9406 exact 0.2812 [finished at step 5248]
+[LT] saved step 5250: /workspace/something/runs/arc1_bands/step_5250.pt [stopped]

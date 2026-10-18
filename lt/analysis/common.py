@@ -48,6 +48,8 @@ def load_model(path, device, weights='ema', **overrides):
             cfg.update(tag_bound=protocol['bound'], block_omega=protocol['omega_t'],
                        trace_lambda=protocol['lambda_init'], outer_rho=0.0)
     cfg.update({'kernel': 'torch', 'amp': False, **overrides})
+    if 'grid' in cfg:                                                       # boards other than 9x9
+        cfg.update(seq_len=cfg.get('num_grids', 1) * cfg['grid'] ** 2, vocab_size=(cfg.get('num_symbols') or cfg['grid']) + 2)
     if cfg.get('data_npz') and not Path(cfg['data_npz']).is_file():
         cfg['data_npz'] = None
     with torch.device(device):

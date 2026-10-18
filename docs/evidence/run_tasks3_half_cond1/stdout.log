@@ -1,0 +1,41 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.11.0+cu128 device=cuda:0 ranks=1 params=2,774 amp=True kernel=torch compile=False scope=segment
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0; alpha_init 1; stop_at 6000; NEW RUN; out /workspace/something/runs/tasks3_half_cond1
+[LT] step 250 lm_loss 1.32597 lr 0.000498 acc 0.5049 exact 0.0000 [finished at step 250]
+[LT] step 500 lm_loss 0.97037 lr 0.000998 acc 0.6494 exact 0.0000 [finished at step 500]
+[LT] step 750 lm_loss 0.68730 lr 0.001 acc 0.7559 exact 0.0469 [finished at step 750]
+[TASK] step 937 task 0 acc 0.4797 exact 0/400 | task 1 acc 0.5058 exact 0/400 | task 2 acc 0.4172 exact 0/400
+[EVAL] step 937 acc 0.4676 exact 0/1200
+[LT] step 1000 lm_loss 0.44687 lr 0.001 acc 0.8408 exact 0.4609 [finished at step 1000]
+[LT] step 1250 lm_loss 0.29285 lr 0.001 acc 0.9180 exact 0.6719 [finished at step 1250]
+[LT] step 1500 lm_loss 0.24990 lr 0.001 acc 0.9165 exact 0.6875 [finished at step 1500]
+[LT] step 1750 lm_loss 0.25002 lr 0.001 acc 0.9180 exact 0.6719 [finished at step 1750]
+[TASK] step 1874 task 0 acc 0.7545 exact 20/400 | task 1 acc 0.8245 exact 52/400 | task 2 acc 0.5827 exact 0/400
+[EVAL] step 1874 acc 0.7206 exact 72/1200
+[LT] step 2000 lm_loss 0.22943 lr 0.001 acc 0.9106 exact 0.6172 [finished at step 2000]
+[LT] step 2250 lm_loss 0.20152 lr 0.001 acc 0.9175 exact 0.7031 [finished at step 2250]
+[LT] step 2500 lm_loss 0.17321 lr 0.001 acc 0.9385 exact 0.7734 [finished at step 2500]
+[LT] step 2750 lm_loss 0.19070 lr 0.001 acc 0.9321 exact 0.7422 [finished at step 2750]
+[TASK] step 2811 task 0 acc 0.9411 exact 314/400 | task 1 acc 0.9875 exact 373/400 | task 2 acc 0.7097 exact 13/400
+[EVAL] step 2811 acc 0.8795 exact 701/1200
+[LT] step 3000 lm_loss 0.17022 lr 0.001 acc 0.9331 exact 0.7500 [finished at step 3000]
+[LT] step 3250 lm_loss 0.14979 lr 0.001 acc 0.9380 exact 0.7969 [finished at step 3250]
+[LT] step 3500 lm_loss 0.15242 lr 0.001 acc 0.9390 exact 0.7656 [finished at step 3500]
+[TASK] step 3748 task 0 acc 0.9811 exact 377/400 | task 1 acc 0.9992 exact 399/400 | task 2 acc 0.7781 exact 78/400
+[EVAL] step 3748 acc 0.9196 exact 855/1200
+[LT] step 3750 lm_loss 0.17658 lr 0.001 acc 0.9331 exact 0.7734 [finished at step 3750]
+[LT] step 4000 lm_loss 0.14820 lr 0.001 acc 0.9424 exact 0.7734 [finished at step 4000]
+[LT] step 4250 lm_loss 0.16402 lr 0.001 acc 0.9458 exact 0.7891 [finished at step 4250]
+[LT] step 4500 lm_loss 0.14609 lr 0.001 acc 0.9517 exact 0.7422 [finished at step 4500]
+[TASK] step 4685 task 0 acc 0.9920 exact 390/400 | task 1 acc 0.9994 exact 399/400 | task 2 acc 0.7997 exact 93/400
+[EVAL] step 4685 acc 0.9303 exact 882/1200
+[LT] step 4750 lm_loss 0.10120 lr 0.001 acc 0.9692 exact 0.8203 [finished at step 4750]
+[LT] step 5000 lm_loss 0.12641 lr 0.001 acc 0.9619 exact 0.8281 [finished at step 5000]
+[LT] step 5250 lm_loss 0.11769 lr 0.001 acc 0.9604 exact 0.7891 [finished at step 5250]
+[LT] step 5500 lm_loss 0.10988 lr 0.001 acc 0.9619 exact 0.8281 [finished at step 5500]
+[TASK] step 5622 task 0 acc 0.9934 exact 394/400 | task 1 acc 1.0000 exact 400/400 | task 2 acc 0.8239 exact 111/400
+[EVAL] step 5622 acc 0.9390 exact 905/1200
+[LT] step 5750 lm_loss 0.16258 lr 0.001 acc 0.9360 exact 0.7812 [finished at step 5750]
+[LT] step 6000 lm_loss 0.07400 lr 0.001 acc 0.9727 exact 0.8984 [finished at step 6000]
+[TASK] step 6000 task 0 acc 0.9944 exact 393/400 | task 1 acc 1.0000 exact 400/400 | task 2 acc 0.8369 exact 122/400
+[EVAL] step 6000 acc 0.9437 exact 916/1200
+[LT] saved step 6000: /workspace/something/runs/tasks3_half_cond1/step_6000.pt
