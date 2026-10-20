@@ -1,0 +1,4 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.14.1+cu130 device=cuda:0 ranks=1 params=78,829 amp=True kernel=triton compile=False scope=segment
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0; alpha_init 1; BANDS PRODUCT R=4 periods [2.0, 6.0, 20.0, 64.0] coef_std 0.1 M = sum_r gamma_r Re(c_r sum_t E_V,r conj(E_K,r)^T): per-band EMA of S at rate 1 - |z_r|^2, no W/eta; stop_at 10000; NEW RUN; out /workspace/something/runs/ltctx/rule_h64
+[LT] step 250 lm_loss 1.17721 lr 0.000498 acc 0.6367 exact 0.0000 [finished at step 250]
+[LT] saved step 300: /workspace/something/runs/ltctx/rule_h64/step_300.pt [stopped]

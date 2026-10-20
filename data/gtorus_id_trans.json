@@ -1,0 +1,26 @@
+{
+  "format": "id (data/prep_miniarc.py)",
+  "training": "transductive: every task",
+  "tasks": 3072,
+  "identifiers": 3072,
+  "trained_identifiers": 3072,
+  "train_pairs": 9216,
+  "test_pairs": 3072,
+  "num_symbols": 5,
+  "test_groups": {
+    "train": 2419,
+    "heldout_combo": 269,
+    "heldout_t": 384
+  },
+  "train_groups": {
+    "train": 7257,
+    "heldout_combo": 807,
+    "heldout_t": 1152
+  },
+  "test_rows": "task order (row i = task i = t * 24 + c)",
+  "train_order": "shuffled (default_rng(0).permutation)",
+  "test_input_equals_a_demonstration_input": 0,
+  "test_output_equals_input": 1,
+  "source": "data/gtorus_instances.npz (toy_g.data.task_instances seed 0, make_split seed 0)",
+  "instances_sha256": "337d893bc4fd9900dee6f3298c0503b077ce8c1e3d0b3fceb55aef037266e5c4"
+}

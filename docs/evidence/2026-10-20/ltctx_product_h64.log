@@ -1,0 +1,57 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.14.1+cu130 device=cuda:0 ranks=1 params=66,535 amp=True kernel=triton compile=False scope=segment
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0; alpha_init 1; BANDS PRODUCT R=4 periods [2.0, 6.0, 20.0, 64.0] coef_std 0.1 M = sum_r gamma_r Re(c_r sum_t E_V,r conj(E_K,r)^T): per-band EMA of S at rate 1 - |z_r|^2, no W/eta; stop_at 10000; NEW RUN; out /workspace/something/runs/ltctx/product_h64
+[LT] step 250 lm_loss 1.18798 lr 0.000498 acc 0.6367 exact 0.0000 [finished at step 250]
+[LT] step 500 lm_loss 1.08666 lr 0.000998 acc 0.6655 exact 0.0000 [finished at step 500]
+[LT] step 750 lm_loss 1.08519 lr 0.001 acc 0.6631 exact 0.0000 [finished at step 750]
+[LT] step 1000 lm_loss 1.06955 lr 0.001 acc 0.6704 exact 0.0000 [finished at step 1000]
+[LT] step 1250 lm_loss 1.11162 lr 0.001 acc 0.6504 exact 0.0000 [finished at step 1250]
+[LT] step 1500 lm_loss 1.07803 lr 0.001 acc 0.6646 exact 0.0000 [finished at step 1500]
+[EVAL] step 1562 acc 0.6533 exact 0/3072
+[BAND] step 1562 (ema) l0 [0.057 -0.049] area [0.711 0.122] period [1.984 5.979 21.688 158.971] efold [1.985 6.044 19.742 60.644]
+[LT] step 1750 lm_loss 1.10885 lr 0.001 acc 0.6494 exact 0.0000 [finished at step 1750]
+[LT] step 2000 lm_loss 1.07125 lr 0.001 acc 0.6660 exact 0.0000 [finished at step 2000]
+[LT] step 2250 lm_loss 1.06926 lr 0.001 acc 0.6704 exact 0.0000 [finished at step 2250]
+[LT] step 2500 lm_loss 1.08435 lr 0.001 acc 0.6626 exact 0.0000 [finished at step 2500]
+[LT] step 2750 lm_loss 1.10821 lr 0.001 acc 0.6499 exact 0.0000 [finished at step 2750]
+[LT] step 3000 lm_loss 1.13088 lr 0.001 acc 0.6416 exact 0.0000 [finished at step 3000]
+[EVAL] step 3124 acc 0.6533 exact 0/3072
+[BAND] step 3124 (ema) l0 [0.017 -0.151] area [1.662 0.217] period [1.949 5.943 24.972 198.924] efold [2.013 5.872 18.830 58.703]
+[LT] step 3250 lm_loss 1.10648 lr 0.001 acc 0.6509 exact 0.0000 [finished at step 3250]
+[LT] step 3500 lm_loss 1.09480 lr 0.001 acc 0.6533 exact 0.0000 [finished at step 3500]
+[LT] step 3750 lm_loss 1.06592 lr 0.001 acc 0.6562 exact 0.0000 [finished at step 3750]
+[LT] step 4000 lm_loss 1.07844 lr 0.001 acc 0.6489 exact 0.0000 [finished at step 4000]
+[LT] step 4250 lm_loss 1.04274 lr 0.001 acc 0.6636 exact 0.0000 [finished at step 4250]
+[LT] step 4500 lm_loss 1.07254 lr 0.001 acc 0.6504 exact 0.0000 [finished at step 4500]
+[EVAL] step 4686 acc 0.6533 exact 0/3072
+[BAND] step 4686 (ema) l0 [-0.006 -0.228] area [0.313 -0.017] period [1.889 5.571 22.553 81.544] efold [2.001 5.809 18.475 59.791]
+[LT] step 4750 lm_loss 1.04976 lr 0.001 acc 0.6621 exact 0.0000 [finished at step 4750]
+[LT] step 5000 lm_loss 1.05762 lr 0.001 acc 0.6611 exact 0.0000 [finished at step 5000]
+[LT] step 5250 lm_loss 1.06276 lr 0.001 acc 0.6602 exact 0.0000 [finished at step 5250]
+[LT] step 5500 lm_loss 1.05609 lr 0.001 acc 0.6611 exact 0.0000 [finished at step 5500]
+[LT] step 5750 lm_loss 1.06320 lr 0.001 acc 0.6538 exact 0.0000 [finished at step 5750]
+[LT] step 6000 lm_loss 1.06652 lr 0.001 acc 0.6572 exact 0.0000 [finished at step 6000]
+[EVAL] step 6248 acc 0.6535 exact 0/3072
+[BAND] step 6248 (ema) l0 [0.052 -0.296] area [0.195 -0.085] period [1.843 5.457 22.420 54.369] efold [1.859 5.781 18.453 60.959]
+[LT] step 6250 lm_loss 1.06538 lr 0.001 acc 0.6567 exact 0.0000 [finished at step 6250]
+[LT] step 6500 lm_loss 1.03943 lr 0.001 acc 0.6685 exact 0.0000 [finished at step 6500]
+[LT] step 6750 lm_loss 1.06480 lr 0.001 acc 0.6519 exact 0.0000 [finished at step 6750]
+[LT] step 7000 lm_loss 1.04867 lr 0.001 acc 0.6631 exact 0.0000 [finished at step 7000]
+[LT] step 7250 lm_loss 1.02842 lr 0.001 acc 0.6680 exact 0.0000 [finished at step 7250]
+[LT] step 7500 lm_loss 1.05246 lr 0.001 acc 0.6616 exact 0.0000 [finished at step 7500]
+[LT] step 7750 lm_loss 1.06829 lr 0.001 acc 0.6440 exact 0.0000 [finished at step 7750]
+[EVAL] step 7810 acc 0.6538 exact 0/3072
+[BAND] step 7810 (ema) l0 [0.060 -0.350] area [0.135 -0.111] period [1.809 5.554 22.576 44.119] efold [1.772 5.682 18.500 61.547]
+[LT] step 8000 lm_loss 0.98493 lr 0.001 acc 0.6743 exact 0.0000 [finished at step 8000]
+[LT] step 8250 lm_loss 0.99426 lr 0.001 acc 0.6616 exact 0.0000 [finished at step 8250]
+[LT] step 8500 lm_loss 1.03198 lr 0.001 acc 0.6475 exact 0.0000 [finished at step 8500]
+[LT] step 8750 lm_loss 0.98080 lr 0.001 acc 0.6655 exact 0.0000 [finished at step 8750]
+[LT] step 9000 lm_loss 0.98409 lr 0.001 acc 0.6655 exact 0.0000 [finished at step 9000]
+[LT] step 9250 lm_loss 0.96029 lr 0.001 acc 0.6689 exact 0.0000 [finished at step 9250]
+[EVAL] step 9372 acc 0.6559 exact 0/3072
+[BAND] step 9372 (ema) l0 [0.052 -0.328] area [0.192 -0.099] period [1.765 5.540 24.642 64.459] efold [1.731 5.634 18.284 60.543]
+[LT] step 9500 lm_loss 0.94316 lr 0.001 acc 0.6743 exact 0.0000 [finished at step 9500]
+[LT] step 9750 lm_loss 0.94574 lr 0.001 acc 0.6685 exact 0.0000 [finished at step 9750]
+[LT] step 10000 lm_loss 0.92920 lr 0.001 acc 0.6782 exact 0.0000 [finished at step 10000]
+[EVAL] step 10000 acc 0.6587 exact 0/3072
+[BAND] step 10000 (ema) l0 [0.057 -0.310] area [0.215 -0.093] period [1.739 5.474 27.590 66.654] efold [1.702 5.656 18.211 59.987]
+[LT] saved step 10000: /workspace/something/runs/ltctx/product_h64/step_10000.pt

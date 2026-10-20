@@ -1,0 +1,15 @@
+{
+ "d": 16,
+ "K": 4,
+ "N": 5,
+ "lam": 0.0,
+ "steps": 3000,
+ "batch": 256,
+ "lr": 0.003,
+ "warmup": 200,
+ "clip": 1.0,
+ "seed": 0,
+ "log_every": 100,
+ "eval_every": 500,
+ "out": "runs/anchor/C_anchor_d16"
+}

@@ -1,0 +1,19 @@
+{
+  "_comment": "Trace-product bands (2026-10-20): the traces of configs/bands.json (E_K,r <- z_r E_K,r + gamma_r k~, E_V,r <- z_r E_V,r + gamma_r v; R = 4, initial periods 2, 6, 20, 64 blocks with |z| = e^{-1/p}) and no W or eta: M = sum_r gamma_r Re(c_r P_r), P_r = sum_t E_V,r conj(E_K,r)^T, read = q~ (sum_t v k~^T + M)^T (tonic Hebb at gain 1 kept); one complex c_r per head and band (std 0.1 per component). Equivalence: M is the bands model's W with a = conj(c), b = c and a per-band EMA of S at rate 1 - |z_r|^2 instead of the shared learned eta (identical when every |z_r|^2 = 1 - eta). Comparison target: docs/evidence/run_bands/.",
+  "bands": 4,
+  "band_periods": [2.0, 6.0, 20.0, 64.0],
+  "band_coef_std": 0.1,
+  "band_product": true,
+  "hebb": true,
+  "tag_bound": 0.0,
+  "outer_rho": 0.0,
+  "outer_eta": 0.0,
+  "outer_eta_learn": false,
+  "outer_eta_cap": false,
+  "blocks_per_seg": 8,
+  "max_steps": 50800,
+  "save_every_steps": 10000,
+  "keep_last": 6,
+  "milestone_every": 10000,
+  "log_every": 250
+}

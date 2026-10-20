@@ -44,9 +44,11 @@ DEFAULTS = dict(
     task_film=False, task_film_up=False, task_lowrank=0, task_ids_as_identifier=True,      # multi-task data: False gives the model identifier 0 everywhere (per-task eval kept)
     tag_bound=0.14, block_omega=0.34, trace_lambda=0.5, outer_rho=0.0, outer_eta=0.0, outer_eta_learn=False,
     alpha_init=1.0, hebb=True, event_stdp=False, event_theta=0.0, event_even=False, kv_ema=False, kv_ema_current=False, exp_stdp=False, exp_hebb=False,
-    bands=0, band_periods=(2.0, 6.0, 20.0, 64.0), band_coef_std=0.1, outer_eta_cap=False,
+    bands=0, band_periods=(2.0, 6.0, 20.0, 64.0), band_coef_std=0.1, band_product=False, outer_eta_cap=False,
+    rope='learned2d', rope_base=10000.0,
     kernel='auto', kernel_bf16=True, amp=True, act_ckpt=False, act_ckpt_blocks=-1, act=False, act_explore=0.1,
     fast_ffn=0, fast_ffn_eta=0.5, fast_ffn_decay=0.02,
+    rule_syn=False, rule_inner=20, rule_theta=0.01, rule_ridge=0.1, rule_prior='mean',
     # data
     data_npz=None, test_size=2048, num_aug=1000,
     # optimization
@@ -68,7 +70,8 @@ RECIPE_KEYS = ('hidden_size', 'num_heads', 'blocks_per_seg', 'loops', 'mlp_expan
                'grid', 'num_grids', 'num_symbols', 'ignore_label0', 'mlp_inter', 'linear_attn', 'num_puzzle_identifiers', 'puzzle_emb_mode', 'task_ids_as_identifier', 'task_film', 'task_film_up', 'task_lowrank',
                'tag_bound', 'block_omega', 'trace_lambda', 'outer_rho', 'outer_eta', 'outer_eta_learn', 'alpha_init', 'hebb',
                'event_stdp', 'event_theta', 'event_even', 'kv_ema', 'kv_ema_current', 'exp_stdp', 'exp_hebb',
-               'bands', 'band_periods', 'band_coef_std', 'outer_eta_cap', 'act', 'act_explore', 'grad_accum',
+               'bands', 'band_periods', 'band_coef_std', 'band_product', 'outer_eta_cap', 'act', 'act_explore', 'grad_accum',
+               'rope', 'rope_base',
                'fast_ffn', 'fast_ffn_eta', 'fast_ffn_decay', 'init_from', 'init_weights',
                'num_aug', 'test_size',
                'global_batch_size', 'epochs', 'eval_interval', 'lr', 'lr_warmup_steps', 'lr_warmup_start', 'weight_decay', 'beta1',
@@ -793,14 +796,15 @@ def main(cfg):
         mc = model.config
         print(f"[LT] {FORMAT} torch={torch.__version__} device={device} ranks={ws} "
               f"params={sum(p.numel() for p in model.parameters()):,} amp={model._amp(device)} "
-              f"kernel={'triton' if model.use_kernel(device, torch.float32) else 'torch'} compile={cfg['compile']} scope={cfg['compile_scope']}", flush=True)
+              f"kernel={'triton' if model.use_kernel(device, torch.float32) or model.use_band_kernel(device, torch.float32) else 'torch'} compile={cfg['compile']} scope={cfg['compile_scope']}", flush=True)
         print(f"[LT] tau = {mc.tag_bound:g} sin(phi) + n {mc.block_omega:g}; lambda {mc.trace_lambda:g}; "
               f"rho {mc.outer_rho:g}; eta {mc.outer_eta:g}; alpha_init {mc.alpha_init:g}; "
               + (f"EVENT-STDP theta {mc.event_theta:g} even {mc.event_even}; " if mc.event_stdp else '')
               + (('KV-EMA + current Hebb (gain 1); ' if mc.kv_ema_current else 'KV-EMA (plain linear KV, no clock/STDP); ') if mc.kv_ema else '')
               + (('exp-STDP + Hebb (B-EMA form); ' if mc.exp_hebb else 'exp-STDP (scalar channels, exponential pair window, L(0) = 0); ') if mc.exp_stdp else '')
-              + (f"BANDS{'' if mc.hebb else ' single window, no tonic Hebb'} R={mc.bands} periods {list(mc.band_periods)} coef_std {mc.band_coef_std:g} "
-                 f"eta_learn {mc.outer_eta_learn} cap {mc.outer_eta_cap}; " if mc.bands else '')
+              + (f"BANDS{' PRODUCT' if mc.band_product else ''}{'' if mc.hebb else ' single window, no tonic Hebb'} R={mc.bands} periods {list(mc.band_periods)} coef_std {mc.band_coef_std:g} "
+                 + ('M = sum_r gamma_r Re(c_r sum_t E_V,r conj(E_K,r)^T): per-band EMA of S at rate 1 - |z_r|^2, no W/eta; '
+                    if mc.band_product else f"eta_learn {mc.outer_eta_learn} cap {mc.outer_eta_cap}; ") if mc.bands else '')
               + f"stop_at {stop_at}; "
               + (f"RESUME {ckpt} step {state['step']}" if ckpt else 'NEW RUN') + f'; out {out_dir}', flush=True)
     if arc is not None:

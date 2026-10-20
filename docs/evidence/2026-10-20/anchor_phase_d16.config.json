@@ -1,0 +1,16 @@
+{
+ "model": "phase",
+ "d": 16,
+ "K": null,
+ "N": null,
+ "lam": 0.0,
+ "steps": 3000,
+ "batch": 256,
+ "lr": 0.003,
+ "warmup": 200,
+ "clip": 1.0,
+ "seed": 0,
+ "log_every": 100,
+ "eval_every": 500,
+ "out": "runs/anchor/phase_d16"
+}

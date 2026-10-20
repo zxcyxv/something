@@ -163,6 +163,8 @@ class PackedLT(nn.Module):
         cfg = model.config
         if not cfg.bands:
             raise ValueError('PackedLT implements the bands memory only')
+        if cfg.band_product:
+            raise ValueError('PackedLT: band_product is not implemented (EMA bands memory only)')
         if cfg.task_film or cfg.task_film_up or cfg.task_lowrank or cfg.puzzle_emb_mode == 'film':
             raise ValueError('PackedLT: task_film / task_film_up / task_lowrank / film embedding are not implemented')
         self.model = model

@@ -20,7 +20,8 @@ Hebbian carrier. With omegaT > 2c and K omegaT + 2c < pi every pair up to K bloc
 the block order. c, omegaT, lam and rho are fixed constants; alpha_h is trained (init 1).
 
 The clock, traces, W and the read are FP32 (FP64 in tests); projections and the FFN follow BF16 autocast where the
-GPU has native BF16. kernel 'triton' runs the memory step through lt/kernel.py (rho = 0 only).
+GPU has native BF16. kernel 'triton' runs the memory step through lt/kernel.py (rho = 0 only); with band_product, the
+band step through lt/band_kernel.py (IEEE FP32).
 
 event_stdp (control model, tag_bound = 0): the pairs are taken between block-to-block changes (events) instead of
 states, and the Hebbian term stays on the states:
@@ -37,6 +38,15 @@ z_r = exp(-e^{nu_r} + i theta_r) and complex coefficients a_r (value at or after
     W     = (1 - eta) W + eta S,   read = q~ (sum_t v k~^T + W)^T          sum_r gamma_r Re(b_r z_r^|D|), D < 0
     hebb=False drops the tonic term and reads this block's write directly: read = q~ (S + W)^T (one window: the
     same-block Hebb is l(0) = sum_r gamma_r Re a_r)
+
+band_product (bands without W and eta): one complex coefficient c_r per head and band; the same traces, and the memory
+is the product of the band's two traces:
+
+    P_r   = sum_t E_V,r conj(E_K,r)^T,   M = sum_r gamma_r Re(c_r P_r),   read = q~ (sum_t v k~^T + M)^T   (hebb=False:
+    q~ M^T). With a_r = conj(c_r), b_r = c_r and S_r the band-r part of S:
+            gamma_r Re(c_r P_r(n)) = |z_r|^2 gamma_r Re(c_r P_r(n-1)) + (1 - |z_r|^2) S_r(n)
+    so M is the per-band EMA of the band's own S at rate 1 - |z_r|^2 (fixed point S_r, as for W): the bands model when
+    every |z_r|^2 = 1 - eta and a = conj(b)
 """
 from __future__ import annotations
 
@@ -88,8 +98,12 @@ class ModelConfig:
                                       # with hebb False read q~ (S + W)^T
     band_periods: tuple = (2.0, 6.0, 20.0, 64.0)   # initial periods p_r: theta_r = 2 pi / p_r, |z_r| = e^{-1/p_r}
     band_coef_std: float = 0.1        # std of each real component of the initial a_r, b_r
+    band_product: bool = False        # no W or eta: M = sum_r gamma_r Re(c_r sum_t E_V,r conj(E_K,r)^T) takes W's place
     outer_eta_cap: bool = False       # project the learned eta onto eta <= outer_eta after every optimizer step
     linear_attn: bool = False         # standard recurrent linear attention: read = q~ (sum_t v k~^T)^T (no clock, W, STDP)
+    rope: str = 'learned2d'           # learned2d: learned per-head row/column angles (prefix angle 0); 1d: URM/HRM fixed
+                                      # rotary angles pos * rope_base^(-2p/D) on the flattened positions, prefix first
+    rope_base: float = 10000.0
     task_film: bool = False           # per-identifier FiLM of the FFN gate keys: g <- g * (1 + gamma[id]), gamma init 0
     task_film_up: bool = False        # per-identifier scale of the FFN up side: a <- a * (1 + w[id]) (linear in each slot's
                                       # output: the update is a task-weighted sum of the slots' fields), w init 0
@@ -97,8 +111,8 @@ class ModelConfig:
     puzzle_emb_mode: str = 'add'      # add: puzzle embedding added to every cell's input; prefix: URM/HRM style, padded to
                                       # ceil(puzzle_emb_ndim / d) extra positions in front of the cells (logits drop them);
                                       # film: not injected, a shared projection makes FFN gate scales g <- g * (1 + H e[id])
-    kernel: str = 'auto'              # auto | torch | triton
-    kernel_bf16: bool = True          # BF16 dot operands in the fused kernel (FP32 accumulation)
+    kernel: str = 'auto'              # auto | torch | triton (band_product: the fused band step, lt/band_kernel.py)
+    kernel_bf16: bool = True          # BF16 dot operands in the phase-clock kernel (FP32 accumulation; not the band kernel)
     act_ckpt: bool = False            # recompute each block in backward (activation checkpointing; same math, less memory)
     act_ckpt_blocks: int = -1         # with act_ckpt: checkpoint only the first N blocks of a segment (-1: all)
     amp: bool = True                  # BF16 autocast for projections and FFN where native
@@ -114,6 +128,16 @@ class ModelConfig:
                                       # FFN output += W_fo dW phi~ (W_fo starts at 0, so the model starts unchanged)
     fast_ffn_eta: float = 0.5         # initial eta (learned, sigmoid)
     fast_ffn_decay: float = 0.02      # initial lam (learned, sigmoid)
+    rule_syn: bool = False            # rule synapse (rule_step): own q/k/v; per-grid memories M_g = sum_{t in g} v k~^T with
+                                      # local 2D RoPE keys; position synapse W (complex, keys) and content synapse C (values)
+                                      # written from the demonstration pairs by error-driven LTP (FISTA) with a soft-
+                                      # threshold LTD on W, carried across blocks; query grid reads C M_query W^T. Needs
+                                      # band_product (W, C live in the free memory slot) and num_grids = 2K + 1
+    rule_inner: int = 20              # steps per block (C solve + FISTA step on W), restarted from the carried W
+    rule_theta: float = 0.01          # initial sparsity-LTD threshold (learned per head, log)
+    rule_ridge: float = 0.1           # initial ridge of C towards its prior (learned per head, log)
+    rule_prior: str = 'mean'          # prior of C: 'mean' (every entry 1/D: before W is known C pools the value dims, so
+                                      # W first fits the pooled, content-free images) or 'identity'
 
     def __post_init__(self):
         if self.seq_len != self.num_grids * self.grid ** 2:
@@ -131,9 +155,10 @@ class ModelConfig:
             raise ValueError('outer_eta_learn needs outer_eta > 0 as the initial value')
         if self.kernel not in ('auto', 'torch', 'triton'):
             raise ValueError('kernel must be auto, torch or triton')
-        if self.kernel == 'triton' and (self.outer_rho or self.outer_eta or not self.hebb or self.event_stdp
-                                        or self.linear_attn):
-            raise ValueError('the fused kernel implements outer_rho = outer_eta = 0 with the Hebbian term only')
+        if self.kernel == 'triton' and not self.band_product and (
+                self.outer_rho or self.outer_eta or not self.hebb or self.event_stdp or self.linear_attn or self.bands):
+            raise ValueError('the fused kernels implement the phase-clock model with outer_rho = outer_eta = 0 and the '
+                             'Hebbian term only, and band_product')
         if self.event_stdp and self.tag_bound != 0:
             raise ValueError('event_stdp has no in-block latency: set tag_bound = 0')
         if self.event_theta < 0 or ((self.event_theta or self.event_even) and not self.event_stdp):
@@ -147,9 +172,14 @@ class ModelConfig:
         if self.exp_hebb and not self.exp_stdp:
             raise ValueError('exp_hebb needs exp_stdp')
         self.band_periods = tuple(float(p) for p in self.band_periods)
-        if self.bands and (self.outer_rho or not self.outer_eta or self.tag_bound or self.event_stdp
-                           or self.kv_ema or self.exp_stdp):
-            raise ValueError('bands needs outer_eta > 0, outer_rho = 0, tag_bound = 0 and no other memory mode')
+        if self.bands and (self.outer_rho or not (self.outer_eta or self.band_product) or self.tag_bound
+                           or self.event_stdp or self.kv_ema or self.exp_stdp):
+            raise ValueError('bands needs outer_eta > 0 (band_product: 0), outer_rho = 0, tag_bound = 0 and no other '
+                             'memory mode')
+        if self.band_product and (not self.bands or self.outer_eta or self.outer_rho or self.outer_eta_learn
+                                  or self.outer_eta_cap):
+            raise ValueError('band_product needs bands > 0, outer_eta = outer_rho = 0 and outer_eta_learn, '
+                             'outer_eta_cap off')
         if self.bands < 0 or (self.bands and (len(self.band_periods) != self.bands or min(self.band_periods) <= 0)):
             raise ValueError('bands >= 0 with one positive initial period per band')
         if self.linear_attn and (self.outer_rho or self.outer_eta or self.tag_bound or not self.hebb or self.event_stdp
@@ -159,6 +189,14 @@ class ModelConfig:
             raise ValueError('puzzle_emb_mode must be add, prefix or film')
         if self.puzzle_emb_mode == 'film' and not self.puzzle_emb_ndim:
             raise ValueError('puzzle_emb_mode film needs puzzle_emb_ndim > 0')
+        if self.rule_syn and (not self.band_product or self.num_grids < 3 or self.num_grids % 2 == 0
+                              or self.rope != 'learned2d' or (self.puzzle_emb_mode == 'prefix' and self.puzzle_emb_ndim)
+                              or self.rule_inner < 1 or self.rule_theta <= 0 or self.rule_ridge <= 0
+                              or self.rule_prior not in ('mean', 'identity')):
+            raise ValueError('rule_syn needs band_product, num_grids = 2K + 1 >= 3, rope learned2d, no prefix tokens, '
+                             'rule_inner >= 1 and rule_theta, rule_ridge > 0')
+        if self.rope not in ('learned2d', '1d') or self.rope_base <= 0:
+            raise ValueError("rope must be 'learned2d' or '1d' with rope_base > 0")
         if self.mlp_inter < 0:
             raise ValueError('mlp_inter >= 0')
         if self.outer_eta_cap and not self.outer_eta_learn:
@@ -310,6 +348,37 @@ def stdp_step(k_unit, kr, v, rope, tag_k, tag_v, lam, traces, real=False):
     return (hebb, im_s, new, re_s) if real else (hebb, im_s, new)
 
 
+class TraceProduct(torch.autograd.Function):
+    """band_product's M = sum_r Re(Y_r)^T Re(E_K,r) + Im(Y_r)^T Im(E_K,r), Y_r = (gr + i gi)_r E_V,r (torch path).
+
+    ek, ev: the new traces [B,H,T,2,R,D]; gr, gi = gamma_r c_r [1,H,1,R,1]. The forward is one [D,2RT] @ [2RT,D]
+    product. The backward forms dY = E_K dM^T and E_V dM as [2RT,D] products (autograd's own rule returns dY^T
+    D-major, and every kernel reading it then runs strided), and Y is not saved (Y dM follows from E_V dM)."""
+    @staticmethod
+    def forward(ek, ev, gr, gi):
+        B, H, T, _, R, D = ek.shape
+        evr, evi = ev.unbind(3)
+        y = torch.stack((gr * evr - gi * evi, gr * evi + gi * evr), 3)
+        return y.reshape(B, H, -1, D).transpose(-1, -2) @ ek.reshape(B, H, -1, D)
+
+    @staticmethod
+    def setup_context(ctx, inputs, output):
+        ctx.save_for_backward(*inputs)
+
+    @staticmethod
+    def backward(ctx, dm):
+        ek, ev, gr, gi = ctx.saved_tensors
+        B, H, T, _, R, D = ek.shape
+        dyr, dyi = (ek.reshape(B, H, -1, D) @ dm.transpose(-1, -2)).view(ek.shape).unbind(3)
+        xr, xi = (ev.reshape(B, H, -1, D) @ dm).view(ev.shape).unbind(3)
+        evr, evi = ev.unbind(3)
+        dek = torch.stack((gr * xr - gi * xi, gr * xi + gi * xr), 3)
+        dev = torch.stack((gr * dyr + gi * dyi, gr * dyi - gi * dyr), 3)
+        dgr = (dyr * evr + dyi * evi).sum((0, 2, 4), keepdim=True)
+        dgi = (dyi * evr - dyr * evi).sum((0, 2, 4), keepdim=True)
+        return dek, dev, dgr, dgi
+
+
 class PuzzleEmbedding(nn.Module):
     """URM sparse puzzle embedding (one row here: every puzzle has identifier 0), trained by SignSGD."""
     def __init__(self, num, dim, batch_size, cast_to):
@@ -369,10 +438,20 @@ class Block(nn.Module):
             self.task_film = nn.Parameter(torch.zeros(cfg.num_puzzle_identifiers, inter))
         if cfg.task_film_up:
             self.task_film_up = nn.Parameter(torch.zeros(cfg.num_puzzle_identifiers, inter))
+        if cfg.rule_syn:                     # q, k, v of the rule synapse: drawn last in LT.__init__
+            self.rule_q = nn.Parameter(torch.empty(d, d))
+            self.rule_k = nn.Parameter(torch.empty(d, d))
+            self.rule_v = nn.Parameter(torch.empty(d, d))
+            self.rule_gain = nn.Parameter(torch.ones(H))
+            self.rule_log_theta = nn.Parameter(torch.full((H,), math.log(cfg.rule_theta)))
+            self.rule_log_ridge = nn.Parameter(torch.full((H,), math.log(cfg.rule_ridge)))
         if cfg.bands:                                                        # rows nu, theta [2,H,R]; |z| = e^{-1/p}
             p = torch.tensor(cfg.band_periods, dtype=torch.float64)
             self.band_pole = nn.Parameter(torch.stack((-p.log(), 2 * math.pi / p))[:, None].repeat(1, H, 1).float())
-            self.band_coef = nn.Parameter(torch.zeros(4, H, cfg.bands))     # Re a, Im a, Re b, Im b; drawn in LT
+            if cfg.band_product:                                             # Re c, Im c; drawn in LT
+                self.band_c = nn.Parameter(torch.zeros(2, H, cfg.bands))
+            else:                                                            # Re a, Im a, Re b, Im b; drawn in LT
+                self.band_coef = nn.Parameter(torch.zeros(4, H, cfg.bands))
 
     def window(self):
         """exp_stdp window per head [H]: (lam+, lam-, A+, A-) with A- lam- = A+ lam+ (equal LTP and LTD areas)."""
@@ -381,16 +460,22 @@ class Block(nn.Module):
         return lp, lm, ap, ap * lp / lm
 
     def bands(self):
-        """Per head and band [H,R]: Re z, Im z, gamma = sqrt(1 - |z|^2), Re a, Im a, Re b, Im b."""
+        """Per head and band [H,R]: Re z, Im z, gamma = sqrt(1 - |z|^2), Re a, Im a, Re b, Im b (band_product: the
+        equivalent window a = conj c, b = c)."""
         nu, theta = self.band_pole
         mag = torch.exp(-torch.exp(nu))
-        return (mag * torch.cos(theta), mag * torch.sin(theta), torch.sqrt(-torch.expm1(-2 * torch.exp(nu))),
-                *self.band_coef)
+        if hasattr(self, 'band_c'):
+            cr, ci = self.band_c
+            coef = (cr, -ci, cr, ci)
+        else:
+            coef = self.band_coef
+        return (mag * torch.cos(theta), mag * torch.sin(theta), torch.sqrt(-torch.expm1(-2 * torch.exp(nu))), *coef)
 
     def band_summary(self):
         """Per head [H]: l(0) = sum_r gamma Re a (same-block pairs) and the window area
         M0 = sum_r gamma Re[(a + b z) / (1 - z)] (the gain on a constant state); per band [R]: head-mean period
-        2 pi / theta and e-fold time e^{-nu} in blocks."""
+        2 pi / theta and e-fold time e^{-nu} in blocks. band_product: of S with a = conj c, b = c; M's fixed point is
+        S's, so the area is M's gain on a constant state too."""
         zr, zi, gamma, ar, ai, br, bi = (x.detach().double() for x in self.bands())
         z, a, b = torch.complex(zr, zi), torch.complex(ar, ai), torch.complex(br, bi)
         l0 = (gamma * a.real).sum(-1)
@@ -427,7 +512,9 @@ class LT(nn.Module):
         self.init_hidden = nn.Buffer(trunc_normal_(torch.empty(d, dtype=self.forward_dtype), std=1.0))
         with torch.no_grad():
             self.block.rope_theta.uniform_(-math.pi / 2, math.pi / 2)
-            if cfg.bands:                    # drawn last: every other initial weight matches the runs without bands
+            if cfg.band_product:             # in band_coef's place: every other initial weight matches the bands runs
+                self.block.band_c.normal_(0.0, cfg.band_coef_std)
+            elif cfg.bands:                  # drawn last: every other initial weight matches the runs without bands
                 self.block.band_coef.normal_(0.0, cfg.band_coef_std)
             if cfg.task_lowrank:             # drawn last as well
                 self.block.task_v.normal_(0.0, 1.0 / math.sqrt(d))
@@ -445,6 +532,11 @@ class LT(nn.Module):
         if cfg.fast_ffn:                     # drawn last as well
             with torch.no_grad():
                 self.block.ffw_v.normal_(0.0, 1.0 / math.sqrt(d))
+        if cfg.rule_syn:                     # drawn last: every other initial weight matches the runs without it
+            with torch.no_grad():
+                for w in (self.block.rule_q, self.block.rule_k, self.block.rule_v):
+                    nn.init.kaiming_uniform_(w, a=math.sqrt(5))
+        self.register_buffer('pos_row_local', ((torch.arange(T) // g) % g).to(rope_dtype), persistent=False)
         if cfg.act:                          # created last: every other initial weight matches the runs without ACT
             self.q_head = nn.Linear(d, 1, dtype=self.forward_dtype)
             with torch.no_grad():            # URM: weight 0, bias -5 (no early halting at the start)
@@ -453,7 +545,15 @@ class LT(nn.Module):
 
     # ------------------------------------------------------------------ parts
     def rope_angles(self):
-        """[H, T, P] learned 2D RoPE angles theta_row * row + theta_col * col; prefix positions get angle 0."""
+        """[H, T, P] learned 2D RoPE angles theta_row * row + theta_col * col; prefix positions get angle 0.
+        rope '1d' (URM/HRM): fixed angles pos * rope_base^(-2p/D) on the flattened positions, prefix tokens first
+        (0 .. prefix_len - 1, then the cells row-major); same for every head, nothing learned."""
+        if self.config.rope == '1d':
+            P = self.dh // 2
+            dtype = self.pos_row.dtype
+            inv = self.config.rope_base ** (-torch.arange(P, dtype=dtype, device=self.pos_row.device) * 2 / self.dh)
+            pos = torch.arange(self.n_pos, dtype=dtype, device=self.pos_row.device)
+            return (pos[:, None] * inv[None, :]).expand(self.H, self.n_pos, P)
         th = self.block.rope_theta
         a = (th[..., 0, None] * self.pos_row + th[..., 1, None] * self.pos_col).transpose(-1, -2)
         if self.prefix_len:
@@ -481,11 +581,18 @@ class LT(nn.Module):
 
     def use_kernel(self, device, dtype):
         if (self.probe is not None or self.config.outer_memory or not self.config.hebb or self.config.event_stdp
-                or self.config.linear_attn or device.type != 'cuda' or dtype == torch.float64):
+                or self.config.linear_attn or self.config.bands or device.type != 'cuda' or dtype == torch.float64):
             return False
         if self.config.kernel == 'auto':
             return torch.cuda.get_device_capability(device) >= (8, 0)
         return self.config.kernel == 'triton'
+
+    def use_band_kernel(self, device, dtype):
+        """band_product's fused band step (lt/band_kernel.py): CUDA, FP32, no probe; kernel auto (sm80+) or triton."""
+        if (not self.config.band_product or self.probe is not None or device.type != 'cuda'
+                or dtype == torch.float64 or self.config.kernel == 'torch'):
+            return False
+        return self.config.kernel == 'triton' or torch.cuda.get_device_capability(device) >= (8, 0)
 
     # ------------------------------------------------------------------ memory
     def memory_step(self, q, k, v, state):
@@ -620,6 +727,12 @@ class LT(nn.Module):
 
             S = v^T sum_r Re(a_r E_K,r) + (sum_r Re(b_r D_V,r))^T k~
 
+        band_product: Y_r = gamma_r c_r E_V,r (both traces include this block); (Re, Im) and the R bands stacked on the
+        token axis make M one [D,2RT] @ [2RT,D] product (TraceProduct), and there is no W (state slot None):
+
+            M = sum_r Re(Y_r)^T Re(E_K,r) + Im(Y_r)^T Im(E_K,r) = sum_r gamma_r Re(c_r P_r)
+
+        On CUDA in FP32 the traces and M come from the fused band step instead (lt/band_kernel.py, use_band_kernel).
         The clock is carried unchanged."""
         cfg = self.config
         clock, ek, ev, w, prev = state
@@ -633,11 +746,23 @@ class LT(nn.Module):
             qr, kr = self.rope(unit(q.to(dtype)), tables), self.rope(unit(k.to(dtype)), tables)
             v = v.to(dtype)
             B, H, T, D = v.shape
+            if cfg.band_product and self.use_band_kernel(q.device, dtype):
+                from .band_kernel import band_product
+                zr, zi, gamma, _, _, cr, ci = self.block.bands()
+                m, ek, ev = band_product(kr, v, ek, ev, torch.stack((zr, zi, gamma, gamma * cr, gamma * ci)))
+                read = qr @ ((v.transpose(-1, -2) @ kr + m) if cfg.hebb else m).transpose(-1, -2)
+                return read, (clock, ek, ev, w, prev)
             zr, zi, gamma, ar, ai, br, bi = (x.to(dtype)[None, :, None, :, None] for x in self.block.bands())
             ek_re, ek_im = ek.to(dtype).reshape(B, H, T, 2, cfg.bands, D).unbind(3)
             ev_re, ev_im = ev.to(dtype).reshape(B, H, T, 2, cfg.bands, D).unbind(3)
             ek_re, ek_im = zr * ek_re - zi * ek_im + gamma * kr.unsqueeze(3), zr * ek_im + zi * ek_re   # this block in
             dv_re, dv_im = zr * ev_re - zi * ev_im, zr * ev_im + zi * ev_re                              # this block out
+            if cfg.band_product:
+                ek = torch.stack((ek_re, ek_im), 3)                                     # [B,H,T,2,R,D]
+                ev = torch.stack((dv_re + gamma * v.unsqueeze(3), dv_im), 3)            # E_V with this block in
+                m = TraceProduct.apply(ek, ev, gamma * br, gamma * bi)                  # gamma_r c_r (b = c)
+                read = qr @ ((v.transpose(-1, -2) @ kr + m) if cfg.hebb else m).transpose(-1, -2)
+                return read, (clock, ek.reshape(B, H, T, -1), ev.reshape(B, H, T, -1), w, prev)
             k_mix = (ar * ek_re - ai * ek_im).sum(3)
             v_mix = (br * dv_re - bi * dv_im).sum(3)
             s = v.transpose(-1, -2) @ k_mix + v_mix.transpose(-1, -2) @ kr
@@ -692,6 +817,70 @@ class LT(nn.Module):
         return read, (clock, torch.cat(new[:2], -1), torch.cat(new[2:], -1), w,
                       torch.cat((q_unit, k_unit, v), -1))
 
+    def rule_step(self, u, w):
+        """Rule synapse (ModelConfig.rule_syn) on the block input u [B,T,d]: its own q, k, v; keys and queries unit and
+        rotated by the learned 2D RoPE angles at the LOCAL positions (row within the grid, column), so every grid uses
+        the same position code. Returns the read [B,H,T,D] (query grid only) and the new packed state."""
+        cfg, L = self.config, self.block
+        B, T, _ = u.shape
+        with torch.autocast(device_type=u.device.type, enabled=False):
+            dtype = torch.float64 if u.dtype == torch.float64 else torch.float32
+            heads = lambda x: x.reshape(B, T, self.H, self.dh).transpose(1, 2)
+            uu = u.to(dtype)
+            q, k, v = (heads(uu @ p.to(dtype).T) for p in (L.rule_q, L.rule_k, L.rule_v))
+            unit = lambda x: x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + cfg.eps)
+            th = L.rope_theta.to(dtype)
+            ang = (th[..., 0, None] * self.pos_row_local.to(dtype) + th[..., 1, None] * self.pos_col.to(dtype)
+                   ).transpose(-1, -2)
+            tables = ang.cos()[None], ang.sin()[None]
+            return self.rule_core(self.rope(unit(q), tables), self.rope(unit(k), tables), v, w, dtype)
+
+    def rule_core(self, qr, kr, v, w, dtype, inner=None):
+        """qr, kr [B,H,T,D] rotated unit queries and keys, v [B,H,T,D], w [B,H,D,D/2+D] = (W as [D/2,D/2] complex packed
+        into [D,D/2], C - I). Per grid g: M_g = sum_{t in g} v k~^T, keys as D/2 complex channels (rows: value dims).
+        From the pairs (input 2i -> output 2i+1), i < K: Y ~ C X W^T. Each of `inner` steps: C = ridge solution towards
+        the prior (rule_prior)
+        given W; one FISTA step on W (error-driven LTP: (C^T E)^T conj(X), step 1 / (lambda_max(sum X^H X) |C|_1 |C|_inf)) and
+        the soft threshold theta (sparsity LTD). Read of the query grid (2K): q~ (C M_query W^T)^T, times gain_h."""
+        cfg, L = self.config, self.block
+        Bn, H, T, D = v.shape
+        P, K = D // 2, (cfg.num_grids - 1) // 2
+        gid = torch.arange(T, device=v.device) // (cfg.grid ** 2)
+        M = torch.einsum('bhtd,bhte,tg->bhgde', v, kr, F.one_hot(gid, cfg.num_grids).to(dtype))
+        Mc = torch.complex(M[..., 0::2], M[..., 1::2])                          # [B,H,G,D,P]
+        X, Y, Xq = Mc[:, :, 0:2 * K:2], Mc[:, :, 1:2 * K:2], Mc[:, :, 2 * K]
+        wr = w.to(dtype)
+        Wc = torch.view_as_complex(wr[..., :P].reshape(Bn, H, P, P, 2).contiguous())
+        eye = torch.eye(D, dtype=dtype, device=v.device)
+        prior = torch.full((D, D), 1.0 / D, dtype=dtype, device=v.device) if cfg.rule_prior == 'mean' else eye
+        theta = L.rule_log_theta.to(dtype).exp()[None, :, None, None]
+        ridge = L.rule_log_ridge.to(dtype).exp()[None, :, None, None]
+        gram = torch.einsum('bhkaq,bhkap->bhqp', X.conj(), X)                  # sum_k X^H X (Hermitian)
+        lam = torch.linalg.eigvalsh(gram)[..., -1].clamp(min=1e-6).detach()
+        Yr = torch.cat([Y.real, Y.imag], -1)
+        Yf, t, C = Wc, 1.0, None
+        for _ in range(cfg.rule_inner if inner is None else inner):
+            Z = X @ Yf.transpose(-1, -2)[:, :, None]                              # X W^T [B,H,K,D,P]
+            Zr = torch.cat([Z.real, Z.imag], -1)
+            A = torch.einsum('bhkdx,bhkex->bhde', Zr, Zr) + ridge * eye
+            Bm = torch.einsum('bhkdx,bhkex->bhde', Yr, Zr) + ridge * prior
+            C = torch.linalg.solve(A, Bm.transpose(-1, -2)).transpose(-1, -2)    # Bm A^-1 (A symmetric)
+            Cc = C.to(X.dtype)[:, :, None]
+            E = Y - Cc @ Z
+            G = torch.einsum('bhkap,bhkaq->bhpq', Cc.transpose(-1, -2) @ E, X.conj())
+            cn = C.abs().sum(-2).amax(-1) * C.abs().sum(-1).amax(-1)            # |C|_1 |C|_inf >= |C|_2^2
+            step = (1.0 / (lam * cn.clamp(min=1e-6)))[..., None, None]
+            Wn = Yf + step * G
+            Wn = Wn * torch.clamp(1 - step * theta / Wn.abs().clamp(min=1e-12), min=0)
+            tn = (1 + math.sqrt(1 + 4 * t * t)) / 2
+            Yf, Wc, t = Wn + ((t - 1) / tn) * (Wn - Wc), Wn, tn
+        Vh = C.to(X.dtype) @ (Xq @ Wc.transpose(-1, -2))                          # predicted query-output memory
+        Vr = torch.view_as_real(Vh).reshape(Bn, H, D, D)                          # interleaved (Re, Im) key pairs
+        read = (qr @ Vr.transpose(-1, -2)) * (gid == 2 * K).to(dtype)[None, None, :, None]
+        read = read * L.rule_gain.to(dtype)[None, :, None, None]
+        w = torch.cat([torch.view_as_real(Wc).reshape(Bn, H, D, P), C - eye], -1)
+        return read, w
+
     def block_step(self, h, inj, state):
         """One recurrent block: returns the new hidden state and memory state."""
         L = self.block
@@ -702,6 +891,10 @@ class LT(nn.Module):
         extended = len(state) > 5                      # (memory state..., fast_w); a bare memory state is accepted too
         state, fast_w = state[:5], (state[5] if extended else None)
         read, state = self.memory_step(q, k, v, state)
+        if self.config.rule_syn:
+            rule_read, rule_w = self.rule_step(u, state[3])
+            read = read + rule_read.to(read.dtype)
+            state = (state[0], state[1], state[2], rule_w, state[4])
         read = read.transpose(1, 2).reshape(B, T, self.d).to(u.dtype)
         h = rms_norm(u + L.out_proj(read))
         g, a = L.ffn_gate_up(h).chunk(2, dim=-1)
@@ -742,7 +935,7 @@ class LT(nn.Module):
         z = lambda *s: torch.zeros(B, self.H, *s, device=device, dtype=dtype)
         trace = 2 * D * max(self.config.bands, 1)
         return (z(self.n_pos, 6 * P + 1), z(self.n_pos, trace), z(self.n_pos, trace),
-                z(D, D) if self.config.outer_memory else None,
+                z(D, D) if self.config.outer_memory else (z(D, P + D) if self.config.rule_syn else None),
                 z(self.n_pos, 3 * D) if self.config.event_stdp else None)
 
     # ------------------------------------------------------------------ segments

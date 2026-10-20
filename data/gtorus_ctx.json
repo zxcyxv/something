@@ -1,0 +1,34 @@
+{
+  "format": "in context (data/prep_miniarc_ctx.py)",
+  "k": 3,
+  "grids_per_sample": 7,
+  "sample_shape": [
+    28,
+    4
+  ],
+  "train_samples": 100000,
+  "test_samples": 3072,
+  "num_symbols": 5,
+  "task_identifiers": "none (train_task_index / test_task_index are metadata)",
+  "train_tasks": "group 0 only (2,419), drawn uniformly per sample",
+  "train_samples_per_task": {
+    "min": 20,
+    "mean": 41.339396444811904,
+    "max": 65
+  },
+  "train_generator": "toy_g.data.sample_batch(rng, n, k=3, group-0 tasks, sparsity (3, 8)); chunk i of 2000 samples uses default_rng(SeedSequence(0).spawn(50)[i])",
+  "train_order": "as generated (tasks are already drawn at random)",
+  "generation_seconds": 18.8,
+  "workers": 16,
+  "train_samples_equal_to_a_test_instance": 0,
+  "train_queries_equal_to_their_task_test_pair": 0,
+  "test_groups": {
+    "train": 2419,
+    "heldout_combo": 269,
+    "heldout_t": 384
+  },
+  "test_rows": "task order (row i = task i = t * 24 + c)",
+  "source": "data/gtorus_instances.npz (toy_g.data.task_instances seed 0, make_split seed 0)",
+  "instances_sha256": "337d893bc4fd9900dee6f3298c0503b077ce8c1e3d0b3fceb55aef037266e5c4",
+  "seed": 0
+}
