@@ -33,7 +33,8 @@ import torch.nn.functional as F
 from torch.optim.optimizer import Optimizer
 from torch.utils.data import DataLoader
 
-from .data import ArcTrainDataset, SudokuTrainDataset, eval_batches, load_arc, load_data, load_task_ids
+from .data import (ArcContextDataset, ArcTrainDataset, SudokuTrainDataset, ctx_packed_length, eval_batches, load_arc,
+                   load_arc_ctx, load_data, load_task_ids)
 from .model import LT, Carry, ModelConfig
 
 FORMAT = 'lt-bounded-phase-clock-stdp-v1'
@@ -49,8 +50,12 @@ DEFAULTS = dict(
     kernel='auto', kernel_bf16=True, amp=True, act_ckpt=False, act_ckpt_blocks=-1, act=False, act_explore=0.1,
     fast_ffn=0, fast_ffn_eta=0.5, fast_ffn_decay=0.02,
     rule_syn=False, rule_inner=20, rule_theta=0.01, rule_ridge=0.1, rule_prior='mean',
+    local_conv=False, frame_rope=False, ctx_packed=False, grad_blocks=0, rule_path=False,
+    rule_prior_emb=0, rule_prior_dropout=0.5, rule_write_bias=-2.0, rule_theta_init=1e-3, rule_prior_pe=False, ctx_versions=False,
     # data
     data_npz=None, test_size=2048, num_aug=1000,
+    ce='stablemax',                   # 'softmax': plain cross entropy (URM's is stablemax)
+    decay_all=False,                  # weight decay on every parameter (default: matrices only, as URM)
     # optimization
     global_batch_size=128, epochs=50000, eval_interval=250, lr=1e-4, lr_warmup_steps=2000, weight_decay=1.0,
     lr_warmup_start=0.0,              # warmup from lr_warmup_start * lr (every optimizer's lr scaled alike)
@@ -72,8 +77,8 @@ RECIPE_KEYS = ('hidden_size', 'num_heads', 'blocks_per_seg', 'loops', 'mlp_expan
                'event_stdp', 'event_theta', 'event_even', 'kv_ema', 'kv_ema_current', 'exp_stdp', 'exp_hebb',
                'bands', 'band_periods', 'band_coef_std', 'band_product', 'outer_eta_cap', 'act', 'act_explore', 'grad_accum',
                'rope', 'rope_base',
-               'fast_ffn', 'fast_ffn_eta', 'fast_ffn_decay', 'init_from', 'init_weights',
-               'num_aug', 'test_size',
+               'fast_ffn', 'fast_ffn_eta', 'fast_ffn_decay', 'local_conv', 'frame_rope', 'ctx_packed', 'grad_blocks', 'rule_path', 'rule_prior_emb', 'rule_prior_dropout', 'rule_write_bias', 'rule_theta_init', 'rule_prior_pe', 'ctx_versions', 'init_from', 'init_weights',
+               'num_aug', 'test_size', 'ce', 'decay_all',
                'global_batch_size', 'epochs', 'eval_interval', 'lr', 'lr_warmup_steps', 'lr_warmup_start', 'weight_decay', 'beta1',
                'beta2', 'puzzle_emb_lr', 'puzzle_emb_weight_decay', 'ema_rate', 'ema_puzzle_emb', 'seed',
                'data_fingerprint')
@@ -87,11 +92,11 @@ def log_stablemax(x, dim=-1):
     return torch.log(s / s.sum(dim=dim, keepdim=True))
 
 
-def segment_loss(logits, labels, halted, ignore0=False):
+def segment_loss(logits, labels, halted, ignore0=False, softmax=False):
     """Summed per-puzzle mean stablemax CE (FP64) and the metric sums; accuracy counts finished puzzles only.
     ignore0: cells whose raw label is 0 (token 1 after lt.data's +1; in-context demonstrations) count in neither
     the loss nor the metrics."""
-    lp = log_stablemax(logits.double())
+    lp = F.log_softmax(logits.double(), -1) if softmax else log_stablemax(logits.double())   # ce: 'softmax' | 'stablemax'
     cell = -torch.gather(lp, -1, labels.long().unsqueeze(-1)).squeeze(-1)          # [B, T]
     if ignore0:
         keep = labels != 1                               # raw label 0 -> token 1
@@ -113,15 +118,16 @@ def segment_loss(logits, labels, halted, ignore0=False):
 class TrainStep(torch.nn.Module):
     """Model + loss in one module, so torch.compile sees the whole segment. With ACT (URM ACTLossHead) the loss adds
     0.5 * BCE(q_halt, puzzle solved) summed over lanes."""
-    def __init__(self, model, ignore0=False):
+    def __init__(self, model, ignore0=False, softmax=False):
         super().__init__()
         self.model = model
         self.ignore0 = ignore0
+        self.softmax = softmax
 
     def forward(self, carry, batch):
         carry, logits = self.model(carry, batch)
         labels, halted = carry.data['labels'], carry.halted
-        loss, metrics = segment_loss(logits, labels, halted, self.ignore0)
+        loss, metrics = segment_loss(logits, labels, halted, self.ignore0, self.softmax)
         zero = loss.detach() * 0
         metrics.update(q_halt_loss=zero, q_halt_accuracy=zero, steps=torch.where(halted, carry.steps, 0).sum())
         if self.model.config.act:
@@ -206,7 +212,7 @@ def create_optimizers(model, cfg, world_size):
         opts.append(SignSGDEmbedding(model.puzzle_emb, world_size, weight_decay=cfg['puzzle_emb_weight_decay']))
         lrs.append(cfg['puzzle_emb_lr'])
     named = [(n, p) for n, p in model.named_parameters() if p.requires_grad]
-    decay = lambda n, p: (p.ndim >= 2 and 'rope_theta' not in n and 'event_theta_raw' not in n and 'band_' not in n
+    decay = lambda n, p: cfg['decay_all'] or (p.ndim >= 2 and 'rope_theta' not in n and 'event_theta_raw' not in n and 'band_' not in n
                           and 'task_film' not in n and 'task_u' not in n and 'task_v' not in n)
     opts.append(AdamATan2([{'params': [p for n, p in named if not decay(n, p)], 'weight_decay': 0.0},
                            {'params': [p for n, p in named if decay(n, p)], 'weight_decay': cfg['weight_decay']}],
@@ -484,7 +490,8 @@ def run_segments(model, x, y, segs, gbs, rank, ws, device, deadline=float('inf')
     model.config.loops = segs + 1                              # no lane is replaced during the run
     model.eval()
     try:
-        for batch in eval_batches(x, y, gbs, rank, ws, ids):
+        pack = (model.config.grid, model.config.num_grids) if model.config.ctx_packed else None
+        for batch in eval_batches(x, y, gbs, rank, ws, ids, pack):
             if stop_requested(device, deadline):
                 return sums, count, True
             if batch is None:
@@ -517,7 +524,7 @@ def eval_bs(cfg, ws):
     return cfg['eval_batch_size'] * ws if cfg['eval_batch_size'] else cfg['global_batch_size']
 
 
-def evaluate(model, ema, x, y, cfg, rank, ws, device, step, deadline=float('inf'), ids=None, group_ids=None):
+def evaluate(model, ema, x, y, cfg, rank, ws, device, step, deadline=float('inf'), ids=None, group_ids=None, tag=''):
     with ema.swap(model):
         sums, count, partial = run_segments(model, x, y, cfg['loops'], eval_bs(cfg, ws), rank, ws, device,
                                             deadline, ids, cfg['ignore_label0'])
@@ -527,9 +534,9 @@ def evaluate(model, ema, x, y, cfg, rank, ws, device, step, deadline=float('inf'
             for t in np.unique(groups).tolist():
                 sel = groups == t
                 s_t, c_t, _ = run_segments(model, x[sel], y[sel], cfg['loops'], eval_bs(cfg, 1), 0, 1, device,
-                                           deadline, ids[sel])
+                                           deadline, ids[sel], cfg['ignore_label0'])
                 parts.append(f'task {t} acc {float(s_t[0, -1]) / max(int(c_t), 1):.4f} exact {int(s_t[1, -1])}/{int(c_t)}')
-            print(f'[TASK] step {step} ' + ' | '.join(parts), flush=True)
+            print(f'[TASK{tag}] step {step} ' + ' | '.join(parts), flush=True)
     if ws > 1:
         dist.reduce(sums, dst=0)
         dist.reduce(count, dst=0)
@@ -537,7 +544,9 @@ def evaluate(model, ema, x, y, cfg, rank, ws, device, step, deadline=float('inf'
         return None
     n = max(int(count), 1)
     acc, exact = float(sums[0, -1]) / n, int(sums[1, -1])
-    print(f'[EVAL] step {step} acc {acc:.4f} exact {exact}/{int(count)}' + (' [partial]' if partial else ''), flush=True)
+    print(f'[EVAL{tag}] step {step} acc {acc:.4f} exact {exact}/{int(count)}' + (' [partial]' if partial else ''), flush=True)
+    if tag:
+        return dict(step=step, accuracy=acc, exact=exact, n=int(count), partial=partial)
     if model.config.outer_eta_learn:
         with ema.swap(model):
             eta_ema = torch.sigmoid(model.block.eta_raw.detach()).tolist()
@@ -715,7 +724,7 @@ def main(cfg):
     rank, ws, device = init_distributed()
     for signum in (signal.SIGINT, signal.SIGTERM):
         signal.signal(signum, _signal_stop)
-    torch.set_num_threads(2)
+    torch.set_num_threads(1 if cfg['ctx_packed'] else 2)   # packed: the pin-memory thread sets 1; a flip would recompile
     torch.set_float32_matmul_precision(cfg['matmul_precision'])
     torch.manual_seed(cfg['seed'] + rank)
     np.random.seed(cfg['seed'] + rank)
@@ -726,13 +735,37 @@ def main(cfg):
     tr_x, tr_y, te_x, te_y, path, fingerprint = load_data(cfg['data_npz'], cfg['test_size'])
     tr_ids, te_ids = load_task_ids(path, cfg['test_size'])
     arc = load_arc(path)
+    ctx = load_arc_ctx(path)                             # in-context ARC: episodes drawn on the fly, no identifiers
     if arc is not None:                                  # ARC: identifiers are task * (num_aug + 1) + version; test v = 0
         te_ids = arc[2][:cfg['test_size']].astype(np.int64) * (cfg['num_aug'] + 1)
         if cfg['num_puzzle_identifiers'] < arc[3] * (cfg['num_aug'] + 1):
             raise ValueError(f"ARC needs num_puzzle_identifiers >= {arc[3] * (cfg['num_aug'] + 1)}")
-    task_te = te_ids                                     # per-task grouping of the evaluation
+    te_noid = None
+    if ctx is not None and cfg['ctx_versions']:          # in-context ARC, URM identifiers task * (num_aug + 1) + v
+        with np.load(path, allow_pickle=False) as z:
+            te_ids = z['ctx_test_task'][:len(te_x)].astype(np.int64) * (cfg['num_aug'] + 1)
+        need = (int(ctx['task'].max()) + 1) * (cfg['num_aug'] + 1)
+        if cfg['num_puzzle_identifiers'] < need:
+            raise ValueError(f'ctx_versions needs num_puzzle_identifiers >= {need}')
+    prior_ids = ctx is not None and cfg['rule_prior_emb'] and not cfg['ctx_versions']
+    if prior_ids:                                        # identifier task + 1 where the task was trained, else 0
+        with np.load(path, allow_pickle=False) as z:
+            et = z['ctx_test_task'][:len(te_x)].astype(np.int64)
+        trained = np.zeros(int(ctx['task'].max()) + 1, bool)
+        trained[np.unique(ctx['task'][ctx['trainable']])] = True
+        te_ids_prior = np.where(trained[et], et + 1, 0)
+    if ctx is not None and cfg['ctx_packed']:            # evaluation batches of similar packed lengths
+        o = np.argsort(ctx_packed_length(te_x, cfg['grid'], cfg['num_grids']), kind='stable')
+        te_x, te_y = te_x[o], te_y[o]
+        te_ids = None if te_ids is None else te_ids[o]
+        if prior_ids:
+            te_ids_prior = te_ids_prior[o]
+    task_te = None if cfg['ctx_versions'] else te_ids    # per-task grouping of the evaluation
     if tr_ids is not None and not cfg['task_ids_as_identifier']:
         tr_ids, te_ids = np.zeros_like(tr_ids), np.zeros_like(te_ids)
+    if prior_ids:                                        # [EVAL] with the task priors, [EVAL-NOID] without
+        te_noid = np.zeros(len(te_x), np.int64)
+        te_ids = te_ids_prior
     if tr_ids is not None and int(max(tr_ids.max(), te_ids.max())) >= cfg['num_puzzle_identifiers']:
         raise ValueError('num_puzzle_identifiers must exceed every task identifier in the data')
     cfg.update(data_npz=path, data_fingerprint=fingerprint)
@@ -785,7 +818,11 @@ def main(cfg):
     if cfg['compile']:
         import torch._inductor.config as ic
         ic.triton.persistent_reductions = False
-    step_fn = TrainStep(model, cfg['ignore_label0'])
+        if cfg['ctx_packed']:                          # one compiled block per packed length (multiples of 128)
+            import torch._dynamo.config as dc
+            dc.recompile_limit = max(dc.recompile_limit, 64)
+            dc.accumulated_recompile_limit = max(dc.accumulated_recompile_limit, 256)
+    step_fn = TrainStep(model, cfg['ignore_label0'], cfg['ce'] == 'softmax')
     if cfg['compile'] and cfg['compile_scope'] == 'block':
         # One compiled block reused by every block of the segment; act_ckpt then checkpoints around it, so the
         # activation memory is that of eager checkpointing while the block runs as fused kernels.
@@ -807,7 +844,14 @@ def main(cfg):
                     if mc.band_product else f"eta_learn {mc.outer_eta_learn} cap {mc.outer_eta_cap}; ") if mc.bands else '')
               + f"stop_at {stop_at}; "
               + (f"RESUME {ckpt} step {state['step']}" if ckpt else 'NEW RUN') + f'; out {out_dir}', flush=True)
-    if arc is not None:
+    if ctx is not None:
+        ds = ArcContextDataset(ctx, seed=cfg['seed'], global_batch_size=gbs, rank=rank, world_size=ws,
+                               epochs_per_iter=cfg['eval_interval'], start_iter=state['iter_id'],
+                               total_iters=total_iters, skip_batches=state['batch_in_iter'],
+                               packed=cfg['ctx_packed'], task_ids=bool(prior_ids),
+                               id_dropout=cfg['rule_prior_dropout'],
+                               num_aug=cfg['num_aug'] if cfg['ctx_versions'] else None)
+    elif arc is not None:
         ds = ArcTrainDataset(tr_x, tr_y, arc[0], arc[1], seed=cfg['seed'], num_aug=cfg['num_aug'], global_batch_size=gbs,
                              rank=rank, world_size=ws, epochs_per_iter=cfg['eval_interval'], start_iter=state['iter_id'],
                              total_iters=total_iters, skip_batches=state['batch_in_iter'])
@@ -860,6 +904,9 @@ def main(cfg):
                     save()
                 if boundary:
                     evaluate(model, ema, te_x, te_y, cfg, rank, ws, device, step, deadline, te_ids, task_te)
+                    if te_noid is not None:
+                        evaluate(model, ema, te_x, te_y, cfg, rank, ws, device, step, deadline, te_noid, task_te,
+                                 tag='-NOID')
                     last_eval = step
                 if cfg['milestone_every'] and step % cfg['milestone_every'] == 0:
                     mdir = os.path.join(out_dir, 'milestones')

@@ -1,0 +1,21 @@
+{
+ "tasks_train": 0,
+ "tasks_eval": 800,
+ "pairs": 3500,
+ "training_episodes_per_epoch": 800,
+ "eval_transductive_tasks": 800,
+ "eval_inductive_tasks": 0,
+ "eval_episodes_by_mode": {
+  "1": 835,
+  "2": 0
+ },
+ "eval_episodes": 835,
+ "slot": 31,
+ "kmax": 5,
+ "sample_shape": [
+  372,
+  31
+ ],
+ "eval_test_inputs_seen_in_training": 0,
+ "eval_tasks_with_more_than_kmax_demos": 29
+}

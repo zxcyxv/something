@@ -1,0 +1,10 @@
+{
+  "tasks": 149,
+  "versions_per_task": 104,
+  "identifiers": 15496,
+  "train_pairs": 54912,
+  "test_pairs": 149,
+  "seed": 0,
+  "source": "github.com/KSB21ST/MINI-ARC data/MiniARC",
+  "identity_output_equals_input": 2
+}

@@ -1,0 +1,11 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.14.1+cu132 device=cuda:0 ranks=1 params=3,421,909 amp=True kernel=torch compile=True scope=block
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0.125; alpha_init 1; BANDS R=4 periods [2.0, 6.0, 20.0, 64.0] coef_std 0.1 eta_learn True cap True; stop_at 50000; NEW RUN; out /workspace/something/runs/arc_ctx15_bands
+[LT] step 250 lm_loss 2.32817 lr 1.25e-05 acc 0.2992 exact 0.0000 [finished at step 240]
+[LT] step 500 lm_loss 2.01544 lr 2.49e-05 acc 0.5211 exact 0.0000 [finished at step 496]
+[LT] step 750 lm_loss 1.51334 lr 3.75e-05 acc 0.5625 exact 0.0000 [finished at step 736]
+[LT] step 1000 lm_loss 1.39138 lr 5e-05 acc 0.7299 exact 0.0625 [finished at step 992]
+[LT] step 1250 lm_loss 1.30787 lr 6.25e-05 acc 0.7274 exact 0.0000 [finished at step 1248]
+[LT] step 1500 lm_loss 0.98222 lr 7.5e-05 acc 0.6980 exact 0.0000 [finished at step 1488]
+[LT] step 1750 lm_loss 1.02259 lr 8.75e-05 acc 0.7518 exact 0.0000 [finished at step 1744]
+[LT] step 2000 lm_loss 0.81870 lr 0.0001 acc 0.7692 exact 0.0625 [finished at step 2000]
+[LT] saved step 2075: /workspace/something/runs/arc_ctx15_bands/step_2075.pt [stopped]

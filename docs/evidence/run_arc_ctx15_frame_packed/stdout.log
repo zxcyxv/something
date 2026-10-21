@@ -1,0 +1,33 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.14.1+cu132 device=cuda:0 ranks=1 params=3,435,741 amp=True kernel=torch compile=True scope=block
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0.125; alpha_init 1; BANDS R=4 periods [2.0, 6.0, 20.0, 64.0] coef_std 0.1 eta_learn True cap True; stop_at 50000; NEW RUN; out /workspace/something/runs/arc_ctx15_frame_packed
+[LT] step 250 lm_loss 2.08271 lr 1.25e-05 acc 0.2473 exact 0.0000 [finished at step 240]
+[LT] step 500 lm_loss 1.73060 lr 2.49e-05 acc 0.6701 exact 0.0000 [finished at step 496]
+[LT] step 750 lm_loss 1.10630 lr 3.75e-05 acc 0.7300 exact 0.0000 [finished at step 736]
+[LT] step 1000 lm_loss 1.19685 lr 5e-05 acc 0.7843 exact 0.2500 [finished at step 992]
+[LT] step 1250 lm_loss 1.32030 lr 6.25e-05 acc 0.8099 exact 0.0000 [finished at step 1248]
+[LT] step 1500 lm_loss 0.69286 lr 7.5e-05 acc 0.8307 exact 0.1250 [finished at step 1488]
+[LT] step 1750 lm_loss 0.80587 lr 8.75e-05 acc 0.8308 exact 0.0000 [finished at step 1744]
+[LT] step 2000 lm_loss 0.60696 lr 0.0001 acc 0.8461 exact 0.0625 [finished at step 2000]
+[LT] step 2250 lm_loss 0.86316 lr 0.0001 acc 0.8523 exact 0.0000 [finished at step 2240]
+[LT] step 2500 lm_loss 1.32627 lr 0.0001 acc 0.8613 exact 0.3125 [finished at step 2496]
+[TASK] step 2525 task 1 acc 0.6199 exact 0/104 | task 2 acc 0.6546 exact 0/103
+[EVAL] step 2525 acc 0.6371 exact 0/207
+[ETA] step 2525 mean 0.1230 ema [0.1229 0.1239 0.1241 0.1227 0.1225 0.1225 0.1230 0.1227] raw [0.1207 0.1224 0.1240 0.1202 0.1196 0.1195 0.1208 0.1200]
+[BAND] step 2525 (ema) l0 [-0.130 -0.037 -0.132 -0.020 -0.028 -0.171 0.023 0.057] area [-0.389 0.249 0.090 -0.297 -0.193 -0.205 -0.148 -0.168] period [2.000 6.016 19.767 64.460] efold [2.009 5.995 19.963 63.475]
+[LT] step 2750 lm_loss 0.55396 lr 0.0001 acc 0.8331 exact 0.2500 [finished at step 2736]
+[LT] step 3000 lm_loss 0.75199 lr 0.0001 acc 0.8247 exact 0.0000 [finished at step 2992]
+[LT] step 3250 lm_loss 1.26611 lr 0.0001 acc 0.8553 exact 0.0625 [finished at step 3248]
+[LT] step 3500 lm_loss 0.71065 lr 0.0001 acc 0.8090 exact 0.0000 [finished at step 3488]
+[LT] step 3750 lm_loss 0.80176 lr 0.0001 acc 0.8335 exact 0.2500 [finished at step 3744]
+[LT] step 4000 lm_loss 0.51351 lr 0.0001 acc 0.8462 exact 0.1250 [finished at step 4000]
+[LT] step 4250 lm_loss 0.72266 lr 0.0001 acc 0.8690 exact 0.1875 [finished at step 4240]
+[LT] step 4500 lm_loss 1.24254 lr 0.0001 acc 0.9002 exact 0.3125 [finished at step 4496]
+[LT] step 4750 lm_loss 0.62698 lr 0.0001 acc 0.8176 exact 0.0000 [finished at step 4736]
+[LT] step 5000 lm_loss 0.63732 lr 0.0001 acc 0.8394 exact 0.0000 [finished at step 4992]
+[TASK] step 5050 task 1 acc 0.6555 exact 0/104 | task 2 acc 0.6824 exact 1/103
+[EVAL] step 5050 acc 0.6693 exact 1/207
+[ETA] step 5050 mean 0.1164 ema [0.1152 0.1182 0.1231 0.1162 0.1142 0.1139 0.1159 0.1143] raw [0.1122 0.1168 0.1218 0.1142 0.1112 0.1103 0.1131 0.1108]
+[BAND] step 5050 (ema) l0 [-0.099 -0.022 -0.125 0.012 -0.003 -0.152 0.026 0.074] area [-0.274 -0.017 -0.023 -0.095 -0.189 -0.201 -0.132 -0.180] period [1.999 6.055 20.095 84.648] efold [2.015 5.968 19.911 62.599]
+[LT] step 5250 lm_loss 1.35092 lr 0.0001 acc 0.8019 exact 0.0625 [finished at step 5248]
+[LT] step 5500 lm_loss 0.86696 lr 0.0001 acc 0.7535 exact 0.0000 [finished at step 5488]
+[LT] saved step 5550: /workspace/something/runs/arc_ctx15_frame_packed/step_5550.pt [stopped]

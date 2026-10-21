@@ -177,14 +177,236 @@ class ArcTrainDataset(IterableDataset):
                                puzzle_identifiers=torch.from_numpy(pid))
 
 
-def eval_batches(inputs, labels, gbs, rank=0, world_size=1, ids=None):
-    """One yield per GLOBAL batch on every rank, None for an empty shard. ids: task identifier per puzzle."""
+def ctx_canvas(grid, S):
+    """Raw S x S canvas of one grid (raw colors 0..9) at the top-left: color + 1, EOS 11 on the row and column just
+    outside the grid, 0 (pad) elsewhere."""
+    g = np.asarray(grid, dtype=np.uint8)
+    h, w = g.shape
+    out = np.zeros((S, S), dtype=np.uint8)
+    out[:h, :w] = g + 1
+    if h < S:
+        out[h, :min(w + 1, S)] = 11
+    if w < S:
+        out[:min(h + 1, S), w] = 11
+    return out
+
+
+def ctx_episode(demos, query, S, kmax):
+    """In-context sample (data/prep_arc_ctx.py): 2 kmax + 2 canvases stacked along rows. Slots 2i, 2i + 1 hold the
+    input and output of demonstration i (up to kmax; unused slots stay pad), slot 2 kmax the query input and slot
+    2 kmax + 1 the query output, which is pad in the input and the output canvas in the label. Labels are raw 0
+    (ignored with ignore_label0) everywhere else. demos: [(input, output)] raw grids; query: (input, output)."""
+    G = 2 * kmax + 2
+    inp = np.zeros((G * S, S), dtype=np.uint8)
+    lab = np.zeros((G * S, S), dtype=np.uint8)
+    for i, (x, y) in enumerate(demos[:kmax]):
+        inp[2 * i * S:(2 * i + 1) * S] = ctx_canvas(x, S)
+        inp[(2 * i + 1) * S:(2 * i + 2) * S] = ctx_canvas(y, S)
+    inp[(G - 2) * S:(G - 1) * S] = ctx_canvas(query[0], S)
+    lab[(G - 1) * S:] = ctx_canvas(query[1], S)
+    return inp, lab
+
+
+PACK_ROUND = 256                  # packed lengths are rounded up to this (few distinct shapes for torch.compile)
+
+
+def ctx_pack(inputs, labels, S, G):
+    """Pack dense in-context episodes (raw [n, G*S, S], ctx_episode layout) for ctx_packed: per episode the non-pad
+    cells (grids and EOS) of slots 0 .. G-2 and the whole query-output slot G-1, slot-major and row-major, padded to
+    the longest episode (rounded up to PACK_ROUND). Returns int64 tensors: inputs / labels (raw + 1; padding 1 =
+    ignored label), pos_row (slot * S + row, the dense RoPE rows), pos_col, valid (1 real, 0 padding) and nbr
+    [n, T, 9]: packed index of the cell at (row + i - 1, col + j - 1) of the same slot (3x3 kernel order), or T where
+    that cell is not packed (local_conv reads 0 there)."""
+    inputs, labels = np.asarray(inputs), np.asarray(labels)
+    n = len(inputs)
+    keep = inputs.reshape(n, G, S, S) != 0
+    keep[:, G - 1] = True
+    lens = keep.reshape(n, -1).sum(1)
+    T = int(-(-int(lens.max()) // PACK_ROUND) * PACK_ROUND)
+    out = {k: np.zeros((n, T), np.int64) for k in ('inputs', 'labels', 'pos_row', 'pos_col', 'valid')}
+    out['inputs'][:] = 1
+    out['labels'][:] = 1
+    out['nbr'] = np.full((n, T, 9), T, np.int64)
+    for e in range(n):
+        idx = np.full((G, S + 2, S + 2), T, np.int64)
+        cells = np.flatnonzero(keep[e].reshape(-1))
+        g, r, c = cells // (S * S), cells // S % S, cells % S
+        L = len(cells)
+        idx[g, r + 1, c + 1] = np.arange(L)
+        out['inputs'][e, :L] = inputs[e].reshape(-1)[cells].astype(np.int64) + 1
+        out['labels'][e, :L] = labels[e].reshape(-1)[cells].astype(np.int64) + 1
+        out['pos_row'][e, :L] = g * S + r
+        out['pos_col'][e, :L] = c
+        out['valid'][e, :L] = 1
+        for i in range(3):
+            for j in range(3):
+                out['nbr'][e, :L, 3 * i + j] = idx[g, r + i, c + j]
+    return {k: torch.from_numpy(v) for k, v in out.items()}
+
+
+def ctx_packed_length(inputs, S, G):
+    """Packed length (before rounding) of dense raw episodes [n, G*S, S]."""
+    s = np.asarray(inputs).reshape(len(inputs), G, S * S)
+    return (s[:, :-1] != 0).sum((1, 2)) + S * S
+
+
+def load_arc_ctx(path):
+    """Pair store of data/prep_arc_ctx.py (in-context ARC), or None for other NPZ files."""
+    with np.load(find_npz(path), allow_pickle=False) as z:
+        if 'ctx_slot' not in z:
+            return None
+        trainable = (z['pair_trainable'] if 'pair_trainable' in z else z['task_split'][z['pair_task']] == 0)
+        return dict(cells=z['pair_cells'], off=z['pair_off'], hw=z['pair_hw'], task=z['pair_task'],
+                    split=z['task_split'], trainable=trainable, S=int(z['ctx_slot']), kmax=int(z['ctx_kmax']))
+
+
+class ArcContextDataset(IterableDataset):
+    """In-context ARC episodes drawn on the fly from the pair store of data/prep_arc_ctx.py (no task identifiers).
+    Only trainable pairs enter (store['trainable']: every pair of a training task; under a transductive split also
+    the train pairs of some evaluation tasks, never their test pairs), and every task with at least two of them is a
+    training task. Every epoch visits every training task once in a random order. An episode of task t takes one of
+    its trainable pairs (uniformly) as the query and up to kmax of the others, in random order, as demonstrations,
+    then applies one dihedral transform and one permutation of all 10 colors to every grid of the episode. The
+    episode's draws come from a Philox stream keyed by (seed, iterator, position), so resuming mid-iterator
+    (skip_batches) reproduces the stream exactly.
+
+    packed (ctx_packed): batches are lt.data.ctx_pack layouts. The episodes of bucket_window consecutive batches are
+    sorted by packed length and cut into batches again (in a random batch order), so a batch's episodes have similar
+    lengths and little padding; every episode still enters exactly one batch.
+
+    num_aug (URM/HRM versions, for a puzzle embedding per task version): an episode of task t first draws a version v
+    in 0..num_aug (uniformly) and applies that version's fixed transform to every grid instead of a fresh one: v = 0
+    the identity, v >= 1 a dihedral transform and a permutation of colors 1..9 (color 0 fixed) fixed by (seed, t, v),
+    as lt.data.ArcTrainDataset. The puzzle identifier is t * (num_aug + 1) + v (evaluation: v = 0)."""
+    def __init__(self, store, *, seed, global_batch_size, rank, world_size, epochs_per_iter, start_iter, total_iters,
+                 skip_batches=0, packed=False, bucket_window=16, task_ids=False, id_dropout=0.0, num_aug=None):
+        super().__init__()
+        self.packed, self.window = packed, bucket_window
+        self.task_ids, self.id_dropout = task_ids, id_dropout
+        if num_aug is not None and task_ids:
+            raise ValueError('num_aug versions carry their own identifiers (task_ids off)')
+        self.nv = None if num_aug is None else num_aug + 1
+        self.store, self.S, self.kmax = store, store['S'], store['kmax']
+        trainable = np.asarray(store.get('trainable', store['split'][store['task']] == 0), bool)
+        pairs = {int(t): np.flatnonzero((store['task'] == t) & trainable) for t in np.unique(store['task'][trainable])}
+        self.pairs = {t: p for t, p in pairs.items() if len(p) >= 2}
+        self.tasks = np.array(sorted(self.pairs), dtype=np.int64)
+        self.seed, self.gbs, self.rank = seed, global_batch_size, rank
+        self.local_bs = global_batch_size // world_size
+        self.epochs_per_iter, self.start_iter, self.total_iters, self.skip_batches = (epochs_per_iter, start_iter,
+                                                                                    total_iters, skip_batches)
+        self._key0 = np.uint64(0x9E3779B97F4A7C15 ^ int(seed))
+
+    def grids(self, p):
+        """Raw (input, output) grids of pair p."""
+        hi, wi, ho, wo = (int(x) for x in self.store['hw'][p])
+        o = int(self.store['off'][p])
+        c = self.store['cells']
+        return c[o:o + hi * wi].reshape(hi, wi), c[o + hi * wi:o + hi * wi + ho * wo].reshape(ho, wo)
+
+    def version(self, t, v):
+        """num_aug: the fixed (dihedral k, color permutation of raw colors 0..9) of version v of task t."""
+        if v == 0:
+            return 0, np.arange(10, dtype=np.uint8)
+        key = np.array([self._key0 ^ np.uint64(0x5A), np.uint64(int(t) * self.nv + int(v))], dtype=np.uint64)
+        g = np.random.Generator(np.random.Philox(key=key))
+        k = int(g.integers(0, 8))
+        return k, np.concatenate([[0], 1 + g.permutation(9)]).astype(np.uint8)
+
+    def episode(self, t, rng):
+        """(input, label, puzzle identifier) of one episode of task t; the identifier is 0 without num_aug."""
+        pairs = self.pairs[int(t)]
+        v = int(rng.integers(self.nv)) if self.nv else None
+        q = int(rng.integers(len(pairs)))
+        rest = rng.permutation(np.delete(pairs, q))[:self.kmax]
+        if self.nv:
+            k, perm = self.version(t, v)
+        else:
+            k = int(rng.integers(8))
+            perm = rng.permutation(10).astype(np.uint8)
+        f = lambda g: ArcTrainDataset._dihedral(perm[g], k)
+        demos = [tuple(f(g) for g in self.grids(p)) for p in rest]
+        x, y = ctx_episode(demos, tuple(f(g) for g in self.grids(pairs[q])), self.S, self.kmax)
+        return x, y, int(t) * self.nv + v if self.nv else 0
+
+    def _drawn(self, it, order, pos):
+        key = np.array([self._key0, np.uint64(it * (1 << 32) + pos)], dtype=np.uint64)
+        return self.episode(order[pos], np.random.Generator(np.random.Philox(key=key)))
+
+    def _ids(self, it, order, positions, eps=None):
+        """task_ids: puzzle identifier task + 1, or 0 (no task) with probability id_dropout (own Philox stream).
+        num_aug: the episodes' version identifiers (eps)."""
+        if self.nv:
+            return torch.tensor([eps[i][2] for i in range(len(positions))], dtype=torch.int32)
+        if not self.task_ids:
+            return torch.zeros(len(positions), dtype=torch.int32)
+        out = []
+        for pos in positions:
+            key = np.array([self._key0 ^ np.uint64(0x1D), np.uint64(it * (1 << 32) + pos)], dtype=np.uint64)
+            drop = np.random.Generator(np.random.Philox(key=key)).random() < self.id_dropout
+            out.append(0 if drop else int(order[pos]) + 1)
+        return torch.tensor(out, dtype=torch.int32)
+
+    def __iter__(self):
+        skip = self.skip_batches
+        G = 2 * self.kmax + 2
+        for it in range(self.start_iter, self.total_iters):
+            rng = np.random.Generator(np.random.Philox(seed=self.seed + it + 1))
+            order = np.concatenate([rng.permutation(self.tasks) for _ in range(self.epochs_per_iter)])
+            starts = list(range(0, len(order) - self.gbs + 1, self.gbs))
+            if self.packed:
+                for w0 in range(0, len(starts), self.window):
+                    ws = starts[w0:w0 + self.window]
+                    if skip >= len(ws):
+                        skip -= len(ws)
+                        continue
+                    flat = [s + j for s in ws for j in range(self.gbs)]
+                    eps = [self._drawn(it, order, p) for p in flat]
+                    x = np.stack([e[0] for e in eps])
+                    y = np.stack([e[1] for e in eps])
+                    sorted_pos = np.argsort(ctx_packed_length(x, self.S, G), kind='stable')
+                    key = np.array([self._key0 ^ np.uint64(0xB5), np.uint64(it * (1 << 32) + w0)], dtype=np.uint64)
+                    perm = np.random.Generator(np.random.Philox(key=key)).permutation(len(ws))
+                    for b in perm:
+                        if skip:
+                            skip -= 1
+                            continue
+                        sel = sorted_pos[b * self.gbs:(b + 1) * self.gbs][self.rank * self.local_bs:
+                                                                        (self.rank + 1) * self.local_bs]
+                        batch = ctx_pack(x[sel], y[sel], self.S, G)
+                        batch['puzzle_identifiers'] = self._ids(it, order, [flat[i] for i in sel],
+                                                                [eps[i] for i in sel])
+                        yield it, batch
+                continue
+            for s in starts:
+                if skip:
+                    skip -= 1
+                    continue
+                off = self.rank * self.local_bs
+                inp = np.empty((self.local_bs, G * self.S * self.S), dtype=np.int32)
+                lab = np.empty_like(inp)
+                pid = np.zeros(self.local_bs, dtype=np.int32)
+                for j in range(self.local_bs):
+                    x, y, pid[j] = self._drawn(it, order, s + off + j)
+                    inp[j], lab[j] = x.reshape(-1) + 1, y.reshape(-1) + 1
+                yield it, dict(inputs=torch.from_numpy(inp), labels=torch.from_numpy(lab),
+                               puzzle_identifiers=torch.from_numpy(pid))
+
+
+def eval_batches(inputs, labels, gbs, rank=0, world_size=1, ids=None, pack=None):
+    """One yield per GLOBAL batch on every rank, None for an empty shard. ids: task identifier per puzzle.
+    pack (S, G): in-context episodes in the ctx_pack layout (ctx_packed models)."""
     lbs = gbs // world_size
     for start in range(0, len(inputs), gbs):
         end = min(start + gbs, len(inputs))
         ls, le = start + rank * lbs, min(start + (rank + 1) * lbs, end)
         if le <= ls:
             yield None
+        elif pack is not None:
+            b = ctx_pack(inputs[ls:le], labels[ls:le], *pack)
+            b['puzzle_identifiers'] = (torch.zeros(le - ls, dtype=torch.int32) if ids is None else
+                                       torch.from_numpy(ids[ls:le].astype(np.int32)))
+            yield b
         else:
             yield dict(inputs=torch.from_numpy(inputs[ls:le].reshape(le - ls, -1).astype(np.int32) + 1),
                        labels=torch.from_numpy(labels[ls:le].reshape(le - ls, -1).astype(np.int32) + 1),

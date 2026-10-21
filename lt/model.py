@@ -138,6 +138,43 @@ class ModelConfig:
     rule_ridge: float = 0.1           # initial ridge of C towards its prior (learned per head, log)
     rule_prior: str = 'mean'          # prior of C: 'mean' (every entry 1/D: before W is known C pools the value dims, so
                                       # W first fits the pooled, content-free images) or 'identity'
+    local_conv: bool = False          # depthwise 3x3 convolution of the FFN hidden m = silu(g) * a inside each of the
+                                      # num_grids grid x grid slots (no mixing across slots): m <- m + conv(m), weights 0
+                                      # at the start (the model starts unchanged); a local, translation-equivariant step
+    frame_rope: bool = False          # bands only: content-defined frames. Every token writes its own RoPE phasor
+                                      # psi_t = e^{i theta p_t} as a value; the query's read r = sum_t (q~ . k~_t) psi_t,
+                                      # normalised per channel pair, is its frame phasor F (carried to the next block in
+                                      # the unused clock slot as F - 1). Next block: q~, k~ <- q~, k~ * (1 - g + g conj F)
+                                      # with a learned per-head g (0 at the start); at g = 1 and F = e^{i theta a} the
+                                      # kernel depends on (p_q - a_q) - (p_k - a_k): attention relative to the anchors
+    ctx_packed: bool = False          # in-context ARC without the canvas padding: batches in the lt.data.ctx_pack layout
+                                      # (inputs, labels, pos_row, pos_col, valid, nbr; length T <= seq_len per batch).
+                                      # RoPE takes each token's dense coordinates, padding tokens write nothing (k~, v
+                                      # masked) and local_conv gathers the packed neighbours. Lanes must be replaced
+                                      # together (no act), since a new batch may change T
+    grad_blocks: int = 0              # > 0: only the last grad_blocks blocks of a segment run with gradients (HRM-style
+                                      # 1-step gradient for 1); the earlier ones run under no_grad. 0: all blocks
+    rule_path: bool = False           # ctx_packed only: the rule synapse of 2026-10-20 without its hand wiring.
+                                      # Role and pair embeddings (from each token's slot) are added to the input. Per
+                                      # block: a linear-attention read a_t = sum_s (q_t . k_s) [v_s; psi_s] (psi = the
+                                      # RoPE phasor: the source's position), unit-normalised; a per-lane, per-head fast
+                                      # synapse R [2D, D] written by a gated delta rule with a soft-threshold LTD,
+                                      # R <- soft(R + eta sum_t w_t (a_t - R kappa_t) kappa_t^T / (1 + sum_t w_t), theta),
+                                      # carried across blocks and segments (the event_stdp slot); every token reads
+                                      # R kappa_t into the residual through W_rp (zero at the start). Who writes (w),
+                                      # what is read (q, k) and the keys (kappa) are all learned
+    rule_write_bias: float = -2.0    # rule_path: initial bias of the write gate w = sigmoid(...) (-2: 0.12, 0: 0.5)
+    rule_theta_init: float = 1e-3     # rule_path: initial LTD threshold theta = softplus(raw), applied every block. 1e-3
+                                      # exceeds the median entry a block writes at the start (4e-4 on Mini-ARC), so it
+                                      # zeroes most of R - R0 each block; 1e-4 is about the 25th percentile
+    rule_prior_emb: int = 0           # rule_path: e > 0 gives every task a prior synapse R0 = M e_tau (e_tau [e] looked up by
+                                      # puzzle identifier, 0 = no task: one shared prior; M zero at the start). The fast
+                                      # synapse starts at R0 and the LTD shrinks R - R0: the puzzle embedding inside the
+                                      # rule synapse (lt.data drops identifiers with rule_prior_dropout)
+    rule_prior_pe: bool = False       # rule_prior_emb: e_tau = P pe_tau from the puzzle embedding (P [e, puzzle_emb_ndim]
+                                      # learned) instead of an own table, so the URM prefix token's embedding also sets
+                                      # the prior synapse (the table starts at 0: M and P get gradients once the prefix
+                                      # path has moved pe)
 
     def __post_init__(self):
         if self.seq_len != self.num_grids * self.grid ** 2:
@@ -205,6 +242,22 @@ class ModelConfig:
             raise ValueError('act_explore must lie in [0, 1]')
         if self.fast_ffn < 0 or not (0 < self.fast_ffn_eta < 1 and 0 < self.fast_ffn_decay < 1):
             raise ValueError('fast_ffn >= 0 with 0 < fast_ffn_eta, fast_ffn_decay < 1')
+        if self.local_conv and self.puzzle_emb_mode == 'prefix' and self.puzzle_emb_ndim and not self.ctx_packed:
+            raise ValueError('local_conv with prefix tokens needs ctx_packed (its neighbour lists skip the prefix)')
+        if self.frame_rope and not self.bands:
+            raise ValueError('frame_rope needs bands (its frame phasor lives in the clock slot, unused by bands)')
+        if self.rule_prior_emb and (not self.rule_path or self.num_puzzle_identifiers < 2):
+            raise ValueError('rule_prior_emb needs rule_path and num_puzzle_identifiers > 1 (0 = no task)')
+        if self.rule_prior_pe and (not self.rule_prior_emb or not self.puzzle_emb_ndim):
+            raise ValueError('rule_prior_pe needs rule_prior_emb and a puzzle embedding')
+        if self.rule_path and (not self.ctx_packed or self.event_stdp):
+            raise ValueError('rule_path needs ctx_packed and event_stdp off (it uses the event_stdp state slot)')
+        if self.grad_blocks < 0 or self.grad_blocks > self.blocks_per_seg:
+            raise ValueError('0 <= grad_blocks <= blocks_per_seg')
+        if self.ctx_packed and (not self.bands or self.act or self.fast_ffn or self.rule_syn or self.rope != 'learned2d'
+                                or (self.puzzle_emb_ndim and self.puzzle_emb_mode != 'prefix')):
+            raise ValueError('ctx_packed needs bands, rope learned2d, a puzzle embedding only as prefix tokens and act, '
+                             'fast_ffn, rule_syn off')
 
     @property
     def outer_memory(self) -> bool:
@@ -445,6 +498,28 @@ class Block(nn.Module):
             self.rule_gain = nn.Parameter(torch.ones(H))
             self.rule_log_theta = nn.Parameter(torch.full((H,), math.log(cfg.rule_theta)))
             self.rule_log_ridge = nn.Parameter(torch.full((H,), math.log(cfg.rule_ridge)))
+        if cfg.local_conv:                                                   # zeros: no random draw, the start is unchanged
+            self.local_conv_w = nn.Parameter(torch.zeros(inter, 1, 3, 3))
+        if cfg.frame_rope:
+            self.frame_gate = nn.Parameter(torch.zeros(H))
+        if cfg.rule_path:
+            self.rp_q, self.rp_k, self.rp_v, self.rp_key = (nn.Linear(d, d, bias=False) for _ in range(4))
+            self.rp_write = nn.Linear(d, H)
+            self.rp_out = nn.Linear(2 * d, d, bias=False)
+            self.rp_eta_raw = nn.Parameter(torch.zeros(H))                      # eta = sigmoid: 0.5
+            self.rp_theta_raw = nn.Parameter(torch.full((H,), math.log(math.expm1(cfg.rule_theta_init))))
+            K = (cfg.num_grids - 2) // 2
+            self.rp_role = nn.Parameter(torch.zeros(4, d))                       # demo in/out, query in/out
+            self.rp_pair = nn.Parameter(torch.zeros(K + 1, d))                   # demonstration 0..K-1, query K
+            if cfg.rule_prior_pe:                                                # e_tau = P pe_tau
+                self.rp_prior_proj = nn.Linear(cfg.puzzle_emb_ndim, cfg.rule_prior_emb, bias=False)
+            elif cfg.rule_prior_emb:                                             # table drawn in LT; map 0
+                self.rp_prior_table = nn.Parameter(torch.zeros(cfg.num_puzzle_identifiers, cfg.rule_prior_emb))
+            if cfg.rule_prior_emb:
+                self.rp_prior_map = nn.Parameter(torch.zeros(H * 2 * (d // H) * (d // H), cfg.rule_prior_emb))
+            with torch.no_grad():
+                self.rp_out.weight.zero_()
+                self.rp_write.bias.fill_(cfg.rule_write_bias)
         if cfg.bands:                                                        # rows nu, theta [2,H,R]; |z| = e^{-1/p}
             p = torch.tensor(cfg.band_periods, dtype=torch.float64)
             self.band_pole = nn.Parameter(torch.stack((-p.log(), 2 * math.pi / p))[:, None].repeat(1, H, 1).float())
@@ -537,6 +612,12 @@ class LT(nn.Module):
                 for w in (self.block.rule_q, self.block.rule_k, self.block.rule_v):
                     nn.init.kaiming_uniform_(w, a=math.sqrt(5))
         self.register_buffer('pos_row_local', ((torch.arange(T) // g) % g).to(rope_dtype), persistent=False)
+        if cfg.rule_path:                    # drawn last as well
+            with torch.no_grad():
+                trunc_normal_(self.block.rp_role, std=1.0 / self.embed_scale)
+                trunc_normal_(self.block.rp_pair, std=1.0 / self.embed_scale)
+                if cfg.rule_prior_emb and not cfg.rule_prior_pe:
+                    self.block.rp_prior_table.normal_(0.0, 1.0)
         if cfg.act:                          # created last: every other initial weight matches the runs without ACT
             self.q_head = nn.Linear(d, 1, dtype=self.forward_dtype)
             with torch.no_grad():            # URM: weight 0, bias -5 (no early halting at the start)
@@ -555,6 +636,9 @@ class LT(nn.Module):
             pos = torch.arange(self.n_pos, dtype=dtype, device=self.pos_row.device)
             return (pos[:, None] * inv[None, :]).expand(self.H, self.n_pos, P)
         th = self.block.rope_theta
+        if self.config.ctx_packed:                       # [B, H, T, P] from the batch's per-token coordinates
+            rows, cols = (x.to(th.dtype)[:, None, :, None] for x in self.cur_pos)
+            return th[None, :, None, :, 0] * rows + th[None, :, None, :, 1] * cols
         a = (th[..., 0, None] * self.pos_row + th[..., 1, None] * self.pos_col).transpose(-1, -2)
         if self.prefix_len:
             a = torch.cat([a.new_zeros(a.shape[0], self.prefix_len, a.shape[-1]), a], 1)
@@ -567,8 +651,15 @@ class LT(nn.Module):
 
     def injection(self, batch):
         inj = self.embed(batch['inputs'].long())
+        if self.config.rule_path:            # format information: each token's role and demonstration pair (cells only)
+            S, G = self.config.grid, self.config.num_grids
+            slot = (batch['pos_row'] // S).long()
+            role = torch.where(slot >= G - 2, slot - (G - 4), slot % 2)
+            pair = torch.clamp(slot // 2, max=(G - 2) // 2)
+            inj = inj + (self.block.rp_role[role] + self.block.rp_pair[pair]).to(inj.dtype)
         if self.puzzle_emb is not None:
             pe = self.puzzle_emb(batch['puzzle_identifiers'])
+            self.cur_pe = pe                                     # read by rule_prior_pe
             if self.config.puzzle_emb_mode == 'film':            # read by block_step, not injected
                 self.task_gamma = self.block.task_film_proj(pe.to(self.block.task_film_proj.weight.dtype))
                 return inj
@@ -733,7 +824,9 @@ class LT(nn.Module):
             M = sum_r Re(Y_r)^T Re(E_K,r) + Im(Y_r)^T Im(E_K,r) = sum_r gamma_r Re(c_r P_r)
 
         On CUDA in FP32 the traces and M come from the fused band step instead (lt/band_kernel.py, use_band_kernel).
-        The clock is carried unchanged."""
+        The clock is carried unchanged, except under frame_rope, whose frame phasor F - 1 occupies its first 2P
+        channels: q~ and k~ are rotated by the previous block's frames, and this block's frames are read with the
+        plain q~, k~ (frame_read, frame_rotate)."""
         cfg = self.config
         clock, ek, ev, w, prev = state
         if self.probe is not None:
@@ -742,9 +835,18 @@ class LT(nn.Module):
             dtype = torch.float64 if q.dtype == torch.float64 else torch.float32
             unit = lambda x: x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + cfg.eps)
             angles = self.rope_angles().to(dtype)
-            tables = angles.cos()[None], angles.sin()[None]
+            if angles.dim() == 3:
+                angles = angles[None]
+            tables = angles.cos(), angles.sin()
             qr, kr = self.rope(unit(q.to(dtype)), tables), self.rope(unit(k.to(dtype)), tables)
-            v = v.to(dtype)
+            if cfg.ctx_packed:                           # padding tokens write nothing
+                live = self.cur_valid.to(dtype)[:, None, :, None]
+                kr, v = kr * live, v * live
+            if cfg.frame_rope:
+                new_clock = self.frame_read(qr, kr, tables, clock)
+                qr, kr = self.frame_rotate(qr, clock), self.frame_rotate(kr, clock)
+                clock = new_clock
+            v = v.to(dtype) * (self.cur_valid.to(dtype)[:, None, :, None] if cfg.ctx_packed else 1)
             B, H, T, D = v.shape
             if cfg.band_product and self.use_band_kernel(q.device, dtype):
                 from .band_kernel import band_product
@@ -772,6 +874,84 @@ class LT(nn.Module):
             ek = torch.stack((ek_re, ek_im), 3).reshape(B, H, T, -1)
             ev = torch.stack((ev_re, dv_im), 3).reshape(B, H, T, -1)
         return read, (clock, ek, ev, w, prev)
+
+    def frame_read(self, qr, kr, tables, clock):
+        """frame_rope: every token's RoPE phasor psi_t = e^{i theta p_t} as a value, read by the plain kernel,
+        r = sum_t (q~ . k~_t) psi_t = (sum_t psi_t k~_t^T) q~, normalised per channel pair: the frame phasor F of each
+        token (where the tokens it attends to sit). Returns the clock slot with F - 1 in its first 2P channels
+        (interleaved Re, Im per pair, like the RoPE pairs; zeros = no frame)."""
+        cos, sin = tables
+        B, H, T, D = qr.shape
+        P = D // 2
+        psi = torch.stack((cos, sin), -1).reshape(cos.shape[0], H, T, D).expand(B, H, T, D)   # [B, H, T, 2P]
+        r = (qr @ torch.einsum('bhtp,bhtd->bhdp', psi, kr)).reshape(B, H, T, P, 2)     # [B, H, T, P, 2]
+        f = r / (torch.linalg.vector_norm(r, dim=-1, keepdim=True) + 1e-6)
+        f = (f - f.new_tensor([1.0, 0.0])).reshape(B, H, T, D)
+        return torch.cat((f.to(clock.dtype), clock[..., D:]), -1)
+
+    def frame_rotate(self, x, clock):
+        """frame_rope: x~ (rotated q~ or k~ [B,H,T,D]) times c = 1 - g + g conj F per channel pair, F from the clock
+        slot (F - 1 stored), g the per-head gate."""
+        B, H, T, D = x.shape
+        f = clock[..., :D].to(x.dtype).reshape(B, H, T, D // 2, 2)
+        g = self.block.frame_gate.to(x.dtype)[None, :, None, None]
+        c_re, c_im = 1 + g * f[..., 0], -g * f[..., 1]
+        x0, x1 = x.reshape(B, H, T, D // 2, 2).unbind(-1)
+        return torch.stack((x0 * c_re - x1 * c_im, x0 * c_im + x1 * c_re), -1).reshape_as(x)
+
+    def rule_path_step(self, u, R):
+        """rule_path (ModelConfig): read a_t, gated delta + soft-threshold write of R, read R kappa_t. FP32 (FP64 on the
+        test path). Returns the residual term [B, T, d] (input dtype) and the new R [B, H, 2D, D]."""
+        L, cfg = self.block, self.config
+        B, T, _ = u.shape
+        with torch.autocast(device_type=u.device.type, enabled=False):
+            dtype = torch.float64 if u.dtype == torch.float64 else torch.float32
+            heads = lambda x: x.reshape(B, T, self.H, self.dh).transpose(1, 2)
+            unit = lambda x: x / (torch.linalg.vector_norm(x, dim=-1, keepdim=True) + cfg.eps)
+            uu = u.to(dtype)
+            lin = lambda m: uu @ m.weight.to(dtype).T
+            angles = self.rope_angles().to(dtype)
+            if angles.dim() == 3:
+                angles = angles[None]
+            tables = angles.cos(), angles.sin()
+            live = self.cur_valid.to(dtype)[:, None, :, None]
+            q = self.rope(unit(heads(lin(L.rp_q))), tables)
+            k = self.rope(unit(heads(lin(L.rp_k))), tables) * live
+            psi = torch.stack(tables, -1).reshape(*tables[0].shape[:-1], self.dh).expand(B, -1, -1, -1)
+            v = torch.cat((heads(lin(L.rp_v)), psi), -1) * live                          # [B, H, T, 2D]
+            a = unit(q @ (k.transpose(-1, -2) @ v))                                       # [B, H, T, 2D]
+            kappa = unit(heads(lin(L.rp_key)))                                            # [B, H, T, D]
+            w = torch.sigmoid(uu @ L.rp_write.weight.to(dtype).T + L.rp_write.bias.to(dtype))
+            w = w.transpose(1, 2)[..., None] * live                                       # [B, H, T, 1]
+            R0 = self.cur_R0.to(dtype) if self.config.rule_prior_emb else 0     # the state holds R - R0
+            R = R.to(dtype) + R0
+            err = a - kappa @ R.transpose(-1, -2)
+            eta = torch.sigmoid(L.rp_eta_raw.to(dtype))[None, :, None, None]
+            theta = F.softplus(L.rp_theta_raw.to(dtype))[None, :, None, None]
+            R = R + eta * (w * err).transpose(-1, -2) @ kappa / (1 + w.sum(2, keepdim=True))
+            dR = R - R0
+            dR = dR * torch.clamp(1 - theta / dR.abs().clamp(min=1e-12), min=0)
+            R = R0 + dR
+            read = (kappa @ R.transpose(-1, -2)).transpose(1, 2).reshape(B, T, 2 * self.d)
+            out = read @ L.rp_out.weight.to(dtype).T
+        return out.to(u.dtype), dR
+
+    def local_conv(self, m):
+        """local_conv: m + depthwise 3x3 convolution of the FFN hidden [B, T, I] inside each grid slot (zero padding
+        at every slot's border, so slots do not mix)."""
+        B, T, I = m.shape
+        if self.config.ctx_packed:                       # gather the 3x3 neighbours (index T = absent = 0)
+            mp = torch.cat((m, m.new_zeros(B, 1, I)), 1)
+            w = self.block.local_conv_w.to(m.dtype).reshape(I, 9)
+            out = m
+            for j in range(9):
+                idx = self.cur_nbr[:, :, j:j + 1].expand(B, T, I)
+                out = out + torch.gather(mp, 1, idx) * w[:, j]
+            return out
+        S, G = self.config.grid, self.config.num_grids
+        x = m.reshape(B * G, S, S, I).permute(0, 3, 1, 2)
+        y = F.conv2d(x, self.block.local_conv_w.to(x.dtype), padding=1, groups=I)
+        return m + y.permute(0, 2, 3, 1).reshape(B, T, I)
 
     def event_memory_step(self, q, k, v, state):
         """event_stdp: one block of STDP between changes (events) of q^, k^, v, plus the Hebbian read of the states.
@@ -895,8 +1075,12 @@ class LT(nn.Module):
             rule_read, rule_w = self.rule_step(u, state[3])
             read = read + rule_read.to(read.dtype)
             state = (state[0], state[1], state[2], rule_w, state[4])
+        rp = 0
+        if self.config.rule_path:
+            rp, r_state = self.rule_path_step(u, state[4])
+            state = (state[0], state[1], state[2], state[3], r_state)
         read = read.transpose(1, 2).reshape(B, T, self.d).to(u.dtype)
-        h = rms_norm(u + L.out_proj(read))
+        h = rms_norm(u + L.out_proj(read) + rp)
         g, a = L.ffn_gate_up(h).chunk(2, dim=-1)
         if self.config.task_film:
             g = g * (1 + L.task_film[self.task_ids].to(g.dtype)[:, None, :])
@@ -908,6 +1092,8 @@ class LT(nn.Module):
             u, v = L.task_u[self.task_ids].to(g.dtype), L.task_v[self.task_ids].to(g.dtype)    # [B,r,I], [B,r,d]
             g = g + torch.einsum('btd,brd,bri->bti', h.to(g.dtype), v, u)
         m = F.silu(g) * a
+        if self.config.local_conv:
+            m = self.local_conv(m)
         out = L.ffn_down(m)
         if self.config.fast_ffn:
             out, fast_w = self.fast_ffn_step(h, m, out, fast_w)
@@ -930,19 +1116,21 @@ class LT(nn.Module):
             read = (phi @ w.transpose(-1, -2)) @ L.ffw_out.to(dtype).T                       # [B, T, d]
         return out + read.to(out.dtype), w
 
-    def initial_state(self, B, device, dtype=torch.float32):
+    def initial_state(self, B, device, dtype=torch.float32, T=None):
         P, D = self.dh // 2, self.dh
+        T = self.n_pos if T is None else T
         z = lambda *s: torch.zeros(B, self.H, *s, device=device, dtype=dtype)
         trace = 2 * D * max(self.config.bands, 1)
-        return (z(self.n_pos, 6 * P + 1), z(self.n_pos, trace), z(self.n_pos, trace),
+        return (z(T, 6 * P + 1), z(T, trace), z(T, trace),
                 z(D, D) if self.config.outer_memory else (z(D, P + D) if self.config.rule_syn else None),
-                z(self.n_pos, 3 * D) if self.config.event_stdp else None)
+                z(T, 3 * D) if self.config.event_stdp else (z(2 * D, D) if self.config.rule_path else None))
 
     # ------------------------------------------------------------------ segments
     def initial_carry(self, batch):
         B = batch['inputs'].shape[0]
         device = self.init_hidden.device
-        return Carry(hidden=torch.empty(B, self.n_pos, self.d, dtype=self.forward_dtype, device=device),
+        T = batch['inputs'].shape[1] + self.prefix_len if self.config.ctx_packed else self.n_pos
+        return Carry(hidden=torch.empty(B, T, self.d, dtype=self.forward_dtype, device=device),
                      steps=torch.zeros(B, dtype=torch.int32, device=device),
                      halted=torch.ones(B, dtype=torch.bool, device=device),
                      data={k: torch.empty_like(v, device=device) for k, v in batch.items()})
@@ -959,13 +1147,36 @@ class LT(nn.Module):
         """One segment (blocks_per_seg blocks). Halted lanes take the puzzle in `batch` and start fresh
         (URM lane replacement); returns the new carry (detached) and the logits [B, T, vocab]."""
         fresh = carry.halted
-        data = {k: torch.where(fresh.view((-1,) + (1,) * (batch[k].ndim - 1)), batch[k], v)
-                for k, v in carry.data.items()}
+        reshaped = any(carry.data[k].shape != batch[k].shape for k in carry.data)
+        if reshaped and not self.config.ctx_packed:
+            raise ValueError('batch shapes changed (only ctx_packed batches may)')
+        if reshaped and bool(fresh.all()):              # ctx_packed: every lane takes the new layout
+            data = dict(batch)
+            carry = Carry(hidden=torch.empty(batch['inputs'].shape[0], batch['inputs'].shape[1] + self.prefix_len,
+                                             self.d, dtype=self.forward_dtype, device=carry.hidden.device),
+                          steps=carry.steps, halted=carry.halted, data=data)
+        elif reshaped and not bool(fresh.any()):        # the batch is not taken this segment
+            data = carry.data
+        elif reshaped:
+            raise ValueError('ctx_packed needs lanes replaced together (no act)')
+        else:
+            data = {k: torch.where(fresh.view((-1,) + (1,) * (batch[k].ndim - 1)), batch[k], v)
+                    for k, v in carry.data.items()}
+        if self.config.ctx_packed:
+            self.cur_pos = data['pos_row'], data['pos_col']
+            self.cur_valid, self.cur_nbr = data['valid'], data['nbr']
+            P = self.prefix_len
+            if P:                            # prefix tokens first: angle 0 (coordinates 0), live, no neighbours
+                pad = lambda x, v: torch.cat((x.new_full((x.shape[0], P, *x.shape[2:]), v), x), 1)
+                T = data['inputs'].shape[1]
+                self.cur_pos = pad(self.cur_pos[0], 0), pad(self.cur_pos[1], 0)
+                self.cur_valid = pad(self.cur_valid, 1)
+                self.cur_nbr = pad(self.cur_nbr + P, P + T)      # cells shift by P; absent T -> P + T
         h = torch.where(fresh.view(-1, 1, 1), self.init_hidden, carry.hidden)
         B, device = h.shape[0], h.device
         dtype = torch.float64 if self.forward_dtype == torch.float64 else torch.float32
         if carry.clock is None:
-            state = self.initial_state(B, device, dtype)
+            state = self.initial_state(B, device, dtype, h.shape[1])
         else:
             mask = fresh.view(-1, 1, 1, 1)
             state = tuple(None if x is None else torch.where(mask, torch.zeros_like(x), x)
@@ -980,14 +1191,22 @@ class LT(nn.Module):
         with torch.autocast('cuda', dtype=torch.bfloat16, enabled=amp, cache_enabled=False):
             inj = self.injection(data)
             self.task_ids = data['puzzle_identifiers'].long()           # read by block_step (task_film)
+            if self.config.rule_prior_emb:                               # [B, H, 2D, D] prior synapse per lane
+                L = self.block
+                e = (L.rp_prior_proj(self.cur_pe.to(L.rp_prior_proj.weight.dtype)) if self.config.rule_prior_pe
+                     else L.rp_prior_table[self.task_ids])
+                self.cur_R0 = (e @ L.rp_prior_map.T).float().view(B, self.H, 2 * self.dh, self.dh)
             ckpt = self.config.act_ckpt and torch.is_grad_enabled()
             step = self.block_fn or self.block_step
             n_ckpt = self.config.blocks_per_seg if self.config.act_ckpt_blocks < 0 else self.config.act_ckpt_blocks
-            for i in range(self.config.blocks_per_seg):
-                if ckpt and i < n_ckpt:
-                    h, state = torch.utils.checkpoint.checkpoint(step, h, inj, state, use_reentrant=False)
-                else:
-                    h, state = step(h, inj, state)
+            nb, grad = self.config.blocks_per_seg, torch.is_grad_enabled()
+            first_grad = nb - (self.config.grad_blocks or nb)
+            for i in range(nb):
+                with torch.set_grad_enabled(grad and i >= first_grad):
+                    if ckpt and i >= first_grad and i < n_ckpt:
+                        h, state = torch.utils.checkpoint.checkpoint(step, h, inj, state, use_reentrant=False)
+                    else:
+                        h, state = step(h, inj, state)
             logits = self.classifier(h[:, self.prefix_len:])
         if amp:
             h, logits = h.float(), logits.float()

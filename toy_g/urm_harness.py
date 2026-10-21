@@ -33,13 +33,19 @@ class URMForHarness(nn.Module):
         super().__init__()
         if cfg.act:
             raise ValueError('URMForHarness runs a fixed number of segments (act off), as the LT runs')
+        if cfg.grad_blocks and cfg.blocks_per_seg % cfg.grad_blocks:
+            raise ValueError('blocks_per_seg must be a multiple of grad_blocks')
         self.config = cfg
         dtype = 'bfloat16' if cfg.amp and cfg.forward_dtype == 'float32' else cfg.forward_dtype
         self.urm = URM_Inner(URMConfig(
             batch_size=cfg.batch_size, seq_len=cfg.seq_len, puzzle_emb_ndim=cfg.puzzle_emb_ndim,
             num_puzzle_identifiers=cfg.num_puzzle_identifiers, vocab_size=cfg.vocab_size, num_layers=1,
             hidden_size=cfg.hidden_size, expansion=cfg.mlp_expansion, num_heads=cfg.num_heads, pos_encodings='rope',
-            rope_theta=cfg.rope_base, loops=cfg.loops, L_cycles=cfg.blocks_per_seg, H_cycles=1, forward_dtype=dtype))
+            rope_theta=cfg.rope_base, loops=cfg.loops, forward_dtype=dtype,
+            # grad_blocks g > 0: URM's truncated backprop, blocks_per_seg / g H-cycles of which only the last (g blocks)
+            # runs with gradients; 0: one H-cycle of blocks_per_seg blocks, all with gradients
+            L_cycles=cfg.grad_blocks or cfg.blocks_per_seg,
+            H_cycles=cfg.blocks_per_seg // cfg.grad_blocks if cfg.grad_blocks else 1))
         for layer in self.urm.layers:                       # SwiGLU on the original projections (no convolution)
             plain = SwiGLU(cfg.hidden_size, cfg.mlp_expansion)
             plain.gate_up_proj, plain.down_proj = layer.mlp.gate_up_proj, layer.mlp.down_proj

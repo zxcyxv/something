@@ -1,0 +1,20 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.14.1+cu132 device=cuda:0 ranks=1 params=3,435,741 amp=True kernel=torch compile=True scope=block
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0.125; alpha_init 1; BANDS R=4 periods [2.0, 6.0, 20.0, 64.0] coef_std 0.1 eta_learn True cap True; stop_at 50000; NEW RUN; out /workspace/something/runs/arc_ctx15_frame
+[LT] step 250 lm_loss 2.36414 lr 1.25e-05 acc 0.2424 exact 0.0000 [finished at step 240]
+[LT] step 500 lm_loss 2.02211 lr 2.49e-05 acc 0.4512 exact 0.0000 [finished at step 496]
+[LT] step 750 lm_loss 1.59120 lr 3.75e-05 acc 0.6342 exact 0.0000 [finished at step 736]
+[LT] step 1000 lm_loss 1.27560 lr 5e-05 acc 0.7135 exact 0.0000 [finished at step 992]
+[LT] step 1250 lm_loss 1.78904 lr 6.25e-05 acc 0.7446 exact 0.0000 [finished at step 1248]
+[LT] step 1500 lm_loss 1.23152 lr 7.5e-05 acc 0.6512 exact 0.0833 [finished at step 1488]
+[LT] step 1750 lm_loss 1.25917 lr 8.75e-05 acc 0.7966 exact 0.0000 [finished at step 1744]
+[LT] step 2000 lm_loss 0.81675 lr 0.0001 acc 0.7525 exact 0.0833 [finished at step 2000]
+[LT] step 2250 lm_loss 1.25897 lr 0.0001 acc 0.7707 exact 0.0833 [finished at step 2240]
+[LT] step 2500 lm_loss 1.09022 lr 0.0001 acc 0.8214 exact 0.0000 [finished at step 2496]
+[TASK] step 2619 task 1 acc 0.1726 exact 0/104 | task 2 acc 0.1754 exact 0/103
+[EVAL] step 2619 acc 0.6366 exact 1/207
+[ETA] step 2619 mean 0.1244 ema [0.1249 0.1236 0.1246 0.1239 0.1249 0.1248 0.1240 0.1247] raw [0.1246 0.1238 0.1250 0.1226 0.1250 0.1244 0.1237 0.1242]
+[BAND] step 2619 (ema) l0 [-0.125 -0.015 -0.106 -0.015 -0.011 -0.176 0.044 0.057] area [-0.314 0.388 0.245 -0.262 -0.049 -0.162 -0.012 -0.121] period [2.000 6.010 20.047 60.253] efold [1.997 6.007 19.842 63.611]
+[LT] step 2750 lm_loss 0.87586 lr 0.0001 acc 0.8015 exact 0.0833 [finished at step 2736]
+[LT] step 3000 lm_loss 0.84929 lr 0.0001 acc 0.8087 exact 0.0000 [finished at step 2992]
+[LT] step 3250 lm_loss 1.44098 lr 0.0001 acc 0.8436 exact 0.0833 [finished at step 3248]
+[LT] saved step 3400: /workspace/something/runs/arc_ctx15_frame/step_3400.pt [stopped]

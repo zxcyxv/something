@@ -1,0 +1,38 @@
+[LT] lt-bounded-phase-clock-stdp-v1 torch=2.14.1+cu132 device=cuda:0 ranks=1 params=94,855 amp=True kernel=torch compile=True scope=block
+[LT] tau = 0 sin(phi) + n 0.34; lambda 0.5; rho 0; eta 0.125; alpha_init 1; BANDS R=4 periods [2.0, 6.0, 20.0, 64.0] coef_std 0.1 eta_learn True cap True; stop_at 30000; NEW RUN; out /workspace/something/runs/gtorus_rule
+[LT] step 250 lm_loss 1.15673 lr 0.000498 acc 0.7800 exact 0.0000 [finished at step 248]
+[LT] step 500 lm_loss 0.88225 lr 0.000998 acc 0.7734 exact 0.0000 [finished at step 496]
+[LT] step 750 lm_loss 0.82481 lr 0.001 acc 0.7688 exact 0.0000 [finished at step 744]
+[LT] step 1000 lm_loss 0.80124 lr 0.001 acc 0.7766 exact 0.0000 [finished at step 1000]
+[LT] step 1250 lm_loss 0.78250 lr 0.001 acc 0.7841 exact 0.0000 [finished at step 1248]
+[LT] step 1500 lm_loss 0.76649 lr 0.001 acc 0.7834 exact 0.0000 [finished at step 1496]
+[TASK] step 1562 task 0 acc 0.7779 exact 0/2419 | task 1 acc 0.7795 exact 0/269 | task 2 acc 0.7788 exact 0/384
+[EVAL] step 1562 acc 0.7781 exact 0/3072
+[ETA] step 1562 mean 0.1250 ema [0.1250 0.1249] raw [0.1250 0.1250]
+[BAND] step 1562 (ema) l0 [-0.058 0.053] area [-0.134 -0.241] period [1.977 5.812 22.067 42.276] efold [2.080 6.418 19.438 61.267]
+[LT] step 1750 lm_loss 0.76430 lr 0.001 acc 0.7766 exact 0.0000 [finished at step 1744]
+[LT] step 2000 lm_loss 0.74483 lr 0.001 acc 0.7753 exact 0.0000 [finished at step 2000]
+[LT] step 2250 lm_loss 0.73737 lr 0.001 acc 0.7897 exact 0.0000 [finished at step 2248]
+[LT] step 2500 lm_loss 0.73467 lr 0.001 acc 0.7716 exact 0.0000 [finished at step 2496]
+[LT] step 2750 lm_loss 0.73928 lr 0.001 acc 0.7975 exact 0.0000 [finished at step 2744]
+[LT] step 3000 lm_loss 0.72235 lr 0.001 acc 0.7806 exact 0.0000 [finished at step 3000]
+[TASK] step 3124 task 0 acc 0.7779 exact 0/2419 | task 1 acc 0.7795 exact 0/269 | task 2 acc 0.7788 exact 0/384
+[EVAL] step 3124 acc 0.7781 exact 0/3072
+[ETA] step 3124 mean 0.1250 ema [0.1250 0.1250] raw [0.1250 0.1250]
+[BAND] step 3124 (ema) l0 [-0.231 0.007] area [-0.517 -0.218] period [1.987 5.873 23.018 30.396] efold [2.168 6.075 18.628 58.091]
+[LT] step 3250 lm_loss 0.74486 lr 0.001 acc 0.7781 exact 0.0000 [finished at step 3248]
+[LT] step 3500 lm_loss 0.72223 lr 0.001 acc 0.7809 exact 0.0000 [finished at step 3496]
+[LT] step 3750 lm_loss 0.71670 lr 0.001 acc 0.7803 exact 0.0000 [finished at step 3744]
+[LT] step 4000 lm_loss 0.69616 lr 0.001 acc 0.7872 exact 0.0000 [finished at step 4000]
+[LT] step 4250 lm_loss 0.70547 lr 0.001 acc 0.7825 exact 0.0000 [finished at step 4248]
+[LT] step 4500 lm_loss 0.69160 lr 0.001 acc 0.7678 exact 0.0000 [finished at step 4496]
+[TASK] step 4686 task 0 acc 0.7779 exact 0/2419 | task 1 acc 0.7795 exact 0/269 | task 2 acc 0.7788 exact 0/384
+[EVAL] step 4686 acc 0.7781 exact 0/3072
+[ETA] step 4686 mean 0.1250 ema [0.1250 0.1250] raw [0.1250 0.1250]
+[BAND] step 4686 (ema) l0 [-0.322 -0.052] area [-0.631 -0.155] period [2.020 6.125 22.243 24.779] efold [2.403 4.951 18.669 56.498]
+[LT] step 4750 lm_loss 0.71746 lr 0.001 acc 0.7819 exact 0.0000 [finished at step 4744]
+[LT] step 5000 lm_loss 0.70913 lr 0.001 acc 0.7856 exact 0.0000 [finished at step 5000]
+[LT] step 5250 lm_loss 0.73270 lr 0.001 acc 0.7869 exact 0.0000 [finished at step 5248]
+[LT] step 5500 lm_loss 0.72888 lr 0.001 acc 0.7703 exact 0.0000 [finished at step 5496]
+[LT] step 5750 lm_loss 0.71300 lr 0.001 acc 0.7863 exact 0.0000 [finished at step 5744]
+[LT] saved step 5850: /workspace/something/runs/gtorus_rule/step_5850.pt [stopped]

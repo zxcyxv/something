@@ -1,0 +1,13 @@
+{
+ "tasks": 149,
+ "pairs": 677,
+ "training_episodes_per_epoch": 149,
+ "eval_episodes": 149,
+ "slot": 6,
+ "kmax": 8,
+ "sample_shape": [
+  108,
+  6
+ ],
+ "source": "KSB21ST/MINI-ARC 792d082c40d496f2f106f63fa7125bb115c8230b"
+}
