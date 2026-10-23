@@ -124,6 +124,39 @@ class Bands(unittest.TestCase):
             self.assertIsNotNone(g, n)
             self.assertGreater(float(g.abs().sum()), 0.0, n)
 
+    def test_band_bf16(self):
+        """band_bf16 (FP32 model): the traces are carried in BF16, the read and W stay within BF16 rounding of the FP32
+        model over 12 blocks, and gradients reach the band parameters through the BF16 traces."""
+        torch.manual_seed(0)
+        ref = LT(band_tiny(outer_eta_learn=True, forward_dtype='float32')).float().eval()
+        m = LT(band_tiny(outer_eta_learn=True, band_bf16=True, forward_dtype='float32')).float().eval()
+        m.load_state_dict(ref.state_dict())
+        B, cpu = 2, torch.device('cpu')
+        s_ref, s_new = ref.initial_state(B, cpu, torch.float32), m.initial_state(B, cpu, torch.float32)
+        self.assertEqual((s_new[1].dtype, s_new[2].dtype), (torch.bfloat16, torch.bfloat16))
+        with torch.no_grad():
+            for q, k, v in randn_qkv(m, B, 12, 1):
+                q, k, v = q.float(), k.float(), v.float()
+                r_ref, s_ref = ref.memory_step(q, k, v, s_ref)
+                r_new, s_new = m.memory_step(q, k, v, s_new)
+                self.assertEqual(s_new[1].dtype, torch.bfloat16)
+                rel = lambda a, b: float((a - b).norm() / b.norm())
+                self.assertLess(rel(r_new, r_ref), 2e-2)
+                self.assertLess(rel(s_new[3], s_ref[3]), 2e-2)
+        m.train()
+        bt = batch(0)
+        carry = m.initial_carry(bt)
+        for _ in range(2):
+            carry, logits = m(carry, bt)
+        self.assertEqual(carry.key_trace.dtype, torch.bfloat16)
+        logits.sum().backward()
+        for n in ('band_pole', 'band_coef', 'eta_raw'):
+            g = getattr(m.block, n).grad
+            self.assertIsNotNone(g, n)
+            self.assertGreater(float(g.abs().sum()), 0.0, n)
+        with self.assertRaises(ValueError):
+            tiny(band_bf16=True)
+
     def test_config_checks(self):
         for kw in (dict(tag_bound=0.14), dict(outer_eta=0.0), dict(band_periods=(2.0, 6.0)),
                    dict(outer_eta_cap=True)):

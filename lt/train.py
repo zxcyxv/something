@@ -45,7 +45,7 @@ DEFAULTS = dict(
     task_film=False, task_film_up=False, task_lowrank=0, task_ids_as_identifier=True,      # multi-task data: False gives the model identifier 0 everywhere (per-task eval kept)
     tag_bound=0.14, block_omega=0.34, trace_lambda=0.5, outer_rho=0.0, outer_eta=0.0, outer_eta_learn=False,
     alpha_init=1.0, hebb=True, event_stdp=False, event_theta=0.0, event_even=False, kv_ema=False, kv_ema_current=False, exp_stdp=False, exp_hebb=False,
-    bands=0, band_periods=(2.0, 6.0, 20.0, 64.0), band_coef_std=0.1, band_product=False, outer_eta_cap=False,
+    bands=0, band_periods=(2.0, 6.0, 20.0, 64.0), band_coef_std=0.1, band_product=False, outer_eta_cap=False, band_bf16=False,
     rope='learned2d', rope_base=10000.0,
     kernel='auto', kernel_bf16=True, amp=True, act_ckpt=False, act_ckpt_blocks=-1, act=False, act_explore=0.1,
     fast_ffn=0, fast_ffn_eta=0.5, fast_ffn_decay=0.02,
@@ -67,6 +67,7 @@ DEFAULTS = dict(
     init_from=None, init_weights='ema',   # new run warm-started from a checkpoint's weights (new parameters keep their init)
     out_dir=None, resume_from=None, max_steps=None, max_hours=None, save_every_steps=10000, keep_last=25,
     save_on_eval=True, save_carry=True,   # save_carry False: checkpoints hold no carry; a resume starts fresh lanes
+    save_final=True,                      # False: no checkpoint when the run ends (speed benchmarks)
     eval_batch_size=0,                    # puzzles per evaluation batch per process (0: global_batch_size / ranks)
     milestone_every=0, milestone_extrap_segs=128, milestone_extrap_n=512, log_every=250, stop_check_every=25,
     dataloader_workers=1)
@@ -75,7 +76,7 @@ RECIPE_KEYS = ('hidden_size', 'num_heads', 'blocks_per_seg', 'loops', 'mlp_expan
                'grid', 'num_grids', 'num_symbols', 'ignore_label0', 'mlp_inter', 'linear_attn', 'num_puzzle_identifiers', 'puzzle_emb_mode', 'task_ids_as_identifier', 'task_film', 'task_film_up', 'task_lowrank',
                'tag_bound', 'block_omega', 'trace_lambda', 'outer_rho', 'outer_eta', 'outer_eta_learn', 'alpha_init', 'hebb',
                'event_stdp', 'event_theta', 'event_even', 'kv_ema', 'kv_ema_current', 'exp_stdp', 'exp_hebb',
-               'bands', 'band_periods', 'band_coef_std', 'band_product', 'outer_eta_cap', 'act', 'act_explore', 'grad_accum',
+               'bands', 'band_periods', 'band_coef_std', 'band_product', 'outer_eta_cap', 'band_bf16', 'act', 'act_explore', 'grad_accum',
                'rope', 'rope_base',
                'fast_ffn', 'fast_ffn_eta', 'fast_ffn_decay', 'local_conv', 'frame_rope', 'ctx_packed', 'grad_blocks', 'rule_path', 'rule_prior_emb', 'rule_prior_dropout', 'rule_write_bias', 'rule_theta_init', 'rule_prior_pe', 'ctx_versions', 'init_from', 'init_weights',
                'num_aug', 'test_size', 'ce', 'decay_all',
@@ -869,6 +870,13 @@ def main(cfg):
     began, last_eval, last_full = time.monotonic(), -1, None
     stopped = stop_requested(device, deadline)
     log = Path(out_dir, 'train.jsonl')
+    cuda = device.type == 'cuda'
+
+    def run_eval(step, ids=te_ids, tag=''):                    # eval.jsonl: one record per evaluation (rank 0)
+        rec = evaluate(model, ema, te_x, te_y, cfg, rank, ws, device, step, deadline, ids, task_te, tag=tag)
+        if rec is not None:
+            with Path(out_dir, 'eval.jsonl').open('a') as f:
+                f.write(json.dumps(dict(rec, tag=tag, elapsed=time.monotonic() - began)) + '\n')
     try:
         if not stopped and state['step'] < stop_at:
             for it, batch in loader:
@@ -887,7 +895,9 @@ def main(cfg):
                     with log.open('a') as f:
                         f.write(json.dumps(dict(step=step, seconds=time.monotonic() - started,
                                                 elapsed=time.monotonic() - began,
-                                                segment=int(state['segment']), **metrics)) + '\n')
+                                                segment=int(state['segment']), **metrics,
+                                                mem_gb=torch.cuda.max_memory_allocated(device) / 2 ** 30 if cuda else 0.0))
+                            + '\n')
                     if metrics['count']:
                         last_full = (step, metrics)
                     if step % cfg['log_every'] == 0:
@@ -903,10 +913,9 @@ def main(cfg):
                 if (boundary and cfg['save_on_eval']) or (cfg['save_every_steps'] and step % cfg['save_every_steps'] == 0):
                     save()
                 if boundary:
-                    evaluate(model, ema, te_x, te_y, cfg, rank, ws, device, step, deadline, te_ids, task_te)
+                    run_eval(step)
                     if te_noid is not None:
-                        evaluate(model, ema, te_x, te_y, cfg, rank, ws, device, step, deadline, te_noid, task_te,
-                                 tag='-NOID')
+                        run_eval(step, te_noid, '-NOID')
                     last_eval = step
                 if cfg['milestone_every'] and step % cfg['milestone_every'] == 0:
                     mdir = os.path.join(out_dir, 'milestones')
@@ -915,10 +924,10 @@ def main(cfg):
                                 os.path.join(mdir, f'extrap_step_{step}.json'), deadline, te_ids)
                 if step >= stop_at:
                     break
-        path = save()                                  # before the final evaluation: an interruption loses nothing
+        path = save() if cfg['save_final'] else None   # before the final evaluation: an interruption loses nothing
         stopped = stopped or stop_requested(device, deadline)
         if not stopped and last_eval != state['step']:
-            evaluate(model, ema, te_x, te_y, cfg, rank, ws, device, state['step'], deadline, te_ids, task_te)
+            run_eval(state['step'])
         if rank == 0:
             print(f"[LT] saved step {state['step']}: {path}" + (' [stopped]' if stopped else ''), flush=True)
     finally:

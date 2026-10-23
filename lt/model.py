@@ -100,6 +100,9 @@ class ModelConfig:
     band_coef_std: float = 0.1        # std of each real component of the initial a_r, b_r
     band_product: bool = False        # no W or eta: M = sum_r gamma_r Re(c_r sum_t E_V,r conj(E_K,r)^T) takes W's place
     outer_eta_cap: bool = False       # project the learned eta onto eta <= outer_eta after every optimizer step
+    band_bf16: bool = False           # bands (not band_product): E_K, E_V carried in BF16 and the four token-sum / read
+                                      # products on BF16 operands (FP32 accumulation in the GEMM, results rounded to BF16);
+                                      # the trace recurrences, W and S + W stay FP32. Halves the trace memory and traffic
     linear_attn: bool = False         # standard recurrent linear attention: read = q~ (sum_t v k~^T)^T (no clock, W, STDP)
     rope: str = 'learned2d'           # learned2d: learned per-head row/column angles (prefix angle 0); 1d: URM/HRM fixed
                                       # rotary angles pos * rope_base^(-2p/D) on the flattened positions, prefix first
@@ -217,6 +220,8 @@ class ModelConfig:
                                   or self.outer_eta_cap):
             raise ValueError('band_product needs bands > 0, outer_eta = outer_rho = 0 and outer_eta_learn, '
                              'outer_eta_cap off')
+        if self.band_bf16 and (not self.bands or self.band_product):
+            raise ValueError('band_bf16 needs bands > 0 without band_product')
         if self.bands < 0 or (self.bands and (len(self.band_periods) != self.bands or min(self.band_periods) <= 0)):
             raise ValueError('bands >= 0 with one positive initial period per band')
         if self.linear_attn and (self.outer_rho or self.outer_eta or self.tag_bound or not self.hebb or self.event_stdp
@@ -867,12 +872,16 @@ class LT(nn.Module):
                 return read, (clock, ek.reshape(B, H, T, -1), ev.reshape(B, H, T, -1), w, prev)
             k_mix = (ar * ek_re - ai * ek_im).sum(3)
             v_mix = (br * dv_re - bi * dv_im).sum(3)
-            s = v.transpose(-1, -2) @ k_mix + v_mix.transpose(-1, -2) @ kr
+            low = cfg.band_bf16 and dtype == torch.float32
+            mm = (lambda a, b: (a.to(torch.bfloat16) @ b.to(torch.bfloat16)).to(dtype)) if low else torch.matmul
+            s = mm(v.transpose(-1, -2), k_mix) + mm(v_mix.transpose(-1, -2), kr)
             w, m = self.accumulate(w, s, dtype)
-            read = qr @ ((v.transpose(-1, -2) @ kr if cfg.hebb else s) + m).transpose(-1, -2)
+            read = mm(qr, ((mm(v.transpose(-1, -2), kr) if cfg.hebb else s) + m).transpose(-1, -2))
             ev_re = dv_re + gamma * v.unsqueeze(3)
             ek = torch.stack((ek_re, ek_im), 3).reshape(B, H, T, -1)
             ev = torch.stack((ev_re, dv_im), 3).reshape(B, H, T, -1)
+            if low:
+                ek, ev = ek.to(torch.bfloat16), ev.to(torch.bfloat16)
         return read, (clock, ek, ev, w, prev)
 
     def frame_read(self, qr, kr, tables, clock):
@@ -1121,7 +1130,9 @@ class LT(nn.Module):
         T = self.n_pos if T is None else T
         z = lambda *s: torch.zeros(B, self.H, *s, device=device, dtype=dtype)
         trace = 2 * D * max(self.config.bands, 1)
-        return (z(T, 6 * P + 1), z(T, trace), z(T, trace),
+        tz = ((lambda *s: torch.zeros(B, self.H, *s, device=device, dtype=torch.bfloat16))
+              if self.config.band_bf16 and dtype == torch.float32 else z)
+        return (z(T, 6 * P + 1), tz(T, trace), tz(T, trace),
                 z(D, D) if self.config.outer_memory else (z(D, P + D) if self.config.rule_syn else None),
                 z(T, 3 * D) if self.config.event_stdp else (z(2 * D, D) if self.config.rule_path else None))
 

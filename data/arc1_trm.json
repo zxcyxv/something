@@ -1,0 +1,12 @@
+{
+  "tasks": 960,
+  "per_subset": {
+    "training": 400,
+    "evaluation": 400,
+    "concept": 160
+  },
+  "train_pairs": 3988,
+  "test_pairs": 419,
+  "split": "trm (training/concept test pairs trained)",
+  "source": "TRM kaggle/combined/arc-agi_{training,evaluation,concept}"
+}

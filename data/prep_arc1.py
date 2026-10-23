@@ -12,6 +12,12 @@ Stored: arc_train_in / arc_train_out [N, 30, 30] uint8 (color + 1, 0 outside the
 augmentation) with arc_test_task; arc_num_tasks.
 
     python data/prep_arc1.py ARC_AGI_REPO CONCEPTARC_REPO
+    python data/prep_arc1.py --kaggle KAGGLE/combined/arc-agi --trm-split --out data/arc1_trm.npz
+
+--kaggle PREFIX reads TRM's input format instead (PREFIX_{training,evaluation,concept}_{challenges,solutions}.json, as
+TinyRecursiveModels dataset/build_arc_dataset.py --input-file-prefix kaggle/combined/arc-agi); tasks keep the order of
+data/arc1.tasks.txt. --trm-split is TRM's split (--test-set-name evaluation): the test pairs of the training and concept
+tasks are training pairs too (3,092 + 896 = 3,988 per epoch); the test set is unchanged (419 evaluation test pairs).
 """
 import argparse
 import glob
@@ -39,20 +45,37 @@ def canvas(grid, eos=True):
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('arc')
-    ap.add_argument('concept')
+    ap.add_argument('arc', nargs='?')
+    ap.add_argument('concept', nargs='?')
+    ap.add_argument('--kaggle', help='TRM input prefix (.../combined/arc-agi) instead of the two repositories')
+    ap.add_argument('--trm-split', action='store_true', help='training/concept test pairs are training pairs (TRM)')
     ap.add_argument('--out', default=str(Path(__file__).resolve().parent / 'arc1.npz'))
     opt = ap.parse_args()
-    subsets = [('training', sorted(glob.glob(f'{opt.arc}/data/training/*.json'))),
-               ('evaluation', sorted(glob.glob(f'{opt.arc}/data/evaluation/*.json'))),
-               ('concept', sorted(glob.glob(f'{opt.concept}/corpus/*/*.json')))]
+    if opt.kaggle:
+        order = (Path(__file__).resolve().parent / 'arc1.tasks.txt').read_text().split()
+        tasks = {}
+        for sub in ('training', 'evaluation', 'concept'):
+            ch = json.load(open(f'{opt.kaggle}_{sub}_challenges.json'))
+            so = json.load(open(f'{opt.kaggle}_{sub}_solutions.json'))
+            for k, v in ch.items():
+                tasks[f'{sub}/{k}'] = dict(train=v['train'], test=[dict(input=t['input'], output=o)
+                                                                  for t, o in zip(v['test'], so[k])])
+        if sorted(tasks) != sorted(order):
+            raise SystemExit('kaggle tasks differ from data/arc1.tasks.txt')
+        subsets = [(sub, [(n.split('/', 1)[1], tasks[n]) for n in order if n.startswith(sub + '/')])
+                   for sub in ('training', 'evaluation', 'concept')]
+    else:
+        subsets = [(sub, [(Path(f).stem, json.load(open(f))) for f in files]) for sub, files in
+                   (('training', sorted(glob.glob(f'{opt.arc}/data/training/*.json'))),
+                    ('evaluation', sorted(glob.glob(f'{opt.arc}/data/evaluation/*.json'))),
+                    ('concept', sorted(glob.glob(f'{opt.concept}/corpus/*/*.json'))))]
     tr_in, tr_out, tr_hw, tr_t, te_in, te_out, te_t, names = [], [], [], [], [], [], [], []
-    for subset, files in subsets:
-        for f in files:
-            task = json.load(open(f))
+    for subset, items in subsets:
+        for stem, task in items:
             t = len(names)
-            names.append(f'{subset}/{Path(f).stem}')
-            for p in task['train']:
+            names.append(f'{subset}/{stem}')
+            pairs = task['train'] + (task['test'] if opt.trm_split and subset != 'evaluation' else [])
+            for p in pairs:
                 i, o = np.asarray(p['input']), np.asarray(p['output'])
                 a, b = np.zeros((N, N), np.uint8), np.zeros((N, N), np.uint8)
                 a[:i.shape[0], :i.shape[1]] = i + 1
@@ -66,7 +89,9 @@ def main():
                         test_inputs=np.array(te_in), test_labels=np.array(te_out), arc_test_task=np.array(te_t, dtype=np.int32),
                         arc_num_tasks=np.int64(len(names)), num_symbols=np.int64(11))
     meta = dict(tasks=len(names), per_subset={s: len(fs) for s, fs in subsets}, train_pairs=len(tr_in), test_pairs=len(te_in),
-                source='fchollet/ARC-AGI data/{training,evaluation} + victorvikram/ConceptARC corpus')
+                split='trm (training/concept test pairs trained)' if opt.trm_split else 'demonstrations only',
+                source=('TRM kaggle/combined/arc-agi_{training,evaluation,concept}' if opt.kaggle else
+                        'fchollet/ARC-AGI data/{training,evaluation} + victorvikram/ConceptARC corpus'))
     Path(opt.out).with_suffix('.json').write_text(json.dumps(meta, indent=2) + '\n')
     Path(opt.out).with_suffix('.tasks.txt').write_text('\n'.join(names) + '\n')
     print(json.dumps(meta, indent=2))
