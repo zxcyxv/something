@@ -1,0 +1,175 @@
+[COUPLED] params 3,461,335 cfg {'N': 10, 'D': 5, 'd': 512, 'heads': 8, 'blocks': 32, 'grad_blocks': 4, 'write_every': 1, 'phi': 64, 'lam_init': 0.001, 'tau_init': 1.0, 'step_learn': False, 'bands': 4, 'band_periods': (2.0, 6.0, 20.0, 64.0), 'band_coef_std': 0.1, 'outer_eta': 0.125, 'mlp_expansion': 4.0, 'forward_dtype': 'float32'} tasks 255 test pairs 278
+/workspace/something/lt/coupled_train.py:126: UserWarning: Converting a tensor with requires_grad=True to a scalar may lead to unexpected behavior.
+Consider using tensor.detach() first. (Triggered internally at /__w/pytorch/pytorch/torch/csrc/autograd/generated/python_variable_methods.cpp:820.)
+  tau=float(model.tau), lam=float(torch.nn.functional.softplus(model.lam_raw)),
+[COUPLED] step 100 loss 1.8363 cell 0.5668 exact 0.000 tau 1.001 lam 1.00e-03 19s 4.4GiB
+[COUPLED] step 200 loss 1.7852 cell 0.4704 exact 0.000 tau 1.002 lam 1.00e-03 35s 4.4GiB
+[COUPLED] step 300 loss 1.5448 cell 0.5700 exact 0.000 tau 1.004 lam 1.00e-03 52s 4.4GiB
+[COUPLED] step 400 loss 1.2660 cell 0.6195 exact 0.000 tau 1.008 lam 9.99e-04 68s 4.4GiB
+[COUPLED] step 500 loss 1.1466 cell 0.6514 exact 0.016 tau 1.012 lam 9.99e-04 84s 4.4GiB
+[COUPLED] step 600 loss 1.0410 cell 0.6085 exact 0.000 tau 1.017 lam 9.98e-04 101s 4.4GiB
+[COUPLED] step 700 loss 0.9456 cell 0.6487 exact 0.000 tau 1.023 lam 9.98e-04 117s 4.4GiB
+[COUPLED] step 800 loss 0.8944 cell 0.6742 exact 0.000 tau 1.030 lam 9.98e-04 134s 4.4GiB
+[COUPLED] step 900 loss 0.8013 cell 0.7031 exact 0.016 tau 1.038 lam 9.98e-04 150s 4.4GiB
+[COUPLED] step 1000 loss 0.8692 cell 0.7138 exact 0.000 tau 1.047 lam 9.97e-04 166s 4.4GiB
+W1023 11:17:20.084000 15604 site-packages/torch/_dynamo/convert_frame.py:2008] [0/8] torch._dynamo hit config.recompile_limit (8)
+W1023 11:17:20.084000 15604 site-packages/torch/_dynamo/convert_frame.py:2008] [0/8]    function: 'block_step' (/workspace/something/lt/model.py:1073)
+W1023 11:17:20.084000 15604 site-packages/torch/_dynamo/convert_frame.py:2008] [0/8]    last reason: 0/6: tensor 'h' size mismatch at index 0. expected 70, actual 63
+W1023 11:17:20.084000 15604 site-packages/torch/_dynamo/convert_frame.py:2008] [0/8] To log all recompilation reasons, use TORCH_LOGS="recompiles".
+W1023 11:17:20.084000 15604 site-packages/torch/_dynamo/convert_frame.py:2008] [0/8] To diagnose recompilation issues, see https://docs.pytorch.org/docs/main/user_guide/torch_compiler/compile/programming_model.recompilation.html
+[EVAL] step 1000 exact 0/278 cell 0.5736 cell_eos 0.6607
+[COUPLED] step 1100 loss 0.9173 cell 0.5957 exact 0.000 tau 1.056 lam 9.98e-04 189s 4.4GiB
+[COUPLED] step 1200 loss 0.8922 cell 0.6687 exact 0.016 tau 1.066 lam 9.98e-04 205s 4.4GiB
+[COUPLED] step 1300 loss 0.7562 cell 0.6737 exact 0.000 tau 1.077 lam 9.99e-04 222s 4.4GiB
+[COUPLED] step 1400 loss 0.7466 cell 0.7736 exact 0.000 tau 1.089 lam 1.00e-03 238s 4.4GiB
+[COUPLED] step 1500 loss 0.7543 cell 0.7084 exact 0.031 tau 1.101 lam 1.00e-03 255s 4.4GiB
+[COUPLED] step 1600 loss 0.7486 cell 0.6691 exact 0.000 tau 1.114 lam 1.00e-03 271s 4.4GiB
+[COUPLED] step 1700 loss 0.6291 cell 0.6444 exact 0.031 tau 1.128 lam 1.00e-03 287s 4.4GiB
+[COUPLED] step 1800 loss 0.6774 cell 0.7091 exact 0.000 tau 1.143 lam 1.00e-03 304s 4.4GiB
+[COUPLED] step 1900 loss 0.6573 cell 0.7187 exact 0.000 tau 1.158 lam 1.01e-03 320s 4.4GiB
+[COUPLED] step 2000 loss 0.6109 cell 0.7730 exact 0.000 tau 1.174 lam 1.01e-03 337s 4.4GiB
+[EVAL] step 2000 exact 2/278 cell 0.6892 cell_eos 0.7539
+[COUPLED] step 2100 loss 0.6158 cell 0.7326 exact 0.062 tau 1.190 lam 1.01e-03 358s 4.4GiB
+[COUPLED] step 2200 loss 0.5995 cell 0.7852 exact 0.000 tau 1.206 lam 1.01e-03 374s 4.4GiB
+[COUPLED] step 2300 loss 0.6553 cell 0.7232 exact 0.000 tau 1.221 lam 1.01e-03 391s 4.4GiB
+[COUPLED] step 2400 loss 0.5898 cell 0.7874 exact 0.078 tau 1.238 lam 1.01e-03 407s 4.4GiB
+[COUPLED] step 2500 loss 0.5103 cell 0.7995 exact 0.047 tau 1.254 lam 1.02e-03 423s 4.4GiB
+[COUPLED] step 2600 loss 0.5594 cell 0.7539 exact 0.031 tau 1.270 lam 1.02e-03 440s 4.4GiB
+[COUPLED] step 2700 loss 0.5468 cell 0.7147 exact 0.078 tau 1.286 lam 1.02e-03 456s 4.4GiB
+[COUPLED] step 2800 loss 0.5006 cell 0.7381 exact 0.109 tau 1.301 lam 1.02e-03 472s 4.4GiB
+[COUPLED] step 2900 loss 0.4534 cell 0.7749 exact 0.078 tau 1.318 lam 1.02e-03 489s 4.4GiB
+[COUPLED] step 3000 loss 0.5015 cell 0.6740 exact 0.094 tau 1.334 lam 1.03e-03 505s 4.4GiB
+[EVAL] step 3000 exact 4/278 cell 0.7363 cell_eos 0.7917
+[COUPLED] step 3100 loss 0.5114 cell 0.8216 exact 0.016 tau 1.349 lam 1.03e-03 526s 4.4GiB
+[COUPLED] step 3200 loss 0.4111 cell 0.8142 exact 0.031 tau 1.365 lam 1.03e-03 543s 4.4GiB
+[COUPLED] step 3300 loss 0.4481 cell 0.8546 exact 0.031 tau 1.380 lam 1.03e-03 559s 4.4GiB
+[COUPLED] step 3400 loss 0.4570 cell 0.8621 exact 0.031 tau 1.397 lam 1.03e-03 575s 4.4GiB
+[COUPLED] step 3500 loss 0.6100 cell 0.7330 exact 0.031 tau 1.412 lam 1.04e-03 592s 4.4GiB
+[COUPLED] step 3600 loss 0.3920 cell 0.8205 exact 0.125 tau 1.428 lam 1.04e-03 608s 4.4GiB
+[COUPLED] step 3700 loss 0.4284 cell 0.8275 exact 0.031 tau 1.442 lam 1.04e-03 625s 4.4GiB
+[COUPLED] step 3800 loss 0.3540 cell 0.8203 exact 0.062 tau 1.458 lam 1.04e-03 641s 4.4GiB
+[COUPLED] step 3900 loss 0.3520 cell 0.8433 exact 0.031 tau 1.473 lam 1.05e-03 657s 4.4GiB
+[COUPLED] step 4000 loss 0.3536 cell 0.8306 exact 0.141 tau 1.488 lam 1.05e-03 674s 4.4GiB
+[EVAL] step 4000 exact 13/278 cell 0.7740 cell_eos 0.8211
+[COUPLED] step 4100 loss 0.3300 cell 0.8423 exact 0.156 tau 1.503 lam 1.05e-03 695s 4.4GiB
+[COUPLED] step 4200 loss 0.3176 cell 0.8554 exact 0.078 tau 1.518 lam 1.05e-03 711s 4.4GiB
+[COUPLED] step 4300 loss 0.3477 cell 0.8437 exact 0.125 tau 1.533 lam 1.06e-03 728s 4.4GiB
+[COUPLED] step 4400 loss 0.3018 cell 0.8691 exact 0.172 tau 1.548 lam 1.06e-03 744s 4.4GiB
+[COUPLED] step 4500 loss 0.4265 cell 0.8131 exact 0.188 tau 1.564 lam 1.06e-03 761s 4.4GiB
+[COUPLED] step 4600 loss 0.3912 cell 0.7715 exact 0.125 tau 1.579 lam 1.06e-03 777s 4.4GiB
+[COUPLED] step 4700 loss 0.4049 cell 0.7693 exact 0.094 tau 1.593 lam 1.07e-03 793s 4.4GiB
+[COUPLED] step 4800 loss 0.3815 cell 0.8187 exact 0.156 tau 1.608 lam 1.07e-03 810s 4.4GiB
+[COUPLED] step 4900 loss 0.4009 cell 0.8127 exact 0.047 tau 1.623 lam 1.07e-03 826s 4.4GiB
+[COUPLED] step 5000 loss 0.2348 cell 0.8940 exact 0.156 tau 1.637 lam 1.07e-03 843s 4.4GiB
+[EVAL] step 5000 exact 20/278 cell 0.8052 cell_eos 0.8458
+[COUPLED] step 5100 loss 0.3056 cell 0.8321 exact 0.203 tau 1.651 lam 1.08e-03 864s 4.4GiB
+[COUPLED] step 5200 loss 0.3622 cell 0.8703 exact 0.078 tau 1.665 lam 1.08e-03 880s 4.4GiB
+[COUPLED] step 5300 loss 0.2745 cell 0.8970 exact 0.141 tau 1.681 lam 1.08e-03 897s 4.4GiB
+[COUPLED] step 5400 loss 0.2595 cell 0.8487 exact 0.219 tau 1.694 lam 1.09e-03 913s 4.4GiB
+[COUPLED] step 5500 loss 0.2596 cell 0.8864 exact 0.047 tau 1.709 lam 1.09e-03 929s 4.4GiB
+[COUPLED] step 5600 loss 0.3238 cell 0.8343 exact 0.219 tau 1.723 lam 1.09e-03 946s 4.4GiB
+[COUPLED] step 5700 loss 0.2577 cell 0.8798 exact 0.188 tau 1.737 lam 1.09e-03 962s 4.4GiB
+[COUPLED] step 5800 loss 0.2329 cell 0.8872 exact 0.266 tau 1.752 lam 1.10e-03 979s 4.4GiB
+[COUPLED] step 5900 loss 0.2471 cell 0.8925 exact 0.266 tau 1.766 lam 1.10e-03 995s 4.4GiB
+[COUPLED] step 6000 loss 0.2827 cell 0.8809 exact 0.094 tau 1.780 lam 1.10e-03 1011s 4.4GiB
+[EVAL] step 6000 exact 25/278 cell 0.8150 cell_eos 0.8534
+[COUPLED] step 6100 loss 0.3246 cell 0.8450 exact 0.250 tau 1.793 lam 1.11e-03 1032s 4.4GiB
+[COUPLED] step 6200 loss 0.1942 cell 0.9275 exact 0.312 tau 1.807 lam 1.11e-03 1049s 4.4GiB
+[COUPLED] step 6300 loss 0.1870 cell 0.8943 exact 0.328 tau 1.819 lam 1.11e-03 1065s 4.4GiB
+[COUPLED] step 6400 loss 0.2234 cell 0.9107 exact 0.156 tau 1.833 lam 1.11e-03 1082s 4.4GiB
+[COUPLED] step 6500 loss 0.3363 cell 0.8261 exact 0.172 tau 1.846 lam 1.12e-03 1098s 4.4GiB
+[COUPLED] step 6600 loss 0.2775 cell 0.9177 exact 0.141 tau 1.860 lam 1.12e-03 1114s 4.4GiB
+[COUPLED] step 6700 loss 0.2092 cell 0.9058 exact 0.328 tau 1.873 lam 1.12e-03 1131s 4.4GiB
+[COUPLED] step 6800 loss 0.2435 cell 0.8579 exact 0.266 tau 1.886 lam 1.13e-03 1147s 4.4GiB
+[COUPLED] step 6900 loss 0.1985 cell 0.9002 exact 0.266 tau 1.899 lam 1.13e-03 1164s 4.4GiB
+[COUPLED] step 7000 loss 0.3030 cell 0.8488 exact 0.250 tau 1.912 lam 1.13e-03 1180s 4.4GiB
+[EVAL] step 7000 exact 30/278 cell 0.8262 cell_eos 0.8624
+[COUPLED] step 7100 loss 0.2470 cell 0.8770 exact 0.188 tau 1.926 lam 1.14e-03 1201s 4.4GiB
+[COUPLED] step 7200 loss 0.2251 cell 0.8818 exact 0.375 tau 1.938 lam 1.14e-03 1217s 4.4GiB
+[COUPLED] step 7300 loss 0.1435 cell 0.9534 exact 0.469 tau 1.952 lam 1.14e-03 1234s 4.4GiB
+[COUPLED] step 7400 loss 0.1896 cell 0.9146 exact 0.359 tau 1.964 lam 1.15e-03 1250s 4.4GiB
+[COUPLED] step 7500 loss 0.2695 cell 0.8831 exact 0.281 tau 1.977 lam 1.15e-03 1267s 4.4GiB
+[COUPLED] step 7600 loss 0.2520 cell 0.8884 exact 0.188 tau 1.989 lam 1.16e-03 1283s 4.4GiB
+[COUPLED] step 7700 loss 0.1456 cell 0.9072 exact 0.406 tau 2.001 lam 1.16e-03 1300s 4.4GiB
+[COUPLED] step 7800 loss 0.2467 cell 0.9087 exact 0.234 tau 2.013 lam 1.16e-03 1316s 4.4GiB
+[COUPLED] step 7900 loss 0.2601 cell 0.8815 exact 0.438 tau 2.026 lam 1.16e-03 1332s 4.4GiB
+[COUPLED] step 8000 loss 0.2058 cell 0.8864 exact 0.266 tau 2.038 lam 1.17e-03 1349s 4.4GiB
+[EVAL] step 8000 exact 37/278 cell 0.8295 cell_eos 0.8649
+[COUPLED] step 8100 loss 0.2940 cell 0.8682 exact 0.344 tau 2.051 lam 1.17e-03 1370s 4.4GiB
+[COUPLED] step 8200 loss 0.2215 cell 0.9013 exact 0.234 tau 2.062 lam 1.18e-03 1386s 4.4GiB
+[COUPLED] step 8300 loss 0.3308 cell 0.8791 exact 0.234 tau 2.073 lam 1.18e-03 1402s 4.4GiB
+[COUPLED] step 8400 loss 0.1747 cell 0.9207 exact 0.328 tau 2.084 lam 1.18e-03 1419s 4.4GiB
+[COUPLED] step 8500 loss 0.2171 cell 0.8931 exact 0.359 tau 2.096 lam 1.19e-03 1435s 4.4GiB
+[COUPLED] step 8600 loss 0.2425 cell 0.9146 exact 0.344 tau 2.108 lam 1.19e-03 1452s 4.4GiB
+[COUPLED] step 8700 loss 0.1595 cell 0.9291 exact 0.266 tau 2.120 lam 1.20e-03 1468s 4.4GiB
+[COUPLED] step 8800 loss 0.1143 cell 0.9483 exact 0.438 tau 2.131 lam 1.20e-03 1484s 4.4GiB
+[COUPLED] step 8900 loss 0.1969 cell 0.8960 exact 0.344 tau 2.141 lam 1.20e-03 1501s 4.4GiB
+[COUPLED] step 9000 loss 0.1794 cell 0.9300 exact 0.328 tau 2.154 lam 1.21e-03 1517s 4.4GiB
+[EVAL] step 9000 exact 38/278 cell 0.8291 cell_eos 0.8640
+[COUPLED] step 9100 loss 0.1613 cell 0.9273 exact 0.406 tau 2.164 lam 1.21e-03 1538s 4.4GiB
+[COUPLED] step 9200 loss 0.1432 cell 0.9377 exact 0.469 tau 2.175 lam 1.21e-03 1555s 4.4GiB
+[COUPLED] step 9300 loss 0.2042 cell 0.9039 exact 0.375 tau 2.186 lam 1.22e-03 1571s 4.4GiB
+[COUPLED] step 9400 loss 0.2099 cell 0.8918 exact 0.297 tau 2.198 lam 1.22e-03 1587s 4.4GiB
+[COUPLED] step 9500 loss 0.1340 cell 0.9389 exact 0.469 tau 2.209 lam 1.23e-03 1604s 4.4GiB
+[COUPLED] step 9600 loss 0.1959 cell 0.9163 exact 0.203 tau 2.220 lam 1.23e-03 1620s 4.4GiB
+[COUPLED] step 9700 loss 0.1802 cell 0.9197 exact 0.281 tau 2.232 lam 1.24e-03 1637s 4.4GiB
+[COUPLED] step 9800 loss 0.2263 cell 0.9002 exact 0.391 tau 2.243 lam 1.24e-03 1653s 4.4GiB
+[COUPLED] step 9900 loss 0.1026 cell 0.9555 exact 0.422 tau 2.255 lam 1.25e-03 1669s 4.4GiB
+[COUPLED] step 10000 loss 0.1388 cell 0.9523 exact 0.344 tau 2.266 lam 1.25e-03 1686s 4.4GiB
+[EVAL] step 10000 exact 39/278 cell 0.8305 cell_eos 0.8652
+[COUPLED] step 10100 loss 0.2031 cell 0.8994 exact 0.344 tau 2.278 lam 1.25e-03 1707s 4.4GiB
+[COUPLED] step 10200 loss 0.1572 cell 0.9284 exact 0.344 tau 2.288 lam 1.26e-03 1723s 4.4GiB
+[COUPLED] step 10300 loss 0.1784 cell 0.9432 exact 0.391 tau 2.299 lam 1.27e-03 1740s 4.4GiB
+[COUPLED] step 10400 loss 0.2312 cell 0.8825 exact 0.422 tau 2.310 lam 1.27e-03 1756s 4.4GiB
+[COUPLED] step 10500 loss 0.0891 cell 0.9675 exact 0.547 tau 2.321 lam 1.28e-03 1772s 4.4GiB
+[COUPLED] step 10600 loss 0.1951 cell 0.9218 exact 0.406 tau 2.332 lam 1.28e-03 1789s 4.4GiB
+[COUPLED] step 10700 loss 0.1199 cell 0.9423 exact 0.391 tau 2.342 lam 1.28e-03 1805s 4.4GiB
+[COUPLED] step 10800 loss 0.1281 cell 0.9503 exact 0.375 tau 2.351 lam 1.29e-03 1822s 4.4GiB
+[COUPLED] step 10900 loss 0.1767 cell 0.9583 exact 0.375 tau 2.362 lam 1.29e-03 1838s 4.4GiB
+[COUPLED] step 11000 loss 0.1707 cell 0.9444 exact 0.391 tau 2.372 lam 1.30e-03 1854s 4.4GiB
+[EVAL] step 11000 exact 39/278 cell 0.8292 cell_eos 0.8642
+[COUPLED] step 11100 loss 0.1167 cell 0.9554 exact 0.438 tau 2.383 lam 1.31e-03 1875s 4.4GiB
+[COUPLED] step 11200 loss 0.1369 cell 0.9458 exact 0.594 tau 2.392 lam 1.31e-03 1892s 4.4GiB
+[COUPLED] step 11300 loss 0.1293 cell 0.9531 exact 0.375 tau 2.402 lam 1.32e-03 1908s 4.4GiB
+[COUPLED] step 11400 loss 0.1445 cell 0.9371 exact 0.406 tau 2.412 lam 1.32e-03 1925s 4.4GiB
+[COUPLED] step 11500 loss 0.1105 cell 0.9219 exact 0.500 tau 2.422 lam 1.33e-03 1941s 4.4GiB
+[COUPLED] step 11600 loss 0.0972 cell 0.9611 exact 0.438 tau 2.432 lam 1.34e-03 1957s 4.4GiB
+[COUPLED] step 11700 loss 0.1163 cell 0.9651 exact 0.453 tau 2.441 lam 1.34e-03 1974s 4.4GiB
+[COUPLED] step 11800 loss 0.1246 cell 0.9412 exact 0.406 tau 2.452 lam 1.35e-03 1990s 4.4GiB
+[COUPLED] step 11900 loss 0.1541 cell 0.9407 exact 0.516 tau 2.463 lam 1.35e-03 2007s 4.4GiB
+[COUPLED] step 12000 loss 0.0888 cell 0.9709 exact 0.594 tau 2.472 lam 1.36e-03 2023s 4.4GiB
+[EVAL] step 12000 exact 42/278 cell 0.8286 cell_eos 0.8637
+[COUPLED] step 12100 loss 0.1275 cell 0.9510 exact 0.266 tau 2.483 lam 1.37e-03 2044s 4.4GiB
+[COUPLED] step 12200 loss 0.1071 cell 0.9706 exact 0.484 tau 2.493 lam 1.38e-03 2060s 4.4GiB
+[COUPLED] step 12300 loss 0.1483 cell 0.9458 exact 0.422 tau 2.502 lam 1.38e-03 2077s 4.4GiB
+[COUPLED] step 12400 loss 0.1364 cell 0.9346 exact 0.406 tau 2.511 lam 1.39e-03 2093s 4.4GiB
+[COUPLED] step 12500 loss 0.1250 cell 0.9352 exact 0.531 tau 2.521 lam 1.40e-03 2110s 4.4GiB
+[COUPLED] step 12600 loss 0.0972 cell 0.9726 exact 0.609 tau 2.531 lam 1.40e-03 2126s 4.4GiB
+[COUPLED] step 12700 loss 0.0851 cell 0.9791 exact 0.625 tau 2.540 lam 1.41e-03 2142s 4.4GiB
+[COUPLED] step 12800 loss 0.0630 cell 0.9775 exact 0.703 tau 2.550 lam 1.42e-03 2159s 4.4GiB
+[COUPLED] step 12900 loss 0.1219 cell 0.9486 exact 0.578 tau 2.560 lam 1.43e-03 2175s 4.4GiB
+[COUPLED] step 13000 loss 0.1211 cell 0.9436 exact 0.516 tau 2.571 lam 1.43e-03 2192s 4.4GiB
+[EVAL] step 13000 exact 45/278 cell 0.8281 cell_eos 0.8641
+[COUPLED] step 13100 loss 0.1148 cell 0.9228 exact 0.531 tau 2.580 lam 1.44e-03 2213s 4.4GiB
+[COUPLED] step 13200 loss 0.0602 cell 0.9719 exact 0.703 tau 2.590 lam 1.45e-03 2229s 4.4GiB
+[COUPLED] step 13300 loss 0.1497 cell 0.9320 exact 0.375 tau 2.600 lam 1.46e-03 2245s 4.4GiB
+[COUPLED] step 13400 loss 0.1045 cell 0.9635 exact 0.562 tau 2.609 lam 1.47e-03 2262s 4.4GiB
+[COUPLED] step 13500 loss 0.1232 cell 0.9646 exact 0.484 tau 2.618 lam 1.47e-03 2278s 4.4GiB
+[COUPLED] step 13600 loss 0.1037 cell 0.9697 exact 0.562 tau 2.627 lam 1.48e-03 2295s 4.4GiB
+[COUPLED] step 13700 loss 0.1364 cell 0.9219 exact 0.562 tau 2.637 lam 1.49e-03 2311s 4.4GiB
+[COUPLED] step 13800 loss 0.1075 cell 0.9568 exact 0.453 tau 2.646 lam 1.50e-03 2327s 4.4GiB
+[COUPLED] step 13900 loss 0.0916 cell 0.9614 exact 0.547 tau 2.656 lam 1.51e-03 2344s 4.4GiB
+[COUPLED] step 14000 loss 0.1144 cell 0.9871 exact 0.594 tau 2.665 lam 1.51e-03 2360s 4.4GiB
+[EVAL] step 14000 exact 39/278 cell 0.8268 cell_eos 0.8631
+[COUPLED] step 14100 loss 0.0584 cell 0.9728 exact 0.562 tau 2.675 lam 1.53e-03 2381s 4.4GiB
+[COUPLED] step 14200 loss 0.1008 cell 0.9639 exact 0.547 tau 2.684 lam 1.54e-03 2398s 4.4GiB
+[COUPLED] step 14300 loss 0.0600 cell 0.9589 exact 0.625 tau 2.694 lam 1.54e-03 2414s 4.4GiB
+[COUPLED] step 14400 loss 0.0711 cell 0.9776 exact 0.750 tau 2.703 lam 1.55e-03 2430s 4.4GiB
+[COUPLED] step 14500 loss 0.0687 cell 0.9797 exact 0.562 tau 2.712 lam 1.56e-03 2447s 4.4GiB
+[COUPLED] step 14600 loss 0.1055 cell 0.9652 exact 0.484 tau 2.722 lam 1.57e-03 2463s 4.4GiB
+[COUPLED] step 14700 loss 0.0593 cell 0.9769 exact 0.766 tau 2.732 lam 1.57e-03 2480s 4.4GiB
+[COUPLED] step 14800 loss 0.0792 cell 0.9769 exact 0.609 tau 2.741 lam 1.59e-03 2496s 4.4GiB
+[COUPLED] step 14900 loss 0.0898 cell 0.9684 exact 0.531 tau 2.749 lam 1.60e-03 2512s 4.4GiB
+[COUPLED] step 15000 loss 0.0796 cell 0.9650 exact 0.594 tau 2.758 lam 1.61e-03 2529s 4.4GiB
+[EVAL] step 15000 exact 38/278 cell 0.8282 cell_eos 0.8642
+EXITCODE 0

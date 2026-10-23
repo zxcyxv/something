@@ -1,0 +1,51 @@
+{
+ "args": {
+  "data": "data/arc1_ctx10_trans.npz",
+  "out": "runs/coupled_arc1_d512_every1_s0",
+  "steps": 15000,
+  "batch": 64,
+  "eval_groups": 16,
+  "lr": 0.0003,
+  "warmup": 2000,
+  "wd": 0.1,
+  "ema": 0.999,
+  "clip": 1.0,
+  "num_aug": 1000,
+  "eval_every": 1000,
+  "log_every": 100,
+  "seed": 0,
+  "compile": true,
+  "resume": false,
+  "set": [
+   "write_every=1",
+   "d=512"
+  ]
+ },
+ "cfg": {
+  "N": 10,
+  "D": 5,
+  "d": 512,
+  "heads": 8,
+  "blocks": 32,
+  "grad_blocks": 4,
+  "write_every": 1,
+  "phi": 64,
+  "lam_init": 0.001,
+  "tau_init": 1.0,
+  "step_learn": false,
+  "bands": 4,
+  "band_periods": [
+   2.0,
+   6.0,
+   20.0,
+   64.0
+  ],
+  "band_coef_std": 0.1,
+  "outer_eta": 0.125,
+  "mlp_expansion": 4.0,
+  "forward_dtype": "float32"
+ },
+ "params": 3461335,
+ "tasks": 255,
+ "test_pairs": 278
+}
